@@ -1135,7 +1135,7 @@
     react-use "^17.2.4"
     zen-observable "^0.8.15"
 
-"@backstage/core@^0.7.11", "@backstage/core@^0.7.3", "@backstage/core@^0.7.9":
+"@backstage/core@^0.7.11", "@backstage/core@^0.7.9":
   version "0.7.11"
   resolved "https://registry.npmjs.org/@backstage/core/-/core-0.7.11.tgz#b388544a4fd5bd21fde7ddc15afda635ad940137"
   integrity sha512-XG8RjdySFZWuTjh/6CwZycMwakqSF0Vq/eBel2zQ3Wh9EXMqN1qvKSGw+EfmLVYHHcKtgW3F/sdIKum3z+/DTg==
