@@ -15,8 +15,8 @@
  */
 
 import { createApiRef, DiscoveryApi } from '@backstage/core';
-import { ServiceScorecardScore } from "./types";
-import { CortexApi } from "./CortexApi";
+import { ServiceScorecardScore } from './types';
+import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 
 export const cortexApiRef = createApiRef<CortexClient>({
@@ -36,16 +36,20 @@ export class CortexClient implements CortexApi {
   }
 
   async syncEntities(entities: Entity[]): Promise<void> {
-    return await this.post(`/api/internal/v1/backstage`, { entities: entities })
+    return await this.post(`/api/internal/v1/backstage`, {
+      entities: entities,
+    });
   }
 
-  async getScores(service: string): Promise<ServiceScorecardScore[] | undefined> {
-    return await this.get(`/api/v1/services/tags/${service}/scorecards`)
+  async getScores(
+    service: string,
+  ): Promise<ServiceScorecardScore[] | undefined> {
+    return await this.get(`/api/v1/services/tags/${service}/scorecards`);
   }
 
   private async getBasePath(): Promise<string> {
     const proxyBasePath = await this.discoveryApi.getBaseUrl('proxy');
-    return `${proxyBasePath}/cortex`
+    return `${proxyBasePath}/cortex`;
   }
 
   private async get(path: string): Promise<any | undefined> {
@@ -55,12 +59,13 @@ export class CortexClient implements CortexApi {
     const response = await fetch(url);
     const body = await response.json();
 
-    if (response.status === 404)
-    {
+    if (response.status === 404) {
       return undefined;
     } else if (response.status !== 200) {
       throw new Error(
-        `Error communicating with Cortex: ${typeof body === 'object' ? JSON.stringify(body) : body}`,
+        `Error communicating with Cortex: ${
+          typeof body === 'object' ? JSON.stringify(body) : body
+        }`,
       );
     }
 
@@ -74,7 +79,7 @@ export class CortexClient implements CortexApi {
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(body),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
 
     const responseBody = await response.json();

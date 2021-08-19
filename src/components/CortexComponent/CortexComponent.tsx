@@ -15,12 +15,19 @@
  */
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { Content, ContentHeader, Header, HeaderLabel, Page, SupportButton, } from '@backstage/core';
+import {
+  Content,
+  ContentHeader,
+  Header,
+  HeaderLabel,
+  Page,
+  SupportButton,
+} from '@backstage/core';
 import { CortexFetchComponent } from '../CortexFetchComponent';
 
 export const CortexComponent = () => (
   <Page themeId="tool">
-    <Header title="Welcome to Cortex!" >
+    <Header title="Welcome to Cortex!">
       <HeaderLabel label="Owner" value="Team X" />
       <HeaderLabel label="Lifecycle" value="Alpha" />
     </Header>

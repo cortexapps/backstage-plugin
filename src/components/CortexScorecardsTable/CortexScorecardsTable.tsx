@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from "react";
-import { ServiceScorecardScore } from "../../api/types";
-import { CodeSnippet, Table, TableColumn, WarningPanel } from "@backstage/core";
-import { CortexScorecardScoresColumn } from "./CortexScorecardScoresColumn";
-import SyncIcon from "@material-ui/icons/Sync";
-import { Entity } from "@backstage/catalog-model";
-import { EntityRefLink } from "@backstage/plugin-catalog-react";
-import { CircularProgress } from "@material-ui/core";
+import React, { useState } from 'react';
+import { ServiceScorecardScore } from '../../api/types';
+import { CodeSnippet, Table, TableColumn, WarningPanel } from '@backstage/core';
+import { CortexScorecardScoresColumn } from './CortexScorecardScoresColumn';
+import SyncIcon from '@material-ui/icons/Sync';
+import { Entity } from '@backstage/catalog-model';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
+import { CircularProgress } from '@material-ui/core';
 
 export type CortexScorecardsRow = {
   entity: Entity;
   scores?: ServiceScorecardScore[];
-}
+};
 
 type CortexScorecardsTableProps = {
   loading: boolean;
   error?: any;
   entityScores: CortexScorecardsRow[];
   syncCortex: () => Promise<void>;
-}
+};
 
 const columns: TableColumn<CortexScorecardsRow>[] = [
   {
@@ -47,9 +47,7 @@ const columns: TableColumn<CortexScorecardsRow>[] = [
     title: 'Scores',
     field: 'scores',
     highlight: true,
-    render: ({ scores }) => (
-      <CortexScorecardScoresColumn scores={scores} />
-    ),
+    render: ({ scores }) => <CortexScorecardScoresColumn scores={scores} />,
   },
 ];
 
@@ -59,21 +57,17 @@ export const CortexScorecardsTable = ({
   entityScores,
   syncCortex,
 }: CortexScorecardsTableProps) => {
-
-  const [isSyncing, setIsSyncing] = useState(false)
+  const [isSyncing, setIsSyncing] = useState(false);
 
   const sync = () => {
-    setIsSyncing(true)
-    syncCortex().finally(() => setIsSyncing(false))
-  }
+    setIsSyncing(true);
+    syncCortex().finally(() => setIsSyncing(false));
+  };
 
   if (error) {
     return (
       <div>
-        <WarningPanel
-          severity="error"
-          title="Could not fetch Cortex scores."
-        >
+        <WarningPanel severity="error" title="Could not fetch Cortex scores.">
           <CodeSnippet language="text" text={error.toString()} />
         </WarningPanel>
       </div>
@@ -82,7 +76,7 @@ export const CortexScorecardsTable = ({
 
   return (
     <Table<CortexScorecardsRow>
-      title='Scorecard Scores'
+      title="Scorecard Scores"
       columns={columns}
       data={entityScores}
       options={{
@@ -97,12 +91,12 @@ export const CortexScorecardsTable = ({
       isLoading={loading}
       actions={[
         {
-          icon: () => isSyncing ? <CircularProgress/> : <SyncIcon/>,
+          icon: () => (isSyncing ? <CircularProgress /> : <SyncIcon />),
           tooltip: 'Sync Cortex',
           isFreeAction: true,
           onClick: sync,
         },
       ]}
     />
-  )
+  );
 };

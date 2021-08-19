@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ServiceScorecardScore } from "./types";
+import { ServiceScorecardScore } from './types';
 import { Entity } from '@backstage/catalog-model';
 
 export interface CortexApi {
