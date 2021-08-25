@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ServiceScorecardScore } from './types';
+import { Scorecard, ScorecardServiceScore, ServiceScorecardScore } from './types';
 import { Entity } from '@backstage/catalog-model';
 
 export interface CortexApi {
-  getScores(service: string): Promise<ServiceScorecardScore[] | undefined>;
+  getScorecards(): Promise<Scorecard[]>
+  getScorecard(scorecardId: string): Promise<Scorecard | undefined>
+  getScorecardScores(scorecardId: string): Promise<ScorecardServiceScore[] | undefined>
+  getServiceScores(service: string): Promise<ServiceScorecardScore[] | undefined>;
   syncEntities(entities: Entity[]): Promise<void>;
 }

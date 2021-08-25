@@ -15,7 +15,7 @@
  */
 
 import { createApiRef, DiscoveryApi } from '@backstage/core';
-import { ServiceScorecardScore } from './types';
+import { Scorecard, ScorecardServiceScore, ServiceScorecardScore } from './types';
 import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 
@@ -35,16 +35,29 @@ export class CortexClient implements CortexApi {
     this.discoveryApi = options.discoveryApi;
   }
 
+  async getScorecards(): Promise<Scorecard[]> {
+    return await this.get(`/api/internal/v1/scorecards`);
+  }
+
   async syncEntities(entities: Entity[]): Promise<void> {
     return await this.post(`/api/internal/v1/backstage`, {
       entities: entities,
     });
   }
 
-  async getScores(
+  async getServiceScores(
     service: string,
   ): Promise<ServiceScorecardScore[] | undefined> {
     return await this.get(`/api/v1/services/tags/${service}/scorecards`);
+  }
+
+
+  async getScorecard(scorecardId: string): Promise<Scorecard> {
+    return await this.get(`/api/internal/v1/scorecards/${scorecardId}`);
+  }
+
+  async getScorecardScores(scorecardId: string): Promise<ScorecardServiceScore[]> {
+    return await this.get(`/api/internal/v1/scorecards/${scorecardId}/scores`);
   }
 
   private async getBasePath(): Promise<string> {

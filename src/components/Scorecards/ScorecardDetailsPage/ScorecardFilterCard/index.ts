@@ -13,20 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { Grid } from '@material-ui/core';
-import { Content, ContentHeader, SupportButton, } from '@backstage/core';
-import { CortexFetchComponent } from '../CortexFetchComponent';
-
-export const CortexComponent = () => (
-  <Content>
-    <ContentHeader title="Scorecards">
-      <SupportButton>Understand and improve your services.</SupportButton>
-    </ContentHeader>
-    <Grid container spacing={3} direction="column">
-      <Grid item>
-        <CortexFetchComponent />
-      </Grid>
-    </Grid>
-  </Content>
-);
+export { ScorecardFilterCard } from './ScorecardFilterCard';

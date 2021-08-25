@@ -13,14 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  createApiFactory,
-  createPlugin,
-  createRoutableExtension,
-  discoveryApiRef,
-} from '@backstage/core';
+import { createApiFactory, createPlugin, createRoutableExtension, discoveryApiRef, } from '@backstage/core-plugin-api';
 
-import { rootRouteRef } from './routes';
+import { rootRouteRef, scorecardRouteRef, scorecardsRouteRef } from './routes';
 import { cortexApiRef, CortexClient } from './api';
 
 export const cortexPlugin = createPlugin({
@@ -34,13 +29,15 @@ export const cortexPlugin = createPlugin({
   ],
   routes: {
     root: rootRouteRef,
+    scorecards: scorecardsRouteRef,
+    'scorecards/:id': scorecardRouteRef,
   },
 });
 
 export const CortexPage = cortexPlugin.provide(
   createRoutableExtension({
     component: () =>
-      import('./components/CortexComponent').then(m => m.CortexComponent),
+      import('./components/CortexPage').then(m => m.CortexPage),
     mountPoint: rootRouteRef,
   }),
 );

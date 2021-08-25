@@ -13,8 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createRouteRef } from '@backstage/core';
+import { createRouteRef, createSubRouteRef } from "@backstage/core-plugin-api";
 
 export const rootRouteRef = createRouteRef({
-  title: 'cortex',
+  id: 'cortex',
 });
+
+export const scorecardsRouteRef = createSubRouteRef({
+  id: 'scorecards',
+  parent: rootRouteRef,
+  path: '/scorecards',
+});
+
+export const scorecardRouteRef = createRouteRef({
+  id: 'scorecard',
+  params: ['id'],
+  path: '/cortex/scorecards/:id/*',
+});
+
