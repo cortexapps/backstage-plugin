@@ -44,7 +44,7 @@
   "devDependencies": {
     "@backstage/cli": "^0.6.6",
     "@backstage/dev-utils": "^0.1.13",
-    "@backstage/test-utils": "^0.1.9",
+    "@backstage/test-utils": "^0.1.17",
     "@spotify/prettier-config": "^11.0.0",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^11.2.5",
@@ -54,6 +54,7 @@
     "@types/react-router-dom": "^5.1.8",
     "cross-fetch": "^3.0.6",
     "husky": "^7.0.1",
+    "jest-canvas-mock": "^2.3.1",
     "lint-staged": "^11.1.2",
     "msw": "^0.21.2",
     "prettier": "^2.3.2"

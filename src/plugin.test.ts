@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { cortexPlugin } from './plugin';
+import { cortexPlugin, CortexPage } from './plugin';
 
 describe('cortex', () => {
   it('should export plugin', () => {
     expect(cortexPlugin).toBeDefined();
+    expect(CortexPage).toBeDefined()
   });
 });

@@ -18,6 +18,7 @@ import { CortexPage, cortexPlugin } from '../src/plugin';
 import React from "react";
 
 createDevApp()
+  // @ts-ignore -- same issue with webpack for RouteRef
   .registerPlugin(cortexPlugin)
   .addPage({
     element: <CortexPage />,

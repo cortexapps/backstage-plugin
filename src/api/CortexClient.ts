@@ -19,7 +19,7 @@ import { Scorecard, ScorecardServiceScore, ServiceScorecardScore } from './types
 import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 
-export const cortexApiRef = createApiRef<CortexClient>({
+export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
   description: 'Used by the Cortex plugin to make requests',
 });

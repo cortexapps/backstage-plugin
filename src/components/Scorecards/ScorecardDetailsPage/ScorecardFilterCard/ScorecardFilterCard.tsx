@@ -41,7 +41,6 @@ export const ScorecardFilterCard = ({
     setFilter(combinedPredicate)
   }
 
-
   const createRulePredicate = (pass: boolean, ruleExpressions: string[], oneOf: boolean) => {
     return (score: ScorecardServiceScore) => {
       const results = score
