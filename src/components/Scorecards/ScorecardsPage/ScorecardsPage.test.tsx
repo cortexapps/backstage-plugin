@@ -36,7 +36,6 @@ describe('ScorecardsPage', () => {
         </ApiProvider>,
         {
           mountedRoutes: {
-            // @ts-ignore -- TODO: weird packing issue, not sure what's up
             '/': rootRouteRef
           }
         }
