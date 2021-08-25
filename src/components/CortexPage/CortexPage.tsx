@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createDevApp } from '@backstage/dev-utils';
-import { CortexPage, cortexPlugin } from '../src/plugin';
-import React from "react";
+import { CortexLayout } from "../CortexLayout";
+import React from 'react';
+import { CortexComponent, ScorecardsPage } from "../../extensions";
 
-createDevApp()
-  .registerPlugin(cortexPlugin)
-  .addPage({
-    element: <CortexPage />,
-    title: 'Cortex',
-  })
-  .render();
+export const CortexPage = () => {
+  return (
+    <CortexLayout
+      title="Cortex"
+      subtitle="Understand and improve your services."
+    >
+      <CortexLayout.Route path="scorecards" title="Scorecards">
+        <ScorecardsPage />
+      </CortexLayout.Route>
+      <CortexLayout.Route path="components" title="Components">
+        <CortexComponent />
+      </CortexLayout.Route>
+    </CortexLayout>
+  );
+}

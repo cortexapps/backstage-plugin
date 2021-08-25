@@ -16,9 +16,9 @@
 import React from 'react';
 import { useApi } from '@backstage/core';
 import { useAsync } from 'react-use';
-import { cortexApiRef } from '../../api';
+import { cortexApiRef } from '../../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { CortexScorecardsTable } from '../CortexScorecardsTable/CortexScorecardsTable';
+import { CortexScorecardsTable } from '../../CortexScorecardsTable/CortexScorecardsTable';
 
 export const CortexFetchComponent = () => {
   const catalogApi = useApi(catalogApiRef);

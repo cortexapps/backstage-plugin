@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications Inc.
+ * Copyright 2021 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createApiFactory, createPlugin, createRoutableExtension, discoveryApiRef } from '@backstage/core';
+import { createApiFactory, createPlugin, createRoutableExtension, discoveryApiRef, } from '@backstage/core-plugin-api';
 
-import { rootRouteRef } from './routes';
-import { cortexApiRef, CortexClient } from "./api";
+import { rootRouteRef, scorecardRouteRef, scorecardsRouteRef } from './routes';
+import { cortexApiRef, CortexClient } from './api';
 
 export const cortexPlugin = createPlugin({
   id: 'cortex',
@@ -29,13 +29,15 @@ export const cortexPlugin = createPlugin({
   ],
   routes: {
     root: rootRouteRef,
+    scorecards: scorecardsRouteRef,
+    'scorecards/:id': scorecardRouteRef,
   },
 });
 
 export const CortexPage = cortexPlugin.provide(
   createRoutableExtension({
     component: () =>
-      import('./components/CortexComponent').then(m => m.CortexComponent),
+      import('./components/CortexPage').then(m => m.CortexPage),
     mountPoint: rootRouteRef,
   }),
 );

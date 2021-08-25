@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications Inc.
+ * Copyright 2021 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createRouteRef } from '@backstage/core';
+import { createRouteRef, createSubRouteRef } from "@backstage/core-plugin-api";
 
-export const rootRouteRef = createRouteRef({
-  title: 'cortex',
+export const rootRouteRef = createRouteRef<{}, string>({
+  id: 'cortex',
+  path: '/cortex'
 });
+
+export const scorecardsRouteRef = createSubRouteRef({
+  id: 'scorecards',
+  parent: rootRouteRef,
+  path: '/scorecards',
+});
+
+export const scorecardRouteRef = createRouteRef({
+  id: 'scorecard',
+  params: ['id'],
+  path: '/cortex/scorecards/:id/*',
+});
+

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications Inc.
+ * Copyright 2021 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 
 import { createApiRef, DiscoveryApi } from '@backstage/core';
-import { ServiceScorecardScore } from "./types";
-import { CortexApi } from "./CortexApi";
+import { Scorecard, ScorecardServiceScore, ServiceScorecardScore } from './types';
+import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 
-export const cortexApiRef = createApiRef<CortexClient>({
+export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
   description: 'Used by the Cortex plugin to make requests',
 });
@@ -35,17 +35,34 @@ export class CortexClient implements CortexApi {
     this.discoveryApi = options.discoveryApi;
   }
 
-  async syncEntities(entities: Entity[]): Promise<void> {
-    return await this.post(`/api/internal/v1/backstage`, { entities: entities })
+  async getScorecards(): Promise<Scorecard[]> {
+    return await this.get(`/api/internal/v1/scorecards`);
   }
 
-  async getScores(service: string): Promise<ServiceScorecardScore[] | undefined> {
-    return await this.get(`/api/v1/services/tags/${service}/scorecards`)
+  async syncEntities(entities: Entity[]): Promise<void> {
+    return await this.post(`/api/internal/v1/backstage`, {
+      entities: entities,
+    });
+  }
+
+  async getServiceScores(
+    service: string,
+  ): Promise<ServiceScorecardScore[] | undefined> {
+    return await this.get(`/api/v1/services/tags/${service}/scorecards`);
+  }
+
+
+  async getScorecard(scorecardId: string): Promise<Scorecard> {
+    return await this.get(`/api/internal/v1/scorecards/${scorecardId}`);
+  }
+
+  async getScorecardScores(scorecardId: string): Promise<ScorecardServiceScore[]> {
+    return await this.get(`/api/internal/v1/scorecards/${scorecardId}/scores`);
   }
 
   private async getBasePath(): Promise<string> {
     const proxyBasePath = await this.discoveryApi.getBaseUrl('proxy');
-    return `${proxyBasePath}/cortex`
+    return `${proxyBasePath}/cortex`;
   }
 
   private async get(path: string): Promise<any | undefined> {
@@ -55,12 +72,13 @@ export class CortexClient implements CortexApi {
     const response = await fetch(url);
     const body = await response.json();
 
-    if (response.status === 404)
-    {
+    if (response.status === 404) {
       return undefined;
     } else if (response.status !== 200) {
       throw new Error(
-        `Error communicating with Cortex: ${typeof body === 'object' ? JSON.stringify(body) : body}`,
+        `Error communicating with Cortex: ${
+          typeof body === 'object' ? JSON.stringify(body) : body
+        }`,
       );
     }
 
@@ -74,7 +92,7 @@ export class CortexClient implements CortexApi {
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(body),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
 
     const responseBody = await response.json();
