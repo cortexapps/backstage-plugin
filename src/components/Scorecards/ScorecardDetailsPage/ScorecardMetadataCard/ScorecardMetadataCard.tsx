@@ -47,9 +47,9 @@ export const ScorecardMetadataCard = ({
         <ScorecardMetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Owner">
           {scorecard.creator.name}
         </ScorecardMetadataItem>
-        { scorecard.serviceGroups.length > 0 && (
+        { scorecard.tags.length > 0 && (
           <ScorecardMetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Applies To">
-            {scorecard.serviceGroups.map(s => (
+            {scorecard.tags.map(s => (
               <Chip key={s.id} size="small" label={s.tag} />
             ))}
           </ScorecardMetadataItem>

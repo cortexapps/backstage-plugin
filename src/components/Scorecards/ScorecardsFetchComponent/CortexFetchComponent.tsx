@@ -18,29 +18,30 @@ import { useApi } from '@backstage/core';
 import { useAsync } from 'react-use';
 import { cortexApiRef } from '../../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { CortexScorecardsTable } from '../../CortexScorecardsTable/CortexScorecardsTable';
+import { CortexComponentsTable } from '../../CortexComponentsTable';
+import { stringifyEntityRef } from "@backstage/catalog-model";
 
 export const CortexFetchComponent = () => {
   const catalogApi = useApi(catalogApiRef);
   const cortexApi = useApi(cortexApiRef);
 
   const { value, loading, error } = useAsync(async () => {
-    const { items: entities } = await catalogApi.getEntities({
-      filter: { kind: 'Component' },
-    });
+    const { items: entities } = await catalogApi.getEntities();
 
     return await Promise.all(
-      entities.map(async entity => {
-        const scores = await cortexApi.getServiceScores(entity.metadata.name);
-        return { entity, scores };
-      }),
+      entities
+        .filter(entity => entity.kind === 'Component')
+        .map(async entity => {
+          const scores = await cortexApi.getServiceScores(stringifyEntityRef(entity));
+          return { entity, scores };
+        }),
     );
   }, []);
 
   const entities = (value ?? []).map(entityScore => entityScore.entity);
 
   return (
-    <CortexScorecardsTable
+    <CortexComponentsTable
       entityScores={value ?? []}
       loading={loading}
       error={error}

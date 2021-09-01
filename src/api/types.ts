@@ -19,7 +19,7 @@ export interface Scorecard {
   name: string;
   description?: string;
   rules: Rule[];
-  serviceGroups: ServiceGroup[];
+  tags: ServiceGroup[];
   nextUpdated?: string;
 }
 
@@ -51,16 +51,14 @@ export interface ServiceScorecardScore {
 
 export interface ScorecardServiceScore {
   serviceId: string;
-  serviceName: string;
-  serviceTag: string;
-  serviceGroups?: string[];
-  ownerGroups?: string[];
+  componentRef: string;
   scorecardId: string;
   score: number;
   scorePercentage: number;
   totalPossibleScore: number;
   rules: ScorecardServiceScoresRule[];
   lastUpdated: string;
+  tags: string[];
 }
 
 export interface ScorecardServiceScoresRule {

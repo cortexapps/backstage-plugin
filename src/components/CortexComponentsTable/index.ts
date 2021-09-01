@@ -13,13 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Scorecard, ScorecardServiceScore, ServiceScorecardScore } from './types';
-import { Entity } from '@backstage/catalog-model';
-
-export interface CortexApi {
-  getScorecards(): Promise<Scorecard[]>
-  getScorecard(scorecardId: string): Promise<Scorecard | undefined>
-  getScorecardScores(scorecardId: string): Promise<ScorecardServiceScore[] | undefined>
-  getServiceScores(entityRef: string): Promise<ServiceScorecardScore[] | undefined>;
-  syncEntities(entities: Entity[]): Promise<void>;
-}
+export { CortexComponentsTable } from './CortexComponentsTable';

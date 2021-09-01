@@ -18,7 +18,8 @@ import { useApi } from '@backstage/core';
 import { useAsync } from 'react-use';
 import { cortexApiRef } from '../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { CortexScorecardsTable } from '../CortexScorecardsTable/CortexScorecardsTable';
+import { CortexComponentsTable } from '../CortexComponentsTable/CortexComponentsTable';
+import { stringifyEntityRef } from "@backstage/catalog-model";
 
 export const CortexFetchComponent = () => {
   const catalogApi = useApi(catalogApiRef);
@@ -31,7 +32,7 @@ export const CortexFetchComponent = () => {
 
     return await Promise.all(
       entities.map(async entity => {
-        const scores = await cortexApi.getServiceScores(entity.metadata.name);
+        const scores = await cortexApi.getServiceScores(stringifyEntityRef(entity));
         return { entity, scores };
       }),
     );
@@ -40,7 +41,7 @@ export const CortexFetchComponent = () => {
   const entities = (value ?? []).map(entityScore => entityScore.entity);
 
   return (
-    <CortexScorecardsTable
+    <CortexComponentsTable
       entityScores={value ?? []}
       loading={loading}
       error={error}

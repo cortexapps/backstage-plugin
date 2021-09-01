@@ -16,9 +16,11 @@
 import React from 'react';
 import { ServiceScorecardScore } from '../../api/types';
 import Box from '@material-ui/core/Box';
-import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-import { Button, TableCell, Tooltip } from '@material-ui/core';
+import { TableCell, Tooltip } from '@material-ui/core';
+import { Button } from '@backstage/core-components';
+import { Gauge } from "../Gauge";
+import { useRouteRef } from "@backstage/core-plugin-api";
+import { scorecardRouteRef } from "../../routes";
 
 type CortexScorecardScoresColumnProps = {
   scores: ServiceScorecardScore[] | undefined;
@@ -27,6 +29,9 @@ type CortexScorecardScoresColumnProps = {
 export const CortexScorecardScoresColumn = ({
   scores,
 }: CortexScorecardScoresColumnProps) => {
+
+  const scorecardRef = useRouteRef(scorecardRouteRef)
+
   if (scores === undefined) {
     return <div>Service is not synced with Cortex</div>;
   } else if (scores.length === 0) {
@@ -46,14 +51,8 @@ export const CortexScorecardScoresColumn = ({
             >
               <Box alignSelf="center">
                 <Tooltip title={score.scorecardName}>
-                  <Button
-                    href={`https://app.getcortexapp.com/admin/scorecards/${score.scorecardId}`}
-                  >
-                    <CircularProgressbar
-                      value={score.scorePercentage * 100}
-                      text={`${(score.scorePercentage * 100).toFixed(2)}%`}
-                      strokeWidth={5}
-                    />
+                  <Button to={scorecardRef({ id: score.scorecardId })} color="primary">
+                    <Gauge value={score.scorePercentage} strokeWidth={6} trailWidth={6}/>
                   </Button>
                 </Tooltip>
               </Box>

@@ -36,28 +36,30 @@ export class CortexClient implements CortexApi {
   }
 
   async getScorecards(): Promise<Scorecard[]> {
-    return await this.get(`/api/internal/v1/scorecards`);
+    return await this.get(`/api/backstage/v1/scorecards`);
   }
 
   async syncEntities(entities: Entity[]): Promise<void> {
-    return await this.post(`/api/internal/v1/backstage`, {
+    return await this.post(`/api/backstage/v1/entities`, {
       entities: entities,
     });
   }
 
   async getServiceScores(
-    service: string,
+    entityRef: string,
   ): Promise<ServiceScorecardScore[] | undefined> {
-    return await this.get(`/api/v1/services/tags/${service}/scorecards`);
+    return await this.get(`/api/backstage/v1/entities/scorecards`, {
+      ref: entityRef
+    });
   }
 
 
   async getScorecard(scorecardId: string): Promise<Scorecard> {
-    return await this.get(`/api/internal/v1/scorecards/${scorecardId}`);
+    return await this.get(`/api/backstage/v1/scorecards/${scorecardId}`);
   }
 
   async getScorecardScores(scorecardId: string): Promise<ScorecardServiceScore[]> {
-    return await this.get(`/api/internal/v1/scorecards/${scorecardId}/scores`);
+    return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/scores`);
   }
 
   private async getBasePath(): Promise<string> {
@@ -65,11 +67,19 @@ export class CortexClient implements CortexApi {
     return `${proxyBasePath}/cortex`;
   }
 
-  private async get(path: string): Promise<any | undefined> {
+  private async get(path: string, args?: { [key: string]: string }): Promise<any | undefined> {
     const basePath = await this.getBasePath();
-    const url = `${basePath}${path}`;
 
-    const response = await fetch(url);
+    const url = `${basePath}${path}`;
+    const queryUrl = args
+      ? `${url}?${ 
+      Object.keys(args)
+        .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(args[key])}`)
+        .join('&')}`
+      : url;
+
+
+    const response = await fetch(queryUrl);
     const body = await response.json();
 
     if (response.status === 404) {

@@ -15,7 +15,7 @@
  */
 import React from "react";
 import { ruleName, ScorecardServiceScore } from "../../../../api/types";
-import { Grid, List, ListItem, ListItemAvatar, ListItemText, makeStyles } from "@material-ui/core";
+import { Grid, List, ListItem, ListItemAvatar, ListItemText, makeStyles, Typography } from "@material-ui/core";
 import ErrorIcon from '@material-ui/icons/Error';
 import CheckIcon from '@material-ui/icons/Check';
 
@@ -56,12 +56,19 @@ export const ScorecardsTableRowDetails = ({
             { rule.score > 0 ? <CheckIcon color="primary"/> : <ErrorIcon color="error"/> }
           </ListItemAvatar>
           <Grid container direction="row" justify="space-between" alignItems="center" className={classes.rule}>
-            <Grid item>
+            <Grid item xs={9}>
               <ListItemText primary={ruleName(rule.rule)}/>
             </Grid>
             <Grid item>
               <ListItemText primary={`${rule.score}`}/>
             </Grid>
+            { rule.error && (
+              <Grid item xs={10}>
+                <Typography color="error">
+                  { rule.error }
+                </Typography>
+              </Grid>
+            )}
           </Grid>
         </ListItem>
       ))}

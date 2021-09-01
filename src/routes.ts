@@ -26,9 +26,9 @@ export const scorecardsRouteRef = createSubRouteRef({
   path: '/scorecards',
 });
 
-export const scorecardRouteRef = createRouteRef({
+export const scorecardRouteRef = createSubRouteRef({
   id: 'scorecard',
-  params: ['id'],
-  path: '/cortex/scorecards/:id/*',
+  path: '/scorecards/:id',
+  parent: rootRouteRef,
 });
 

@@ -19,16 +19,15 @@ import React from 'react';
 import { Button, ItemCardHeader } from '@backstage/core-components';
 import { Scorecard } from "../../../api/types";
 import { useRouteRef } from "@backstage/core-plugin-api";
-import { rootRouteRef } from "../../../routes";
+import { scorecardRouteRef } from "../../../routes";
 
 type ScorecardCardProps = {
   scorecard: Scorecard;
 };
 
-// TODO: Use subRouteRefs, currently RoutedTabs doesn't update URL to default to first tab
 export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
 
-  const root = useRouteRef(rootRouteRef)
+  const scorecardRef = useRouteRef(scorecardRouteRef)
 
   return (
     <Card>
@@ -39,7 +38,8 @@ export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
         {scorecard.description}
       </CardContent>
       <CardActions>
-        <Button to={`${root()}/scorecards/${scorecard.id}`} color="primary">
+
+        <Button to={scorecardRef({ id: scorecard.id })} color="primary">
           Details
         </Button>
       </CardActions>

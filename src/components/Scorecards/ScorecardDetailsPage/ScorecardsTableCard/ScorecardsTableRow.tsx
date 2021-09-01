@@ -18,9 +18,11 @@ import { ScorecardServiceScore } from "../../../../api/types";
 import { Collapse, IconButton, makeStyles, TableCell, TableRow } from "@material-ui/core";
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { CircularProgressbar } from "react-circular-progressbar";
 import Box from "@material-ui/core/Box";
 import { ScorecardsTableRowDetails } from "./ScorecardsTableRowDetails";
+import { EntityRefLink } from "@backstage/plugin-catalog-react";
+import { parseEntityRef } from "@backstage/catalog-model";
+import { Gauge } from "../../../Gauge";
 
 const useStyles = makeStyles({
   root: {
@@ -50,7 +52,7 @@ export const ScorecardsTableRow = ({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <React.Fragment>
       <TableRow className={classes.root}>
         <TableCell className={classes.openIcon}>
           <IconButton size="small" onClick={() => setOpen(!open)}>
@@ -64,22 +66,17 @@ export const ScorecardsTableRow = ({
             justifyContent="flex-start"
             alignItems="center"
           >
-            <Box alignSelf="center">
-              <CircularProgressbar
-                value={score.scorePercentage * 100}
-                text={`${(score.scorePercentage * 100).toFixed(0)}%`}
-                strokeWidth={5}
-                className={classes.progress}
-                styles={{
-                  text: {
-                    fontSize: '24px'
-                  }
-                }}
-              />
+            <Box alignSelf="center" width={1/8}>
+              <Gauge value={score.scorePercentage} strokeWidth={8} trailWidth={8}/>
             </Box>
             <Box alignSelf="center">
-              {/* TODO: Replace with EntityRefLink*/ }
-              { score.serviceName }
+              <EntityRefLink
+                entityRef={parseEntityRef(score.componentRef, { defaultKind: 'Component', defaultNamespace: 'default' })}
+                defaultKind="Component"
+                style={{
+                  fontWeight: 'bold'
+                }}
+              />
             </Box>
           </Box>
         </TableCell>
@@ -91,6 +88,6 @@ export const ScorecardsTableRow = ({
           </Collapse>
         </TableCell>
       </TableRow>
-    </>
+    </React.Fragment>
   )
 }
