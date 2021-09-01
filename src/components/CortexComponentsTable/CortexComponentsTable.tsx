@@ -51,7 +51,7 @@ const columns: TableColumn<CortexScorecardsRow>[] = [
   },
 ];
 
-export const CortexScorecardsTable = ({
+export const CortexComponentsTable = ({
   error,
   loading,
   entityScores,

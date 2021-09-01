@@ -30,7 +30,7 @@ export const cortexPlugin = createPlugin({
   routes: {
     root: rootRouteRef,
     scorecards: scorecardsRouteRef,
-    'scorecards/:id': scorecardRouteRef,
+    scorecard: scorecardRouteRef,
   },
 });
 

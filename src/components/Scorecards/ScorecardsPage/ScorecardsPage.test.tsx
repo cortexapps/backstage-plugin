@@ -32,7 +32,7 @@ describe('ScorecardsPage', () => {
           name: 'My Scorecard',
           description: 'Some description',
           rules: [],
-          serviceGroups: [],
+          tags: [],
           nextUpdated: "2021-08-25T04:00:00",
         }
       ]
