@@ -24,7 +24,8 @@ Our plugin will automatically ingest all of your Backstage services and let you 
 the quality of them in the Cortex product. We sync scores with Backstage, and you’ll be
 able to see the scores for each service in the catalog.
 
-![plugin](./docs/screen2.png?raw=true)
+![plugin1](./docs/screen2.png?raw=true)
+![plugin2](./docs/screen3.png?raw=true)
 
 Cortex can even message service owners with weekly reports over Slack or email, showing changes in the
 quality of the service. We also generate reports showing how different teams are
