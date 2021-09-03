@@ -16,10 +16,11 @@
 import { Card, CardActions, CardContent, CardMedia, } from '@material-ui/core';
 import React from 'react';
 
-import { Button, ItemCardHeader } from '@backstage/core-components';
+import { Button } from '@backstage/core-components';
 import { Scorecard } from "../../../api/types";
 import { useRouteRef } from "@backstage/core-plugin-api";
 import { scorecardRouteRef } from "../../../routes";
+import { ItemCardHeader } from "../../ItemCardHeader";
 
 type ScorecardCardProps = {
   scorecard: Scorecard;
@@ -32,7 +33,10 @@ export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
   return (
     <Card>
       <CardMedia>
-        <ItemCardHeader title={scorecard.name} subtitle={`By ${scorecard.creator.name}`}/>
+        <ItemCardHeader
+          title={scorecard.name}
+          subtitle={`By ${scorecard.creator.name}`}
+        />
       </CardMedia>
       <CardContent>
         {scorecard.description}
