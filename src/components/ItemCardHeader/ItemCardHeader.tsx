@@ -21,11 +21,12 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import React from 'react';
+import { fallbackPalette } from "../../styles/styles";
 
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      color: theme.palette.common.white,
+      color: theme.palette.common.white ?? fallbackPalette.common.white,
       padding: theme.spacing(2, 2, 3),
       backgroundImage: 'linear-gradient(-137deg,  #4BB8A5 0%,  #187656 100%)',
       backgroundPosition: 0,

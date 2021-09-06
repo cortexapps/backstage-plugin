@@ -15,10 +15,11 @@
  */
 import React from "react";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
+import { fallbackPalette } from "../../../../styles/styles";
 
 const useStyles = makeStyles(theme => ({
   label: {
-    color: theme.palette.text.secondary,
+    color: theme.palette?.text?.secondary ?? fallbackPalette.text.secondary,
     textTransform: 'uppercase',
     fontSize: '10px',
     fontWeight: 'bold',

@@ -17,7 +17,7 @@ import { makeStyles, useTheme } from '@material-ui/core';
 import { BackstageTheme } from '@backstage/theme';
 import { Circle } from 'rc-progress';
 import React from 'react';
-
+import { fallbackPalette } from "../../styles/styles";
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   root: {
@@ -63,19 +63,19 @@ export function getProgressColor(
   max?: number,
 ) {
   if (isNaN(value)) {
-    return '#ddd';
+    return '#DDDDDD';
   }
 
   const actualMax = max ? max : defaultProps.max;
   const actualValue = inverse ? actualMax - value : value;
 
   if (actualValue < actualMax / 3) {
-    return palette.status.error;
+    return palette.status?.error ?? fallbackPalette.status.error;
   } else if (actualValue < actualMax * (2 / 3)) {
-    return palette.status.warning;
+    return palette.status?.warning ?? fallbackPalette.status.warning ;
   }
 
-  return palette.status.ok;
+  return palette.status?.ok ?? fallbackPalette.status.ok;
 }
 
 // TODO: Cut PR back upstream
