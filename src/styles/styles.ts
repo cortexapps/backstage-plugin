@@ -42,5 +42,28 @@ const scorecardDetailCardStyles = createStyles({
   }
 })
 
+export const fallbackPalette = {
+  status: {
+    ok: '#71CF88',
+    warning: '#FFB84D',
+    error: '#F84C55',
+    running: '#3488E3',
+    pending: '#FEF071',
+    aborted: '#9E9E9E',
+  },
+  error: {
+    dark: '#F44336',
+  },
+  background: {
+    paper: '#FFFFFF',
+  },
+  text: {
+    secondary: '#6C757D',
+  },
+  common: {
+    white: '#FFFFFF',
+  }
+}
+
 export const useCortexStyles = makeStyles(cortexStyles);
 export const useScorecardDetailCardStyles = makeStyles(scorecardDetailCardStyles)

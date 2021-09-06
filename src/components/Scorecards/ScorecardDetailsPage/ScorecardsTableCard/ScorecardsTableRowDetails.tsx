@@ -18,6 +18,7 @@ import { ruleName, ScorecardServiceScore } from "../../../../api/types";
 import { Grid, List, ListItem, ListItemAvatar, ListItemText, makeStyles, Typography } from "@material-ui/core";
 import ErrorIcon from '@material-ui/icons/Error';
 import CheckIcon from '@material-ui/icons/Check';
+import { fallbackPalette } from "../../../../styles/styles";
 
 const useStyles = makeStyles(styles => ({
   openIcon: {
@@ -28,13 +29,13 @@ const useStyles = makeStyles(styles => ({
     marginRight: '16px',
   },
   failing: {
-    backgroundColor: styles.palette.error.dark,
+    backgroundColor: styles.palette?.error?.dark ?? fallbackPalette.error.dark,
   },
   rule: {
     borderRadius: 8,
   },
   rules: {
-    backgroundColor: styles.palette.background.paper
+    backgroundColor: styles.palette?.background?.paper ?? fallbackPalette.background.paper
   },
 }))
 

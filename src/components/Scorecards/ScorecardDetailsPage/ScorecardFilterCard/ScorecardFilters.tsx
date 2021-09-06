@@ -16,10 +16,11 @@
 import React, { useState } from "react";
 import { Checkbox, Grid, makeStyles, MenuItem, Typography } from "@material-ui/core";
 import Select from "@material-ui/core/Select";
+import { fallbackPalette } from "../../../../styles/styles";
 
 const useStyles = makeStyles(theme => ({
   name: {
-    color: theme.palette.text.secondary,
+    color: theme.palette?.text?.secondary ?? fallbackPalette.text.secondary,
     fontSize: '14px',
     fontWeight: 'bold',
     letterSpacing: 0.5,
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     whiteSpace: 'nowrap',
   },
   select: {
-    color: theme.palette.text.secondary,
+    color: theme.palette?.text?.secondary ?? fallbackPalette.text.secondary,
     fontSize: '14px',
   }
 }))
