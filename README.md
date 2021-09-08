@@ -68,8 +68,19 @@ import { CortexPage } from '@cortexapps/backstage-plugin';
       Authorization: ${CORTEX_TOKEN}
 ```
 
-5. (Optional) Add a new sidebar item in [Root.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/Root/Root.tsx)
+5.Import `EntityCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
+```tsx
+import { EntityCortexContent } from '@cortexapps/backstage-plugin';
+
+<EntityLayout.Route path="/cortex" title="Cortex">
+  <EntityCortexContent/>
+</EntityLayout.Route>
+```
+
+6. Add a new sidebar item in [Root.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/Root/Root.tsx)
 
 ```tsx
+import { CortexIcon } from '@cortexapps/backstage-plugin';
+
 <SidebarItem icon={CortexIcon} to="cortex" text="Cortex" />
 ```

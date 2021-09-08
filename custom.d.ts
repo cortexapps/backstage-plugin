@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import CortexIconComponent from './assets/cortex.icon.svg';
-import { IconComponent } from '@backstage/core-plugin-api';
-
-export { cortexPlugin, CortexPage, EntityCortexContent } from './plugin';
-export const CortexIcon: IconComponent = CortexIconComponent as IconComponent;
+declare module '*.svg' {
+  const content: any;
+  export default content;
+}
