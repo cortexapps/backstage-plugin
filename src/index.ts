@@ -13,4 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { cortexPlugin, CortexPage } from './plugin';
+export { cortexPlugin, CortexPage, EntityCortexContent } from './plugin';

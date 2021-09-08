@@ -977,16 +977,6 @@
     "@babel/helper-validator-identifier" "^7.14.0"
     to-fast-properties "^2.0.0"
 
-"@backstage/catalog-client@^0.3.12":
-  version "0.3.12"
-  resolved "https://registry.npmjs.org/@backstage/catalog-client/-/catalog-client-0.3.12.tgz#1b661aa0ff176ebb73aceef1c76dd6201ab8bd8b"
-  integrity sha512-JUnpkWMDExcnJK1taenBemxj9SKfyfisAwwPEE9QnIo/1XyucoHvaKu8jsmVOqAUx1djjaMa3Z6JZOooEBbZRw==
-  dependencies:
-    "@backstage/catalog-model" "^0.8.0"
-    "@backstage/config" "^0.1.5"
-    "@backstage/errors" "^0.1.1"
-    cross-fetch "^3.0.6"
-
 "@backstage/catalog-client@^0.3.18":
   version "0.3.18"
   resolved "https://registry.npmjs.org/@backstage/catalog-client/-/catalog-client-0.3.18.tgz#cfabb1e414126554cfe2e593429395e313d58a13"
@@ -997,7 +987,7 @@
     "@backstage/errors" "^0.1.1"
     cross-fetch "^3.0.6"
 
-"@backstage/catalog-model@0.8.0", "@backstage/catalog-model@^0.8.0":
+"@backstage/catalog-model@0.8.0":
   version "0.8.0"
   resolved "https://registry.npmjs.org/@backstage/catalog-model/-/catalog-model-0.8.0.tgz#7302691c4d542363af98641c8310744d39451fe6"
   integrity sha512-rTj22txZ56zYH0OJiF2gw9hvnN3BDdrozFoF/GEIRgYRu1hSw7BqPH4feX+B5LhuKHIAI7CGN01pXhpHth94cg==
@@ -1017,6 +1007,21 @@
   version "0.9.0"
   resolved "https://registry.npmjs.org/@backstage/catalog-model/-/catalog-model-0.9.0.tgz#6ff9863163098298788996a9bacd1009ccbbf008"
   integrity sha512-iYZ+lt7zV7BCGXTHdxgWnS2kyeiyJgtpFNGSEFVFwNWlCHYptgCkP57syaNrpRNFmMaDlDZyv8dtNHpK9ygfGw==
+  dependencies:
+    "@backstage/config" "^0.1.5"
+    "@backstage/errors" "^0.1.1"
+    "@types/json-schema" "^7.0.5"
+    "@types/yup" "^0.29.8"
+    ajv "^7.0.3"
+    json-schema "^0.3.0"
+    lodash "^4.17.15"
+    uuid "^8.0.0"
+    yup "^0.29.3"
+
+"@backstage/catalog-model@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.npmjs.org/@backstage/catalog-model/-/catalog-model-0.9.1.tgz#dc3a497e26894a768c9ceaf4c5af94d35782a048"
+  integrity sha512-Q/N0p7ATNBwZUSzbSP3lFSUZ5UsDGdTmOUfjR2cupBe4tnJfK8KbE+TQCKlIsznBENRq4vtBGJqiAe+7oxpZWQ==
   dependencies:
     "@backstage/config" "^0.1.5"
     "@backstage/errors" "^0.1.1"
@@ -1157,6 +1162,13 @@
   dependencies:
     lodash "^4.17.15"
 
+"@backstage/config@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.npmjs.org/@backstage/config/-/config-0.1.8.tgz#03782de290ae82fbf2f58538fd2ea3e668e5169b"
+  integrity sha512-W08XKgXDVS0WGQjAw6SYzH+T+WgpUeJWTwZ3XVBCoAh+XtG8y5KSLF5kiT30XVjZQgB5zZg6vKc8w/OE1hD6rA==
+  dependencies:
+    lodash "^4.17.15"
+
 "@backstage/core-api@^0.2.20":
   version "0.2.20"
   resolved "https://registry.npmjs.org/@backstage/core-api/-/core-api-0.2.20.tgz#49b2898c9a4f0407252e9583952c66a4bca4556b"
@@ -1168,6 +1180,25 @@
     "@material-ui/icons" "^4.9.1"
     "@types/prop-types" "^15.7.3"
     "@types/react" "^16.9"
+    prop-types "^15.7.2"
+    react "^16.12.0"
+    react-router-dom "6.0.0-beta.0"
+    react-use "^17.2.4"
+    zen-observable "^0.8.15"
+
+"@backstage/core-app-api@^0.1.11":
+  version "0.1.11"
+  resolved "https://registry.npmjs.org/@backstage/core-app-api/-/core-app-api-0.1.11.tgz#1176aeda38dc69b564dc07bec3bfd12503c56bed"
+  integrity sha512-UcajTdq1dQb1E2vbno5qMULAesWNiIOap8VZP/pt9BT/TgX1gLC3JpOwhUCwqUYfT/C+Oks7CZZrZzq/TEVsYw==
+  dependencies:
+    "@backstage/config" "^0.1.8"
+    "@backstage/core-components" "^0.4.0"
+    "@backstage/core-plugin-api" "^0.1.6"
+    "@backstage/theme" "^0.2.10"
+    "@material-ui/core" "^4.12.2"
+    "@material-ui/icons" "^4.9.1"
+    "@types/prop-types" "^15.7.3"
+    "@types/react" "*"
     prop-types "^15.7.2"
     react "^16.12.0"
     react-router-dom "6.0.0-beta.0"
@@ -1228,6 +1259,51 @@
     react-dom "^16.12.0"
     react-helmet "6.1.0"
     react-hook-form "^6.15.4"
+    react-markdown "^5.0.2"
+    react-router "6.0.0-beta.0"
+    react-router-dom "6.0.0-beta.0"
+    react-sparklines "^1.7.0"
+    react-syntax-highlighter "^15.4.3"
+    react-text-truncate "^0.16.0"
+    react-use "^17.2.4"
+    remark-gfm "^1.0.0"
+    zen-observable "^0.8.15"
+
+"@backstage/core-components@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.npmjs.org/@backstage/core-components/-/core-components-0.4.0.tgz#243c7da773bff45cd40da7b1389835aabcb662ed"
+  integrity sha512-KAWF7Nw7jqQpispnGMjppehTXd4hLL6DWaIAmLDlv6dhFJvANP7ENHIldtWld/PgYD1RwYKnuXdLIyuroGx3Ig==
+  dependencies:
+    "@backstage/config" "^0.1.8"
+    "@backstage/core-plugin-api" "^0.1.6"
+    "@backstage/errors" "^0.1.1"
+    "@backstage/theme" "^0.2.10"
+    "@material-table/core" "^3.1.0"
+    "@material-ui/core" "^4.12.2"
+    "@material-ui/icons" "^4.9.1"
+    "@material-ui/lab" "4.0.0-alpha.45"
+    "@testing-library/react-hooks" "^3.4.2"
+    "@types/dagre" "^0.7.44"
+    "@types/prop-types" "^15.7.3"
+    "@types/react" "*"
+    "@types/react-sparklines" "^1.7.0"
+    "@types/react-text-truncate" "^0.14.0"
+    classnames "^2.2.6"
+    clsx "^1.1.0"
+    d3-selection "^2.0.0"
+    d3-shape "^2.0.0"
+    d3-zoom "^2.0.0"
+    dagre "^0.8.5"
+    immer "^9.0.1"
+    lodash "^4.17.15"
+    pluralize "^8.0.0"
+    prop-types "^15.7.2"
+    qs "^6.9.4"
+    rc-progress "^3.0.0"
+    react "^16.12.0"
+    react-dom "^16.12.0"
+    react-helmet "6.1.0"
+    react-hook-form "^7.12.2"
     react-markdown "^5.0.2"
     react-router "6.0.0-beta.0"
     react-router-dom "6.0.0-beta.0"
@@ -1363,19 +1439,36 @@
     git-url-parse "~11.4.4"
     luxon "^2.0.2"
 
-"@backstage/plugin-catalog-react@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@backstage/plugin-catalog-react/-/plugin-catalog-react-0.2.0.tgz#d0561727fd6e770cf199b2d4e270718b8c618fa9"
-  integrity sha512-0FUaGlDTH3j9nfThk8/LvjOyNTGTUGXpdcYmMtAmyDOr7Xktr/i05n3y+DFdYFhm6q66kY4qA9R9ndkUm+Y9Vg==
+"@backstage/integration@^0.6.3":
+  version "0.6.3"
+  resolved "https://registry.npmjs.org/@backstage/integration/-/integration-0.6.3.tgz#e94f47d82e1325a5542dc883347192f949dd8adb"
+  integrity sha512-Dg+k0l0hU7r+MlZHFNQbUXG/hIO75KKUiqinQQ7V3MYs4zRKDhzaTXcxuWU258WgFaA8oxOr7pQdqqKdN7qZlw==
   dependencies:
-    "@backstage/catalog-client" "^0.3.12"
-    "@backstage/catalog-model" "^0.8.0"
-    "@backstage/core" "^0.7.11"
-    "@material-ui/core" "^4.11.0"
+    "@backstage/config" "^0.1.8"
+    "@octokit/auth-app" "^3.4.0"
+    "@octokit/rest" "^18.5.3"
+    cross-fetch "^3.0.6"
+    git-url-parse "~11.4.4"
+    luxon "^2.0.2"
+
+"@backstage/plugin-catalog-react@^0.4.0":
+  version "0.4.5"
+  resolved "https://registry.npmjs.org/@backstage/plugin-catalog-react/-/plugin-catalog-react-0.4.5.tgz#8cce9ed1ec20072cf654e46f4d09cadf08511556"
+  integrity sha512-yfBJEWKEz+/iA/VK1o4V4qBIWqFD81MhSkNfJX0bjlgPMluwCCQCiiBjtX3NJs4cN4mIHbyJXzD41HPVTWaM2g==
+  dependencies:
+    "@backstage/catalog-client" "^0.3.18"
+    "@backstage/catalog-model" "^0.9.1"
+    "@backstage/core-app-api" "^0.1.11"
+    "@backstage/core-components" "^0.4.0"
+    "@backstage/core-plugin-api" "^0.1.6"
+    "@backstage/integration" "^0.6.3"
+    "@material-ui/core" "^4.12.2"
     "@material-ui/icons" "^4.9.1"
     "@material-ui/lab" "4.0.0-alpha.45"
-    "@types/react" "^16.9"
+    "@types/react" "*"
+    jwt-decode "^3.1.0"
     lodash "^4.17.15"
+    qs "^6.9.4"
     react "^16.13.1"
     react-router "6.0.0-beta.0"
     react-router-dom "6.0.0-beta.0"
@@ -10991,6 +11084,11 @@ react-hook-form@^6.15.4:
   version "6.15.7"
   resolved "https://registry.npmjs.org/react-hook-form/-/react-hook-form-6.15.7.tgz#e5ad7a9f73b0311ee770c56951276a3b85b06656"
   integrity sha512-cfJoBCF/hEjrgfto+70pLDi/F5IBWr5hQhYDFklxb+zyttQORVs+y70OaY4Z4V3IZFeY5oN3ECzEwBaiO1tT1A==
+
+react-hook-form@^7.12.2:
+  version "7.15.1"
+  resolved "https://registry.npmjs.org/react-hook-form/-/react-hook-form-7.15.1.tgz#445003b9b653a4fe09971390ca1cb088e59a0519"
+  integrity sha512-+f4T2dXWE9mJFq+b4J91yQ7cTD/2974O8J2TMGIgVjuz+fb3DdT+8vPx7SHzoCE0ZanfZ95mL0Fan7zxdeGSNA==
 
 react-hot-loader@^4.12.21:
   version "4.13.0"

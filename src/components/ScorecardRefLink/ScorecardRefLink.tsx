@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createRouteRef, createSubRouteRef } from "@backstage/core-plugin-api";
+import React from 'react';
+import { useRouteRef } from "@backstage/core-plugin-api";
+import { scorecardRouteRef } from "../../routes";
+import { Link } from "@material-ui/core";
 
-export const rootRouteRef = createRouteRef({
-  id: 'cortex',
-  path: '/cortex'
-});
+interface ScorecardRefLinkProps {
+  scorecardId: string;
+  children?: React.ReactNode;
+}
 
-export const scorecardsRouteRef = createSubRouteRef({
-  id: 'scorecards',
-  parent: rootRouteRef,
-  path: '/scorecards',
-});
+export const ScorecardRefLink = ({
+  scorecardId,
+  children,
+}: ScorecardRefLinkProps) => {
 
-export const scorecardRouteRef = createSubRouteRef({
-  id: 'scorecard',
-  path: '/scorecards/:id',
-  parent: rootRouteRef,
-});
+  const scorecardRef = useRouteRef(scorecardRouteRef)
 
-export const rootCatalogCortexRouteRef = createRouteRef({
-  path: '*',
-  title: 'Cortex',
-});
-
+  return (
+    <Link href={scorecardRef({ id: scorecardId })}>
+      { children }
+    </Link>
+  )
+}
