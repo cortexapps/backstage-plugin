@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Grid } from '@material-ui/core';
-import { Content, ContentHeader, SupportButton, } from '@backstage/core';
-import { CortexFetchComponent } from '../CortexFetchComponent';
+import { useRouteRef } from "@backstage/core-plugin-api";
+import { scorecardRouteRef } from "../../routes";
+import { Link } from "@backstage/core-components";
 
-export const CortexComponent = () => (
-  <Content>
-    <ContentHeader title="Scorecards">
-      <SupportButton>Understand and improve your services.</SupportButton>
-    </ContentHeader>
-    <Grid container spacing={3} direction="column">
-      <Grid item>
-        <CortexFetchComponent />
-      </Grid>
-    </Grid>
-  </Content>
-);
+interface ScorecardRefLinkProps {
+  scorecardId: string;
+  children?: React.ReactNode;
+}
+
+export const ScorecardRefLink = ({
+  scorecardId,
+  children,
+}: ScorecardRefLinkProps) => {
+
+  const scorecardRef = useRouteRef(scorecardRouteRef)
+
+  return (
+    <Link to={scorecardRef({ id: scorecardId })}>
+      { children }
+    </Link>
+  )
+}

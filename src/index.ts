@@ -13,4 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { cortexPlugin, CortexPage } from './plugin';
+import CortexIconComponent from './assets/cortex.icon.svg';
+import { IconComponent } from '@backstage/core-plugin-api';
+
+export { cortexPlugin, CortexPage, EntityCortexContent } from './plugin';
+export const CortexIcon: IconComponent = CortexIconComponent as IconComponent;

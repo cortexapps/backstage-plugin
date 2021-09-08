@@ -13,4 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { CortexFetchComponent } from './CortexFetchComponent';
+declare module '*.svg' {
+  const content: any;
+  export default content;
+}

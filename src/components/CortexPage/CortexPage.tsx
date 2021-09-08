@@ -15,7 +15,7 @@
  */
 import { CortexLayout } from "../CortexLayout";
 import React from 'react';
-import { CortexComponent, ScorecardsPage } from "../../extensions";
+import { ScorecardsPage } from "../../extensions";
 
 export const CortexPage = () => {
   return (
@@ -25,9 +25,6 @@ export const CortexPage = () => {
     >
       <CortexLayout.Route path="scorecards" title="Scorecards">
         <ScorecardsPage />
-      </CortexLayout.Route>
-      <CortexLayout.Route path="components" title="Components">
-        <CortexComponent />
       </CortexLayout.Route>
     </CortexLayout>
   );

@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createApiFactory, createPlugin, createRoutableExtension, discoveryApiRef, } from '@backstage/core-plugin-api';
+import {
+  createApiFactory,
+  createComponentExtension,
+  createPlugin,
+  createRoutableExtension,
+  discoveryApiRef,
+} from '@backstage/core-plugin-api';
 
 import { rootRouteRef, scorecardRouteRef, scorecardsRouteRef } from './routes';
 import { cortexApiRef, CortexClient } from './api';
@@ -41,3 +47,13 @@ export const CortexPage = cortexPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
+
+export const EntityCortexContent = cortexPlugin.provide(
+  createComponentExtension({
+    component: {
+      lazy: () =>
+        import('./components/EntityPage').then(m => m.EntityPage),
+    },
+  }),
+);
+
