@@ -16,7 +16,7 @@
 import React from 'react';
 import { useRouteRef } from "@backstage/core-plugin-api";
 import { scorecardRouteRef } from "../../routes";
-import { Link } from "@material-ui/core";
+import { Link } from "@backstage/core-components";
 
 interface ScorecardRefLinkProps {
   scorecardId: string;
@@ -31,7 +31,7 @@ export const ScorecardRefLink = ({
   const scorecardRef = useRouteRef(scorecardRouteRef)
 
   return (
-    <Link href={scorecardRef({ id: scorecardId })}>
+    <Link to={scorecardRef({ id: scorecardId })}>
       { children }
     </Link>
   )

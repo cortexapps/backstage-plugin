@@ -21,7 +21,7 @@ import {
   discoveryApiRef,
 } from '@backstage/core-plugin-api';
 
-import { rootCatalogCortexRouteRef, rootRouteRef, scorecardRouteRef, scorecardsRouteRef } from './routes';
+import { rootRouteRef, scorecardRouteRef, scorecardsRouteRef } from './routes';
 import { cortexApiRef, CortexClient } from './api';
 
 export const cortexPlugin = createPlugin({
@@ -37,7 +37,6 @@ export const cortexPlugin = createPlugin({
     root: rootRouteRef,
     scorecards: scorecardsRouteRef,
     scorecard: scorecardRouteRef,
-    catalog: rootCatalogCortexRouteRef,
   },
 });
 

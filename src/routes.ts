@@ -31,9 +31,3 @@ export const scorecardRouteRef = createSubRouteRef({
   path: '/scorecards/:id',
   parent: rootRouteRef,
 });
-
-export const rootCatalogCortexRouteRef = createRouteRef({
-  path: '*',
-  title: 'Cortex',
-});
-
