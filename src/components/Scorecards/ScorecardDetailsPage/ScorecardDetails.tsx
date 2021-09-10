@@ -56,7 +56,10 @@ export const ScorecardDetails = ({
           />
         </Grid>
         <Grid item lg={8} xs={12}>
-          <ScorecardsTableCard scores={filteredScores}/>
+          <ScorecardsTableCard
+            scorecardId={scorecard.id}
+            scores={filteredScores}
+          />
         </Grid>
       </Grid>
     </Content>

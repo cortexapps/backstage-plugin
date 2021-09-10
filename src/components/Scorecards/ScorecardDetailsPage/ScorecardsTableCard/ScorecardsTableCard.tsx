@@ -17,14 +17,17 @@ import { InfoCard } from "@backstage/core";
 import React from "react";
 import { ScorecardServiceScore } from "../../../../api/types";
 import { useScorecardDetailCardStyles } from "../../../../styles/styles";
-import { Table, TableBody } from "@material-ui/core";
+import { Button, Table, TableBody } from "@material-ui/core";
 import { ScorecardsTableRow } from "./ScorecardsTableRow";
+import { EmptyState } from "@backstage/core-components";
 
 interface ScorecardsTableProps {
-  scores: ScorecardServiceScore[]
+  scorecardId: string;
+  scores: ScorecardServiceScore[];
 }
 
 export const ScorecardsTableCard = ({
+  scorecardId,
   scores
 }: ScorecardsTableProps) => {
 
@@ -32,13 +35,30 @@ export const ScorecardsTableCard = ({
 
   return (
     <InfoCard title="Scores" className={classes.root}>
-      <Table>
-        <TableBody>
-          { scores.map(score => (
-            <ScorecardsTableRow key={score.serviceId} score={score}/>
-          ))}
-        </TableBody>
-      </Table>
+      { scores.length === 0 ? (
+        <EmptyState
+          missing="data"
+          title="Scorecard has not been evaluated yet."
+          description="Wait until next scorecard evaluation, or manually trigger from within Cortex."
+          action={
+            <Button
+              variant="contained"
+              color="primary"
+              href={`https://app.getcortexapp.com/admin/scorecards/${scorecardId}`}
+            >
+              Go to Cortex
+            </Button>
+          }
+        />
+      ) : (
+        <Table>
+          <TableBody>
+            { scores.map(score => (
+              <ScorecardsTableRow key={score.serviceId} score={score}/>
+            ))}
+          </TableBody>
+        </Table>
+      )}
     </InfoCard>
   )
 }
