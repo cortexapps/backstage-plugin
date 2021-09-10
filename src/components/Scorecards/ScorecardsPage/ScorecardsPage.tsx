@@ -13,21 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Button } from "@material-ui/core";
-import React from "react";
-import { cortexApiRef } from "../../../api";
-import { useAsync } from "react-use";
-import { Content, ContentHeader, EmptyState, ItemCardGrid, Progress, WarningPanel, } from '@backstage/core-components';
-import { useApi } from "@backstage/core-plugin-api";
-import { ScorecardCard } from "../ScorecardCard";
+import { Button } from '@material-ui/core';
+import React from 'react';
+import { cortexApiRef } from '../../../api';
+import { useAsync } from 'react-use';
+import {
+  Content,
+  ContentHeader,
+  EmptyState,
+  ItemCardGrid,
+  Progress,
+  WarningPanel,
+} from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
+import { ScorecardCard } from '../ScorecardCard';
 import { Route } from 'react-router-dom';
-import { ScorecardDetailsPage } from "../ScorecardDetailsPage";
-import { Routes } from "react-router";
+import { ScorecardDetailsPage } from '../ScorecardDetailsPage';
+import { Routes } from 'react-router';
+import { ScorecardsServicePage } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardsServicePage';
 
 const ScorecardsPageBody = () => {
   const cortexApi = useApi(cortexApiRef);
 
-  const { value: scorecards, loading, error } = useAsync(async () => {
+  const {
+    value: scorecards,
+    loading,
+    error,
+  } = useAsync(async () => {
     return await cortexApi.getScorecards();
   }, []);
 
@@ -64,17 +76,21 @@ const ScorecardsPageBody = () => {
 
   return (
     <ItemCardGrid>
-      {scorecards.map((scorecard) => (
+      {scorecards.map(scorecard => (
         <ScorecardCard key={scorecard.id} scorecard={scorecard} />
       ))}
     </ItemCardGrid>
   );
-}
+};
 
-export const ScorecardsPage = () =>  {
+export const ScorecardsPage = () => {
   const cortexApi = useApi(cortexApiRef);
 
-  const { value: scorecards, loading, error } = useAsync(async () => {
+  const {
+    value: scorecards,
+    loading,
+    error,
+  } = useAsync(async () => {
     return await cortexApi.getScorecards();
   }, []);
 
@@ -111,15 +127,20 @@ export const ScorecardsPage = () =>  {
 
   return (
     <Routes>
-      <Route path="/:id" element={<ScorecardDetailsPage/>}/>
-      <Route path="/" element={(
-        <Content>
-          <ContentHeader title="Scorecards" />
-          <ScorecardsPageBody />
-        </Content>
-      )}
+      <Route
+        path="/:scorecardId/service/:serviceId"
+        element={<ScorecardsServicePage />}
+      />
+      <Route path="/:id" element={<ScorecardDetailsPage />} />
+      <Route
+        path="/"
+        element={
+          <Content>
+            <ContentHeader title="Scorecards" />
+            <ScorecardsPageBody />
+          </Content>
+        }
       />
     </Routes>
   );
-}
-
+};

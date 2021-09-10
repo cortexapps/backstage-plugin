@@ -33,7 +33,7 @@ export interface Rule {
 }
 
 export function ruleName(rule: Rule): string {
-  return rule.title ?? rule.expression
+  return rule.title ?? rule.expression;
 }
 
 export interface ServiceGroup {
@@ -52,7 +52,6 @@ export interface ServiceScorecardScore {
 export interface ScorecardServiceScore {
   serviceId: string;
   componentRef: string;
-  scorecardId: string;
   score: number;
   scorePercentage: number;
   totalPossibleScore: number;

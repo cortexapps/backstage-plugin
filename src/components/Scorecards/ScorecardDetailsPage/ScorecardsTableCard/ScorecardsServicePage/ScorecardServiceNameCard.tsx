@@ -13,27 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createRouteRef, createSubRouteRef } from '@backstage/core-plugin-api';
+import React from 'react';
 
-export const rootRouteRef = createRouteRef({
-  id: 'cortex',
-  path: '/cortex',
-});
-
-export const scorecardsRouteRef = createSubRouteRef({
-  id: 'scorecards',
-  parent: rootRouteRef,
-  path: '/scorecards',
-});
-
-export const scorecardRouteRef = createSubRouteRef({
-  id: 'scorecard',
-  path: '/scorecards/:id',
-  parent: rootRouteRef,
-});
-
-export const scorecardServiceDetailsRouteRef = createSubRouteRef({
-  id: 'scorecardServiceDetails',
-  path: '/scorecards/:scorecardId/:namespace/:entity/:name',
-  parent: rootRouteRef,
-});
+export const ScorecardServiceNameCard = () => {};

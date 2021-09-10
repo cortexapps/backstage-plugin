@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InfoCard } from "@backstage/core";
-import React from "react";
-import { ScorecardServiceScore } from "../../../../api/types";
-import { useScorecardDetailCardStyles } from "../../../../styles/styles";
-import { Button, Table, TableBody } from "@material-ui/core";
-import { ScorecardsTableRow } from "./ScorecardsTableRow";
-import { EmptyState } from "@backstage/core-components";
+import { InfoCard } from '@backstage/core';
+import React from 'react';
+import { ScorecardServiceScore } from '../../../../api/types';
+import { useScorecardDetailCardStyles } from '../../../../styles/styles';
+import { Button, Table, TableBody } from '@material-ui/core';
+import { ScorecardsTableRow } from './ScorecardsTableRow';
+import { EmptyState } from '@backstage/core-components';
 
 interface ScorecardsTableProps {
   scorecardId: string;
@@ -28,14 +28,13 @@ interface ScorecardsTableProps {
 
 export const ScorecardsTableCard = ({
   scorecardId,
-  scores
+  scores,
 }: ScorecardsTableProps) => {
-
-  const classes = useScorecardDetailCardStyles()
+  const classes = useScorecardDetailCardStyles();
 
   return (
     <InfoCard title="Scores" className={classes.root}>
-      { scores.length === 0 ? (
+      {scores.length === 0 ? (
         <EmptyState
           missing="data"
           title="Scorecard has not been evaluated yet."
@@ -53,12 +52,14 @@ export const ScorecardsTableCard = ({
       ) : (
         <Table>
           <TableBody>
-            { scores.map(score => (
-              <ScorecardsTableRow key={score.serviceId} score={score}/>
-            ))}
+            {scores
+              .sort((a, b) => b.scorePercentage - a.scorePercentage)
+              .map(score => (
+                <ScorecardsTableRow key={score.serviceId} score={score} />
+              ))}
           </TableBody>
         </Table>
       )}
     </InfoCard>
-  )
-}
+  );
+};
