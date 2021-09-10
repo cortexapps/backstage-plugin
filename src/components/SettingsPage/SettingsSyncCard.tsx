@@ -13,57 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import SyncIcon from '@material-ui/icons/Sync';
-import { IconButton, Typography } from "@material-ui/core";
-import { InfoCard, Link } from "@backstage/core-components";
-import { useApi } from "@backstage/core-plugin-api";
-import { cortexApiRef } from "../../api";
-import { catalogApiRef } from "@backstage/plugin-catalog-react";
-import { CircularProgress } from '@material-ui/core';
-
+import { IconButton, Typography, CircularProgress } from '@material-ui/core';
+import { InfoCard, Link } from '@backstage/core-components';
+import { useApi } from '@backstage/core-plugin-api';
+import { cortexApiRef } from '../../api';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
 
 interface SyncButtonProps {
   syncEntities: () => Promise<void>;
 }
 
-const SyncButton = ({
-  syncEntities
-}: SyncButtonProps) => {
-
-  const [isSyncing, setIsSyncing] = useState(false)
+const SyncButton = ({ syncEntities }: SyncButtonProps) => {
+  const [isSyncing, setIsSyncing] = useState(false);
 
   return (
-    <IconButton onClick={() => {
-      setIsSyncing(true)
-      syncEntities().finally(() => setIsSyncing(false))
-    }}>
-      { isSyncing ? <CircularProgress/> : <SyncIcon /> }
+    <IconButton
+      onClick={() => {
+        setIsSyncing(true);
+        syncEntities().finally(() => setIsSyncing(false));
+      }}
+    >
+      {isSyncing ? <CircularProgress /> : <SyncIcon />}
     </IconButton>
-  )
-}
+  );
+};
 
 export const SettingsSyncCard = () => {
-
-  const catalogApi = useApi(catalogApiRef)
-  const cortexApi = useApi(cortexApiRef)
+  const catalogApi = useApi(catalogApiRef);
+  const cortexApi = useApi(cortexApiRef);
 
   const syncEntities = async () => {
     const { items: entities } = await catalogApi.getEntities();
-    await cortexApi.syncEntities(entities)
-  }
+    await cortexApi.syncEntities(entities);
+  };
 
   return (
-    <InfoCard title="Sync Entities" action={<SyncButton syncEntities={syncEntities}/>}>
+    <InfoCard
+      title="Sync Entities"
+      action={<SyncButton syncEntities={syncEntities} />}
+    >
       <Typography>
         Manually sync your Backstage entities with Cortex.
-        <br/>
-        You can also set this up to automatically sync
-        with our&nbsp;
+        <br />
+        You can also set this up to automatically sync with our&nbsp;
         <Link to="https://www.npmjs.com/package/@cortexapps/backstage-backend-plugin">
           backend plugin
-        </Link>.
+        </Link>
+        .
       </Typography>
     </InfoCard>
-  )
-}
+  );
+};
