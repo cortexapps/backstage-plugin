@@ -52,7 +52,6 @@ export interface ServiceScorecardScore {
 export interface ScorecardServiceScore {
   serviceId: string;
   componentRef: string;
-  scorecardId: string;
   score: number;
   scorePercentage: number;
   totalPossibleScore: number;

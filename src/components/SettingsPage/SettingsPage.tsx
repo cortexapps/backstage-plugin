@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CortexLayout } from "../CortexLayout";
-import React from 'react';
-import { ScorecardsPage } from "../../extensions";
-import { SettingsPage } from "../SettingsPage";
+import { Grid } from "@material-ui/core";
+import React from "react";
+import { Content, ContentHeader, } from '@backstage/core-components';
+import { SettingsSyncCard } from "./SettingsSyncCard";
 
-export const CortexPage = () => {
+export const SettingsPage = () =>  {
   return (
-    <CortexLayout
-      title="Cortex"
-      subtitle="Understand and improve your services."
-    >
-      <CortexLayout.Route path="scorecards" title="Scorecards">
-        <ScorecardsPage />
-      </CortexLayout.Route>
-      <CortexLayout.Route path="settings" title="Settings">
-        <SettingsPage />
-      </CortexLayout.Route>
-    </CortexLayout>
+    <Content>
+      <ContentHeader title="Settings"/>
+      <Grid container direction="row" spacing={2}>
+        <Grid item lg={4}>
+          <SettingsSyncCard/>
+        </Grid>
+      </Grid>
+    </Content>
   );
 }
+

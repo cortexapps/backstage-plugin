@@ -13,23 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CortexLayout } from "../CortexLayout";
-import React from 'react';
-import { ScorecardsPage } from "../../extensions";
-import { SettingsPage } from "../SettingsPage";
-
-export const CortexPage = () => {
-  return (
-    <CortexLayout
-      title="Cortex"
-      subtitle="Understand and improve your services."
-    >
-      <CortexLayout.Route path="scorecards" title="Scorecards">
-        <ScorecardsPage />
-      </CortexLayout.Route>
-      <CortexLayout.Route path="settings" title="Settings">
-        <SettingsPage />
-      </CortexLayout.Route>
-    </CortexLayout>
-  );
-}
+export { SettingsPage } from './SettingsPage';

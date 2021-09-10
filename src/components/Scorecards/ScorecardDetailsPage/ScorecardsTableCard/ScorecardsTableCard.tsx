@@ -21,11 +21,13 @@ import { Table, TableBody } from "@material-ui/core";
 import { ScorecardsTableRow } from "./ScorecardsTableRow";
 
 interface ScorecardsTableProps {
-  scores: ScorecardServiceScore[]
+  scorecardId: string;
+  scores: ScorecardServiceScore[];
 }
 
 export const ScorecardsTableCard = ({
-  scores
+  scorecardId,
+  scores,
 }: ScorecardsTableProps) => {
 
   const classes = useScorecardDetailCardStyles()
@@ -34,9 +36,11 @@ export const ScorecardsTableCard = ({
     <InfoCard title="Scores" className={classes.root}>
       <Table>
         <TableBody>
-          { scores.map(score => (
-            <ScorecardsTableRow key={score.serviceId} score={score}/>
-          ))}
+          { scores
+            .sort((a, b) => b.scorePercentage - a.scorePercentage)
+            .map(score => (
+              <ScorecardsTableRow key={score.serviceId} scorecardId={scorecardId} score={score}/>
+            ))}
         </TableBody>
       </Table>
     </InfoCard>

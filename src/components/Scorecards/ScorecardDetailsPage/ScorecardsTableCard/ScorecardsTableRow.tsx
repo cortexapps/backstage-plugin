@@ -20,9 +20,11 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Box from "@material-ui/core/Box";
 import { ScorecardsTableRowDetails } from "./ScorecardsTableRowDetails";
-import { EntityRefLink } from "@backstage/plugin-catalog-react";
 import { parseEntityRef } from "@backstage/catalog-model";
 import { Gauge } from "../../../Gauge";
+import { scorecardServiceDetailsRouteRef } from "../../../../routes";
+import { Link } from "@backstage/core-components";
+import { useRouteRef } from "@backstage/core-plugin-api";
 
 const useStyles = makeStyles({
   root: {
@@ -41,11 +43,13 @@ const useStyles = makeStyles({
 })
 
 interface ScorecardsTableRowProps {
-  score: ScorecardServiceScore
+  scorecardId: string;
+  score: ScorecardServiceScore;
 }
 
 export const ScorecardsTableRow = ({
-  score
+  scorecardId,
+  score,
 }: ScorecardsTableRowProps) => {
 
   const classes = useStyles()
@@ -70,13 +74,12 @@ export const ScorecardsTableRow = ({
               <Gauge value={score.scorePercentage} strokeWidth={8} trailWidth={8}/>
             </Box>
             <Box alignSelf="center">
-              <EntityRefLink
-                entityRef={parseEntityRef(score.componentRef, { defaultKind: 'Component', defaultNamespace: 'default' })}
-                defaultKind="Component"
-                style={{
-                  fontWeight: 'bold'
-                }}
-              />
+              {/*<Link to={serviceDetailsRef({*/}
+              {/*  scorecardId: scorecardId,*/}
+              {/*  serviceId: score.serviceId*/}
+              {/*})}>*/}
+              {/*  <b>{parseEntityRef(score.componentRef, { defaultKind: 'Component', defaultNamespace: 'default' }).name}</b>*/}
+              {/*</Link>*/}
             </Box>
           </Box>
         </TableCell>

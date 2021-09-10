@@ -23,6 +23,7 @@ import { ScorecardCard } from "../ScorecardCard";
 import { Route } from 'react-router-dom';
 import { ScorecardDetailsPage } from "../ScorecardDetailsPage";
 import { Routes } from "react-router";
+import { ScorecardsServicePage } from "../ScorecardDetailsPage/ScorecardsTableCard/ScorecardsServicePage";
 
 const ScorecardsPageBody = () => {
   const cortexApi = useApi(cortexApiRef);
@@ -111,6 +112,7 @@ export const ScorecardsPage = () =>  {
 
   return (
     <Routes>
+      <Route path="/:scorecardId/service/:serviceId" element={<ScorecardsServicePage/>}/>
       <Route path="/:id" element={<ScorecardDetailsPage/>}/>
       <Route path="/" element={(
         <Content>
