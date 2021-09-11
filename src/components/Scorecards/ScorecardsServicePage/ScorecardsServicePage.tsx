@@ -21,7 +21,7 @@ import {
   Progress,
   WarningPanel,
 } from '@backstage/core-components';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, makeStyles, Typography } from '@material-ui/core';
 import { useAsync } from 'react-use';
 import { cortexApiRef } from '../../../api';
 import { scorecardServiceDetailsRouteRef } from '../../../routes';
@@ -32,6 +32,12 @@ import { DefaultEntityRefLink } from '../../DefaultEntityLink';
 import { ScorecardsTableRowDetails } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardsTableRowDetails';
 import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 
+const useStyles = makeStyles({
+  progress: {
+    height: '100%',
+  },
+});
+
 export const ScorecardsServicePage = () => {
   const cortexApi = useApi(cortexApiRef);
 
@@ -40,6 +46,8 @@ export const ScorecardsServicePage = () => {
   );
 
   const entityRef = { kind, namespace, name };
+
+  const classes = useStyles();
 
   const {
     value: score,
@@ -90,8 +98,11 @@ export const ScorecardsServicePage = () => {
           </InfoCard>
         </Grid>
         <Grid item lg={8} xs={12}>
-          <InfoCard title="Score Progress">
-            <ScorecardsServiceProgress entityRef={entityRef} />
+          <InfoCard title="Score Progress" className={classes.progress}>
+            <ScorecardsServiceProgress
+              scorecardId={scorecardId}
+              entityRef={entityRef}
+            />
           </InfoCard>
         </Grid>
       </Grid>
