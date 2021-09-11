@@ -26,11 +26,12 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Box from '@material-ui/core/Box';
 import { ScorecardsTableRowDetails } from './ScorecardsTableRowDetails';
-import { parseEntityRef } from '@backstage/catalog-model';
+import { parseEntityName, parseEntityRef } from '@backstage/catalog-model';
 import { Gauge } from '../../../Gauge';
-import { scorecardServiceDetailsRouteRef } from '../../../../routes';
 import { Link } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
+import { scorecardServiceDetailsRouteRef } from '../../../../routes';
+import { defaultEntityRefContext } from '../../../../utils/ComponentUtils';
 
 const useStyles = makeStyles({
   root: {
@@ -58,6 +59,13 @@ export const ScorecardsTableRow = ({
   score,
 }: ScorecardsTableRowProps) => {
   const classes = useStyles();
+  const serviceDetailsRef = useRouteRef(scorecardServiceDetailsRouteRef);
+
+  const entityName = parseEntityName(
+    score.componentRef,
+    defaultEntityRefContext,
+  );
+
   const [open, setOpen] = useState(false);
 
   return (
@@ -83,12 +91,21 @@ export const ScorecardsTableRow = ({
               />
             </Box>
             <Box alignSelf="center">
-              {/*<Link to={serviceDetailsRef({*/}
-              {/*  scorecardId: scorecardId,*/}
-              {/*  serviceId: score.serviceId*/}
-              {/*})}>*/}
-              {/*  <b>{parseEntityRef(score.componentRef, { defaultKind: 'Component', defaultNamespace: 'default' }).name}</b>*/}
-              {/*</Link>*/}
+              <Link
+                to={serviceDetailsRef({
+                  scorecardId: scorecardId,
+                  ...entityName,
+                })}
+              >
+                <b>
+                  {
+                    parseEntityRef(score.componentRef, {
+                      defaultKind: 'Component',
+                      defaultNamespace: 'default',
+                    }).name
+                  }
+                </b>
+              </Link>
             </Box>
           </Box>
         </TableCell>

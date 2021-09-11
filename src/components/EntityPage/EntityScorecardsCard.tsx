@@ -14,26 +14,33 @@
  * limitations under the License.
  */
 import React from 'react';
-import { useApi } from "@backstage/core-plugin-api";
-import { cortexApiRef } from "../../api";
-import { useAsync } from "react-use";
-import { Entity, stringifyEntityRef } from "@backstage/catalog-model";
-import { EmptyState, InfoCard, Progress, WarningPanel } from "@backstage/core-components";
-import { Table, TableBody } from "@material-ui/core";
-import { EntityScorecardsCardRow } from "./EntityScorecardsCardRow";
+import { useApi } from '@backstage/core-plugin-api';
+import { cortexApiRef } from '../../api';
+import { useAsync } from 'react-use';
+import { Entity } from '@backstage/catalog-model';
+import {
+  EmptyState,
+  InfoCard,
+  Progress,
+  WarningPanel,
+} from '@backstage/core-components';
+import { Table, TableBody } from '@material-ui/core';
+import { EntityScorecardsCardRow } from './EntityScorecardsCardRow';
+import { stringifyAnyEntityRef } from '../../utils/types';
 
 interface EntityScorecardsCardProps {
-  entity: Entity
+  entity: Entity;
 }
 
-export const EntityScorecardsCard = ({
-  entity
-}: EntityScorecardsCardProps) => {
-
+export const EntityScorecardsCard = ({ entity }: EntityScorecardsCardProps) => {
   const cortexApi = useApi(cortexApiRef);
 
-  const { value: scores, loading, error } = useAsync(async () => {
-    return await cortexApi.getServiceScores(stringifyEntityRef(entity));
+  const {
+    value: scores,
+    loading,
+    error,
+  } = useAsync(async () => {
+    return await cortexApi.getServiceScores(stringifyAnyEntityRef(entity));
   }, []);
 
   if (loading) {
@@ -48,7 +55,7 @@ export const EntityScorecardsCard = ({
     );
   }
 
-  if (!scores?.length) {
+  if (scores.length === 0) {
     return (
       <EmptyState
         missing="info"
@@ -58,16 +65,15 @@ export const EntityScorecardsCard = ({
     );
   }
 
-
   return (
     <InfoCard title="Scorecards">
       <Table>
         <TableBody>
-          { scores.map(score => (
-            <EntityScorecardsCardRow score={score}/>
+          {scores.map(score => (
+            <EntityScorecardsCardRow score={score} />
           ))}
         </TableBody>
       </Table>
     </InfoCard>
-  )
-}
+  );
+};

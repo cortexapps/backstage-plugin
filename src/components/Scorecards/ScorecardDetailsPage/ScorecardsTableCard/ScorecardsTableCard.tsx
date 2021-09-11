@@ -55,7 +55,11 @@ export const ScorecardsTableCard = ({
             {scores
               .sort((a, b) => b.scorePercentage - a.scorePercentage)
               .map(score => (
-                <ScorecardsTableRow key={score.serviceId} score={score} />
+                <ScorecardsTableRow
+                  key={score.serviceId}
+                  scorecardId={scorecardId}
+                  score={score}
+                />
               ))}
           </TableBody>
         </Table>

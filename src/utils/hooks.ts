@@ -13,6 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
-export const ScorecardServiceNameCard = () => {};
+export function useDropdown<T>(
+  initialValue: T | undefined,
+): [T | undefined, (event: React.ChangeEvent<{ value: unknown }>) => void] {
+  const [value, setValue] = useState<T | undefined>(initialValue);
+  const onChange = useCallback(
+    (event: React.ChangeEvent<{ value: unknown }>) => {
+      setValue(event.target.value as T | undefined);
+    },
+    [setValue],
+  );
+
+  return [value, onChange];
+}

@@ -13,60 +13,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from "react";
-import { ruleName, ScorecardServiceScore } from "../../../../api/types";
-import { Grid, List, ListItem, ListItemAvatar, ListItemText, makeStyles, Typography } from "@material-ui/core";
+import React from 'react';
+import { ruleName, ScorecardServiceScore } from '../../../../api/types';
+import {
+  Grid,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
 import ErrorIcon from '@material-ui/icons/Error';
 import CheckIcon from '@material-ui/icons/Check';
-import { fallbackPalette } from "../../../../styles/styles";
 
-const useStyles = makeStyles(styles => ({
-  openIcon: {
-    width: '35px'
-  },
-  progress: {
-    height: '64px',
-    marginRight: '16px',
-  },
-  failing: {
-    backgroundColor: styles.palette?.error?.dark ?? fallbackPalette.error.dark,
-  },
+const useStyles = makeStyles({
   rule: {
     borderRadius: 8,
   },
-  rules: {
-    backgroundColor: styles.palette?.background?.paper ?? fallbackPalette.background.paper
-  },
-}))
+});
 
 interface ScorecardsTableRowDetailsProps {
-  score: ScorecardServiceScore
+  score: ScorecardServiceScore;
 }
 
 export const ScorecardsTableRowDetails = ({
-  score
+  score,
 }: ScorecardsTableRowDetailsProps) => {
-
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <List>
-      { score.rules.map(rule => (
+      {score.rules.map(rule => (
         <ListItem key={rule.rule.id} alignItems="flex-start">
           <ListItemAvatar>
-            { rule.score > 0 ? <CheckIcon color="primary"/> : <ErrorIcon color="error"/> }
+            {rule.score > 0 ? (
+              <CheckIcon color="primary" />
+            ) : (
+              <ErrorIcon color="error" />
+            )}
           </ListItemAvatar>
-          <Grid container direction="row" justify="space-between" alignItems="center" className={classes.rule}>
+          <Grid
+            container
+            direction="row"
+            justify="space-between"
+            alignItems="center"
+            className={classes.rule}
+          >
             <Grid item xs={9}>
-              <ListItemText primary={ruleName(rule.rule)}/>
+              <ListItemText primary={ruleName(rule.rule)} />
             </Grid>
             <Grid item>
-              <ListItemText primary={`${rule.score}`}/>
+              <ListItemText primary={`${rule.score}`} />
             </Grid>
-            { rule.error && (
+            {rule.error && (
               <Grid item xs={10}>
-                <Typography color="error">
-                  { rule.error }
+                <Typography color="error" style={{ wordWrap: 'break-word' }}>
+                  {rule.error}
                 </Typography>
               </Grid>
             )}
@@ -74,5 +77,5 @@ export const ScorecardsTableRowDetails = ({
         </ListItem>
       ))}
     </List>
-  )
-}
+  );
+};

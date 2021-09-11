@@ -65,3 +65,26 @@ export interface ScorecardServiceScoresRule {
   score: number;
   error?: string;
 }
+
+export interface ScorecardResult {
+  scorecardId: string;
+  componentRef: string;
+  totalScore: number;
+  possibleScore: number;
+  ruleResults: RuleResult[];
+  dateCreated: string;
+}
+
+export interface RuleResult {
+  id: string;
+  expression: string;
+  result: boolean;
+  score: number;
+  weight: number;
+  error?: string;
+  leftExpression?: string;
+  leftResult?: any;
+  rightExpression?: string;
+  rightResult?: any;
+  operation: string;
+}
