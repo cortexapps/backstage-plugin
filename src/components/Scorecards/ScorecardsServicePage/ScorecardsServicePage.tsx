@@ -56,7 +56,7 @@ export const ScorecardsServicePage = () => {
     return <Progress />;
   }
 
-  if (error) {
+  if (error || score === undefined) {
     return (
       <WarningPanel severity="error" title="Could not load scores.">
         {error?.message ?? ''}

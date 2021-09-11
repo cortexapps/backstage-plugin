@@ -47,10 +47,10 @@ export const EntityScorecardsCard = ({ entity }: EntityScorecardsCardProps) => {
     return <Progress />;
   }
 
-  if (error) {
+  if (error || scores === undefined) {
     return (
       <WarningPanel severity="error" title="Could not load scorecards.">
-        {error.message}
+        {error?.message}
       </WarningPanel>
     );
   }
