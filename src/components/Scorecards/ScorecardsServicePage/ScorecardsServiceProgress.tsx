@@ -31,7 +31,6 @@ import { useAsync } from 'react-use';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { Timeseries } from '../../Timeseries';
 import moment from 'moment';
-import { ScorecardServiceScoresRule } from '../../../api/types';
 import Box from '@material-ui/core/Box';
 
 enum Lookback {

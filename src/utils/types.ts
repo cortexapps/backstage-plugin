@@ -17,7 +17,6 @@
 import {
   Entity,
   EntityName,
-  EntityRef,
   parseEntityName,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
