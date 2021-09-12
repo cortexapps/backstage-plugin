@@ -102,7 +102,6 @@ export const ScorecardsServicePage = () => {
             <ScorecardsServiceProgress
               scorecardId={scorecardId}
               entityRef={entityRef}
-              currentRules={score.rules}
             />
           </InfoCard>
         </Grid>

@@ -81,13 +81,11 @@ const getLookbackRange = (timeRange: Lookback) => {
 interface ScorecardsServiceProgressProps {
   scorecardId: string;
   entityRef: EntityRef;
-  currentRules: ScorecardServiceScoresRule[];
 }
 
 export const ScorecardsServiceProgress = ({
   scorecardId,
   entityRef,
-  currentRules,
 }: ScorecardsServiceProgressProps) => {
   const cortexApi = useApi(cortexApiRef);
 

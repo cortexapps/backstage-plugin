@@ -15,10 +15,8 @@
  */
 import React from 'react';
 import {
-  Rule,
   RuleName,
   ruleName,
-  ScorecardServiceScore,
   ScorecardServiceScoresRule,
 } from '../../../../api/types';
 import {
