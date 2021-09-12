@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { makeStyles, Theme, useTheme } from '@material-ui/core';
-import { ResponsiveLineCanvas, Serie } from '@nivo/line';
+import { PointTooltip, ResponsiveLineCanvas, Serie } from '@nivo/line';
 import { Theme as NivoTheme } from '@nivo/core';
 import { LinearScale } from '@nivo/scales';
 
@@ -72,9 +72,10 @@ const percentageYScale: LinearScale = {
 
 interface TimeseriesProps {
   data: Serie[];
+  tooltip?: PointTooltip;
 }
 
-export const Timeseries = ({ data }: TimeseriesProps) => {
+export const Timeseries = ({ data, tooltip }: TimeseriesProps) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -84,17 +85,11 @@ export const Timeseries = ({ data }: TimeseriesProps) => {
         theme={nivoTheme(theme)}
         data={data}
         curve="linear"
-        enablePoints={false}
-        colors={{ scheme: 'nivo' }} //"#7650E9"
+        enablePoints
+        colors={{ scheme: 'nivo' }}
         margin={{ bottom: 30, top: 30, left: 10, right: 40 }}
-        // tooltip={(point: PointTooltipProps) => {
-        //   return (
-        //     <LineChartTooltip
-        //       xValue={point?.point?.data?.xFormatted}
-        //       yValue={point?.point?.data?.yFormatted}
-        //     />
-        //   );
-        // }}
+        tooltip={tooltip}
+        isInteractive={tooltip !== undefined}
         xScale={{
           type: 'time',
           useUTC: true,

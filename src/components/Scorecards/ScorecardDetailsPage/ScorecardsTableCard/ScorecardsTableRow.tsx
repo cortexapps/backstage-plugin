@@ -25,7 +25,7 @@ import {
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Box from '@material-ui/core/Box';
-import { ScorecardsTableRowDetails } from './ScorecardsTableRowDetails';
+import { ScorecardResultDetails } from './ScorecardResultDetails';
 import { parseEntityName, parseEntityRef } from '@backstage/catalog-model';
 import { Gauge } from '../../../Gauge';
 import { Link } from '@backstage/core-components';
@@ -113,7 +113,7 @@ export const ScorecardsTableRow = ({
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <ScorecardsTableRowDetails score={score} />
+            <ScorecardResultDetails rules={score.rules} />
           </Collapse>
         </TableCell>
       </TableRow>

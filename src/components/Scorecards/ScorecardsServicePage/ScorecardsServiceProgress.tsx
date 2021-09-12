@@ -21,6 +21,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Typography,
 } from '@material-ui/core';
 import { useDropdown } from '../../../utils/hooks';
 import { assertUnreachable, enumKeys } from '../../../utils/types';
@@ -29,12 +30,9 @@ import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { Timeseries } from '../../Timeseries';
-import moment from 'moment/moment';
-
-interface ScorecardsServiceProgressProps {
-  scorecardId: string;
-  entityRef: EntityRef;
-}
+import moment from 'moment';
+import { ScorecardServiceScoresRule } from '../../../api/types';
+import Box from '@material-ui/core/Box';
 
 enum Lookback {
   DAYS_7,
@@ -80,14 +78,20 @@ const getLookbackRange = (timeRange: Lookback) => {
   return assertUnreachable(timeRange);
 };
 
+interface ScorecardsServiceProgressProps {
+  scorecardId: string;
+  entityRef: EntityRef;
+  currentRules: ScorecardServiceScoresRule[];
+}
+
 export const ScorecardsServiceProgress = ({
   scorecardId,
   entityRef,
+  currentRules,
 }: ScorecardsServiceProgressProps) => {
   const cortexApi = useApi(cortexApiRef);
 
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
-  // const [selectedRule, setSelectedRule] = useDropdown<string>();
 
   const {
     value: historicalScores,
@@ -119,7 +123,7 @@ export const ScorecardsServiceProgress = ({
     return <Progress />;
   }
 
-  if (error || data === undefined) {
+  if (error || data === undefined || historicalScores === undefined) {
     return (
       <WarningPanel severity="error" title="Could not load scores.">
         {error?.message ?? ''}
@@ -158,13 +162,27 @@ export const ScorecardsServiceProgress = ({
           ))}
         </Select>
       </FormControl>
-      <FormControl>
-        <InputLabel>By Rule</InputLabel>
-        <Select value={lookback} onChange={setLookback}>
-          <MenuItem value={undefined}>Overall</MenuItem>
-        </Select>
-      </FormControl>
-      {data.length > 0 && <Timeseries data={[{ id: 'asdf', data: data }]} />}
+      {data.length > 0 && (
+        <Timeseries
+          data={[{ id: `${scorecardId}-${entityRef}`, data: data }]}
+          tooltip={point => {
+            return (
+              <Box
+                bgcolor="background.paper"
+                border={1}
+                borderRadius="borderRadius"
+                borderColor="divider"
+              >
+                <Typography>
+                  {moment
+                    .utc(historicalScores[point.point.index].dateCreated)
+                    .fromNow()}
+                </Typography>
+              </Box>
+            );
+          }}
+        />
+      )}
     </>
   );
 };

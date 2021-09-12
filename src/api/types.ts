@@ -23,16 +23,19 @@ export interface Scorecard {
   nextUpdated?: string;
 }
 
-export interface Rule {
-  id: string;
+export interface RuleName {
   expression: string;
-  description?: string;
   title?: string;
+}
+
+export interface Rule extends RuleName {
+  id: string;
+  description?: string;
   weight: number;
   dateCreated: string;
 }
 
-export function ruleName(rule: Rule): string {
+export function ruleName(rule: RuleName): string {
   return rule.title ?? rule.expression;
 }
 

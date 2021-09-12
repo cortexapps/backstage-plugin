@@ -29,7 +29,7 @@ import { compareRefs } from '../../../utils/ComponentUtils';
 import { Gauge } from '../../Gauge';
 import Box from '@material-ui/core/Box';
 import { DefaultEntityRefLink } from '../../DefaultEntityLink';
-import { ScorecardsTableRowDetails } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardsTableRowDetails';
+import { ScorecardResultDetails } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 
 const useStyles = makeStyles({
@@ -94,7 +94,7 @@ export const ScorecardsServicePage = () => {
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <InfoCard title="Rules">
-            <ScorecardsTableRowDetails score={score} />
+            <ScorecardResultDetails rules={score.rules} />
           </InfoCard>
         </Grid>
         <Grid item lg={8} xs={12}>
@@ -102,6 +102,7 @@ export const ScorecardsServicePage = () => {
             <ScorecardsServiceProgress
               scorecardId={scorecardId}
               entityRef={entityRef}
+              currentRules={score.rules}
             />
           </InfoCard>
         </Grid>
