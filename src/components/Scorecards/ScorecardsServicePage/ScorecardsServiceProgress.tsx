@@ -32,6 +32,9 @@ import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { Timeseries } from '../../Timeseries';
 import moment from 'moment';
 import Box from '@material-ui/core/Box';
+import { ScorecardServiceScoreRuleName } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
+import { Point } from '@nivo/line';
+import { toScorecardServiceScoreRuleName } from '../../../utils/scorecards';
 
 enum Lookback {
   DAYS_7,
@@ -80,11 +83,13 @@ const getLookbackRange = (timeRange: Lookback) => {
 interface ScorecardsServiceProgressProps {
   scorecardId: string;
   entityRef: EntityRef;
+  setSelectedRules: (rules: ScorecardServiceScoreRuleName[]) => void;
 }
 
 export const ScorecardsServiceProgress = ({
   scorecardId,
   entityRef,
+  setSelectedRules,
 }: ScorecardsServiceProgressProps) => {
   const cortexApi = useApi(cortexApiRef);
 
@@ -162,6 +167,13 @@ export const ScorecardsServiceProgress = ({
       {data.length > 0 && (
         <Timeseries
           data={[{ id: `${scorecardId}-${entityRef}`, data: data }]}
+          onClick={(point: Point) => {
+            setSelectedRules(
+              toScorecardServiceScoreRuleName(
+                historicalScores[point.index].ruleResults,
+              ),
+            );
+          }}
           tooltip={point => {
             return (
               <Box

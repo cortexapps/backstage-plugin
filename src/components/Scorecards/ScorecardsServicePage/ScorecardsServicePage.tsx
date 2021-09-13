@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import {
   Content,
@@ -29,7 +29,10 @@ import { compareRefs } from '../../../utils/ComponentUtils';
 import { Gauge } from '../../Gauge';
 import Box from '@material-ui/core/Box';
 import { DefaultEntityRefLink } from '../../DefaultEntityLink';
-import { ScorecardResultDetails } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
+import {
+  ScorecardResultDetails,
+  ScorecardServiceScoreRuleName,
+} from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 
 const useStyles = makeStyles({
@@ -49,6 +52,10 @@ export const ScorecardsServicePage = () => {
 
   const classes = useStyles();
 
+  const [selectedRules, setSelectedRules] = useState<
+    ScorecardServiceScoreRuleName[]
+  >([]);
+
   const {
     value: score,
     loading,
@@ -59,6 +66,10 @@ export const ScorecardsServicePage = () => {
       compareRefs(serviceScore.componentRef, entityRef),
     );
   }, []);
+
+  useEffect(() => {
+    setSelectedRules(score?.rules ?? []);
+  }, [score]);
 
   if (loading) {
     return <Progress />;
@@ -94,7 +105,7 @@ export const ScorecardsServicePage = () => {
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <InfoCard title="Rules">
-            <ScorecardResultDetails rules={score.rules} />
+            <ScorecardResultDetails rules={selectedRules} />
           </InfoCard>
         </Grid>
         <Grid item lg={8} xs={12}>
@@ -102,6 +113,7 @@ export const ScorecardsServicePage = () => {
             <ScorecardsServiceProgress
               scorecardId={scorecardId}
               entityRef={entityRef}
+              setSelectedRules={setSelectedRules}
             />
           </InfoCard>
         </Grid>

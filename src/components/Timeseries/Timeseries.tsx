@@ -15,7 +15,12 @@
  */
 import React from 'react';
 import { makeStyles, Theme, useTheme } from '@material-ui/core';
-import { PointTooltip, ResponsiveLineCanvas, Serie } from '@nivo/line';
+import {
+  PointMouseHandler,
+  PointTooltip,
+  ResponsiveLineCanvas,
+  Serie,
+} from '@nivo/line';
 import { Theme as NivoTheme } from '@nivo/core';
 import { LinearScale } from '@nivo/scales';
 
@@ -73,9 +78,10 @@ const percentageYScale: LinearScale = {
 interface TimeseriesProps {
   data: Serie[];
   tooltip?: PointTooltip;
+  onClick?: PointMouseHandler;
 }
 
-export const Timeseries = ({ data, tooltip }: TimeseriesProps) => {
+export const Timeseries = ({ data, tooltip, onClick }: TimeseriesProps) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -104,6 +110,7 @@ export const Timeseries = ({ data, tooltip }: TimeseriesProps) => {
         axisRight={{
           format: p => `${p}%`,
         }}
+        onClick={onClick}
       />
     </div>
   );

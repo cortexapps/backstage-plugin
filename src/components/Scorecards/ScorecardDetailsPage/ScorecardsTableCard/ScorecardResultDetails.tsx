@@ -37,7 +37,7 @@ const useStyles = makeStyles({
   },
 });
 
-type ScorecardServiceScoreRuleName = Omit<
+export type ScorecardServiceScoreRuleName = Omit<
   ScorecardServiceScoresRule,
   'rule'
 > & { rule: RuleName };
@@ -95,9 +95,17 @@ export const ScorecardResultDetails = ({
 }: ScorecardsTableRowDetailsProps) => {
   return (
     <List>
-      {rules.map((rule, i) => (
-        <RuleResultDetails key={i} rule={rule} />
-      ))}
+      {rules
+        .sort((a, b) => {
+          if (a.score === b.score) {
+            return a.rule.expression.localeCompare(b.rule.expression);
+          }
+
+          return a.score - b.score;
+        })
+        .map((rule, i) => (
+          <RuleResultDetails key={i} rule={rule} />
+        ))}
     </List>
   );
 };
