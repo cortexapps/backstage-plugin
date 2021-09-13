@@ -15,9 +15,16 @@
  */
 
 import { createApiRef, DiscoveryApi } from '@backstage/core';
-import { Scorecard, ScorecardServiceScore, ServiceScorecardScore } from './types';
+import {
+  Scorecard,
+  ScorecardResult,
+  ScorecardServiceScore,
+  ServiceScorecardScore,
+} from './types';
 import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
+import { Moment } from 'moment/moment';
+import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -46,19 +53,36 @@ export class CortexClient implements CortexApi {
   }
 
   async getServiceScores(
-    entityRef: string,
-  ): Promise<ServiceScorecardScore[] | undefined> {
+    entityRef: AnyEntityRef,
+  ): Promise<ServiceScorecardScore[]> {
     return await this.get(`/api/backstage/v1/entities/scorecards`, {
-      ref: entityRef
+      ref: stringifyAnyEntityRef(entityRef),
     });
   }
 
+  async getHistoricalScores(
+    scorecardId: string,
+    entityRef: AnyEntityRef,
+    startDate?: Moment,
+    endDate?: Moment,
+  ): Promise<ScorecardResult[]> {
+    return await this.get(
+      `/api/backstage/v1/scorecards/${scorecardId}/scores/historical`,
+      {
+        ref: stringifyAnyEntityRef(entityRef),
+        ...(startDate && { startDate: startDate.toISOString() }),
+        ...(endDate && { endDate: endDate.toISOString() }),
+      },
+    );
+  }
 
   async getScorecard(scorecardId: string): Promise<Scorecard> {
     return await this.get(`/api/backstage/v1/scorecards/${scorecardId}`);
   }
 
-  async getScorecardScores(scorecardId: string): Promise<ScorecardServiceScore[]> {
+  async getScorecardScores(
+    scorecardId: string,
+  ): Promise<ScorecardServiceScore[]> {
     return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/scores`);
   }
 
@@ -67,17 +91,21 @@ export class CortexClient implements CortexApi {
     return `${proxyBasePath}/cortex`;
   }
 
-  private async get(path: string, args?: { [key: string]: string }): Promise<any | undefined> {
+  private async get(
+    path: string,
+    args?: { [key: string]: string },
+  ): Promise<any | undefined> {
     const basePath = await this.getBasePath();
 
     const url = `${basePath}${path}`;
     const queryUrl = args
-      ? `${url}?${ 
-      Object.keys(args)
-        .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(args[key])}`)
-        .join('&')}`
+      ? `${url}?${Object.keys(args)
+          .map(
+            key =>
+              `${encodeURIComponent(key)}=${encodeURIComponent(args[key])}`,
+          )
+          .join('&')}`
       : url;
-
 
     const response = await fetch(queryUrl);
     const body = await response.json();

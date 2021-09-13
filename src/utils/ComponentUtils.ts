@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createRouteRef, createSubRouteRef } from '@backstage/core-plugin-api';
+import { EntityRef, parseEntityName } from '@backstage/catalog-model';
 
-export const rootRouteRef = createRouteRef({
-  id: 'cortex',
-  path: '/cortex',
-});
+export const defaultEntityRefContext = {
+  defaultKind: 'Component',
+  defaultNamespace: 'default',
+};
 
-export const scorecardsRouteRef = createSubRouteRef({
-  id: 'scorecards',
-  parent: rootRouteRef,
-  path: '/scorecards',
-});
-
-export const scorecardRouteRef = createSubRouteRef({
-  id: 'scorecard',
-  path: '/scorecards/:id',
-  parent: rootRouteRef,
-});
-
-export const scorecardServiceDetailsRouteRef = createSubRouteRef({
-  id: 'scorecardServiceDetails',
-  path: '/scorecards/:scorecardId/:namespace/:kind/:name',
-  parent: rootRouteRef,
-});
+export const compareRefs = (a: EntityRef, b: EntityRef) => {
+  const nameA = parseEntityName(a, defaultEntityRefContext);
+  const nameB = parseEntityName(b, defaultEntityRefContext);
+  return (
+    nameA.name === nameB.name &&
+    nameA.namespace === nameB.namespace &&
+    nameA.kind === nameB.kind
+  );
+};

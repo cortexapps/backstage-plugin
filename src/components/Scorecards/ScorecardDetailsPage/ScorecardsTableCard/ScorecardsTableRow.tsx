@@ -13,16 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from "react";
-import { ScorecardServiceScore } from "../../../../api/types";
-import { Collapse, IconButton, makeStyles, TableCell, TableRow } from "@material-ui/core";
+import React, { useState } from 'react';
+import { ScorecardServiceScore } from '../../../../api/types';
+import {
+  Collapse,
+  IconButton,
+  makeStyles,
+  TableCell,
+  TableRow,
+} from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import Box from "@material-ui/core/Box";
-import { ScorecardsTableRowDetails } from "./ScorecardsTableRowDetails";
-import { EntityRefLink } from "@backstage/plugin-catalog-react";
-import { parseEntityRef } from "@backstage/catalog-model";
-import { Gauge } from "../../../Gauge";
+import Box from '@material-ui/core/Box';
+import { ScorecardResultDetails } from './ScorecardResultDetails';
+import { parseEntityName, parseEntityRef } from '@backstage/catalog-model';
+import { Gauge } from '../../../Gauge';
+import { Link } from '@backstage/core-components';
+import { useRouteRef } from '@backstage/core-plugin-api';
+import { scorecardServiceDetailsRouteRef } from '../../../../routes';
+import { defaultEntityRefContext } from '../../../../utils/ComponentUtils';
 
 const useStyles = makeStyles({
   root: {
@@ -32,24 +41,32 @@ const useStyles = makeStyles({
     height: '35px',
   },
   openIcon: {
-    width: '35px'
+    width: '35px',
   },
   progress: {
     height: '64px',
     marginRight: '16px',
   },
-})
+});
 
 interface ScorecardsTableRowProps {
-  score: ScorecardServiceScore
+  scorecardId: string;
+  score: ScorecardServiceScore;
 }
 
 export const ScorecardsTableRow = ({
-  score
+  scorecardId,
+  score,
 }: ScorecardsTableRowProps) => {
+  const classes = useStyles();
+  const serviceDetailsRef = useRouteRef(scorecardServiceDetailsRouteRef);
 
-  const classes = useStyles()
-  const [open, setOpen] = useState(false)
+  const entityName = parseEntityName(
+    score.componentRef,
+    defaultEntityRefContext,
+  );
+
+  const [open, setOpen] = useState(false);
 
   return (
     <React.Fragment>
@@ -66,17 +83,29 @@ export const ScorecardsTableRow = ({
             justifyContent="flex-start"
             alignItems="center"
           >
-            <Box alignSelf="center" width={1/8}>
-              <Gauge value={score.scorePercentage} strokeWidth={8} trailWidth={8}/>
+            <Box alignSelf="center" width={1 / 8}>
+              <Gauge
+                value={score.scorePercentage}
+                strokeWidth={8}
+                trailWidth={8}
+              />
             </Box>
             <Box alignSelf="center">
-              <EntityRefLink
-                entityRef={parseEntityRef(score.componentRef, { defaultKind: 'Component', defaultNamespace: 'default' })}
-                defaultKind="Component"
-                style={{
-                  fontWeight: 'bold'
-                }}
-              />
+              <Link
+                to={serviceDetailsRef({
+                  scorecardId: scorecardId,
+                  ...entityName,
+                })}
+              >
+                <b>
+                  {
+                    parseEntityRef(score.componentRef, {
+                      defaultKind: 'Component',
+                      defaultNamespace: 'default',
+                    }).name
+                  }
+                </b>
+              </Link>
             </Box>
           </Box>
         </TableCell>
@@ -84,10 +113,10 @@ export const ScorecardsTableRow = ({
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <ScorecardsTableRowDetails score={score}/>
+            <ScorecardResultDetails rules={score.rules} />
           </Collapse>
         </TableCell>
       </TableRow>
     </React.Fragment>
-  )
-}
+  );
+};

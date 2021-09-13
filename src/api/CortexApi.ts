@@ -13,13 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Scorecard, ScorecardServiceScore, ServiceScorecardScore } from './types';
+import {
+  Scorecard,
+  ScorecardResult,
+  ScorecardServiceScore,
+  ServiceScorecardScore,
+} from './types';
 import { Entity } from '@backstage/catalog-model';
+import { Moment } from 'moment/moment';
+import { AnyEntityRef } from '../utils/types';
+
+export enum GroupByOption {
+  'OWNER' = 'Owner',
+  'TEAM' = 'Team',
+  'SERVICE_GROUP' = 'Service Group',
+}
 
 export interface CortexApi {
-  getScorecards(): Promise<Scorecard[]>
-  getScorecard(scorecardId: string): Promise<Scorecard | undefined>
-  getScorecardScores(scorecardId: string): Promise<ScorecardServiceScore[] | undefined>
-  getServiceScores(entityRef: string): Promise<ServiceScorecardScore[] | undefined>;
+  getScorecards(): Promise<Scorecard[]>;
+  getScorecard(scorecardId: string): Promise<Scorecard | undefined>;
+  getScorecardScores(scorecardId: string): Promise<ScorecardServiceScore[]>;
+  getServiceScores(entityRef: AnyEntityRef): Promise<ServiceScorecardScore[]>;
+  getHistoricalScores(
+    scorecardId: string,
+    entityRef: AnyEntityRef,
+    startDate?: Moment,
+    endDate?: Moment,
+  ): Promise<ScorecardResult[]>;
   syncEntities(entities: Entity[]): Promise<void>;
 }

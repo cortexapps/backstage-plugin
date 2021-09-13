@@ -23,17 +23,20 @@ export interface Scorecard {
   nextUpdated?: string;
 }
 
-export interface Rule {
-  id: string;
+export interface RuleName {
   expression: string;
-  description?: string;
   title?: string;
+}
+
+export interface Rule extends RuleName {
+  id: string;
+  description?: string;
   weight: number;
   dateCreated: string;
 }
 
-export function ruleName(rule: Rule): string {
-  return rule.title ?? rule.expression
+export function ruleName(rule: RuleName): string {
+  return rule.title ?? rule.expression;
 }
 
 export interface ServiceGroup {
@@ -52,7 +55,6 @@ export interface ServiceScorecardScore {
 export interface ScorecardServiceScore {
   serviceId: string;
   componentRef: string;
-  scorecardId: string;
   score: number;
   scorePercentage: number;
   totalPossibleScore: number;
@@ -65,4 +67,27 @@ export interface ScorecardServiceScoresRule {
   rule: Rule;
   score: number;
   error?: string;
+}
+
+export interface ScorecardResult {
+  scorecardId: string;
+  componentRef: string;
+  totalScore: number;
+  possibleScore: number;
+  ruleResults: RuleResult[];
+  dateCreated: string;
+}
+
+export interface RuleResult {
+  id: string;
+  expression: string;
+  result: boolean;
+  score: number;
+  weight: number;
+  error?: string;
+  leftExpression?: string;
+  leftResult?: any;
+  rightExpression?: string;
+  rightResult?: any;
+  operation: string;
 }

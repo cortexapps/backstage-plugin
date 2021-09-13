@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createRouteRef, createSubRouteRef } from '@backstage/core-plugin-api';
+import React from 'react';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
+import { defaultEntityRefContext } from '../../utils/ComponentUtils';
+import { Entity, EntityName } from '@backstage/catalog-model';
 
-export const rootRouteRef = createRouteRef({
-  id: 'cortex',
-  path: '/cortex',
-});
+interface DefaultEntityRefLinkProps {
+  entityRef: Entity | EntityName;
+  children?: React.ReactNode;
+}
 
-export const scorecardsRouteRef = createSubRouteRef({
-  id: 'scorecards',
-  parent: rootRouteRef,
-  path: '/scorecards',
-});
-
-export const scorecardRouteRef = createSubRouteRef({
-  id: 'scorecard',
-  path: '/scorecards/:id',
-  parent: rootRouteRef,
-});
-
-export const scorecardServiceDetailsRouteRef = createSubRouteRef({
-  id: 'scorecardServiceDetails',
-  path: '/scorecards/:scorecardId/:namespace/:kind/:name',
-  parent: rootRouteRef,
-});
+export const DefaultEntityRefLink = ({
+  entityRef,
+  children,
+}: DefaultEntityRefLinkProps) => {
+  return (
+    <EntityRefLink
+      entityRef={entityRef}
+      defaultKind={defaultEntityRefContext.defaultKind}
+      children={children}
+    />
+  );
+};
