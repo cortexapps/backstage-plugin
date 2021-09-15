@@ -44,9 +44,13 @@ export type ScorecardServiceScoreRuleName = Omit<
 
 interface RuleResultDetailsProps {
   rule: ScorecardServiceScoreRuleName;
+  hideWeight?: boolean;
 }
 
-export const RuleResultDetails = ({ rule }: RuleResultDetailsProps) => {
+export const RuleResultDetails = ({
+  rule,
+  hideWeight,
+}: RuleResultDetailsProps) => {
   const classes = useStyles();
 
   return (
@@ -71,9 +75,11 @@ export const RuleResultDetails = ({ rule }: RuleResultDetailsProps) => {
             style={{ wordWrap: 'break-word' }}
           />
         </Grid>
-        <Grid item>
-          <ListItemText primary={`${rule.score}`} />
-        </Grid>
+        {hideWeight !== true && (
+          <Grid item>
+            <ListItemText primary={`${rule.rule.weight}`} />
+          </Grid>
+        )}
         {rule.error && (
           <Grid item xs={9}>
             <Typography color="error" style={{ wordWrap: 'break-word' }}>
@@ -88,10 +94,12 @@ export const RuleResultDetails = ({ rule }: RuleResultDetailsProps) => {
 
 interface ScorecardsTableRowDetailsProps {
   rules: ScorecardServiceScoreRuleName[];
+  hideWeights?: boolean;
 }
 
 export const ScorecardResultDetails = ({
   rules,
+  hideWeights,
 }: ScorecardsTableRowDetailsProps) => {
   return (
     <List>
@@ -104,7 +112,7 @@ export const ScorecardResultDetails = ({
           return a.score - b.score;
         })
         .map((rule, i) => (
-          <RuleResultDetails key={i} rule={rule} />
+          <RuleResultDetails key={i} rule={rule} hideWeight={hideWeights} />
         ))}
     </List>
   );

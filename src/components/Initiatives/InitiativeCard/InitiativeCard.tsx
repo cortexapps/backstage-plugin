@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Scorecard } from '../../../api/types';
+import { Initiative } from '../../../api/types';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import { scorecardRouteRef } from '../../../routes';
+import { initiativeRouteRef } from '../../../routes';
 import { ListCard } from '../../ListCard';
 
-type ScorecardCardProps = {
-  scorecard: Scorecard;
+type InitiativeCardProps = {
+  initiative: Initiative;
 };
 
-export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
-  const scorecardRef = useRouteRef(scorecardRouteRef);
+export const InitiativeCard = ({ initiative }: InitiativeCardProps) => {
+  const initiativeRef = useRouteRef(initiativeRouteRef);
 
   return (
     <ListCard
-      name={scorecard.name}
-      creatorName={scorecard.creator.name}
-      description={scorecard.description}
-      url={scorecardRef({ id: scorecard.id })}
+      name={initiative.name}
+      creatorName={initiative.creator.name}
+      description={initiative.description}
+      url={initiativeRef({ id: initiative.id })}
     />
   );
 };

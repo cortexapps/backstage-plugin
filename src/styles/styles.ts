@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
 const cortexStyles = (theme: Theme) =>
   createStyles({
@@ -26,12 +26,10 @@ const cortexStyles = (theme: Theme) =>
       overflow: 'hidden',
       whiteSpace: 'nowrap',
     },
-    scoreGauge: {
-
-    }
+    scoreGauge: {},
   });
 
-const scorecardDetailCardStyles = createStyles({
+const detailCardStyles = createStyles({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -39,8 +37,8 @@ const scorecardDetailCardStyles = createStyles({
   },
   rule: {
     marginBottom: '2px',
-  }
-})
+  },
+});
 
 export const fallbackPalette = {
   status: {
@@ -62,8 +60,8 @@ export const fallbackPalette = {
   },
   common: {
     white: '#FFFFFF',
-  }
-}
+  },
+};
 
 export const useCortexStyles = makeStyles(cortexStyles);
-export const useScorecardDetailCardStyles = makeStyles(scorecardDetailCardStyles)
+export const useDetailCardStyles = makeStyles(detailCardStyles);

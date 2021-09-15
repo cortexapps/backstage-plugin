@@ -14,64 +14,53 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Scorecard, ScorecardServiceScore } from '../../../../api/types';
-import { Chip, Grid } from '@material-ui/core';
-import moment from 'moment';
-import { InfoCard } from '@backstage/core-components';
+import { Initiative } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
+import { InfoCard } from '@backstage/core-components';
+import { Chip, Grid } from '@material-ui/core';
 import { MetadataItem } from '../../../MetadataItem';
+import { useRouteRef } from '@backstage/core-plugin-api';
+import { scorecardRouteRef } from '../../../../routes';
+import moment from 'moment/moment';
 
-interface ScorecardMetadataCardProps {
-  scorecard: Scorecard;
-  scores: ScorecardServiceScore[];
+interface InitiativeMetadataCardProps {
+  initiative: Initiative;
 }
 
-export const ScorecardMetadataCard = ({
-  scorecard,
-  scores,
-}: ScorecardMetadataCardProps) => {
+export const InitiativeMetadataCard = ({
+  initiative,
+}: InitiativeMetadataCardProps) => {
   const classes = useDetailCardStyles();
-
-  const lastUpdated =
-    scores.length === 0
-      ? undefined
-      : moment.max(scores.map(score => moment.utc(score.lastUpdated).local()));
-  const nextUpdated = scorecard.nextUpdated
-    ? moment.utc(scorecard.nextUpdated)
-    : undefined;
+  const scorecardRef = useRouteRef(scorecardRouteRef);
 
   return (
     <InfoCard title="Details" className={classes.root}>
       <Grid container>
-        {scorecard.description && (
+        {initiative.description && (
           <MetadataItem gridSizes={{ xs: 12 }} label="Description">
-            {scorecard.description}
+            {initiative.description}
           </MetadataItem>
         )}
-        <MetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Owner">
-          {scorecard.creator.name}
+        <MetadataItem gridSizes={{ xs: 12 }} label="Deadline">
+          {moment.utc(initiative.targetDate).local().fromNow()}
         </MetadataItem>
-        {scorecard.tags.length > 0 && (
+        <MetadataItem gridSizes={{ xs: 12 }} label="Scorecard">
+          <Chip
+            size="small"
+            label={initiative.scorecard.name}
+            clickable
+            component="a"
+            href={scorecardRef({ id: initiative.scorecard.id })}
+          />
+        </MetadataItem>
+        <MetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Owner">
+          {initiative.creator.name}
+        </MetadataItem>
+        {initiative.tags.length > 0 && (
           <MetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Applies To">
-            {scorecard.tags.map(s => (
+            {initiative.tags.map(s => (
               <Chip key={s.id} size="small" label={s.tag} />
             ))}
-          </MetadataItem>
-        )}
-        {lastUpdated && (
-          <MetadataItem
-            gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-            label="Last Updated"
-          >
-            {lastUpdated.fromNow()}
-          </MetadataItem>
-        )}
-        {nextUpdated && (
-          <MetadataItem
-            gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-            label="Next Evaluation"
-          >
-            {nextUpdated.fromNow()}
           </MetadataItem>
         )}
       </Grid>

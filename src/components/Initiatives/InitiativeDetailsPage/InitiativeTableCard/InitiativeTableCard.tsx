@@ -15,55 +15,61 @@
  */
 import { InfoCard } from '@backstage/core';
 import React from 'react';
-import { ScorecardServiceScore } from '../../../../api/types';
+import { Initiative, InitiativeActionItem } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
-import { Button, Table, TableBody } from '@material-ui/core';
-import { ScorecardsTableRow } from './ScorecardsTableRow';
+import { Button } from '@material-ui/core';
 import { EmptyState } from '@backstage/core-components';
+import { FailingComponentsTable } from './FailingComponentsTable';
+import { PassingComponentsTable } from './PassingComponentsTable';
 
-interface ScorecardsTableProps {
-  scorecardId: string;
-  scores: ScorecardServiceScore[];
+interface InitiativeTableProps {
+  initiative: Initiative;
+  actionItems: InitiativeActionItem[];
 }
 
-export const ScorecardsTableCard = ({
-  scorecardId,
-  scores,
-}: ScorecardsTableProps) => {
+export const InitiativeTableCard = ({
+  initiative,
+  actionItems,
+}: InitiativeTableProps) => {
   const classes = useDetailCardStyles();
 
-  return (
-    <InfoCard title="Scores" className={classes.root}>
-      {scores.length === 0 ? (
+  if (initiative.scores.length === 0) {
+    return (
+      <InfoCard title="Action Items" className={classes.root}>
         <EmptyState
           missing="data"
-          title="Scorecard has not been evaluated yet."
+          title="Underlying scorecard has not been evaluated yet."
           description="Wait until next scorecard evaluation, or manually trigger from within Cortex."
           action={
             <Button
               variant="contained"
               color="primary"
-              href={`https://app.getcortexapp.com/admin/scorecards/${scorecardId}`}
+              href={`https://app.getcortexapp.com/admin/scorecards/${initiative.scorecard.id}`}
             >
               Go to Cortex
             </Button>
           }
         />
-      ) : (
-        <Table>
-          <TableBody>
-            {scores
-              .sort((a, b) => b.scorePercentage - a.scorePercentage)
-              .map(score => (
-                <ScorecardsTableRow
-                  key={score.serviceId}
-                  scorecardId={scorecardId}
-                  score={score}
-                />
-              ))}
-          </TableBody>
-        </Table>
+      </InfoCard>
+    );
+  }
+
+  const passing = initiative.scores
+    .filter(score => score.scorePercentage === 1)
+    .map(score => score.componentRef);
+
+  return (
+    <>
+      <FailingComponentsTable
+        actionItems={actionItems}
+        numRules={initiative.emphasizedRules.length}
+      />
+      {passing.length > 0 && (
+        <PassingComponentsTable
+          componentRefs={passing}
+          numRules={initiative.emphasizedRules.length}
+        />
       )}
-    </InfoCard>
+    </>
   );
 };

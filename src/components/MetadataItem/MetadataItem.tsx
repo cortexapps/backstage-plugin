@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from "react";
-import { Grid, makeStyles, Typography } from "@material-ui/core";
-import { fallbackPalette } from "../../../../styles/styles";
+import React from 'react';
+import { Grid, makeStyles, Typography } from '@material-ui/core';
+import { fallbackPalette } from '../../styles/styles';
 
 const useStyles = makeStyles(theme => ({
   label: {
@@ -33,32 +33,33 @@ const useStyles = makeStyles(theme => ({
     lineHeight: '24px',
     wordBreak: 'break-word',
   },
-}))
+}));
 
-interface ScorecardMetadataItemProps {
+interface MetadataItemProps {
   label: string;
   children: string | React.ReactNode;
   gridSizes?: Record<string, number>;
 }
 
-export const ScorecardMetadataItem = ({
-  label, children, gridSizes
-}: ScorecardMetadataItemProps) => {
-
-  const classes = useStyles()
+export const MetadataItem = ({
+  label,
+  children,
+  gridSizes,
+}: MetadataItemProps) => {
+  const classes = useStyles();
 
   return (
     <Grid item {...gridSizes}>
       <Typography variant="subtitle2" className={classes.label}>
-        { label }
+        {label}
       </Typography>
-      { typeof children === 'string'  ? (
-          <Typography variant="body2" className={classes.value}>
-            { children }
-          </Typography>
+      {typeof children === 'string' ? (
+        <Typography variant="body2" className={classes.value}>
+          {children}
+        </Typography>
       ) : (
         children
       )}
     </Grid>
-  )
-}
+  );
+};

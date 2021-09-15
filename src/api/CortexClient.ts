@@ -16,6 +16,8 @@
 
 import { createApiRef, DiscoveryApi } from '@backstage/core';
 import {
+  Initiative,
+  InitiativeActionItem,
   Scorecard,
   ScorecardResult,
   ScorecardServiceScore,
@@ -34,6 +36,12 @@ export const cortexApiRef = createApiRef<CortexApi>({
 type Options = {
   discoveryApi: DiscoveryApi;
 };
+
+type QueryParamVal = string | string[];
+
+function isString(val: QueryParamVal): val is string {
+  return typeof val === 'string';
+}
 
 export class CortexClient implements CortexApi {
   private readonly discoveryApi: DiscoveryApi;
@@ -86,6 +94,40 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/scores`);
   }
 
+  async getInitiatives(): Promise<Initiative[]> {
+    return await this.get(`/api/backstage/v1/initiatives`);
+  }
+
+  async getInitiative(id: string): Promise<Initiative> {
+    return await this.get(`/api/backstage/v1/initiatives/${id}`);
+  }
+
+  async getInitiativeActionItems(id: string): Promise<InitiativeActionItem[]> {
+    return await this.get(`/api/backstage/v1/initiatives/${id}/actionitems`);
+  }
+
+  async getComponentActionItems(
+    entityRef: AnyEntityRef,
+  ): Promise<InitiativeActionItem[]> {
+    return await this.get(
+      `/api/backstage/v1/entities/initiatives/actionitems`,
+      {
+        ref: stringifyAnyEntityRef(entityRef),
+      },
+    );
+  }
+
+  async getBulkComponentActionItems(
+    entityRefs: AnyEntityRef[],
+  ): Promise<InitiativeActionItem[]> {
+    return await this.get(
+      `/api/backstage/v1/entities/initiatives/actionitems`,
+      {
+        refs: entityRefs.map(entityRef => stringifyAnyEntityRef(entityRef)),
+      },
+    );
+  }
+
   private async getBasePath(): Promise<string> {
     const proxyBasePath = await this.discoveryApi.getBaseUrl('proxy');
     return `${proxyBasePath}/cortex`;
@@ -93,20 +135,28 @@ export class CortexClient implements CortexApi {
 
   private async get(
     path: string,
-    args?: { [key: string]: string },
+    args?: { [key: string]: QueryParamVal },
   ): Promise<any | undefined> {
     const basePath = await this.getBasePath();
 
     const url = `${basePath}${path}`;
-    const queryUrl = args
-      ? `${url}?${Object.keys(args)
-          .map(
-            key =>
-              `${encodeURIComponent(key)}=${encodeURIComponent(args[key])}`,
-          )
-          .join('&')}`
-      : url;
+    const queryParams =
+      args &&
+      Object.keys(args)
+        .flatMap((key: string) => {
+          const val: QueryParamVal = args[key];
+          if (isString(val)) {
+            return [[key, val]];
+          }
+          return val.map(v => [key, v]);
+        })
+        .map(kv => {
+          const [key, val] = kv;
+          return `${encodeURIComponent(key)}=${encodeURIComponent(val)}`;
+        })
+        .join('&');
 
+    const queryUrl = queryParams ? `${url}?${queryParams}` : url;
     const response = await fetch(queryUrl);
     const body = await response.json();
 

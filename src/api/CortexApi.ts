@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import {
+  Initiative,
+  InitiativeActionItem,
   Scorecard,
   ScorecardResult,
   ScorecardServiceScore,
@@ -40,5 +42,16 @@ export interface CortexApi {
     startDate?: Moment,
     endDate?: Moment,
   ): Promise<ScorecardResult[]>;
+
+  getInitiatives(): Promise<Initiative[]>;
+  getInitiative(id: string): Promise<Initiative>;
+  getInitiativeActionItems(id: string): Promise<InitiativeActionItem[]>;
+  getComponentActionItems(
+    entityRef: AnyEntityRef,
+  ): Promise<InitiativeActionItem[]>;
+  getBulkComponentActionItems(
+    entityRefs: AnyEntityRef[],
+  ): Promise<InitiativeActionItem[]>;
+
   syncEntities(entities: Entity[]): Promise<void>;
 }
