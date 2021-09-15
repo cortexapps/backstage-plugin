@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { useAsync } from 'react-use';
@@ -24,56 +24,67 @@ import {
   Progress,
   WarningPanel,
 } from '@backstage/core-components';
-import { Table, TableBody } from '@material-ui/core';
-import { EntityScorecardsCardRow } from './EntityScorecardsCardRow';
 import { stringifyAnyEntityRef } from '../../utils/types';
+import { ScorecardResultDetails } from '../Scorecards/ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
+import { dedupeByString } from '../../utils/collections';
 
-interface EntityScorecardsCardProps {
+interface EntityInitiativesCardProps {
   entity: Entity;
 }
 
-export const EntityScorecardsCard = ({ entity }: EntityScorecardsCardProps) => {
+export const EntityInitiativesCard = ({
+  entity,
+}: EntityInitiativesCardProps) => {
   const cortexApi = useApi(cortexApiRef);
 
   const {
-    value: scores,
+    value: actionItems,
     loading,
     error,
   } = useAsync(async () => {
-    return await cortexApi.getServiceScores(stringifyAnyEntityRef(entity));
+    return await cortexApi.getComponentActionItems(
+      stringifyAnyEntityRef(entity),
+    );
   }, []);
+
+  const dedupedActionItems = useMemo(() => {
+    return actionItems
+      ? dedupeByString(actionItems, actionItem => actionItem.rule.expression)
+      : [];
+  }, [actionItems]);
 
   if (loading) {
     return <Progress />;
   }
 
-  if (error || scores === undefined) {
+  if (error || actionItems === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
+      <WarningPanel severity="error" title="Could not load action items.">
         {error?.message}
       </WarningPanel>
     );
   }
 
-  if (scores.length === 0) {
+  if (actionItems.length === 0) {
     return (
       <EmptyState
         missing="info"
-        title="No scorecards to display"
-        description="You haven't added any scorecards yet."
+        title="No remaining action items. Keep it up!"
       />
     );
   }
 
   return (
-    <InfoCard title="Scorecards">
-      <Table>
-        <TableBody>
-          {scores.map(score => (
-            <EntityScorecardsCardRow key={score.scorecardId} score={score} />
-          ))}
-        </TableBody>
-      </Table>
+    <InfoCard title="Action Items">
+      <ScorecardResultDetails
+        hideWeights
+        rules={dedupedActionItems.map(actionItem => {
+          return {
+            rule: actionItem.rule,
+            score: 0,
+          };
+        })}
+      />
     </InfoCard>
   );
 };

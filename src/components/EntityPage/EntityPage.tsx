@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Content, Progress, WarningPanel } from "@backstage/core-components";
-import { Grid } from "@material-ui/core";
-import { EntityScorecardsCard } from "./EntityScorecardsCard";
-import { useEntityFromUrl } from "@backstage/plugin-catalog-react";
+import { Content, Progress, WarningPanel } from '@backstage/core-components';
+import { Grid } from '@material-ui/core';
+import { EntityScorecardsCard } from './EntityScorecardsCard';
+import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
+import { EntityInitiativesCard } from './EntityInitiativesCard';
 
 export const EntityPage = () => {
-
   const { entity, loading, error } = useEntityFromUrl();
 
   if (loading) {
@@ -34,16 +34,19 @@ export const EntityPage = () => {
         title="Could not load entity"
         message={error}
       />
-    )
+    );
   }
 
   return (
     <Content>
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
-          <EntityScorecardsCard entity={entity}/>
+          <EntityScorecardsCard entity={entity} />
+        </Grid>
+        <Grid item lg={8}>
+          <EntityInitiativesCard entity={entity} />
         </Grid>
       </Grid>
     </Content>
   );
-}
+};

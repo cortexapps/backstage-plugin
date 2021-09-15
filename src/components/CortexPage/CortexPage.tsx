@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CortexLayout } from "../CortexLayout";
+import { CortexLayout } from '../CortexLayout';
 import React from 'react';
-import { ScorecardsPage } from "../../extensions";
-import { SettingsPage } from "../SettingsPage";
+import { ScorecardsPage } from '../../extensions';
+import { SettingsPage } from '../SettingsPage';
+import { InitiativesPage } from '../Initiatives/InitiativesPage';
 
 export const CortexPage = () => {
   return (
@@ -27,9 +28,12 @@ export const CortexPage = () => {
       <CortexLayout.Route path="scorecards" title="Scorecards">
         <ScorecardsPage />
       </CortexLayout.Route>
+      <CortexLayout.Route path="initiatives" title="Initiatives">
+        <InitiativesPage />
+      </CortexLayout.Route>
       <CortexLayout.Route path="settings" title="Settings">
         <SettingsPage />
       </CortexLayout.Route>
     </CortexLayout>
   );
-}
+};

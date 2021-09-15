@@ -37,3 +37,9 @@ export const scorecardServiceDetailsRouteRef = createSubRouteRef({
   path: '/scorecards/:scorecardId/:namespace/:kind/:name',
   parent: rootRouteRef,
 });
+
+export const initiativeRouteRef = createSubRouteRef({
+  id: 'initiative',
+  path: '/initiatives/:id',
+  parent: rootRouteRef,
+});

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 export interface Scorecard {
   creator: { name: string; email: string };
   id: string;
@@ -26,12 +27,12 @@ export interface Scorecard {
 export interface RuleName {
   expression: string;
   title?: string;
+  weight: number;
 }
 
 export interface Rule extends RuleName {
   id: string;
   description?: string;
-  weight: number;
   dateCreated: string;
 }
 
@@ -90,4 +91,40 @@ export interface RuleResult {
   rightExpression?: string;
   rightResult?: any;
   operation: string;
+}
+
+export interface Initiative {
+  creator: { name: string; email: string };
+  description?: string;
+  id: string;
+  name: string;
+  scorecard: Scorecard;
+  scores: InitiativeServiceScores[];
+  componentRefs: string[];
+  emphasizedRules: InitiativeRule[];
+  targetDate: string;
+  targetScore?: number;
+  tags: ServiceGroup[];
+}
+
+export interface InitiativeRule {
+  ruleId: string;
+  expression: string;
+}
+
+export interface InitiativeServiceScores {
+  scorePercentage: number;
+  componentRef: string;
+}
+
+export interface InitiativeActionItem {
+  rule: Rule;
+  componentRef: string;
+  initiative: {
+    initiativeId: string;
+    name: string;
+    targetDate: string;
+    targetScore?: number;
+    description?: string;
+  };
 }

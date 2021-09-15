@@ -29,6 +29,7 @@ export function toScorecardServiceScoreRuleName(
       ...ruleResult,
       rule: {
         expression: ruleResult.expression,
+        weight: ruleResult.weight,
       },
     };
   });

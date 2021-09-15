@@ -17,7 +17,7 @@ import { makeStyles, useTheme } from '@material-ui/core';
 import { BackstageTheme } from '@backstage/theme';
 import { Circle } from 'rc-progress';
 import React from 'react';
-import { fallbackPalette } from "../../styles/styles";
+import { fallbackPalette } from '../../styles/styles';
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   root: {
@@ -47,6 +47,7 @@ type Props = {
   max?: number;
   strokeWidth?: number;
   trailWidth?: number;
+  textOverride?: string;
 };
 
 const defaultProps = {
@@ -72,7 +73,7 @@ export function getProgressColor(
   if (actualValue < actualMax / 3) {
     return palette.status?.error ?? fallbackPalette.status.error;
   } else if (actualValue < actualMax * (2 / 3)) {
-    return palette.status?.warning ?? fallbackPalette.status.warning ;
+    return palette.status?.warning ?? fallbackPalette.status.warning;
   }
 
   return palette.status?.ok ?? fallbackPalette.status.ok;
@@ -82,7 +83,7 @@ export function getProgressColor(
 export const Gauge = (props: Props) => {
   const classes = useStyles(props);
   const theme = useTheme<BackstageTheme>();
-  const { value, fractional, inverse, unit, max } = {
+  const { value, fractional, inverse, unit, max, textOverride } = {
     ...defaultProps,
     ...props,
   };
@@ -101,9 +102,8 @@ export const Gauge = (props: Props) => {
         className={classes.circle}
       />
       <div className={classes.overlay}>
-        {isNaN(value) ? 'N/A' : `${asActual}${unit}`}
+        {textOverride ?? (isNaN(value) ? 'N/A' : `${asActual}${unit}`)}
       </div>
     </div>
   );
 };
-
