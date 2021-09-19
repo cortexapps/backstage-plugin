@@ -100,7 +100,6 @@ export interface Initiative {
   name: string;
   scorecard: Scorecard;
   scores: InitiativeServiceScores[];
-  componentRefs: string[];
   emphasizedRules: InitiativeRule[];
   targetDate: string;
   targetScore?: number;

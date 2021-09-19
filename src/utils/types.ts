@@ -26,6 +26,16 @@ export function assertUnreachable(_x: never): never {
   throw new Error("Didn't expect to get here");
 }
 
+export type Predicate<T> = (item: T) => boolean;
+
+export function combinePredicates<T>(predicates: Predicate<T>[]): Predicate<T> {
+  return (t: T) => {
+    return predicates
+      .map((filter: Predicate<T>) => filter?.(t) ?? true)
+      .every(Boolean);
+  };
+}
+
 export function enumKeys<
   ENUM extends object,
   K extends keyof ENUM = keyof ENUM,

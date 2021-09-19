@@ -13,46 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Content, ContentHeader, } from '@backstage/core-components';
-import React, { useMemo, useState } from "react";
-import { Scorecard, ScorecardServiceScore } from "../../../api/types";
-import { Grid } from "@material-ui/core";
-import { ScorecardMetadataCard } from "./ScorecardMetadataCard";
-import { ScorecardRulesCard } from "./ScorecardRulesCard";
-import { ScorecardFilterCard } from "./ScorecardFilterCard";
-import { ScorecardsTableCard } from "./ScorecardsTableCard";
+import { Content, ContentHeader } from '@backstage/core-components';
+import React, { useMemo, useState } from 'react';
+import { Scorecard, ScorecardServiceScore } from '../../../api/types';
+import { Grid } from '@material-ui/core';
+import { ScorecardMetadataCard } from './ScorecardMetadataCard';
+import { ScorecardRulesCard } from './ScorecardRulesCard';
+import { ScorecardFilterCard } from './ScorecardFilterCard';
+import { ScorecardsTableCard } from './ScorecardsTableCard';
+import { Predicate } from '../../../utils/types';
 
-export type ScorecardServiceScoreFilter = (score: ScorecardServiceScore) => boolean
+export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 
 interface ScorecardDetailsProps {
-  scorecard: Scorecard,
-  scores: ScorecardServiceScore[],
+  scorecard: Scorecard;
+  scores: ScorecardServiceScore[];
 }
 
 export const ScorecardDetails = ({
   scorecard,
-  scores
+  scores,
 }: ScorecardDetailsProps) => {
-
   // Have to store lambda of lambda for React to not eagerly invoke
-  const [filter, setFilter] = useState<() => (ScorecardServiceScoreFilter)>(
-    () => () => true
-  )
+  const [filter, setFilter] = useState<() => ScorecardServiceScoreFilter>(
+    () => () => true,
+  );
 
   const filteredScores = useMemo(() => {
-    return scores.filter(filter)
-  }, [scores, filter])
+    return scores.filter(filter);
+  }, [scores, filter]);
 
   return (
     <Content>
-      <ContentHeader title={scorecard.name}/>
+      <ContentHeader title={scorecard.name} />
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
-          <ScorecardMetadataCard scorecard={scorecard} scores={scores}/>
-          <ScorecardRulesCard scorecard={scorecard}/>
+          <ScorecardMetadataCard scorecard={scorecard} scores={scores} />
+          <ScorecardRulesCard scorecard={scorecard} />
           <ScorecardFilterCard
             scorecard={scorecard}
-            setFilter={(newFilter) => setFilter(() => newFilter)}
+            setFilter={newFilter => setFilter(() => newFilter)}
           />
         </Grid>
         <Grid item lg={8} xs={12}>
@@ -63,5 +63,5 @@ export const ScorecardDetails = ({
         </Grid>
       </Grid>
     </Content>
-  )
-}
+  );
+};

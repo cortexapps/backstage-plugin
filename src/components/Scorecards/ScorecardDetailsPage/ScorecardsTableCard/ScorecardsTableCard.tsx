@@ -17,7 +17,7 @@ import { InfoCard } from '@backstage/core';
 import React from 'react';
 import { ScorecardServiceScore } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
-import { Button, Table, TableBody } from '@material-ui/core';
+import { Table, TableBody } from '@material-ui/core';
 import { ScorecardsTableRow } from './ScorecardsTableRow';
 import { EmptyState } from '@backstage/core-components';
 
@@ -35,20 +35,7 @@ export const ScorecardsTableCard = ({
   return (
     <InfoCard title="Scores" className={classes.root}>
       {scores.length === 0 ? (
-        <EmptyState
-          missing="data"
-          title="Scorecard has not been evaluated yet."
-          description="Wait until next scorecard evaluation, or manually trigger from within Cortex."
-          action={
-            <Button
-              variant="contained"
-              color="primary"
-              href={`https://app.getcortexapp.com/admin/scorecards/${scorecardId}`}
-            >
-              Go to Cortex
-            </Button>
-          }
-        />
+        <EmptyState missing="data" title="No components found." />
       ) : (
         <Table>
           <TableBody>
