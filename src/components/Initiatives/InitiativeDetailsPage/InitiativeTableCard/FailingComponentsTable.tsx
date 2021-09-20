@@ -43,6 +43,7 @@ export const FailingComponentsTable = ({
         <TableBody>
           {Object.keys(failingComponents).map(componentRef => (
             <FailingComponentsTableRow
+              key={componentRef}
               componentRef={componentRef}
               actionItems={failingComponents[componentRef]}
               numRules={numRules}

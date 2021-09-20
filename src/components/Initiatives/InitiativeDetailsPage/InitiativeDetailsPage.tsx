@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
 import {
@@ -27,11 +27,19 @@ import { Grid } from '@material-ui/core';
 import { initiativeRouteRef } from '../../../routes';
 import { InitiativeMetadataCard } from './InitiativeMetadataCard';
 import { InitiativeTableCard } from './InitiativeTableCard';
+import { InitiativeSummaryCard } from './InitiativeSummaryCard';
+import { InitiativeFilterCard } from './InitiativeFilterCard';
+import { Predicate } from '../../../utils/types';
 
 export const InitiativeDetailsPage = () => {
   const { id: initiativeId } = useRouteRefParams(initiativeRouteRef);
 
   const cortexApi = useApi(cortexApiRef);
+
+  // Have to store lambda of lambda for React to not eagerly invoke
+  const [filter, setFilter] = useState<() => Predicate<string>>(
+    () => () => true,
+  );
 
   const { value, loading, error } = useAsync(async () => {
     return await Promise.all([
@@ -40,11 +48,46 @@ export const InitiativeDetailsPage = () => {
     ]);
   }, []);
 
+  const [initiative, actionItems] = value ?? [undefined, undefined];
+
+  const filteredComponentRefs = useMemo(() => {
+    return (
+      initiative?.scores?.map(score => score.componentRef)?.filter(filter) ?? []
+    );
+  }, [initiative, filter]);
+
+  const numFailing = useMemo(() => {
+    return (
+      initiative?.scores
+        ?.map(score => score.componentRef)
+        ?.filter(filter)
+        ?.filter(componentRef =>
+          actionItems?.some(
+            actionItem => actionItem.componentRef === componentRef,
+          ),
+        )?.length ?? 0
+    );
+  }, [initiative, filter, actionItems]);
+
+  const numPassing = useMemo(() => {
+    return (
+      initiative?.scores
+        ?.map(score => score.componentRef)
+        ?.filter(filter)
+        ?.filter(
+          componentRef =>
+            !actionItems?.some(
+              actionItem => actionItem.componentRef === componentRef,
+            ),
+        )?.length ?? 0
+    );
+  }, [initiative, filter, actionItems]);
+
   if (loading) {
     return <Progress />;
   }
 
-  if (error || value === undefined) {
+  if (error || initiative === undefined || actionItems === undefined) {
     return (
       <WarningPanel severity="error" title="Could not load initiative.">
         {error?.message ?? ''}
@@ -52,18 +95,26 @@ export const InitiativeDetailsPage = () => {
     );
   }
 
-  const [initiative, actionItems] = value;
-
   return (
     <Content>
       <ContentHeader title={initiative.name} />
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <InitiativeMetadataCard initiative={initiative} />
+          <InitiativeFilterCard
+            initiative={initiative}
+            actionItems={actionItems}
+            setFilter={newFilter => setFilter(() => newFilter)}
+          />
         </Grid>
         <Grid item lg={8} xs={12}>
+          <InitiativeSummaryCard
+            numPassing={numPassing}
+            numFailing={numFailing}
+          />
           <InitiativeTableCard
-            initiative={initiative}
+            componentRefs={filteredComponentRefs}
+            numRules={initiative.emphasizedRules.length}
             actionItems={actionItems}
           />
         </Grid>

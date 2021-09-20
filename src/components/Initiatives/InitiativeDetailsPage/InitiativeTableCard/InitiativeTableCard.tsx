@@ -15,60 +15,51 @@
  */
 import { InfoCard } from '@backstage/core';
 import React from 'react';
-import { Initiative, InitiativeActionItem } from '../../../../api/types';
+import { InitiativeActionItem } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
-import { Button } from '@material-ui/core';
 import { EmptyState } from '@backstage/core-components';
 import { FailingComponentsTable } from './FailingComponentsTable';
 import { PassingComponentsTable } from './PassingComponentsTable';
 
 interface InitiativeTableProps {
-  initiative: Initiative;
+  componentRefs: string[];
+  numRules: number;
   actionItems: InitiativeActionItem[];
 }
 
 export const InitiativeTableCard = ({
-  initiative,
+  componentRefs,
+  numRules,
   actionItems,
 }: InitiativeTableProps) => {
   const classes = useDetailCardStyles();
 
-  if (initiative.scores.length === 0) {
+  if (componentRefs.length === 0) {
     return (
       <InfoCard title="Action Items" className={classes.root}>
-        <EmptyState
-          missing="data"
-          title="Underlying scorecard has not been evaluated yet."
-          description="Wait until next scorecard evaluation, or manually trigger from within Cortex."
-          action={
-            <Button
-              variant="contained"
-              color="primary"
-              href={`https://app.getcortexapp.com/admin/scorecards/${initiative.scorecard.id}`}
-            >
-              Go to Cortex
-            </Button>
-          }
-        />
+        <EmptyState missing="data" title="No components found." />
       </InfoCard>
     );
   }
 
-  const passing = initiative.scores
-    .filter(score => score.scorePercentage === 1)
-    .map(score => score.componentRef);
+  const filteredActionItems = actionItems.filter(actionItem =>
+    componentRefs.some(
+      componentRef => actionItem.componentRef === componentRef,
+    ),
+  );
+
+  const passing = componentRefs.filter(componentRef =>
+    actionItems.every(actionItem => actionItem.componentRef !== componentRef),
+  );
 
   return (
     <>
       <FailingComponentsTable
-        actionItems={actionItems}
-        numRules={initiative.emphasizedRules.length}
+        actionItems={filteredActionItems}
+        numRules={numRules}
       />
       {passing.length > 0 && (
-        <PassingComponentsTable
-          componentRefs={passing}
-          numRules={initiative.emphasizedRules.length}
-        />
+        <PassingComponentsTable componentRefs={passing} numRules={numRules} />
       )}
     </>
   );

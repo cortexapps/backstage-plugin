@@ -30,7 +30,7 @@ const useStyles = makeStyles<BackstageTheme>(theme => ({
     left: '50%',
     transform: 'translate(-50%, -60%)',
     fontWeight: 'bold',
-    color: theme.palette.textContrast,
+    color: theme.palette?.text?.secondary ?? fallbackPalette.text.secondary,
   },
   circle: {
     width: '80%',

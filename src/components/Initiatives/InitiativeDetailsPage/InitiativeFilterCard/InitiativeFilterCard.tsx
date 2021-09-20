@@ -14,45 +14,49 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import {
-  ruleName,
-  Scorecard,
-  ScorecardServiceScore,
-} from '../../../../api/types';
-import { ScorecardServiceScoreFilter } from '../ScorecardDetails';
+import { Initiative, InitiativeActionItem } from '../../../../api/types';
 import { FilterCard } from '../../../FilterCard';
 import { mapByString, mapValues } from '../../../../utils/collections';
+import { Predicate } from '../../../../utils/types';
 
-const createRulePredicate = (pass: boolean, ruleExpression: string) => {
-  return (score: ScorecardServiceScore) => {
-    const rulePassed =
-      (score.rules.find(rule => ruleExpression === rule.rule.expression)
-        ?.score ?? 0) > 0;
+const createRulePredicate = (
+  rule: string,
+  actionItems: InitiativeActionItem[],
+  pass: boolean,
+) => {
+  return (componentRef: string) => {
+    const passed = !actionItems.some(
+      actionItem =>
+        actionItem.componentRef === componentRef &&
+        actionItem.rule.expression === rule,
+    );
 
-    return rulePassed === pass;
+    return passed === pass;
   };
 };
 
-interface ScorecardFilterCardProps {
-  scorecard: Scorecard;
-  setFilter: (filter: ScorecardServiceScoreFilter) => void;
+interface InitiativeFilterCardProps {
+  initiative: Initiative;
+  actionItems: InitiativeActionItem[];
+  setFilter: (filter: Predicate<string>) => void;
 }
 
-export const ScorecardFilterCard = ({
-  scorecard,
+export const InitiativeFilterCard = ({
+  initiative,
+  actionItems,
   setFilter,
-}: ScorecardFilterCardProps) => {
+}: InitiativeFilterCardProps) => {
   const ruleFilterDefinitions = useMemo(() => {
     return mapValues(
-      mapByString(scorecard.rules, rule => rule.id),
+      mapByString(initiative.emphasizedRules, rule => rule.ruleId),
       rule => {
         return {
-          display: ruleName(rule),
+          display: rule.expression,
           value: rule.expression,
         };
       },
     );
-  }, [scorecard.rules]);
+  }, [initiative.emphasizedRules]);
 
   return (
     <FilterCard
@@ -61,14 +65,14 @@ export const ScorecardFilterCard = ({
         {
           name: 'Failing Rule',
           filters: ruleFilterDefinitions,
-          generatePredicate: (failingRule: string) =>
-            createRulePredicate(false, failingRule),
+          generatePredicate: rule =>
+            createRulePredicate(rule, actionItems, false),
         },
         {
           name: 'Passing Rule',
           filters: ruleFilterDefinitions,
-          generatePredicate: (passingRule: string) =>
-            createRulePredicate(true, passingRule),
+          generatePredicate: rule =>
+            createRulePredicate(rule, actionItems, true),
         },
       ]}
     />

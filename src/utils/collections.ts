@@ -28,6 +28,31 @@ export function groupByString<T>(
   }, {});
 }
 
+export function mapByString<T>(
+  items: T[],
+  property: (item: T) => string | undefined,
+): Record<string, T> {
+  return items.reduce((obj: Record<string, T>, item: T) => {
+    const key = property(item);
+    if (key !== undefined) {
+      obj[key] = item;
+    }
+    return obj;
+  }, {});
+}
+
+export function mapValues<T, U>(
+  obj: Record<string, T>,
+  f: (t: T) => U,
+): Record<string, U> {
+  const out: Record<string, U> = {};
+  Object.keys(obj).forEach(key => {
+    out[key] = f(obj[key]);
+  });
+
+  return out;
+}
+
 export function filterNotUndefined<T>(items: (T | undefined)[]): T[] {
   const arr: T[] = [];
   for (const item of items) {
