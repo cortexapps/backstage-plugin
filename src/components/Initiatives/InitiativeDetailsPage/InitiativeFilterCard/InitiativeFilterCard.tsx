@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { Initiative, InitiativeActionItem } from '../../../../api/types';
+import {
+  Initiative,
+  InitiativeActionItem,
+  ScorecardServiceScore,
+} from '../../../../api/types';
 import { FilterCard } from '../../../FilterCard';
 import { mapByString, mapValues } from '../../../../utils/collections';
 import { Predicate } from '../../../../utils/types';
+import { useGroupsAndSystemsFilters } from '../../../../utils/hooks';
+import { Progress } from '@backstage/core-components';
 
 const createRulePredicate = (
   rule: string,
@@ -58,6 +64,15 @@ export const InitiativeFilterCard = ({
     );
   }, [initiative.emphasizedRules]);
 
+  const { loading, groups, systems } = useGroupsAndSystemsFilters(
+    initiative.scores.map(score => score.componentRef),
+    (componentRef: string) => componentRef,
+  );
+
+  if (loading) {
+    return <Progress />;
+  }
+
   return (
     <FilterCard
       setFilter={setFilter}
@@ -74,6 +89,26 @@ export const InitiativeFilterCard = ({
           generatePredicate: rule =>
             createRulePredicate(rule, actionItems, true),
         },
+        ...(groups
+          ? [
+              {
+                name: 'Groups',
+                filters: groups.definition,
+                generatePredicate: (groupRef: string) =>
+                  groups.predicate(groupRef),
+              },
+            ]
+          : []),
+        ...(systems
+          ? [
+              {
+                name: 'Systems',
+                filters: systems.definition,
+                generatePredicate: (systemRef: string) =>
+                  systems.predicate(systemRef),
+              },
+            ]
+          : []),
       ]}
     />
   );

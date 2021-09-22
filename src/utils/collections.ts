@@ -15,14 +15,24 @@
  */
 export function groupByString<T>(
   items: T[],
-  property: (item: T) => string | undefined,
+  property: (item: T) => string | string[] | undefined,
 ): Record<string, T[]> {
   return items.reduce((obj: Record<string, T[]>, item: T) => {
-    const key = property(item);
-    if (key !== undefined) {
-      const arr: T[] = obj[key] ?? [];
-      arr.push(item);
-      obj[key] = arr;
+    const mappingKey = property(item);
+    if (mappingKey !== undefined) {
+      let keys: string[];
+
+      if (typeof mappingKey === 'string') {
+        keys = [mappingKey];
+      } else {
+        keys = mappingKey;
+      }
+
+      keys.forEach(key => {
+        const arr: T[] = obj[key] ?? [];
+        arr.push(item);
+        obj[key] = arr;
+      });
     }
     return obj;
   }, {});

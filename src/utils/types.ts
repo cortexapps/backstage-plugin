@@ -20,7 +20,9 @@ import {
   parseEntityName,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
-import { defaultEntityRefContext } from './ComponentUtils';
+import { defaultComponentRefContext, EntityRefContext } from './ComponentUtils';
+
+export const identity = <T>(t: T) => t;
 
 export function assertUnreachable(_x: never): never {
   throw new Error("Didn't expect to get here");
@@ -43,9 +45,12 @@ export function enumKeys<
   return Object.keys(obj).filter(k => Number.isNaN(+k)) as K[];
 }
 
-export function stringifyAnyEntityRef(entityRef: AnyEntityRef): string {
+export function stringifyAnyEntityRef(
+  entityRef: AnyEntityRef,
+  entityRefContext: EntityRefContext = defaultComponentRefContext,
+): string {
   if (typeof entityRef === 'string') {
-    return entityRef;
+    return stringifyEntityRef(parseEntityName(entityRef, entityRefContext));
   } else if (
     (entityRef as EntityName).namespace !== undefined &&
     (entityRef as EntityName).kind !== undefined
@@ -56,11 +61,20 @@ export function stringifyAnyEntityRef(entityRef: AnyEntityRef): string {
   }
 
   return stringifyEntityRef(
-    parseEntityName(entityRef as PartialEntityName, defaultEntityRefContext),
+    parseEntityName(entityRef as PartialEntityName, entityRefContext),
   );
 }
 
-// Backstage seems to be inconsistent on typing... namespace/kind optional in some places, non-optional in others?
+export function entityEquals(
+  a: AnyEntityRef,
+  b: AnyEntityRef,
+  entityRefContext: EntityRefContext = defaultComponentRefContext,
+): boolean {
+  const parsedA = stringifyAnyEntityRef(a, entityRefContext);
+  const parsedB = stringifyAnyEntityRef(b, entityRefContext);
+  return parsedA === parsedB;
+}
+
 export type PartialEntityName = {
   kind?: string;
   namespace?: string;

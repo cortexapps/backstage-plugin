@@ -31,7 +31,7 @@ import { Gauge } from '../../../Gauge';
 import { Link } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { scorecardServiceDetailsRouteRef } from '../../../../routes';
-import { defaultEntityRefContext } from '../../../../utils/ComponentUtils';
+import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 
 const useStyles = makeStyles({
   root: {
@@ -63,7 +63,7 @@ export const ScorecardsTableRow = ({
 
   const entityName = parseEntityName(
     score.componentRef,
-    defaultEntityRefContext,
+    defaultComponentRefContext,
   );
 
   const [open, setOpen] = useState(false);
