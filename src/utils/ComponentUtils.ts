@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EntityRef, parseEntityName } from '@backstage/catalog-model';
 
-export const defaultEntityRefContext = {
+export type EntityRefContext = {
+  defaultKind?: string;
+  defaultNamespace?: string;
+};
+
+export const defaultComponentRefContext: EntityRefContext = {
   defaultKind: 'Component',
   defaultNamespace: 'default',
 };
 
-export const compareRefs = (a: EntityRef, b: EntityRef) => {
-  const nameA = parseEntityName(a, defaultEntityRefContext);
-  const nameB = parseEntityName(b, defaultEntityRefContext);
-  return (
-    nameA.name === nameB.name &&
-    nameA.namespace === nameB.namespace &&
-    nameA.kind === nameB.kind
-  );
+export const defaultGroupRefContext: EntityRefContext = {
+  defaultKind: 'Group',
+  defaultNamespace: 'default',
+};
+
+export const defaultSystemRefContext: EntityRefContext = {
+  defaultKind: 'System',
+  defaultNamespace: 'default',
 };

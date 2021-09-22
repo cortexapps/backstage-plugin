@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { defaultEntityRefContext } from '../../utils/ComponentUtils';
+import { defaultComponentRefContext } from '../../utils/ComponentUtils';
 import { Entity, EntityName } from '@backstage/catalog-model';
 
 interface DefaultEntityRefLinkProps {
@@ -30,7 +30,7 @@ export const DefaultEntityRefLink = ({
   return (
     <EntityRefLink
       entityRef={entityRef}
-      defaultKind={defaultEntityRefContext.defaultKind}
+      defaultKind={defaultComponentRefContext.defaultKind}
       children={children}
     />
   );

@@ -28,7 +28,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import Box from '@material-ui/core/Box';
 import { Gauge } from '../../../Gauge';
 import { parseEntityName } from '@backstage/catalog-model';
-import { defaultEntityRefContext } from '../../../../utils/ComponentUtils';
+import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { DefaultEntityRefLink } from '../../../DefaultEntityLink';
 import { ScorecardResultDetails } from '../../../Scorecards/ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 
@@ -61,7 +61,7 @@ export const FailingComponentsTableRow = ({
 }: FailingComponentsTableRowProps) => {
   const classes = useActionItemsStyles();
   const [open, setOpen] = useState(false);
-  const entityName = parseEntityName(componentRef, defaultEntityRefContext);
+  const entityName = parseEntityName(componentRef, defaultComponentRefContext);
 
   return (
     <React.Fragment>

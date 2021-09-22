@@ -25,7 +25,6 @@ import { Grid, makeStyles, Typography } from '@material-ui/core';
 import { useAsync } from 'react-use';
 import { cortexApiRef } from '../../../api';
 import { scorecardServiceDetailsRouteRef } from '../../../routes';
-import { compareRefs } from '../../../utils/ComponentUtils';
 import { Gauge } from '../../Gauge';
 import Box from '@material-ui/core/Box';
 import { DefaultEntityRefLink } from '../../DefaultEntityLink';
@@ -34,6 +33,7 @@ import {
   ScorecardServiceScoreRuleName,
 } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
+import { entityEquals } from '../../../utils/types';
 
 const useStyles = makeStyles({
   progress: {
@@ -63,7 +63,7 @@ export const ScorecardsServicePage = () => {
   } = useAsync(async () => {
     const allScores = await cortexApi.getScorecardScores(scorecardId);
     return allScores.find(serviceScore =>
-      compareRefs(serviceScore.componentRef, entityRef),
+      entityEquals(serviceScore.componentRef, entityRef),
     );
   }, []);
 

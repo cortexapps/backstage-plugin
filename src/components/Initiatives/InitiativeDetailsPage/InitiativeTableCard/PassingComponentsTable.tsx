@@ -27,7 +27,7 @@ import Box from '@material-ui/core/Box';
 import { Gauge } from '../../../Gauge';
 import { DefaultEntityRefLink } from '../../../DefaultEntityLink';
 import { parseEntityName } from '@backstage/catalog-model';
-import { defaultEntityRefContext } from '../../../../utils/ComponentUtils';
+import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useActionItemsStyles } from './FailingComponentsTableRow';
 
@@ -73,7 +73,7 @@ export const PassingComponentsTable = ({
                     <DefaultEntityRefLink
                       entityRef={parseEntityName(
                         componentRef,
-                        defaultEntityRefContext,
+                        defaultComponentRefContext,
                       )}
                     />
                   </Box>

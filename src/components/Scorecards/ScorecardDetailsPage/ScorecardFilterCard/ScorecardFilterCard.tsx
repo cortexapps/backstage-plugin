@@ -22,6 +22,9 @@ import {
 import { ScorecardServiceScoreFilter } from '../ScorecardDetails';
 import { FilterCard } from '../../../FilterCard';
 import { mapByString, mapValues } from '../../../../utils/collections';
+import { useGroupsAndSystemsFilters } from '../../../../utils/hooks';
+import { AnyEntityRef } from '../../../../utils/types';
+import { Progress } from '@backstage/core-components';
 
 const createRulePredicate = (pass: boolean, ruleExpression: string) => {
   return (score: ScorecardServiceScore) => {
@@ -35,13 +38,20 @@ const createRulePredicate = (pass: boolean, ruleExpression: string) => {
 
 interface ScorecardFilterCardProps {
   scorecard: Scorecard;
+  componentRefs: AnyEntityRef[];
   setFilter: (filter: ScorecardServiceScoreFilter) => void;
 }
 
 export const ScorecardFilterCard = ({
   scorecard,
+  componentRefs,
   setFilter,
 }: ScorecardFilterCardProps) => {
+  const { loading, groups, systems } = useGroupsAndSystemsFilters(
+    componentRefs,
+    (score: ScorecardServiceScore) => score.componentRef,
+  );
+
   const ruleFilterDefinitions = useMemo(() => {
     return mapValues(
       mapByString(scorecard.rules, rule => rule.id),
@@ -53,6 +63,10 @@ export const ScorecardFilterCard = ({
       },
     );
   }, [scorecard.rules]);
+
+  if (loading) {
+    return <Progress />;
+  }
 
   return (
     <FilterCard
@@ -70,6 +84,26 @@ export const ScorecardFilterCard = ({
           generatePredicate: (passingRule: string) =>
             createRulePredicate(true, passingRule),
         },
+        ...(groups
+          ? [
+              {
+                name: 'Groups',
+                filters: groups.definition,
+                generatePredicate: (groupRef: string) =>
+                  groups.predicate(groupRef),
+              },
+            ]
+          : []),
+        ...(systems
+          ? [
+              {
+                name: 'Systems',
+                filters: systems.definition,
+                generatePredicate: (systemRef: string) =>
+                  systems.predicate(systemRef),
+              },
+            ]
+          : []),
       ]}
     />
   );
