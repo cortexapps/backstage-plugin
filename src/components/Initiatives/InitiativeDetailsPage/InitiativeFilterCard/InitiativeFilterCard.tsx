@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import {
-  Initiative,
-  InitiativeActionItem,
-  ScorecardServiceScore,
-} from '../../../../api/types';
+import { Initiative, InitiativeActionItem } from '../../../../api/types';
 import { FilterCard } from '../../../FilterCard';
 import { mapByString, mapValues } from '../../../../utils/collections';
 import { Predicate } from '../../../../utils/types';
