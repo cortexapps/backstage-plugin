@@ -34,7 +34,6 @@ import {
 } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 import { entityEquals } from '../../../utils/types';
-import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
 
 const useStyles = makeStyles({
   progress: {
