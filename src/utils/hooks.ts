@@ -35,7 +35,6 @@ import {
   RELATION_PART_OF,
 } from '@backstage/catalog-model';
 import {
-  defaultComponentRefContext,
   defaultGroupRefContext,
   defaultSystemRefContext,
 } from './ComponentUtils';
