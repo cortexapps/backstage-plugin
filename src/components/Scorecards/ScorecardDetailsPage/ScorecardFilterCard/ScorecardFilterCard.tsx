@@ -38,17 +38,14 @@ const createRulePredicate = (pass: boolean, ruleExpression: string) => {
 
 interface ScorecardFilterCardProps {
   scorecard: Scorecard;
-  componentRefs: AnyEntityRef[];
   setFilter: (filter: ScorecardServiceScoreFilter) => void;
 }
 
 export const ScorecardFilterCard = ({
   scorecard,
-  componentRefs,
   setFilter,
 }: ScorecardFilterCardProps) => {
   const { loading, groups, systems } = useGroupsAndSystemsFilters(
-    componentRefs,
     (score: ScorecardServiceScore) => score.componentRef,
   );
 

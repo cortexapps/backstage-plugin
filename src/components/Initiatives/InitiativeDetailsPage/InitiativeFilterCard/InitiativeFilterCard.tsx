@@ -61,7 +61,6 @@ export const InitiativeFilterCard = ({
   }, [initiative.emphasizedRules]);
 
   const { loading, groups, systems } = useGroupsAndSystemsFilters(
-    initiative.scores.map(score => score.componentRef),
     (componentRef: string) => componentRef,
   );
 
