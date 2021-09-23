@@ -52,7 +52,6 @@ export const ScorecardDetails = ({
           <ScorecardRulesCard scorecard={scorecard} />
           <ScorecardFilterCard
             scorecard={scorecard}
-            componentRefs={scores.map(score => score.componentRef)}
             setFilter={newFilter => setFilter(() => newFilter)}
           />
         </Grid>

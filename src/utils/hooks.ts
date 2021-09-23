@@ -35,7 +35,6 @@ import {
   RELATION_PART_OF,
 } from '@backstage/catalog-model';
 import {
-  defaultComponentRefContext,
   defaultGroupRefContext,
   defaultSystemRefContext,
 } from './ComponentUtils';
@@ -61,27 +60,14 @@ type GroupAndSystemsHookType = {
   groups?: Record<string, Entity[]>;
 };
 
-export function useGroupsAndSystems(
-  entityRefs: AnyEntityRef[],
-): GroupAndSystemsHookType {
+export function useGroupsAndSystems(): GroupAndSystemsHookType {
   const catalogApi = useApi(catalogApiRef);
 
   const { value, loading, error } = useAsync(async () => {
     const entities = await catalogApi.getEntities({
-      filter: entityRefs
-        .map(entityRef =>
-          parseEntityName(
-            stringifyAnyEntityRef(entityRef),
-            defaultComponentRefContext,
-          ),
-        )
-        .map(entityRefName => {
-          return {
-            kind: entityRefName.kind,
-            'metadata.name': entityRefName.name,
-            'metadata.namespace': entityRefName.namespace,
-          };
-        }),
+      filter: {
+        kind: 'component',
+      },
     });
 
     const systems = groupByString(entities.items, entity => {
@@ -125,10 +111,9 @@ type GroupAndSystemsFilterHookType<T> = {
 };
 
 export function useGroupsAndSystemsFilters<T>(
-  entityRefs: AnyEntityRef[],
   componentRef: (t: T) => AnyEntityRef,
 ): GroupAndSystemsFilterHookType<T> {
-  const { systems, groups, ...rest } = useGroupsAndSystems(entityRefs);
+  const { systems, groups, ...rest } = useGroupsAndSystems();
 
   const groupsFilterDefinition = useMemo(() => {
     return mapValues(

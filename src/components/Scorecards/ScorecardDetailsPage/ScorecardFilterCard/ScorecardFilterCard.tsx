@@ -23,7 +23,6 @@ import { ScorecardServiceScoreFilter } from '../ScorecardDetails';
 import { FilterCard } from '../../../FilterCard';
 import { mapByString, mapValues } from '../../../../utils/collections';
 import { useGroupsAndSystemsFilters } from '../../../../utils/hooks';
-import { AnyEntityRef } from '../../../../utils/types';
 import { Progress } from '@backstage/core-components';
 
 const createRulePredicate = (pass: boolean, ruleExpression: string) => {
@@ -38,17 +37,14 @@ const createRulePredicate = (pass: boolean, ruleExpression: string) => {
 
 interface ScorecardFilterCardProps {
   scorecard: Scorecard;
-  componentRefs: AnyEntityRef[];
   setFilter: (filter: ScorecardServiceScoreFilter) => void;
 }
 
 export const ScorecardFilterCard = ({
   scorecard,
-  componentRefs,
   setFilter,
 }: ScorecardFilterCardProps) => {
   const { loading, groups, systems } = useGroupsAndSystemsFilters(
-    componentRefs,
     (score: ScorecardServiceScore) => score.componentRef,
   );
 
