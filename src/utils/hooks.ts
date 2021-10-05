@@ -38,6 +38,8 @@ import {
   defaultGroupRefContext,
   defaultSystemRefContext,
 } from './ComponentUtils';
+import { cortexApiRef } from '../api';
+import { CortexApi } from '../api/CortexApi';
 
 export function useDropdown<T>(
   initialValue: T | undefined,
@@ -45,7 +47,11 @@ export function useDropdown<T>(
   const [value, setValue] = useState<T | undefined>(initialValue);
   const onChange = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
-      setValue(event.target.value as T | undefined);
+      setValue(
+        event.target.value === ''
+          ? undefined
+          : (event.target.value as T | undefined),
+      );
     },
     [setValue],
   );
@@ -183,4 +189,15 @@ export function useGroupsAndSystemsFilters<T>(
     }),
     ...rest,
   };
+}
+
+export function useCortexApi<T>(
+  f: (api: CortexApi) => Promise<T>,
+  deps: any[] = [],
+) {
+  const cortexApi = useApi(cortexApiRef);
+
+  return useAsync(async () => {
+    return await f(cortexApi);
+  }, deps);
 }
