@@ -91,7 +91,7 @@ export const Timeseries = ({ data, tooltip, onClick }: TimeseriesProps) => {
         theme={nivoTheme(theme)}
         data={data}
         curve="linear"
-        enablePoints
+        enablePoints={false}
         colors={{ scheme: 'nivo' }}
         margin={{ bottom: 30, top: 30, left: 10, right: 40 }}
         tooltip={tooltip}

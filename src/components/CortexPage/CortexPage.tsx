@@ -18,6 +18,7 @@ import React from 'react';
 import { ScorecardsPage } from '../../extensions';
 import { SettingsPage } from '../SettingsPage';
 import { InitiativesPage } from '../Initiatives/InitiativesPage';
+import { ReportsPage } from '../ReportsPage';
 
 export const CortexPage = () => {
   return (
@@ -27,6 +28,9 @@ export const CortexPage = () => {
     >
       <CortexLayout.Route path="scorecards" title="Scorecards">
         <ScorecardsPage />
+      </CortexLayout.Route>
+      <CortexLayout.Route path="reports" title="Reports">
+        <ReportsPage />
       </CortexLayout.Route>
       <CortexLayout.Route path="initiatives" title="Initiatives">
         <InitiativesPage />

@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 import {
+  GroupByOption,
   Initiative,
   InitiativeActionItem,
   Scorecard,
   ScorecardResult,
   ScorecardServiceScore,
+  ScoresByIdentifier,
   ServiceScorecardScore,
 } from './types';
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef } from '../utils/types';
-
-export enum GroupByOption {
-  'OWNER' = 'Owner',
-  'TEAM' = 'Team',
-  'SERVICE_GROUP' = 'Service Group',
-}
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
@@ -42,6 +38,17 @@ export interface CortexApi {
     startDate?: Moment,
     endDate?: Moment,
   ): Promise<ScorecardResult[]>;
+  getAverageHistoricalScores(
+    scorecardId: string,
+    groupBy: GroupByOption,
+    options: {
+      ruleExpression?: string;
+      startDate?: Moment;
+      endDate?: Moment;
+    },
+  ): Promise<ScoresByIdentifier[]>;
+
+  getServiceScorecardScores(): Promise<ScoresByIdentifier[]>;
 
   getInitiatives(): Promise<Initiative[]>;
   getInitiative(id: string): Promise<Initiative>;

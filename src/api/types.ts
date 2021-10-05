@@ -93,6 +93,31 @@ export interface RuleResult {
   operation: string;
 }
 
+export interface ScoresByIdentifier {
+  identifier?: string;
+  scores: ScorecardScore[];
+}
+
+export interface AverageScoresByIdentifier {
+  groupByIdentifier: string;
+  scorecardId: string;
+  averageScore: number;
+  dateCreated: string;
+}
+
+export enum GroupByOption {
+  SCORECARD = 'Scorecard',
+  TEAM = 'Team',
+  SERVICE_GROUP = 'Service Group',
+}
+
+export interface ScorecardScore {
+  scorecardId: string;
+  scorecardName?: string;
+  scorePercentage: number;
+  dateCreated?: string;
+}
+
 export interface Initiative {
   creator: { name: string; email: string };
   description?: string;

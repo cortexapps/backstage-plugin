@@ -16,11 +16,13 @@
 
 import { createApiRef, DiscoveryApi } from '@backstage/core';
 import {
+  GroupByOption,
   Initiative,
   InitiativeActionItem,
   Scorecard,
   ScorecardResult,
   ScorecardServiceScore,
+  ScoresByIdentifier,
   ServiceScorecardScore,
 } from './types';
 import { CortexApi } from './CortexApi';
@@ -74,7 +76,7 @@ export class CortexClient implements CortexApi {
     startDate?: Moment,
     endDate?: Moment,
   ): Promise<ScorecardResult[]> {
-    return await this.get(
+    const results: ScorecardResult[] = await this.get(
       `/api/backstage/v1/scorecards/${scorecardId}/scores/historical`,
       {
         ref: stringifyAnyEntityRef(entityRef),
@@ -82,6 +84,53 @@ export class CortexClient implements CortexApi {
         ...(endDate && { endDate: endDate.toISOString() }),
       },
     );
+
+    return results.sort((a, b) => {
+      return (
+        new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime()
+      );
+    });
+  }
+
+  async getAverageHistoricalScores(
+    scorecardId: string,
+    groupBy: GroupByOption,
+    options: {
+      ruleExpression?: string;
+      startDate?: Moment;
+      endDate?: Moment;
+    },
+  ): Promise<ScoresByIdentifier[]> {
+    const { ruleExpression, startDate, endDate } = options;
+
+    const scores: ScoresByIdentifier[] = await this.get(
+      `/api/backstage/v1/scorecards/${scorecardId}/scores/historical-average`,
+      {
+        ...(groupBy !== GroupByOption.SCORECARD && {
+          groupBy: groupBy.toUpperCase().replace(' ', '_'),
+        }),
+        ...(ruleExpression && { ruleExpression: ruleExpression }),
+        ...(startDate && { startDate: startDate.toISOString() }),
+        ...(startDate && { startDate: startDate.toISOString() }),
+        ...(endDate && { endDate: endDate.toISOString() }),
+      },
+    );
+
+    return scores.map(score => {
+      return {
+        identifier: score.identifier,
+        scores: score.scores.sort((a, b) => {
+          return (
+            new Date(a.dateCreated!!).getTime() -
+            new Date(b.dateCreated!!).getTime()
+          );
+        }),
+      };
+    });
+  }
+
+  async getServiceScorecardScores(): Promise<ScoresByIdentifier[]> {
+    return await this.get(`/api/backstage/v1/scorecards/scores`);
   }
 
   async getScorecard(scorecardId: string): Promise<Scorecard> {

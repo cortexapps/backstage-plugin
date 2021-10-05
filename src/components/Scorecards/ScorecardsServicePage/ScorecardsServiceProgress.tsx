@@ -24,7 +24,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { useDropdown } from '../../../utils/hooks';
-import { assertUnreachable, enumKeys } from '../../../utils/types';
+import { enumKeys } from '../../../utils/types';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
@@ -35,50 +35,11 @@ import Box from '@material-ui/core/Box';
 import { ScorecardServiceScoreRuleName } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { Point } from '@nivo/line';
 import { toScorecardServiceScoreRuleName } from '../../../utils/scorecards';
-
-enum Lookback {
-  DAYS_7,
-  WEEKS_2,
-  MONTHS_1,
-  MONTHS_2,
-  MONTHS_3,
-}
-
-const lookbackLabels = (lookback: Lookback) => {
-  // eslint-disable-next-line default-case
-  switch (lookback) {
-    case Lookback.DAYS_7:
-      return 'Last 7 days';
-    case Lookback.WEEKS_2:
-      return 'Last 2 weeks';
-    case Lookback.MONTHS_1:
-      return 'Last 1 month';
-    case Lookback.MONTHS_2:
-      return 'Last 2 months';
-    case Lookback.MONTHS_3:
-      return 'Last 3 months';
-  }
-
-  return assertUnreachable(lookback);
-};
-
-const getLookbackRange = (timeRange: Lookback) => {
-  // eslint-disable-next-line default-case
-  switch (timeRange) {
-    case Lookback.DAYS_7:
-      return [moment().subtract('1', 'week'), moment()];
-    case Lookback.WEEKS_2:
-      return [moment().subtract('2', 'week'), moment()];
-    case Lookback.MONTHS_1:
-      return [moment().subtract('1', 'month'), moment()];
-    case Lookback.MONTHS_2:
-      return [moment().subtract('2', 'months'), moment()];
-    case Lookback.MONTHS_3:
-      return [moment().subtract('3', 'months'), moment()];
-  }
-
-  return assertUnreachable(timeRange);
-};
+import {
+  getLookbackRange,
+  Lookback,
+  lookbackLabels,
+} from '../../../utils/lookback';
 
 interface ScorecardsServiceProgressProps {
   scorecardId: string;
