@@ -19,5 +19,5 @@ jobs:
       - run: yarn tsc
       - run: yarn build
       - run: yarn publish
-        with:
+        env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
