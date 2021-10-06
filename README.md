@@ -132,23 +132,17 @@ The extension above will insert Backstage spec types as a new filter type in man
 
 Then, instead of importing/exporting from `@cortexapps/backstage-plugin` directly, you can use these new extended exports instead:
 
-1.
-
 ### **`packages/app/src/plugins.ts`**
 
 ```ts
 export { plugin } from './cortex';
 ```
 
-2.
-
 ### **`packages/app/src/App.tsx`**
 
 ```tsx
 import { CortexPage } from './cortex';
 ```
-
-3. Import `EntityCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
 
 ### **`packages/app/src/components/catalog/EntityPage.tsx`**
 
