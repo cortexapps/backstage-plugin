@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createDevApp } from '@backstage/dev-utils';
-import { cortexPlugin } from '../src/plugin';
-import React from 'react';
-import { CortexPage } from '../src/components/CortexPage';
+import { Entity } from '@backstage/catalog-model';
 
-createDevApp()
-  .registerPlugin(cortexPlugin)
-  .addPage({
-    element: <CortexPage />,
-    title: 'Cortex',
-  })
-  .render();
+export type EntityFilterGroup = {
+  name: string;
+  groupProperty: (entity: Entity) => string[] | undefined;
+  formatProperty?: (property: string) => string;
+};

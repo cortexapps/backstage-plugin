@@ -19,11 +19,14 @@ import {
   Grid,
   makeStyles,
   MenuItem,
+  TextField,
   Typography,
 } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import { fallbackPalette } from '../../styles/styles';
 import { Predicate } from '../../utils/types';
+import { Autocomplete } from '@material-ui/lab';
+import { mapByString, mapValues } from '../../utils/collections';
 
 const useStyles = makeStyles(theme => ({
   name: {
@@ -40,22 +43,22 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export interface FilterDefinition<T, FilterType> {
+export interface FilterDefinition<T> {
   name: string;
-  filters: { [id: string]: { display: string; value: FilterType } };
-  generatePredicate: (value: FilterType) => Predicate<T>;
+  filters: { [id: string]: { display: string; value: string } };
+  generatePredicate: (value: string) => Predicate<T>;
 }
 
-interface FiltersProps<T, FilterType> extends FilterDefinition<T, FilterType> {
+interface FiltersProps<T> extends FilterDefinition<T> {
   setPredicate: (filter: Predicate<T>) => void;
 }
 
-export const Filters = <T extends {}, FilterType extends {}>({
+export const Filters = <T extends {}>({
   name,
   filters,
   generatePredicate,
   setPredicate,
-}: FiltersProps<T, FilterType>) => {
+}: FiltersProps<T>) => {
   const classes = useStyles();
 
   const [oneOf, setOneOf] = useState(true);
@@ -80,6 +83,17 @@ export const Filters = <T extends {}, FilterType extends {}>({
     });
   };
 
+  const toggleAllFilters = (allCheckedFilters: string[]) => {
+    setCheckedFilters(() => {
+      const newFilters = mapValues(
+        mapByString(allCheckedFilters, filter => filter),
+        () => true,
+      );
+      updatePredicate(newFilters, oneOf);
+      return newFilters;
+    });
+  };
+
   const toggleFilter = (filter: string) => {
     setCheckedFilters(prevFilters => {
       const newFilters = {
@@ -101,35 +115,57 @@ export const Filters = <T extends {}, FilterType extends {}>({
 
   return (
     <Grid container spacing={2} justify="center" alignItems="center">
-      <Grid item lg={10}>
-        <Typography variant="subtitle2" className={classes.name}>
-          {name}:
-        </Typography>
+      <Grid container item xs={12} justify="space-between">
+        <Grid item>
+          <Typography variant="subtitle2" className={classes.name}>
+            {name}:
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Select
+            value={oneOf ? 'One Of' : 'All Of'}
+            onChange={() => toggleOneOf()}
+            className={classes.select}
+          >
+            <MenuItem value="One Of">One Of</MenuItem>
+            <MenuItem value="All Of">All Of</MenuItem>
+          </Select>
+        </Grid>
       </Grid>
-      <Grid item lg={2}>
-        <Select
-          value={oneOf ? 'One Of' : 'All Of'}
-          onChange={() => toggleOneOf()}
-          className={classes.select}
-        >
-          <MenuItem value="One Of">One Of</MenuItem>
-          <MenuItem value="All Of">All Of</MenuItem>
-        </Select>
-      </Grid>
-      {Object.keys(filters).map(id => (
-        <React.Fragment key={`${name}-${id}`}>
-          <Grid item lg={2}>
-            <Checkbox
-              checked={checkedFilters[id] ?? false}
-              onChange={() => toggleFilter(id)}
-              color="primary"
-            />
-          </Grid>
-          <Grid item lg={10}>
-            <span>{filters[id].display}</span>
-          </Grid>
+      {Object.keys(filters).length <= 10 ? (
+        <React.Fragment>
+          {Object.keys(filters).map(id => (
+            <React.Fragment key={`${name}-${id}`}>
+              <Grid item lg={2}>
+                <Checkbox
+                  checked={checkedFilters[id] ?? false}
+                  onChange={() => toggleFilter(id)}
+                  color="primary"
+                />
+              </Grid>
+              <Grid item lg={10}>
+                <span>{filters[id].display}</span>
+              </Grid>
+            </React.Fragment>
+          ))}
         </React.Fragment>
-      ))}
+      ) : (
+        <Grid item sm={12}>
+          <Autocomplete
+            options={Object.values(filters)}
+            getOptionLabel={filter => filter.display}
+            multiple
+            onChange={(_event, values) => {
+              toggleAllFilters(
+                (values as { display: string; value: string }[]).map(
+                  filter => filter.value,
+                ),
+              );
+            }}
+            renderInput={params => <TextField {...params} variant="standard" />}
+          />
+        </Grid>
+      )}
     </Grid>
   );
 };

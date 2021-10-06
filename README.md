@@ -42,13 +42,16 @@ reach out with more info!
 ```shell
 $ yarn add @cortexapps/backstage-plugin
 ```
+
 2. Export the plugin in your app's [plugins.ts](https://github.com/backstage/backstage/blob/master/packages/app/src/plugins.ts)
    to enable the plugin:
+
 ```ts
-export { cortexPlugin } from '@cortexapps/backstage-plugin'
+export { cortexPlugin } from '@cortexapps/backstage-plugin';
 ```
 
 3. Import page to [App.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/App.tsx):
+
 ```tsx
 import { CortexPage } from '@cortexapps/backstage-plugin';
 ```
@@ -56,25 +59,27 @@ import { CortexPage } from '@cortexapps/backstage-plugin';
 3. And add a new route to [App.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/App.tsx):
 
 ```tsx
-<Route path="/cortex" element={<CortexPage />}/>
+<Route path="/cortex" element={<CortexPage />} />
 ```
 
 4. Update [app-config.yaml](https://github.com/backstage/backstage/blob/master/app-config.yaml) to add a new proxy
    config:
+
 ```yaml
 '/cortex':
-    target: ${CORTEX_BACKEND_HOST_URL}
-    headers:
-      Authorization: ${CORTEX_TOKEN}
+  target: ${CORTEX_BACKEND_HOST_URL}
+  headers:
+    Authorization: ${CORTEX_TOKEN}
 ```
 
 5.Import `EntityCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
+
 ```tsx
 import { EntityCortexContent } from '@cortexapps/backstage-plugin';
 
 <EntityLayout.Route path="/cortex" title="Cortex">
-  <EntityCortexContent/>
-</EntityLayout.Route>
+  <EntityCortexContent />
+</EntityLayout.Route>;
 ```
 
 6. Add a new sidebar item in [Root.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/Root/Root.tsx)
@@ -82,5 +87,71 @@ import { EntityCortexContent } from '@cortexapps/backstage-plugin';
 ```tsx
 import { CortexIcon } from '@cortexapps/backstage-plugin';
 
-<SidebarItem icon={CortexIcon} to="cortex" text="Cortex" />
+<SidebarItem icon={CortexIcon} to="cortex" text="Cortex" />;
+```
+
+## Advanced
+
+You can configure the Cortex plugin to customize its layout. (And soon the ability to provide custom mappings to Cortex YAMLs.)
+To do this, instead of importing `cortexPlugin`, `CortexPage`, and `EntityCortexContent` directly, you can inject custom behavior into the plugin like:
+
+### **`cortex.ts`**
+
+```tsx
+import { ExtensionApi } from '../../../../backstage-plugin/src';
+import {
+  CustomMapping,
+  EntityFilterGroup,
+  extendableCortexPlugin,
+} from '@cortexapps/backstage-plugin';
+import { Entity } from '../../catalog-model';
+
+class ExtensionApiImpl implements ExtensionApi {
+  async getAdditionalFilters(): Promise<EntityFilterGroup[]> {
+    return [
+      {
+        name: 'Type',
+        groupProperty: (entity: Entity) =>
+          entity.spec?.type === null || entity.spec?.type === undefined
+            ? undefined
+            : [JSON.stringify(entity.spec?.type).replaceAll('"', '')],
+      },
+    ];
+  }
+
+  async getCustomMappings(): Promise<CustomMapping[]> {
+    return [];
+  }
+}
+
+export const { plugin, EntityCortexContent, CortexPage } =
+  extendableCortexPlugin({}, () => new ExtensionApiImpl());
+```
+
+The extension above will insert Backstage spec types as a new filter type in many of the views -- and more filtering and aggregations with this configuration to follow.
+
+Then, instead of importing/exporting from `@cortexapps/backstage-plugin` directly, you can use these new extended exports instead:
+
+1.
+
+### **`packages/app/src/plugins.ts`**
+
+```ts
+export { plugin } from './cortex';
+```
+
+2.
+
+### **`packages/app/src/App.tsx`**
+
+```tsx
+import { CortexPage } from './cortex';
+```
+
+3. Import `EntityCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
+
+### **`packages/app/src/components/catalog/EntityPage.tsx`**
+
+```tsx
+import { EntityCortexContent } from '../../cortex';
 ```

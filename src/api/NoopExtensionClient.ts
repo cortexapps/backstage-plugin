@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createDevApp } from '@backstage/dev-utils';
-import { cortexPlugin } from '../src/plugin';
-import React from 'react';
-import { CortexPage } from '../src/components/CortexPage';
+import { CustomMapping, ExtensionApi } from './ExtensionApi';
+import { EntityFilterGroup } from '../filters';
 
-createDevApp()
-  .registerPlugin(cortexPlugin)
-  .addPage({
-    element: <CortexPage />,
-    title: 'Cortex',
-  })
-  .render();
+export class NoopExtensionClient implements ExtensionApi {
+  async getAdditionalFilters(): Promise<EntityFilterGroup[]> {
+    return [];
+  }
+
+  async getCustomMappings(): Promise<CustomMapping[]> {
+    return [];
+  }
+}
