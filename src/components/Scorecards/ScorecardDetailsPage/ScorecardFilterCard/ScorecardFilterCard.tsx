@@ -22,8 +22,22 @@ import {
 import { ScorecardServiceScoreFilter } from '../ScorecardDetails';
 import { FilterCard } from '../../../FilterCard';
 import { mapByString, mapValues } from '../../../../utils/collections';
-import { useGroupsAndSystemsFilters } from '../../../../utils/hooks';
+import { useFilters } from '../../../../utils/hooks';
 import { Progress } from '@backstage/core-components';
+import {
+  formatEntityRefTitle,
+  getEntityRelations,
+} from '@backstage/plugin-catalog-react';
+import {
+  parseEntityName,
+  RELATION_OWNED_BY,
+  RELATION_PART_OF,
+} from '@backstage/catalog-model';
+import { stringifyAnyEntityRef } from '../../../../utils/types';
+import {
+  defaultGroupRefContext,
+  defaultSystemRefContext,
+} from '../../../../utils/ComponentUtils';
 
 const createRulePredicate = (pass: boolean, ruleExpression: string) => {
   return (score: ScorecardServiceScore) => {
@@ -44,10 +58,6 @@ export const ScorecardFilterCard = ({
   scorecard,
   setFilter,
 }: ScorecardFilterCardProps) => {
-  const { loading, groups, systems } = useGroupsAndSystemsFilters(
-    (score: ScorecardServiceScore) => score.componentRef,
-  );
-
   const ruleFilterDefinitions = useMemo(() => {
     return mapValues(
       mapByString(scorecard.rules, rule => rule.id),
@@ -60,7 +70,43 @@ export const ScorecardFilterCard = ({
     );
   }, [scorecard.rules]);
 
-  if (loading) {
+  const { filterGroups, loading } = useFilters(
+    (score: ScorecardServiceScore) => score.componentRef,
+    {
+      baseFilters: [
+        {
+          name: 'Groups',
+          groupProperty: entity =>
+            getEntityRelations(entity, RELATION_OWNED_BY, {
+              kind: 'group',
+            }).map(entityRef =>
+              stringifyAnyEntityRef(entityRef, { defaultKind: 'group' }),
+            ),
+          formatProperty: (groupRef: string) =>
+            formatEntityRefTitle(
+              parseEntityName(groupRef),
+              defaultGroupRefContext,
+            ),
+        },
+        {
+          name: 'Systems',
+          groupProperty: entity =>
+            getEntityRelations(entity, RELATION_PART_OF, {
+              kind: 'system',
+            }).map(entityRef =>
+              stringifyAnyEntityRef(entityRef, { defaultKind: 'system' }),
+            ),
+          formatProperty: (groupRef: string) =>
+            formatEntityRefTitle(
+              parseEntityName(groupRef),
+              defaultSystemRefContext,
+            ),
+        },
+      ],
+    },
+  );
+
+  if (loading || filterGroups === undefined) {
     return <Progress />;
   }
 
@@ -80,26 +126,7 @@ export const ScorecardFilterCard = ({
           generatePredicate: (passingRule: string) =>
             createRulePredicate(true, passingRule),
         },
-        ...(groups
-          ? [
-              {
-                name: 'Groups',
-                filters: groups.definition,
-                generatePredicate: (groupRef: string) =>
-                  groups.predicate(groupRef),
-              },
-            ]
-          : []),
-        ...(systems
-          ? [
-              {
-                name: 'Systems',
-                filters: systems.definition,
-                generatePredicate: (systemRef: string) =>
-                  systems.predicate(systemRef),
-              },
-            ]
-          : []),
+        ...filterGroups,
       ]}
     />
   );

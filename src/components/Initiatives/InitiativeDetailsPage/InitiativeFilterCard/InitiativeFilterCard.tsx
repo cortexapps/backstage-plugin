@@ -17,16 +17,33 @@ import React, { useMemo } from 'react';
 import { Initiative, InitiativeActionItem } from '../../../../api/types';
 import { FilterCard } from '../../../FilterCard';
 import { mapByString, mapValues } from '../../../../utils/collections';
-import { Predicate } from '../../../../utils/types';
-import { useGroupsAndSystemsFilters } from '../../../../utils/hooks';
+import {
+  AnyEntityRef,
+  Predicate,
+  stringifyAnyEntityRef,
+} from '../../../../utils/types';
+import { useFilters } from '../../../../utils/hooks';
 import { Progress } from '@backstage/core-components';
+import {
+  formatEntityRefTitle,
+  getEntityRelations,
+} from '@backstage/plugin-catalog-react';
+import {
+  parseEntityName,
+  RELATION_OWNED_BY,
+  RELATION_PART_OF,
+} from '@backstage/catalog-model';
+import {
+  defaultGroupRefContext,
+  defaultSystemRefContext,
+} from '../../../../utils/ComponentUtils';
 
 const createRulePredicate = (
   rule: string,
   actionItems: InitiativeActionItem[],
   pass: boolean,
 ) => {
-  return (componentRef: string) => {
+  return (componentRef: AnyEntityRef) => {
     const passed = !actionItems.some(
       actionItem =>
         actionItem.componentRef === componentRef &&
@@ -60,11 +77,43 @@ export const InitiativeFilterCard = ({
     );
   }, [initiative.emphasizedRules]);
 
-  const { loading, groups, systems } = useGroupsAndSystemsFilters(
-    (componentRef: string) => componentRef,
+  const { filterGroups, loading } = useFilters(
+    (entityRef: string) => entityRef,
+    {
+      baseFilters: [
+        {
+          name: 'Groups',
+          groupProperty: entity =>
+            getEntityRelations(entity, RELATION_OWNED_BY, {
+              kind: 'group',
+            }).map(entityRef =>
+              stringifyAnyEntityRef(entityRef, { defaultKind: 'group' }),
+            ),
+          formatProperty: (groupRef: string) =>
+            formatEntityRefTitle(
+              parseEntityName(groupRef),
+              defaultGroupRefContext,
+            ),
+        },
+        {
+          name: 'Systems',
+          groupProperty: entity =>
+            getEntityRelations(entity, RELATION_PART_OF, {
+              kind: 'system',
+            }).map(entityRef =>
+              stringifyAnyEntityRef(entityRef, { defaultKind: 'system' }),
+            ),
+          formatProperty: (groupRef: string) =>
+            formatEntityRefTitle(
+              parseEntityName(groupRef),
+              defaultSystemRefContext,
+            ),
+        },
+      ],
+    },
   );
 
-  if (loading) {
+  if (loading || filterGroups === undefined) {
     return <Progress />;
   }
 
@@ -75,35 +124,16 @@ export const InitiativeFilterCard = ({
         {
           name: 'Failing Rule',
           filters: ruleFilterDefinitions,
-          generatePredicate: rule =>
+          generatePredicate: (rule: string) =>
             createRulePredicate(rule, actionItems, false),
         },
         {
           name: 'Passing Rule',
           filters: ruleFilterDefinitions,
-          generatePredicate: rule =>
+          generatePredicate: (rule: string) =>
             createRulePredicate(rule, actionItems, true),
         },
-        ...(groups
-          ? [
-              {
-                name: 'Groups',
-                filters: groups.definition,
-                generatePredicate: (groupRef: string) =>
-                  groups.predicate(groupRef),
-              },
-            ]
-          : []),
-        ...(systems
-          ? [
-              {
-                name: 'Systems',
-                filters: systems.definition,
-                generatePredicate: (systemRef: string) =>
-                  systems.predicate(systemRef),
-              },
-            ]
-          : []),
+        ...filterGroups,
       ]}
     />
   );

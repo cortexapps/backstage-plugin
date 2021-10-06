@@ -16,5 +16,16 @@
 import CortexIconComponent from './assets/cortex.icon.svg';
 import { IconComponent } from '@backstage/core-plugin-api';
 
-export { cortexPlugin, CortexPage, EntityCortexContent } from './plugin';
+export {
+  cortexPlugin,
+  CortexPage,
+  EntityCortexContent,
+  extendableCortexPlugin,
+} from './plugin';
+export type {
+  ExtensionApi,
+  CortexYaml,
+  CustomMapping,
+} from './api/ExtensionApi';
+export type { EntityFilterGroup } from './filters';
 export const CortexIcon: IconComponent = CortexIconComponent as IconComponent;

@@ -14,9 +14,10 @@ jobs:
         uses: actions/setup-node@main
         with:
           node-version: 12.18.3
+          registry-url: 'https://registry.npmjs.org'
       - run: yarn install
       - run: yarn tsc
       - run: yarn build
-      - uses: JS-DevTools/npm-publish@v1
+      - run: yarn publish
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

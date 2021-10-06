@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 import {
+  BackstagePlugin,
   createApiFactory,
   createComponentExtension,
   createPlugin,
   createRoutableExtension,
   discoveryApiRef,
+  TypesToApiRefs,
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef, scorecardRouteRef, scorecardsRouteRef } from './routes';
 import { cortexApiRef, CortexClient } from './api';
+import { ExtensionApi, extensionApiRef } from './api/ExtensionApi';
+import { NoopExtensionClient } from './api/NoopExtensionClient';
 
 export const cortexPlugin = createPlugin({
   id: 'cortex',
@@ -32,6 +36,11 @@ export const cortexPlugin = createPlugin({
       deps: { discoveryApi: discoveryApiRef },
       factory: ({ discoveryApi }) => new CortexClient({ discoveryApi }),
     }),
+    createApiFactory({
+      api: extensionApiRef,
+      deps: {},
+      factory: () => new NoopExtensionClient(),
+    }),
   ],
   routes: {
     root: rootRouteRef,
@@ -40,10 +49,55 @@ export const cortexPlugin = createPlugin({
   },
 });
 
+export const extendableCortexPlugin = <
+  Deps extends { [name in string]: unknown },
+>(
+  deps: TypesToApiRefs<Deps>,
+  factory: (deps: Deps) => ExtensionApi = () => new NoopExtensionClient(),
+) => {
+  const plugin: BackstagePlugin = createPlugin({
+    id: 'cortex',
+    apis: [
+      createApiFactory({
+        api: cortexApiRef,
+        deps: { discoveryApi: discoveryApiRef },
+        factory: ({ discoveryApi }) => new CortexClient({ discoveryApi }),
+      }),
+      createApiFactory({
+        api: extensionApiRef,
+        deps: deps,
+        factory: factory,
+      }),
+    ],
+    routes: {
+      root: rootRouteRef,
+      scorecards: scorecardsRouteRef,
+      scorecard: scorecardRouteRef,
+    },
+  });
+
+  const CortexPage = plugin.provide(
+    createRoutableExtension({
+      component: () =>
+        import('./components/CortexPage').then(m => m.CortexPage),
+      mountPoint: rootRouteRef,
+    }),
+  );
+
+  const EntityCortexContent = plugin.provide(
+    createComponentExtension({
+      component: {
+        lazy: () => import('./components/EntityPage').then(m => m.EntityPage),
+      },
+    }),
+  );
+
+  return { plugin, CortexPage, EntityCortexContent };
+};
+
 export const CortexPage = cortexPlugin.provide(
   createRoutableExtension({
-    component: () =>
-      import('./components/CortexPage').then(m => m.CortexPage),
+    component: () => import('./components/CortexPage').then(m => m.CortexPage),
     mountPoint: rootRouteRef,
   }),
 );
@@ -51,9 +105,7 @@ export const CortexPage = cortexPlugin.provide(
 export const EntityCortexContent = cortexPlugin.provide(
   createComponentExtension({
     component: {
-      lazy: () =>
-        import('./components/EntityPage').then(m => m.EntityPage),
+      lazy: () => import('./components/EntityPage').then(m => m.EntityPage),
     },
   }),
 );
-

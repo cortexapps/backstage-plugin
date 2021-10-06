@@ -21,7 +21,7 @@ import { FilterDefinition, Filters } from './Filters';
 
 interface FilterCardProps<T> {
   setFilter: (filter: Predicate<T>) => void;
-  filterDefinitions: FilterDefinition<T, any>[];
+  filterDefinitions: FilterDefinition<T>[];
 }
 
 export const FilterCard = <T extends {}>({

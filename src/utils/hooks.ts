@@ -40,6 +40,9 @@ import {
 } from './ComponentUtils';
 import { cortexApiRef } from '../api';
 import { CortexApi } from '../api/CortexApi';
+import { extensionApiRef } from '../api/ExtensionApi';
+import { EntityFilterGroup } from '../filters';
+import { FilterDefinition } from '../components/FilterCard/Filters';
 
 export function useDropdown<T>(
   initialValue: T | undefined,
@@ -200,4 +203,68 @@ export function useCortexApi<T>(
   return useAsync(async () => {
     return await f(cortexApi);
   }, deps);
+}
+
+export function useFilters<T>(
+  entityRef: (t: T) => AnyEntityRef,
+  options?: {
+    baseFilters?: EntityFilterGroup[];
+    deps?: any[];
+  },
+): { loading: boolean; error?: Error; filterGroups?: FilterDefinition<T>[] } {
+  const catalogApi = useApi(catalogApiRef);
+  const extensionApi = useApi(extensionApiRef);
+
+  const { loading, error, value } = useAsync(async () => {
+    return Promise.all([
+      catalogApi
+        .getEntities({
+          filter: {
+            kind: 'component',
+          },
+        })
+        .then(response => response.items),
+      extensionApi.getAdditionalFilters(),
+    ]);
+  }, options?.deps ?? []);
+
+  const [components, filters] = value ?? [undefined, undefined];
+  const allFilterGroups = (options?.baseFilters ?? []).concat(filters ?? []);
+  const filterGroups =
+    components === undefined
+      ? undefined
+      : allFilterGroups.map(filterGroup => {
+          return {
+            name: filterGroup.name,
+            filters: mapValues(
+              mapByString(
+                components.flatMap(
+                  component => filterGroup.groupProperty(component) ?? [],
+                ),
+                groupProperty => groupProperty,
+              ),
+              groupProperty => {
+                return {
+                  display: filterGroup.formatProperty
+                    ? filterGroup.formatProperty(groupProperty)
+                    : groupProperty,
+                  value: groupProperty,
+                };
+              },
+            ),
+            generatePredicate: (groupProperty: string) => {
+              return (t: T) => {
+                return components.some(
+                  component =>
+                    entityEquals(component, entityRef(t)) &&
+                    filterGroup
+                      .groupProperty(component)
+                      ?.includes(groupProperty),
+                );
+              };
+            },
+          };
+        });
+
+  return { loading, error, filterGroups };
 }
