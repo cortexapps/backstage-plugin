@@ -38,6 +38,10 @@ const detailCardStyles = createStyles({
   rule: {
     marginBottom: '2px',
   },
+  level: {
+    marginBottom: '2px',
+    alignItems: 'center'
+  },
 });
 
 export const fallbackPalette = {

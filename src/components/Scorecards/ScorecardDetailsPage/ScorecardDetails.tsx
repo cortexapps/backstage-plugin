@@ -15,23 +15,26 @@
  */
 import { Content, ContentHeader } from '@backstage/core-components';
 import React, { useMemo, useState } from 'react';
-import { Scorecard, ScorecardServiceScore } from '../../../api/types';
+import {Scorecard, ScorecardLadder, ScorecardServiceScore} from '../../../api/types';
 import { Grid } from '@material-ui/core';
 import { ScorecardMetadataCard } from './ScorecardMetadataCard';
 import { ScorecardRulesCard } from './ScorecardRulesCard';
 import { ScorecardFilterCard } from './ScorecardFilterCard';
 import { ScorecardsTableCard } from './ScorecardsTableCard';
 import { Predicate } from '../../../utils/types';
+import {ScorecardLaddersCard} from "./ScorecardLaddersCard";
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 
 interface ScorecardDetailsProps {
   scorecard: Scorecard;
+  ladder: ScorecardLadder | undefined;
   scores: ScorecardServiceScore[];
 }
 
 export const ScorecardDetails = ({
   scorecard,
+  ladder,
   scores,
 }: ScorecardDetailsProps) => {
   // Have to store lambda of lambda for React to not eagerly invoke
@@ -50,6 +53,7 @@ export const ScorecardDetails = ({
         <Grid item lg={4}>
           <ScorecardMetadataCard scorecard={scorecard} scores={scores} />
           <ScorecardRulesCard scorecard={scorecard} />
+          {ladder && <ScorecardLaddersCard ladder={ladder} />}
           <ScorecardFilterCard
             scorecard={scorecard}
             setFilter={newFilter => setFilter(() => newFilter)}

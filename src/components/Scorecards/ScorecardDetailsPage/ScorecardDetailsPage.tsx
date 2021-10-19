@@ -28,19 +28,20 @@ export const ScorecardDetailsPage = () =>  {
   const cortexApi = useApi(cortexApiRef);
 
   const { value, loading, error } = useAsync(async () => {
-    const [ scorecard, scores ] = await Promise.all([
+    const [ scorecard, ladders, scores ] = await Promise.all([
       cortexApi.getScorecard(scorecardId),
+      cortexApi.getScorecardLadders(scorecardId),
       cortexApi.getScorecardScores(scorecardId)
     ])
 
-    return { scorecard, scores }
+    return { scorecard, ladders, scores }
   }, []);
 
   if (loading) {
     return <Progress />;
   }
 
-  const { scorecard, scores } = value ?? { scorecard: undefined, scores: undefined }
+  const { scorecard, ladders, scores } = value ?? { scorecard: undefined, ladders: [], scores: undefined }
 
   if (error || scorecard === undefined || scores === undefined) {
     return (
@@ -50,10 +51,13 @@ export const ScorecardDetailsPage = () =>  {
     );
   }
 
+  // currently we only support 1 ladder per Scorecard
+  const ladder = ladders?.[0];
 
   return (
     <ScorecardDetails
       scorecard={scorecard}
+      ladder={ladder}
       scores={scores}
     />
   )
