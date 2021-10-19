@@ -45,12 +45,54 @@ export interface ServiceGroup {
   tag: string;
 }
 
+export interface ScorecardLevelRule {
+  id: string;
+  levelId: string;
+  expression: string;
+  title?: string;
+  description?: string;
+}
+
+export interface ScorecardLevel {
+  id: string;
+  name: string;
+  description?: string;
+  color: string;
+  rank: number;
+  rules: ScorecardLevelRule[];
+}
+
+export interface ScorecardLadder {
+  id: string;
+  scorecardId: string;
+  name: string;
+  description?: string;
+  levels: ScorecardLevel[];
+}
+
+export interface ScorecardScoreLadderDetails {
+  id: string;
+  name: string;
+}
+
+export interface ScorecardScoreLadderLevel {
+  name: string;
+  color: string;
+  rank: number;
+}
+
+export interface ScorecardScoreLadderResult {
+  ladderDetails: ScorecardScoreLadderDetails;
+  currentLevel?: ScorecardScoreLadderLevel;
+}
+
 export interface ServiceScorecardScore {
   scorecardId: string;
   scorecardName: string;
   scorePercentage: number;
   score: number;
   totalPossibleScore: number;
+  ladderLevels: ScorecardScoreLadderResult[];
 }
 
 export interface ScorecardServiceScore {
@@ -62,6 +104,7 @@ export interface ScorecardServiceScore {
   rules: ScorecardServiceScoresRule[];
   lastUpdated: string;
   tags: string[];
+  ladderLevels: ScorecardScoreLadderResult[];
 }
 
 export interface ScorecardServiceScoresRule {

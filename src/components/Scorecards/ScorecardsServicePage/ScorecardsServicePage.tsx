@@ -34,6 +34,7 @@ import {
 } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 import { entityEquals } from '../../../utils/types';
+import {ScorecardsServiceNextRules} from "./ScorecardsServiceNextRules";
 
 const useStyles = makeStyles({
   progress: {
@@ -57,15 +58,21 @@ export const ScorecardsServicePage = () => {
   >([]);
 
   const {
-    value: score,
+    value,
     loading,
     error,
   } = useAsync(async () => {
     const allScores = await cortexApi.getScorecardScores(scorecardId);
-    return allScores.find(serviceScore =>
+    const ladders = await cortexApi.getScorecardLadders(scorecardId);
+
+    const score = allScores.find(serviceScore =>
       entityEquals(serviceScore.componentRef, entityRef),
     );
+
+    return { score, ladders }
   }, []);
+
+  const { score, ladders } = value ?? { score: undefined, ladders: [] }
 
   useEffect(() => {
     setSelectedRules(score?.rules ?? []);
@@ -82,6 +89,9 @@ export const ScorecardsServicePage = () => {
       </WarningPanel>
     );
   }
+
+  // currently we only support 1 ladder per Scorecard
+  const ladder = ladders?.[0];
 
   return (
     <Content>
@@ -109,6 +119,7 @@ export const ScorecardsServicePage = () => {
           </InfoCard>
         </Grid>
         <Grid item lg={8} xs={12}>
+          <ScorecardsServiceNextRules ladder={ladder} score={score} />
           <InfoCard title="Score Progress" className={classes.progress}>
             <ScorecardsServiceProgress
               scorecardId={scorecardId}

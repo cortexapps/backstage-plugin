@@ -30,6 +30,7 @@ import { parseEntityName, parseEntityRef } from '@backstage/catalog-model';
 import { Gauge } from '../../../Gauge';
 import { Link } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
+import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import { scorecardServiceDetailsRouteRef } from '../../../../routes';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 
@@ -60,6 +61,7 @@ export const ScorecardsTableRow = ({
 }: ScorecardsTableRowProps) => {
   const classes = useStyles();
   const serviceDetailsRef = useRouteRef(scorecardServiceDetailsRouteRef);
+  const currentLevel = score.ladderLevels?.[0]?.currentLevel;
 
   const entityName = parseEntityName(
     score.componentRef,
@@ -90,7 +92,7 @@ export const ScorecardsTableRow = ({
                 trailWidth={8}
               />
             </Box>
-            <Box alignSelf="center">
+            <Box alignSelf="center" flex="1">
               <Link
                 to={serviceDetailsRef({
                   scorecardId: scorecardId,
@@ -107,6 +109,12 @@ export const ScorecardsTableRow = ({
                 </b>
               </Link>
             </Box>
+            {currentLevel &&
+            <Box display="flex" alignItems="center">
+              <LoyaltyIcon style={{ color: `${currentLevel.color}` }}/>
+              {currentLevel.name}
+            </Box>
+            }
           </Box>
         </TableCell>
       </TableRow>

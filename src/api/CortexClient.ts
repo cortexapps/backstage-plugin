@@ -19,7 +19,7 @@ import {
   GroupByOption,
   Initiative,
   InitiativeActionItem,
-  Scorecard,
+  Scorecard, ScorecardLadder,
   ScorecardResult,
   ScorecardServiceScore,
   ScoresByIdentifier,
@@ -135,6 +135,10 @@ export class CortexClient implements CortexApi {
 
   async getScorecard(scorecardId: string): Promise<Scorecard> {
     return await this.get(`/api/backstage/v1/scorecards/${scorecardId}`);
+  }
+
+  async getScorecardLadders(scorecardId: string): Promise<ScorecardLadder[]> {
+    return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/ladders`);
   }
 
   async getScorecardScores(

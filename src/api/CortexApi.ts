@@ -17,7 +17,7 @@ import {
   GroupByOption,
   Initiative,
   InitiativeActionItem,
-  Scorecard,
+  Scorecard, ScorecardLadder,
   ScorecardResult,
   ScorecardServiceScore,
   ScoresByIdentifier,
@@ -30,6 +30,7 @@ import { AnyEntityRef } from '../utils/types';
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
   getScorecard(scorecardId: string): Promise<Scorecard | undefined>;
+  getScorecardLadders(scorecardId: string): Promise<ScorecardLadder[]>;
   getScorecardScores(scorecardId: string): Promise<ScorecardServiceScore[]>;
   getServiceScores(entityRef: AnyEntityRef): Promise<ServiceScorecardScore[]>;
   getHistoricalScores(
