@@ -74,27 +74,31 @@ export const ProgressPage = () => {
   return (
     <Content>
       <ContentHeader title="Progress" />
-      <Grid container direction="row" spacing={2}>
-        <Grid item lg={4}>
-          <ScorecardSelector
-            onSelect={setSelectedScorecardId}
-            selectedScorecardId={selectedScorecardId}
-            hideReset
-          />
-          <Grid container style={{ marginTop: '20px' }}>
-            <Grid item xs={6}>
+      <Grid container direction="column">
+        <Grid item lg={12}>
+          <Grid container direction="row">
+            <Grid item lg={8}>
+              <ScorecardSelector
+                  onSelect={setSelectedScorecardId}
+                  selectedScorecardId={selectedScorecardId}
+                  hideReset
+              />
+            </Grid>
+            <Grid item lg={4}>
               <FormControl>
                 <InputLabel>Time Range</InputLabel>
                 <Select value={lookback} onChange={setLookback}>
                   {enumKeys(Lookback).map(key => (
-                    <MenuItem key={key} value={Lookback[key]}>
-                      {lookbackLabels(Lookback[key])}
-                    </MenuItem>
+                      <MenuItem key={key} value={Lookback[key]}>
+                        {lookbackLabels(Lookback[key])}
+                      </MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={6}>
+          </Grid>
+          <Grid container style={{ marginTop: '20px' }}>
+            <Grid item lg={2}>
               <FormControl>
                 <InputLabel style={{ minWidth: '100px' }}>Group By</InputLabel>
                 <Select value={groupBy} onChange={setGroupBy}>
@@ -107,7 +111,7 @@ export const ProgressPage = () => {
               </FormControl>
             </Grid>
             {scorecard && (
-              <Grid item xs={12}>
+              <Grid item lg={10}>
                 <FormControl>
                   <InputLabel style={{ minWidth: '200px' }}>
                     Group By Rule
@@ -127,13 +131,13 @@ export const ProgressPage = () => {
               </Grid>
             )}
             {filterOptions && (
-              <Grid item xs={12}>
+              <Grid item lg={12}>
                 <SerieFilter options={filterOptions} onSelect={setFilters} />
               </Grid>
             )}
           </Grid>
         </Grid>
-        <Grid item lg={8} xs={12}>
+        <Grid item lg={12}>
           {selectedScorecardId === undefined ? (
             <EmptyState title="Select a scorecard" missing="data" />
           ) : (
