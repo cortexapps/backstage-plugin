@@ -28,14 +28,14 @@ export const HeatmapPage = () => {
   return (
     <Content>
       <ContentHeader title="Bird's Eye" />
-      <Grid container direction="row" spacing={2}>
-        <Grid item lg={4}>
+      <Grid container direction="column">
+        <Grid item lg={12}>
           <ScorecardSelector
             onSelect={setSelectedScorecardId}
             selectedScorecardId={selectedScorecardId}
           />
         </Grid>
-        <Grid item lg={8} xs={12}>
+        <Grid item lg={12}>
           {selectedScorecardId === undefined ? (
             <AllScorecardsHeatmap />
           ) : (
