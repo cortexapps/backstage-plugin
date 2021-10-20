@@ -21,6 +21,8 @@ type CortexSlackOwner = { type: string; channel: string };
 type CortexEmailOwner = { type: string; email: string };
 type CortexGroupOwner = { type: string; name: string };
 type CortexOwner = CortexEmailOwner | CortexGroupOwner | CortexSlackOwner;
+type GitProvider = 'github' | 'gitlab' | 'bitbucket';
+type OncallProvider = 'pagerduty' | 'opsgenie' | 'victorops';
 
 export type CortexYaml = {
   title: string;
@@ -33,13 +35,13 @@ export type CortexYaml = {
   }[];
   'x-cortex-service-groups': string[];
   'x-cortex-git': {
-    [provider: string]: {
+    [provider in GitProvider]?: {
       repository: string;
       basePath?: string;
     };
   };
   'x-cortex-oncall': {
-    [provider: string]: {
+    [provider in OncallProvider]?: {
       id: string;
       type: string;
     };
@@ -133,8 +135,6 @@ export interface ExtensionApi {
   getAdditionalFilters(): Promise<EntityFilterGroup[]>;
 
   /**
-   * [Coming Soon]
-   *
    * Override default mapping to Cortex YAMLs. Can be used to map custom fields without the need
    * to pollute Backstage descriptors with Cortex fields.
    *

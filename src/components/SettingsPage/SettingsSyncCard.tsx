@@ -20,6 +20,7 @@ import { InfoCard, Link } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { extensionApiRef } from '../../api/ExtensionApi';
 
 interface SyncButtonProps {
   syncEntities: () => Promise<void>;
@@ -43,10 +44,12 @@ const SyncButton = ({ syncEntities }: SyncButtonProps) => {
 export const SettingsSyncCard = () => {
   const catalogApi = useApi(catalogApiRef);
   const cortexApi = useApi(cortexApiRef);
+  const extensionApi = useApi(extensionApiRef);
 
   const syncEntities = async () => {
     const { items: entities } = await catalogApi.getEntities();
-    await cortexApi.syncEntities(entities);
+    const customMappings = await extensionApi.getCustomMappings();
+    await cortexApi.syncEntities(entities, customMappings);
   };
 
   return (
