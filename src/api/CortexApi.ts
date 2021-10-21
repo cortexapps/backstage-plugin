@@ -26,6 +26,7 @@ import {
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef } from '../utils/types';
+import { CustomMapping } from './ExtensionApi';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
@@ -61,5 +62,8 @@ export interface CortexApi {
     entityRefs: AnyEntityRef[],
   ): Promise<InitiativeActionItem[]>;
 
-  syncEntities(entities: Entity[]): Promise<void>;
+  syncEntities(
+    entities: Entity[],
+    customMappings?: CustomMapping[],
+  ): Promise<void>;
 }

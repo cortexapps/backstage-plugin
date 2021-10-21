@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+import { Entity } from '@backstage/catalog-model';
+import { CustomMapping } from '../api/ExtensionApi';
+import { merge } from 'lodash';
+
 export type EntityRefContext = {
   defaultKind?: string;
   defaultNamespace?: string;
@@ -32,4 +36,22 @@ export const defaultGroupRefContext: EntityRefContext = {
 export const defaultSystemRefContext: EntityRefContext = {
   defaultKind: 'System',
   defaultNamespace: 'default',
+};
+
+export const applyCustomMappings = (
+  entity: Entity,
+  customMappings: CustomMapping[],
+) => {
+  return customMappings.reduce(
+    (modifiedEntity: Entity, customMapping: CustomMapping) => {
+      const partialEntity = {
+        spec: customMapping(entity),
+      };
+
+      merge(modifiedEntity, partialEntity);
+
+      return modifiedEntity;
+    },
+    entity,
+  );
 };

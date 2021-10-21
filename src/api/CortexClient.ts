@@ -19,7 +19,8 @@ import {
   GroupByOption,
   Initiative,
   InitiativeActionItem,
-  Scorecard, ScorecardLadder,
+  Scorecard,
+  ScorecardLadder,
   ScorecardResult,
   ScorecardServiceScore,
   ScoresByIdentifier,
@@ -29,6 +30,8 @@ import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
+import { CustomMapping } from './ExtensionApi';
+import { applyCustomMappings } from '../utils/ComponentUtils';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -56,9 +59,16 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/scorecards`);
   }
 
-  async syncEntities(entities: Entity[]): Promise<void> {
+  async syncEntities(
+    entities: Entity[],
+    customMappings?: CustomMapping[],
+  ): Promise<void> {
+    const withCustomMappings: Entity[] = customMappings
+      ? entities.map(entity => applyCustomMappings(entity, customMappings))
+      : entities;
+
     return await this.post(`/api/backstage/v1/entities`, {
-      entities: entities,
+      entities: withCustomMappings,
     });
   }
 
@@ -138,7 +148,9 @@ export class CortexClient implements CortexApi {
   }
 
   async getScorecardLadders(scorecardId: string): Promise<ScorecardLadder[]> {
-    return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/ladders`);
+    return await this.get(
+      `/api/backstage/v1/scorecards/${scorecardId}/ladders`,
+    );
   }
 
   async getScorecardScores(
