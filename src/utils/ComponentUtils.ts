@@ -16,7 +16,7 @@
 
 import { Entity } from '@backstage/catalog-model';
 import { CustomMapping } from '../api/ExtensionApi';
-import _ from 'lodash';
+import { merge } from 'lodash';
 
 export type EntityRefContext = {
   defaultKind?: string;
@@ -48,7 +48,7 @@ export const applyCustomMappings = (
         spec: customMapping(entity),
       };
 
-      _.merge(modifiedEntity, partialEntity);
+      merge(modifiedEntity, partialEntity);
 
       return modifiedEntity;
     },

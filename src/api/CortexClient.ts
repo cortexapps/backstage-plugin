@@ -19,7 +19,8 @@ import {
   GroupByOption,
   Initiative,
   InitiativeActionItem,
-  Scorecard, ScorecardLadder,
+  Scorecard,
+  ScorecardLadder,
   ScorecardResult,
   ScorecardServiceScore,
   ScoresByIdentifier,
@@ -30,7 +31,6 @@ import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
 import { CustomMapping } from './ExtensionApi';
-import _ from 'lodash';
 import { applyCustomMappings } from '../utils/ComponentUtils';
 
 export const cortexApiRef = createApiRef<CortexApi>({
@@ -148,7 +148,9 @@ export class CortexClient implements CortexApi {
   }
 
   async getScorecardLadders(scorecardId: string): Promise<ScorecardLadder[]> {
-    return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/ladders`);
+    return await this.get(
+      `/api/backstage/v1/scorecards/${scorecardId}/ladders`,
+    );
   }
 
   async getScorecardScores(
