@@ -19,7 +19,7 @@ import React from 'react';
 import { CortexPage } from '../src/components/CortexPage';
 
 createDevApp()
-  .registerPlugin(cortexPlugin)
+  .registerPlugin(cortexPlugin as any)
   .addPage({
     element: <CortexPage />,
     title: 'Cortex',
