@@ -24,7 +24,7 @@ import { parseEntityName } from '@backstage/catalog-model';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { HeatmapCell } from '../HeatmapCell';
 import {getAverageRuleScores, getSortedRulesByLevels, StringIndexable} from "../HeatmapUtils";
-import { average as _average, round as _round } from 'lodash';
+import { mean as _average, round as _round } from 'lodash';
 import {HeatmapTableHeader} from "./HeatmapTableHeader";
 import {useCortexApi} from "../../../../utils/hooks";
 import {Progress, WarningPanel} from "@backstage/core-components";
