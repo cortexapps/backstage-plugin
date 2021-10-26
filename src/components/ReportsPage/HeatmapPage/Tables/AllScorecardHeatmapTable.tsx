@@ -25,6 +25,8 @@ import {defaultComponentRefContext} from '../../../../utils/ComponentUtils';
 import { ScoresByIdentifier} from "../../../../api/types";
 import {HeatmapTableHeader} from "../Tables/HeatmapTableHeader";
 import {getFormattedScorecardScores} from "../HeatmapUtils";
+import { mean as _average, round as _round } from 'lodash';
+import {filterNotUndefined} from "../../../../utils/collections";
 
 interface AllScorecardsHeatmapTableProps {
     scorecardNames: string[];
@@ -40,6 +42,8 @@ export const AllScorecardsHeatmapTable = ({ scorecardNames, serviceScores }: All
             <HeatmapTableHeader headers={headers} />
             <TableBody>
                 {data.map(groupScore => {
+                    const averageScore = _round(_average(filterNotUndefined(groupScore.scores.map((score) => score?.scorePercentage))), 2);
+
                     return (
                         <TableRow key={groupScore.identifier}>
                             <TableCell>
@@ -51,7 +55,7 @@ export const AllScorecardsHeatmapTable = ({ scorecardNames, serviceScores }: All
                                 />
                             </TableCell>
                             <HeatmapCell
-                                score={groupScore.averageScore}
+                                score={averageScore}
                             />
                             {groupScore.scores.map((score, idx) => (
                                     <React.Fragment key={`ReportsTableRuleRow-${idx}`}>

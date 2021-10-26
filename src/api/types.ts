@@ -145,7 +145,6 @@ export interface RuleResult {
 
 export interface ScoresByIdentifier {
   identifier?: string;
-  averageScore: number;
   scores: ScorecardScore[];
 }
 
