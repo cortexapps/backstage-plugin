@@ -17,7 +17,13 @@ import React from 'react';
 import {
   List,
 } from '@material-ui/core';
-import {RuleResultDetails, ScorecardServiceScoreRuleName} from "./RuleResultDetails";
+import {RuleResultDetails} from "./RuleResultDetails";
+import {RuleName, ScorecardServiceScoresRule} from "../../../../api/types";
+
+export type ScorecardServiceScoreRuleName = Omit<
+    ScorecardServiceScoresRule,
+    'rule'
+    > & { rule: RuleName & { weight: number; } };
 
 interface ScorecardResultDetailsProps {
   rules: ScorecardServiceScoreRuleName[];

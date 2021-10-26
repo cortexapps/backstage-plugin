@@ -15,9 +15,7 @@
  */
 import React from 'react';
 import {
-    RuleName,
     ruleName,
-    ScorecardServiceScoresRule,
 } from '../../../../api/types';
 import {
     Grid,
@@ -29,17 +27,13 @@ import {
 } from '@material-ui/core';
 import ErrorIcon from '@material-ui/icons/Error';
 import CheckIcon from '@material-ui/icons/Check';
+import {ScorecardServiceScoreRuleName} from "./ScorecardResultDetails";
 
 const useStyles = makeStyles({
     rule: {
         borderRadius: 8,
     },
 });
-
-export type ScorecardServiceScoreRuleName = Omit<
-    ScorecardServiceScoresRule,
-    'rule'
-    > & { rule: RuleName & { weight: number; } };
 
 interface RuleResultDetailsProps {
     rule: ScorecardServiceScoreRuleName;
