@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
-import { Progress, WarningPanel } from '@backstage/core-components';
-import { useCortexApi } from '../../../utils/hooks';
-import { average } from '../../../utils/numeric';
-import TableRow from '@material-ui/core/TableRow/TableRow';
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead/TableHead';
-import TableBody from '@material-ui/core/TableBody/TableBody';
-import { makeStyles, TableCell } from '@material-ui/core';
-import { HeatmapCell } from './HeatmapCell';
-import { BackstageTheme } from '@backstage/theme';
-import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { parseEntityName } from '@backstage/catalog-model';
-import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
+import React, {useMemo} from 'react';
+import {Progress, WarningPanel} from '@backstage/core-components';
+import {useCortexApi} from '../../../utils/hooks';
+import {makeStyles} from '@material-ui/core';
+import {BackstageTheme} from '@backstage/theme';
+import {GroupByOption} from "../../../api/types";
+import {AllScorecardsHeatmapTable} from "./Tables/AllScorecardHeatmapTable";
+
+interface AllScorecardsHeatmapProps {
+  groupBy: GroupByOption;
+}
 
 export const useHeatmapStyles = makeStyles<BackstageTheme>({
   root: {
@@ -34,7 +31,7 @@ export const useHeatmapStyles = makeStyles<BackstageTheme>({
   },
 });
 
-export const AllScorecardsHeatmap = () => {
+export const AllScorecardsHeatmap = ({ groupBy }: AllScorecardsHeatmapProps) => {
   const {
     value: serviceScores,
     loading,
@@ -57,8 +54,6 @@ export const AllScorecardsHeatmap = () => {
     );
   }, [scorecards]);
 
-  const classes = useHeatmapStyles();
-
   if (loading) {
     return <Progress />;
   }
@@ -71,56 +66,17 @@ export const AllScorecardsHeatmap = () => {
     );
   }
 
-  return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Entity</TableCell>
-          <TableCell className={classes.root}>Average Score</TableCell>
-          {scorecardIds.map(scorecardId => (
-            <TableCell key={scorecardId} className={classes.root}>
-              {scorecards[scorecardId]}
-            </TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {serviceScores.map(serviceScore => {
-          return (
-            <TableRow key={serviceScore.identifier}>
-              <TableCell>
-                <EntityRefLink
-                  entityRef={parseEntityName(
-                    serviceScore.identifier!!,
-                    defaultComponentRefContext,
-                  )}
-                />
-              </TableCell>
-              <HeatmapCell
-                score={
-                  average(
-                    serviceScore.scores.map(score => score.scorePercentage),
-                  ) ?? 0
-                }
-              />
-              {scorecardIds.map(scorecardId => {
-                const score = serviceScore.scores
-                  // eslint-disable-next-line eqeqeq
-                  .find(s => s.scorecardId == scorecardId)?.scorePercentage;
+  if (groupBy === GroupByOption.LEVEL) {
+    return (
+        <WarningPanel severity="error" title="Functionality not supported.">
+          Group by for levels is not supported yet.
+        </WarningPanel>
+    );
+  }
 
-                return (
-                  <React.Fragment key={scorecardId}>
-                    <HeatmapCell
-                      score={score}
-                      text={score !== undefined ? undefined : 'N/A'}
-                    />
-                  </React.Fragment>
-                );
-              })}
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+  const scorecardNames = scorecardIds.map(scorecardId => scorecards[scorecardId]);
+
+  return (
+    <AllScorecardsHeatmapTable scorecardNames={scorecardNames} serviceScores={serviceScores} />
   );
-};
+}

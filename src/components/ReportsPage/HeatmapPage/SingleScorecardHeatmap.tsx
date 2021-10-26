@@ -16,32 +16,23 @@
 import React from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../../utils/hooks';
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead/TableHead';
-import TableRow from '@material-ui/core/TableRow/TableRow';
-import { TableCell } from '@material-ui/core';
-import { useHeatmapStyles } from './AllScorecardsHeatmap';
-import { ruleName } from '../../../api/types';
-import TableBody from '@material-ui/core/TableBody/TableBody';
-import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { parseEntityName } from '@backstage/catalog-model';
-import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
-import { HeatmapCell } from './HeatmapCell';
+import {GroupByOption} from '../../../api/types';
+import {SingleScorecardHeatmapTable} from "./Tables/SingleScorecardHeatmapTable";
 
 interface SingleScorecardHeatmapProps {
   scorecardId: string;
+  groupBy: GroupByOption;
 }
 
 export const SingleScorecardHeatmap = ({
   scorecardId,
+                                         groupBy,
 }: SingleScorecardHeatmapProps) => {
   const {
     value: scores,
     loading,
     error,
   } = useCortexApi(api => api.getScorecardScores(scorecardId), [scorecardId]);
-
-  const classes = useHeatmapStyles();
 
   if (loading) {
     return <Progress />;
@@ -65,40 +56,6 @@ export const SingleScorecardHeatmap = ({
   }
 
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Entity</TableCell>
-          <TableCell className={classes.root}>Score</TableCell>
-          {scores[0].rules.map(rule => (
-            <TableCell key={rule.rule.id} className={classes.root}>
-              {ruleName(rule.rule)}
-            </TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {scores.map(score => (
-          <TableRow key={score.componentRef}>
-            <TableCell>
-              <EntityRefLink
-                entityRef={parseEntityName(
-                  score.componentRef,
-                  defaultComponentRefContext,
-                )}
-              />
-            </TableCell>
-            <HeatmapCell score={score.scorePercentage} />
-            {score.rules.map(rule => (
-              <HeatmapCell
-                key={rule.rule.id}
-                score={rule.score > 0 ? 1 : 0}
-                text={rule.score > 0 ? '1' : '0'}
-              />
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <SingleScorecardHeatmapTable scorecardId={scorecardId} groupBy={groupBy} scores={scores} />
   );
 };

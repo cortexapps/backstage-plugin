@@ -27,13 +27,13 @@ export interface Scorecard {
 export interface RuleName {
   expression: string;
   title?: string;
-  weight: number;
 }
 
 export interface Rule extends RuleName {
   id: string;
   description?: string;
   dateCreated: string;
+  weight: number;
 }
 
 export function ruleName(rule: RuleName): string {
@@ -43,6 +43,11 @@ export function ruleName(rule: RuleName): string {
 export interface ServiceGroup {
   id: string;
   tag: string;
+}
+
+export interface ServiceOwner {
+  id: string;
+  email: string;
 }
 
 export interface ScorecardLevelRule {
@@ -103,7 +108,9 @@ export interface ScorecardServiceScore {
   totalPossibleScore: number;
   rules: ScorecardServiceScoresRule[];
   lastUpdated: string;
-  tags: string[];
+  tags: string[]; // service groups
+  owners: ServiceOwner[]; // service owners - indiv ppl
+  teams: string[]; // owner groups
   ladderLevels: ScorecardScoreLadderResult[];
 }
 
@@ -138,6 +145,7 @@ export interface RuleResult {
 
 export interface ScoresByIdentifier {
   identifier?: string;
+  averageScore: number;
   scores: ScorecardScore[];
 }
 
@@ -150,8 +158,10 @@ export interface AverageScoresByIdentifier {
 
 export enum GroupByOption {
   SCORECARD = 'Scorecard',
+  OWNER = 'Owner',
   TEAM = 'Team',
   SERVICE_GROUP = 'Service Group',
+  LEVEL = 'Level',
 }
 
 export interface ScorecardScore {
