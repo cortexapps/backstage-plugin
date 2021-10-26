@@ -15,84 +15,11 @@
  */
 import React from 'react';
 import {
-  RuleName,
-  ruleName,
-  ScorecardServiceScoresRule,
-} from '../../../../api/types';
-import {
-  Grid,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  makeStyles,
-  Typography,
 } from '@material-ui/core';
-import ErrorIcon from '@material-ui/icons/Error';
-import CheckIcon from '@material-ui/icons/Check';
+import {RuleResultDetails, ScorecardServiceScoreRuleName} from "./RuleResultDetails";
 
-const useStyles = makeStyles({
-  rule: {
-    borderRadius: 8,
-  },
-});
-
-export type ScorecardServiceScoreRuleName = Omit<
-  ScorecardServiceScoresRule,
-  'rule'
-> & { rule: RuleName };
-
-interface RuleResultDetailsProps {
-  rule: ScorecardServiceScoreRuleName;
-  hideWeight?: boolean;
-}
-
-export const RuleResultDetails = ({
-  rule,
-  hideWeight,
-}: RuleResultDetailsProps) => {
-  const classes = useStyles();
-
-  return (
-    <ListItem alignItems="flex-start">
-      <ListItemAvatar>
-        {rule.score > 0 ? (
-          <CheckIcon color="primary" />
-        ) : (
-          <ErrorIcon color="error" />
-        )}
-      </ListItemAvatar>
-      <Grid
-        container
-        direction="row"
-        justify="space-between"
-        alignItems="center"
-        className={classes.rule}
-      >
-        <Grid item xs={9}>
-          <ListItemText
-            primary={ruleName(rule.rule)}
-            style={{ wordWrap: 'break-word' }}
-          />
-        </Grid>
-        {hideWeight !== true && (
-          <Grid item>
-            <ListItemText primary={`${rule.rule.weight}`} />
-          </Grid>
-        )}
-        {rule.error && (
-          <Grid item xs={9}>
-            <Typography color="error" style={{ wordWrap: 'break-word' }}>
-              {rule.error}
-            </Typography>
-          </Grid>
-        )}
-      </Grid>
-    </ListItem>
-  );
-};
-
-interface ScorecardsTableRowDetailsProps {
+interface ScorecardResultDetailsProps {
   rules: ScorecardServiceScoreRuleName[];
   hideWeights?: boolean;
 }
@@ -100,7 +27,7 @@ interface ScorecardsTableRowDetailsProps {
 export const ScorecardResultDetails = ({
   rules,
   hideWeights,
-}: ScorecardsTableRowDetailsProps) => {
+}: ScorecardResultDetailsProps) => {
   return (
     <List>
       {rules
