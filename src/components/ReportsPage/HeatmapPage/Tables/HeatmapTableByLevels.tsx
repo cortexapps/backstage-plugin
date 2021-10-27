@@ -96,14 +96,7 @@ export const HeatmapTableByLevels = ({
 
           return (
             <TableRow key={firstScore.componentRef}>
-              <TableCell>
-                <EntityRefLink
-                  entityRef={parseEntityName(
-                    firstScore.componentRef,
-                    defaultComponentRefContext,
-                  )}
-                />
-              </TableCell>
+              <TableCell>{key}</TableCell>
               <TableCell>{serviceCount}</TableCell>
               <HeatmapCell score={averageScore} />
               <HeatmapCell score={averageScorePercentage} />
