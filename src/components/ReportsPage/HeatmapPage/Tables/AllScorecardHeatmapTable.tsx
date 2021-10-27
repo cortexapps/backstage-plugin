@@ -22,18 +22,20 @@ import { HeatmapCell } from '../HeatmapCell';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityName } from '@backstage/catalog-model';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
-import { ScoresByIdentifier } from '../../../../api/types';
+import { GroupByOption, ScoresByIdentifier } from '../../../../api/types';
 import { HeatmapTableHeader } from '../Tables/HeatmapTableHeader';
 import { getFormattedScorecardScores } from '../HeatmapUtils';
 import { mean as _average, round as _round } from 'lodash';
 import { filterNotUndefined } from '../../../../utils/collections';
 
 interface AllScorecardsHeatmapTableProps {
+  groupBy: GroupByOption;
   scorecardNames: string[];
   serviceScores: ScoresByIdentifier[];
 }
 
 export const AllScorecardsHeatmapTable = ({
+  groupBy,
   scorecardNames,
   serviceScores,
 }: AllScorecardsHeatmapTableProps) => {
@@ -60,12 +62,16 @@ export const AllScorecardsHeatmapTable = ({
           return (
             <TableRow key={groupScore.identifier}>
               <TableCell>
-                <EntityRefLink
-                  entityRef={parseEntityName(
-                    groupScore.identifier!!,
-                    defaultComponentRefContext,
-                  )}
-                />
+                {groupBy === GroupByOption.SCORECARD ? (
+                  <EntityRefLink
+                    entityRef={parseEntityName(
+                      groupScore.identifier!!,
+                      defaultComponentRefContext,
+                    )}
+                  />
+                ) : (
+                  <>{groupScore.identifier!!}</>
+                )}
               </TableCell>
               <HeatmapCell score={averageScore} />
               {groupScore.scores.map((score, idx) => (

@@ -38,7 +38,7 @@ export const AllScorecardsHeatmap = ({
     value: serviceScores,
     loading,
     error,
-  } = useCortexApi(api => api.getServiceScorecardScores());
+  } = useCortexApi(api => api.getServiceScorecardScores(groupBy), [groupBy]);
 
   const scorecards = useMemo(() => {
     const out: Record<string, string> = {};
@@ -82,6 +82,7 @@ export const AllScorecardsHeatmap = ({
 
   return (
     <AllScorecardsHeatmapTable
+      groupBy={groupBy}
       scorecardNames={scorecardNames}
       serviceScores={serviceScores}
     />

@@ -46,8 +46,11 @@ export const SingleScorecardHeatmapTable = ({
     case GroupByOption.SCORECARD:
       return <HeatmapTableByService rules={rules} data={data} />;
     case GroupByOption.SERVICE_GROUP:
+      return (
+        <HeatmapTableByGroup header="Service Group" rules={rules} data={data} />
+      );
     case GroupByOption.TEAM:
-      return <HeatmapTableByGroup rules={rules} data={data} />;
+      return <HeatmapTableByGroup header="Team" rules={rules} data={data} />;
     case GroupByOption.LEVEL:
       return (
         <HeatmapTableByLevels

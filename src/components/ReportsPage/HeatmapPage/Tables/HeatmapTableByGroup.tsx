@@ -19,25 +19,24 @@ import TableRow from '@material-ui/core/TableRow/TableRow';
 import { TableCell } from '@material-ui/core';
 import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
-import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { parseEntityName } from '@backstage/catalog-model';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
 import { mean as _average, round as _round } from 'lodash';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
 
 interface HeatmapTableByGroupProps {
+  header: string;
   rules: string[];
   data: StringIndexable<ScorecardServiceScore[]>;
 }
 
 export const HeatmapTableByGroup = ({
+  header,
   rules,
   data,
 }: HeatmapTableByGroupProps) => {
   const headers = [
-    'Level',
+    header,
     'Service Count',
     'Average Score',
     'Average Score Percentage',
@@ -62,23 +61,12 @@ export const HeatmapTableByGroup = ({
 
           return (
             <TableRow key={firstScore.componentRef}>
-              <TableCell>
-                <EntityRefLink
-                  entityRef={parseEntityName(
-                    firstScore.componentRef,
-                    defaultComponentRefContext,
-                  )}
-                />
-              </TableCell>
+              <TableCell>{key}</TableCell>
               <TableCell>{serviceCount}</TableCell>
               <HeatmapCell score={averageScore} />
               <HeatmapCell score={averageScorePercentage} />
               {averageRuleScores.map((score, idx) => (
-                <HeatmapCell
-                  key={`HeatmapCell-${key}-${idx}`}
-                  score={score}
-                  text={score.toString()}
-                />
+                <HeatmapCell key={`HeatmapCell-${key}-${idx}`} score={score} />
               ))}
             </TableRow>
           );
