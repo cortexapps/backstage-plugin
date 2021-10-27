@@ -19,9 +19,6 @@ import TableRow from '@material-ui/core/TableRow/TableRow';
 import { TableCell } from '@material-ui/core';
 import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
-import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { parseEntityName } from '@backstage/catalog-model';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { HeatmapCell } from '../HeatmapCell';
 import {
   getAverageRuleScores,
