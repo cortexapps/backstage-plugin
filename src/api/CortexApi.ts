@@ -17,7 +17,8 @@ import {
   GroupByOption,
   Initiative,
   InitiativeActionItem,
-  Scorecard, ScorecardLadder,
+  Scorecard,
+  ScorecardLadder,
   ScorecardResult,
   ScorecardServiceScore,
   ScoresByIdentifier,
@@ -50,7 +51,9 @@ export interface CortexApi {
     },
   ): Promise<ScoresByIdentifier[]>;
 
-  getServiceScorecardScores(): Promise<ScoresByIdentifier[]>;
+  getServiceScorecardScores(
+    groupBy: GroupByOption,
+  ): Promise<ScoresByIdentifier[]>;
 
   getInitiatives(): Promise<Initiative[]>;
   getInitiative(id: string): Promise<Initiative>;

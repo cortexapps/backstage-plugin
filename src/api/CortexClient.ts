@@ -139,8 +139,17 @@ export class CortexClient implements CortexApi {
     });
   }
 
-  async getServiceScorecardScores(): Promise<ScoresByIdentifier[]> {
-    return await this.get(`/api/backstage/v1/scorecards/scores`);
+  async getServiceScorecardScores(
+    groupBy: GroupByOption,
+  ): Promise<ScoresByIdentifier[]> {
+    const args =
+      groupBy !== GroupByOption.SCORECARD
+        ? {
+            groupBy: groupBy.toUpperCase().replace(' ', '_'),
+          }
+        : undefined;
+
+    return await this.get(`/api/backstage/v1/scorecards/scores`, args);
   }
 
   async getScorecard(scorecardId: string): Promise<Scorecard> {

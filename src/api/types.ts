@@ -27,13 +27,13 @@ export interface Scorecard {
 export interface RuleName {
   expression: string;
   title?: string;
-  weight: number;
 }
 
 export interface Rule extends RuleName {
   id: string;
   description?: string;
   dateCreated: string;
+  weight: number;
 }
 
 export function ruleName(rule: RuleName): string {
@@ -103,7 +103,8 @@ export interface ScorecardServiceScore {
   totalPossibleScore: number;
   rules: ScorecardServiceScoresRule[];
   lastUpdated: string;
-  tags: string[];
+  tags: string[]; // service groups
+  teams: string[]; // owner groups
   ladderLevels: ScorecardScoreLadderResult[];
 }
 
@@ -152,6 +153,7 @@ export enum GroupByOption {
   SCORECARD = 'Scorecard',
   TEAM = 'Team',
   SERVICE_GROUP = 'Service Group',
+  LEVEL = 'Level',
 }
 
 export interface ScorecardScore {

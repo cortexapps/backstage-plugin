@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Card,
   FormControl,
@@ -41,6 +41,10 @@ export const ScorecardSelector = ({
     error,
   } = useCortexApi(api => api.getScorecards());
 
+  const sortedScorecards = useMemo(() => {
+    return scorecards?.sort((a, b) => a.name.localeCompare(b.name)) ?? [];
+  }, [scorecards]);
+
   if (loading) {
     return <Progress />;
   }
@@ -53,19 +57,19 @@ export const ScorecardSelector = ({
     );
   }
 
+  const selected = scorecards.find(
+    scorecard => scorecard.id === selectedScorecardId,
+  );
+
   return (
     <Card>
       <FormControl variant="standard">
         <InputLabel>Select a Scorecard</InputLabel>
         <Select
-          value={scorecards.find(
-            scorecard => scorecard.id === selectedScorecardId,
-          )}
-          onChange={event => {
-            onSelect(event.target.value as string | undefined);
-          }}
+          value={selected}
+          onChange={event => onSelect(event.target.value as string | undefined)}
         >
-          {scorecards.map(scorecard => (
+          {sortedScorecards.map(scorecard => (
             <MenuItem key={scorecard.id} value={scorecard.id}>
               {scorecard.name}
             </MenuItem>

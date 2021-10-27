@@ -19,11 +19,17 @@ import { Grid } from '@material-ui/core';
 import { AllScorecardsHeatmap } from './AllScorecardsHeatmap';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
+import { useDropdown } from '../../../utils/hooks';
+import { GroupByOption } from '../../../api/types';
+import { GroupByDropdown } from '../Common/GroupByDropdown';
 
 export const HeatmapPage = () => {
   const [selectedScorecardId, setSelectedScorecardId] = useState<
     string | undefined
   >();
+  const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
+    GroupByOption.SCORECARD,
+  );
 
   return (
     <Content>
@@ -35,11 +41,17 @@ export const HeatmapPage = () => {
             selectedScorecardId={selectedScorecardId}
           />
         </Grid>
+        <Grid item style={{ marginTop: '20px' }}>
+          <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupBy} />
+        </Grid>
         <Grid item lg={12}>
           {selectedScorecardId === undefined ? (
-            <AllScorecardsHeatmap />
+            <AllScorecardsHeatmap groupBy={groupBy!!} />
           ) : (
-            <SingleScorecardHeatmap scorecardId={selectedScorecardId} />
+            <SingleScorecardHeatmap
+              scorecardId={selectedScorecardId}
+              groupBy={groupBy!!}
+            />
           )}
         </Grid>
       </Grid>

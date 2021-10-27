@@ -34,6 +34,7 @@ import { Lookback, lookbackLabels } from '../../../utils/lookback';
 import { AggregatedScorecardProgress } from './AggregatedScorecardProgress';
 import { GroupByOption, ruleName } from '../../../api/types';
 import { SerieFilter } from './SerieFilter';
+import {GroupByDropdown} from "../Common/GroupByDropdown";
 
 export const ProgressPage = () => {
   const [selectedScorecardId, setSelectedScorecardId] = useState<
@@ -99,16 +100,7 @@ export const ProgressPage = () => {
           </Grid>
           <Grid container style={{ marginTop: '20px' }}>
             <Grid item lg={2}>
-              <FormControl>
-                <InputLabel style={{ minWidth: '100px' }}>Group By</InputLabel>
-                <Select value={groupBy} onChange={setGroupBy}>
-                  {enumKeys(GroupByOption).map(key => (
-                    <MenuItem key={key} value={GroupByOption[key]}>
-                      {GroupByOption[key].valueOf()}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupBy} />
             </Grid>
             {scorecard && (
               <Grid item lg={10}>
