@@ -45,11 +45,6 @@ export interface ServiceGroup {
   tag: string;
 }
 
-export interface ServiceOwner {
-  id: string;
-  email: string;
-}
-
 export interface ScorecardLevelRule {
   id: string;
   levelId: string;
@@ -109,7 +104,6 @@ export interface ScorecardServiceScore {
   rules: ScorecardServiceScoresRule[];
   lastUpdated: string;
   tags: string[]; // service groups
-  owners: ServiceOwner[]; // service owners - indiv ppl
   teams: string[]; // owner groups
   ladderLevels: ScorecardScoreLadderResult[];
 }

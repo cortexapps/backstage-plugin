@@ -18,7 +18,6 @@ import {
   ScorecardScoreLadderResult,
   ScorecardServiceScore,
   ScorecardServiceScoresRule,
-  ServiceOwner,
   ScoresByIdentifier,
   ruleName,
   ScorecardLevel,
@@ -55,9 +54,8 @@ export const getSortedRulesByLevels = (
   return [...sortedLevelRules, ...remainingRules];
 };
 
-type GroupByKeys = 'owners' | 'teams' | 'tags' | 'ladderLevels';
+type GroupByKeys = 'teams' | 'tags' | 'ladderLevels';
 type GroupByValues = {
-  owners?: ServiceOwner[];
   teams?: string[];
   tags?: string[];
   ladderLevels?: ScorecardScoreLadderResult[];
@@ -70,24 +68,19 @@ const groupReportDataBy = <T extends GroupByValues>(
   return scores.reduce<StringIndexable<T[]>>((data, score) => {
     const groups = score[groupBy];
 
-    groups?.forEach(
-      (group: ServiceOwner | ScorecardScoreLadderResult | string) => {
-        const key =
-          // eslint-disable-next-line no-nested-ternary
-          typeof group === 'string'
-            ? group
-            : 'email' in group // is ServiceOwner
-            ? group?.email
-            : group.currentLevel?.name ?? 'No Level'; // is ScorecardScoreLadderResult
+    groups?.forEach((group: ScorecardScoreLadderResult | string) => {
+      const key =
+        typeof group === 'string'
+          ? group
+          : group.currentLevel?.name ?? 'No Level'; // is ScorecardScoreLadderResult
 
-        const exists = data[key];
-        if (!exists) {
-          Object.assign(data, { [key]: [] });
-        }
+      const exists = data[key];
+      if (!exists) {
+        Object.assign(data, { [key]: [] });
+      }
 
-        data?.[key].push(score);
-      },
-    );
+      data?.[key].push(score);
+    });
 
     return data;
   }, {});
