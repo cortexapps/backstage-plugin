@@ -20,23 +20,21 @@ import { TableCell } from '@material-ui/core';
 import { useHeatmapStyles } from '../AllScorecardsHeatmap';
 
 interface HeatmapTableHeaderProps {
-    headers: string[];
+  headers: string[];
 }
 
-export const HeatmapTableHeader = ({
-                                       headers,
-                                      }: HeatmapTableHeaderProps) => {
-    const classes = useHeatmapStyles();
+export const HeatmapTableHeader = ({ headers }: HeatmapTableHeaderProps) => {
+  const classes = useHeatmapStyles();
 
-    return (
-        <TableHead>
-            <TableRow>
-                {headers.map((headerText, idx) => (
-                    <TableCell key={`HeatmapTableHeader-${idx}`} className={classes.root}>
-                        {headerText}
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
+  return (
+    <TableHead>
+      <TableRow>
+        {headers.map((headerText, idx) => (
+          <TableCell key={`HeatmapTableHeader-${idx}`} className={classes.root}>
+            {headerText}
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
 };

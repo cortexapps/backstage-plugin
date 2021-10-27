@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {useMemo} from 'react';
-import {Progress, WarningPanel} from '@backstage/core-components';
-import {useCortexApi} from '../../../utils/hooks';
-import {makeStyles} from '@material-ui/core';
-import {BackstageTheme} from '@backstage/theme';
-import {GroupByOption} from "../../../api/types";
-import {AllScorecardsHeatmapTable} from "./Tables/AllScorecardHeatmapTable";
+import React, { useMemo } from 'react';
+import { Progress, WarningPanel } from '@backstage/core-components';
+import { useCortexApi } from '../../../utils/hooks';
+import { makeStyles } from '@material-ui/core';
+import { BackstageTheme } from '@backstage/theme';
+import { GroupByOption } from '../../../api/types';
+import { AllScorecardsHeatmapTable } from './Tables/AllScorecardHeatmapTable';
 
 interface AllScorecardsHeatmapProps {
   groupBy: GroupByOption;
@@ -31,7 +31,9 @@ export const useHeatmapStyles = makeStyles<BackstageTheme>({
   },
 });
 
-export const AllScorecardsHeatmap = ({ groupBy }: AllScorecardsHeatmapProps) => {
+export const AllScorecardsHeatmap = ({
+  groupBy,
+}: AllScorecardsHeatmapProps) => {
   const {
     value: serviceScores,
     loading,
@@ -68,15 +70,20 @@ export const AllScorecardsHeatmap = ({ groupBy }: AllScorecardsHeatmapProps) => 
 
   if (groupBy === GroupByOption.LEVEL) {
     return (
-        <WarningPanel severity="error" title="Functionality not supported.">
-          Group by for levels is not supported yet.
-        </WarningPanel>
+      <WarningPanel severity="error" title="Functionality not supported.">
+        Group by for levels is not supported yet.
+      </WarningPanel>
     );
   }
 
-  const scorecardNames = scorecardIds.map(scorecardId => scorecards[scorecardId]);
+  const scorecardNames = scorecardIds.map(
+    scorecardId => scorecards[scorecardId],
+  );
 
   return (
-    <AllScorecardsHeatmapTable scorecardNames={scorecardNames} serviceScores={serviceScores} />
+    <AllScorecardsHeatmapTable
+      scorecardNames={scorecardNames}
+      serviceScores={serviceScores}
+    />
   );
-}
+};

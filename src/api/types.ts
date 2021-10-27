@@ -157,7 +157,6 @@ export interface AverageScoresByIdentifier {
 
 export enum GroupByOption {
   SCORECARD = 'Scorecard',
-  OWNER = 'Owner',
   TEAM = 'Team',
   SERVICE_GROUP = 'Service Group',
   LEVEL = 'Level',

@@ -13,63 +13,73 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 import TableRow from '@material-ui/core/TableRow/TableRow';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody/TableBody';
-import { TableCell} from '@material-ui/core';
-import {HeatmapCell} from '../HeatmapCell';
-import {EntityRefLink} from '@backstage/plugin-catalog-react';
-import {parseEntityName} from '@backstage/catalog-model';
-import {defaultComponentRefContext} from '../../../../utils/ComponentUtils';
-import { ScoresByIdentifier} from "../../../../api/types";
-import {HeatmapTableHeader} from "../Tables/HeatmapTableHeader";
-import {getFormattedScorecardScores} from "../HeatmapUtils";
+import { TableCell } from '@material-ui/core';
+import { HeatmapCell } from '../HeatmapCell';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
+import { parseEntityName } from '@backstage/catalog-model';
+import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { ScoresByIdentifier } from '../../../../api/types';
+import { HeatmapTableHeader } from '../Tables/HeatmapTableHeader';
+import { getFormattedScorecardScores } from '../HeatmapUtils';
 import { mean as _average, round as _round } from 'lodash';
-import {filterNotUndefined} from "../../../../utils/collections";
+import { filterNotUndefined } from '../../../../utils/collections';
 
 interface AllScorecardsHeatmapTableProps {
-    scorecardNames: string[];
-    serviceScores: ScoresByIdentifier[];
+  scorecardNames: string[];
+  serviceScores: ScoresByIdentifier[];
 }
 
-export const AllScorecardsHeatmapTable = ({ scorecardNames, serviceScores }: AllScorecardsHeatmapTableProps) => {
-   const data = useMemo(() => getFormattedScorecardScores(scorecardNames, serviceScores), [scorecardNames, serviceScores])
-    const headers = ['Entity', 'Average Score', ...scorecardNames];
+export const AllScorecardsHeatmapTable = ({
+  scorecardNames,
+  serviceScores,
+}: AllScorecardsHeatmapTableProps) => {
+  const data = useMemo(
+    () => getFormattedScorecardScores(scorecardNames, serviceScores),
+    [scorecardNames, serviceScores],
+  );
+  const headers = ['Entity', 'Average Score', ...scorecardNames];
 
-    return (
-        <Table>
-            <HeatmapTableHeader headers={headers} />
-            <TableBody>
-                {data.map(groupScore => {
-                    const averageScore = _round(_average(filterNotUndefined(groupScore.scores.map((score) => score?.scorePercentage))), 2);
+  return (
+    <Table>
+      <HeatmapTableHeader headers={headers} />
+      <TableBody>
+        {data.map(groupScore => {
+          const averageScore = _round(
+            _average(
+              filterNotUndefined(
+                groupScore.scores.map(score => score?.scorePercentage),
+              ),
+            ),
+            2,
+          );
 
-                    return (
-                        <TableRow key={groupScore.identifier}>
-                            <TableCell>
-                                <EntityRefLink
-                                    entityRef={parseEntityName(
-                                        groupScore.identifier!!,
-                                        defaultComponentRefContext,
-                                    )}
-                                />
-                            </TableCell>
-                            <HeatmapCell
-                                score={averageScore}
-                            />
-                            {groupScore.scores.map((score, idx) => (
-                                    <React.Fragment key={`ReportsTableRuleRow-${idx}`}>
-                                        <HeatmapCell
-                                            score={score?.scorePercentage}
-                                            text={score !== undefined ? undefined : 'N/A'}
-                                        />
-                                    </React.Fragment>
-                                )
-                            )}
-                        </TableRow>
-                    );
-                })}
-            </TableBody>
-        </Table>
-    );
+          return (
+            <TableRow key={groupScore.identifier}>
+              <TableCell>
+                <EntityRefLink
+                  entityRef={parseEntityName(
+                    groupScore.identifier!!,
+                    defaultComponentRefContext,
+                  )}
+                />
+              </TableCell>
+              <HeatmapCell score={averageScore} />
+              {groupScore.scores.map((score, idx) => (
+                <React.Fragment key={`ReportsTableRuleRow-${idx}`}>
+                  <HeatmapCell
+                    score={score?.scorePercentage}
+                    text={score !== undefined ? undefined : 'N/A'}
+                  />
+                </React.Fragment>
+              ))}
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
+  );
 };

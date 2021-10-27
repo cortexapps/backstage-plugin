@@ -16,8 +16,8 @@
 import React from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../../utils/hooks';
-import {GroupByOption} from '../../../api/types';
-import {SingleScorecardHeatmapTable} from "./Tables/SingleScorecardHeatmapTable";
+import { GroupByOption } from '../../../api/types';
+import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
 
 interface SingleScorecardHeatmapProps {
   scorecardId: string;
@@ -26,7 +26,7 @@ interface SingleScorecardHeatmapProps {
 
 export const SingleScorecardHeatmap = ({
   scorecardId,
-                                         groupBy,
+  groupBy,
 }: SingleScorecardHeatmapProps) => {
   const {
     value: scores,
@@ -56,6 +56,10 @@ export const SingleScorecardHeatmap = ({
   }
 
   return (
-    <SingleScorecardHeatmapTable scorecardId={scorecardId} groupBy={groupBy} scores={scores} />
+    <SingleScorecardHeatmapTable
+      scorecardId={scorecardId}
+      groupBy={groupBy}
+      scores={scores}
+    />
   );
 };

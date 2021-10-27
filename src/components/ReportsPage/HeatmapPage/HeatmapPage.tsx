@@ -15,41 +15,46 @@
  */
 import React, { useState } from 'react';
 import { Content, ContentHeader } from '@backstage/core-components';
-import { Grid, } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { AllScorecardsHeatmap } from './AllScorecardsHeatmap';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
-import {useDropdown} from "../../../utils/hooks";
-import {GroupByOption} from "../../../api/types";
-import {GroupByDropdown} from "../Common/GroupByDropdown";
+import { useDropdown } from '../../../utils/hooks';
+import { GroupByOption } from '../../../api/types';
+import { GroupByDropdown } from '../Common/GroupByDropdown';
 
 export const HeatmapPage = () => {
-    const [selectedScorecardId, setSelectedScorecardId] = useState<string | undefined>();
-    const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
-        GroupByOption.SCORECARD,
-    );
+  const [selectedScorecardId, setSelectedScorecardId] = useState<
+    string | undefined
+  >();
+  const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
+    GroupByOption.SCORECARD,
+  );
 
-    return (
-        <Content>
-            <ContentHeader title="Bird's Eye" />
-            <Grid container direction="column">
-                <Grid item lg={12}>
-                    <ScorecardSelector
-                        onSelect={setSelectedScorecardId}
-                        selectedScorecardId={selectedScorecardId}
-                    />
-                </Grid>
-                <Grid container style={{ marginTop: '20px' }}>
-                    <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupBy} />
-                </Grid>
-                <Grid item lg={12}>
-                    {selectedScorecardId === undefined ? (
-                        <AllScorecardsHeatmap groupBy={groupBy!!} />
-                    ) : (
-                        <SingleScorecardHeatmap scorecardId={selectedScorecardId} groupBy={groupBy!!} />
-                    )}
-                </Grid>
-            </Grid>
-        </Content>
-    );
+  return (
+    <Content>
+      <ContentHeader title="Bird's Eye" />
+      <Grid container direction="column">
+        <Grid item lg={12}>
+          <ScorecardSelector
+            onSelect={setSelectedScorecardId}
+            selectedScorecardId={selectedScorecardId}
+          />
+        </Grid>
+        <Grid item style={{ marginTop: '20px' }}>
+          <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupBy} />
+        </Grid>
+        <Grid item lg={12}>
+          {selectedScorecardId === undefined ? (
+            <AllScorecardsHeatmap groupBy={groupBy!!} />
+          ) : (
+            <SingleScorecardHeatmap
+              scorecardId={selectedScorecardId}
+              groupBy={groupBy!!}
+            />
+          )}
+        </Grid>
+      </Grid>
+    </Content>
+  );
 };
