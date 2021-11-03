@@ -65,7 +65,7 @@ export const HeatmapTableByLevels = ({
 
   // currently we only support 1 ladder per Scorecard
   const ladder = ladders?.[0];
-  const rulesByLevels = getSortedRulesByLevels(rules, ladder.levels);
+  const rulesByLevels = getSortedRulesByLevels(rules, ladder?.levels);
 
   const headers = [
     'Level',
