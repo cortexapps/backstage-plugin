@@ -40,7 +40,7 @@ export const getSortedRulesFromScores = (
 
 export const getSortedRulesByLevels = (
   rules: string[],
-  levels: ScorecardLevel[],
+  levels: ScorecardLevel[] = [],
 ): string[] => {
   const sorted = [...(levels ?? [])].sort((a, b) => a.rank - b.rank);
   const sortedLevelRules = _flatten(
