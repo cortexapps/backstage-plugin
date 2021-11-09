@@ -170,15 +170,9 @@ export interface Initiative {
   name: string;
   scorecard: Scorecard;
   scores: InitiativeServiceScores[];
-  emphasizedRules: InitiativeRule[];
+  emphasizedRules: string[];
   targetDate: string;
-  targetScore?: number;
   tags: ServiceGroup[];
-}
-
-export interface InitiativeRule {
-  ruleId: string;
-  expression: string;
 }
 
 export interface InitiativeServiceScores {
@@ -193,7 +187,6 @@ export interface InitiativeActionItem {
     initiativeId: string;
     name: string;
     targetDate: string;
-    targetScore?: number;
     description?: string;
   };
 }

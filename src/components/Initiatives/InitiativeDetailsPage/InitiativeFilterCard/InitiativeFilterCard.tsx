@@ -67,11 +67,11 @@ export const InitiativeFilterCard = ({
 }: InitiativeFilterCardProps) => {
   const ruleFilterDefinitions = useMemo(() => {
     return mapValues(
-      mapByString(initiative.emphasizedRules, rule => rule.ruleId),
+      mapByString(initiative.emphasizedRules, rule => rule),
       rule => {
         return {
-          display: rule.expression,
-          value: rule.expression,
+          display: rule,
+          value: rule,
         };
       },
     );
