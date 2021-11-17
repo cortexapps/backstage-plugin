@@ -30,7 +30,7 @@ import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
-import { CustomMapping } from './ExtensionApi';
+import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
 import { applyCustomMappings } from '../utils/ComponentUtils';
 
 export const cortexApiRef = createApiRef<CortexApi>({

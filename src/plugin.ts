@@ -25,7 +25,10 @@ import {
 
 import { rootRouteRef, scorecardRouteRef, scorecardsRouteRef } from './routes';
 import { cortexApiRef, CortexClient } from './api';
-import { ExtensionApi, extensionApiRef } from './api/ExtensionApi';
+import {
+  ExtensionApi,
+  extensionApiRef,
+} from '@cortexapps/backstage-plugin-extensions';
 import { NoopExtensionClient } from './api/NoopExtensionClient';
 
 export const cortexPlugin = createPlugin({

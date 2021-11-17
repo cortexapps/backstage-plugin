@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CustomMapping } from '../api/ExtensionApi';
+import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
 import { Entity } from '@backstage/catalog-model';
 import { applyCustomMappings } from './ComponentUtils';
 

@@ -40,7 +40,7 @@ import {
 } from './ComponentUtils';
 import { cortexApiRef } from '../api';
 import { CortexApi } from '../api/CortexApi';
-import { extensionApiRef } from '../api/ExtensionApi';
+import { extensionApiRef } from '@cortexapps/backstage-plugin-extensions';
 import { EntityFilterGroup } from '../filters';
 import { FilterDefinition } from '../components/FilterCard/Filters';
 

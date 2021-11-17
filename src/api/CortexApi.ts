@@ -27,7 +27,7 @@ import {
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef } from '../utils/types';
-import { CustomMapping } from './ExtensionApi';
+import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
