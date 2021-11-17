@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CustomMapping, ExtensionApi } from './ExtensionApi';
-import { EntityFilterGroup } from '../filters';
+import {
+  CustomMapping,
+  EntityFilterGroup,
+  ExtensionApi,
+} from '@cortexapps/backstage-plugin-extensions';
 
 export class NoopExtensionClient implements ExtensionApi {
   async getAdditionalFilters(): Promise<EntityFilterGroup[]> {

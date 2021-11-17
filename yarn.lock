@@ -1423,6 +1423,14 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@cortexapps/backstage-plugin-extensions@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.npmjs.org/@cortexapps/backstage-plugin-extensions/-/backstage-plugin-extensions-0.0.3.tgz#a0e131184d284b7048b930d291978b4db163b24c"
+  integrity sha512-TfWTlGgfoSiL0ia6kxo6FoN3Jv/odV9nfGE+Se3vsU+LoLxyaRW7QmWVBHC9XLaCDI2pYc/WIctmQlkiD4snwA==
+  dependencies:
+    "@backstage/catalog-model" "^0.9.6"
+    "@backstage/core" "^0.7.14"
+
 "@cortexapps/eslint-config-oss@^0.0.1":
   version "0.0.1"
   resolved "https://registry.npmjs.org/@cortexapps/eslint-config-oss/-/eslint-config-oss-0.0.1.tgz#0b8f9fd3b4ac72df18074da6d39f718bf35f6943"
