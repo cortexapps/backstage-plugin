@@ -15,7 +15,7 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
-import { CustomMapping } from '../api/ExtensionApi';
+import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
 import { merge } from 'lodash';
 
 export type EntityRefContext = {
