@@ -20,7 +20,7 @@ import { InfoCard, Link } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { extensionApiRef } from '@cortexapps/backstage-plugin-extensions';
+import { extensionApiRef } from '../../api/ExtensionApi';
 
 interface SyncButtonProps {
   syncEntities: () => Promise<void>;

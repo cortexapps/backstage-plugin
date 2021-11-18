@@ -1423,10 +1423,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@cortexapps/backstage-plugin-extensions@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.npmjs.org/@cortexapps/backstage-plugin-extensions/-/backstage-plugin-extensions-0.0.4.tgz#21443585c825cbba0accdf8663a30b8442616a6b"
-  integrity sha512-2iz+O0TdZVATTn1qoQgBAjDWHpWfb7rKt87fGh7vphqvuJTOvo6SkNHDjdsrR0wtQXQW++w1yU+txwPbMptdTA==
+"@cortexapps/backstage-plugin-extensions@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.npmjs.org/@cortexapps/backstage-plugin-extensions/-/backstage-plugin-extensions-0.0.5.tgz#2e13c19803677227fa87d049e0c2c758284ede8e"
+  integrity sha512-gpDw2YeHQFKj1ggJVLHv4/oC523420HgYaa9rgR73yYBvn849NTzZQmLhzIfjjaH5hNWY2eMI6lNSV81NNlmXQ==
   dependencies:
     "@backstage/catalog-model" "^0.9.6"
     "@backstage/core" "^0.7.14"

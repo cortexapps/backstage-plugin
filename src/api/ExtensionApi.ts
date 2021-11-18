@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import CortexIconComponent from './assets/cortex.icon.svg';
-import { IconComponent } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/core-plugin-api';
+import { ExtensionApi } from '@cortexapps/backstage-plugin-extensions';
 
-export {
-  cortexPlugin,
-  CortexPage,
-  EntityCortexContent,
-  extendableCortexPlugin,
-} from './plugin';
-export { extensionApiRef } from './api/ExtensionApi';
-export type {
-  ExtensionApi,
-  CortexYaml,
-  CustomMapping,
-} from '@cortexapps/backstage-plugin-extensions';
-export type { EntityFilterGroup } from './filters';
-export const CortexIcon: IconComponent = CortexIconComponent as IconComponent;
+export const extensionApiRef = createApiRef<ExtensionApi>({
+  id: 'plugin.cortex.extension',
+  description: 'Used by the Cortex plugin to customize behavior',
+});
