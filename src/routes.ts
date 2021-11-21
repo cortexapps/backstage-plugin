@@ -17,6 +17,7 @@ import { createRouteRef, createSubRouteRef } from '@backstage/core-plugin-api';
 
 export const rootRouteRef = createRouteRef({
   id: 'cortex',
+  path: '/cortex',
 });
 
 export const scorecardsRouteRef = createSubRouteRef({
