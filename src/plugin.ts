@@ -79,6 +79,7 @@ export const extendableCortexPlugin = <
 
   const CortexPage = plugin.provide(
     createRoutableExtension({
+      name: "CortexPage",
       component: () =>
         import('./components/CortexPage').then(m => m.CortexPage),
       mountPoint: rootRouteRef,
@@ -87,6 +88,7 @@ export const extendableCortexPlugin = <
 
   const EntityCortexContent = plugin.provide(
     createComponentExtension({
+      name: "EntityCortexContent",
       component: {
         lazy: () => import('./components/EntityPage').then(m => m.EntityPage),
       },
@@ -98,6 +100,7 @@ export const extendableCortexPlugin = <
 
 export const CortexPage = cortexPlugin.provide(
   createRoutableExtension({
+    name: "CortexPage",
     component: () => import('./components/CortexPage').then(m => m.CortexPage),
     mountPoint: rootRouteRef,
   }),
@@ -105,6 +108,7 @@ export const CortexPage = cortexPlugin.provide(
 
 export const EntityCortexContent = cortexPlugin.provide(
   createComponentExtension({
+    name: "EntityCortexContent",
     component: {
       lazy: () => import('./components/EntityPage').then(m => m.EntityPage),
     },

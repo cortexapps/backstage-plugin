@@ -1216,13 +1216,31 @@
     remark-gfm "^2.0.0"
     zen-observable "^0.8.15"
 
-"@backstage/core-plugin-api@^0.1.10", "@backstage/core-plugin-api@^0.1.12", "@backstage/core-plugin-api@^0.1.3", "@backstage/core-plugin-api@^0.1.9":
+"@backstage/core-plugin-api@^0.1.12", "@backstage/core-plugin-api@^0.1.3", "@backstage/core-plugin-api@^0.1.9":
   version "0.1.12"
   resolved "https://registry.npmjs.org/@backstage/core-plugin-api/-/core-plugin-api-0.1.12.tgz#aaf5e5cbb79373ba9c6389752683313fb44eb9ea"
   integrity sha512-eufEuG934zM8HWTi7S9pG7XG+5MWnA9g4wRrFI06YCAxn1Wx9wYYL1dgSnqshsb1AEaL+dTyY50yzamnXwGr2g==
   dependencies:
     "@backstage/config" "^0.1.11"
     "@backstage/theme" "^0.2.12"
+    "@backstage/types" "^0.1.1"
+    "@backstage/version-bridge" "^0.1.0"
+    "@material-ui/core" "^4.12.2"
+    "@types/react" "*"
+    history "^5.0.0"
+    prop-types "^15.7.2"
+    react "^16.12.0"
+    react-router-dom "6.0.0-beta.0"
+    react-use "^17.2.4"
+    zen-observable "^0.8.15"
+
+"@backstage/core-plugin-api@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/@backstage/core-plugin-api/-/core-plugin-api-0.2.0.tgz#b004fde338cc92ca1f7c251f71fbab1a2c373259"
+  integrity sha512-eu0KlRbBe280x6gCwmzpdJJiAP6Qzbbt5tSq6yGSJrOoZBFlutxvF8SSXOdnSrABel7PQwwbIHZJq+JpnPyeMw==
+  dependencies:
+    "@backstage/config" "^0.1.11"
+    "@backstage/theme" "^0.2.13"
     "@backstage/types" "^0.1.1"
     "@backstage/version-bridge" "^0.1.0"
     "@material-ui/core" "^4.12.2"
@@ -1394,6 +1412,13 @@
   version "0.2.12"
   resolved "https://registry.npmjs.org/@backstage/theme/-/theme-0.2.12.tgz#a11c07dac1ffb1bbdd7758752d3e996120cc19e9"
   integrity sha512-1S81lNzNC+30qogWSMEasR6cYzozwW4U6Zi02nWfS8KcMT+o8kqY7MNlCibo+lLsKXs7gZwTNYUxq7lAkkNSAA==
+  dependencies:
+    "@material-ui/core" "^4.12.2"
+
+"@backstage/theme@^0.2.13":
+  version "0.2.13"
+  resolved "https://registry.npmjs.org/@backstage/theme/-/theme-0.2.13.tgz#3412d5f149c8c9bfc80b58e3832c5e06021063a2"
+  integrity sha512-4+Ia+41bzIZy4FIeefrie5bafC0RZWtPVM2/ugx3Ab19d00gFKg7UNN3G7HChufGXJENOtJSuns0y8kQUN9uiQ==
   dependencies:
     "@material-ui/core" "^4.12.2"
 
