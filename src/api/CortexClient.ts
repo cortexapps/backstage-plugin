@@ -75,7 +75,7 @@ export class CortexClient implements CortexApi {
   async getServiceScores(
     entityRef: AnyEntityRef,
   ): Promise<ServiceScorecardScore[]> {
-    return await this.get(`/api/backstage/v1/entities/scorecards`, {
+    return await this.get(`/api/backstage/v2/entities/scorecards`, {
       ref: stringifyAnyEntityRef(entityRef),
     });
   }

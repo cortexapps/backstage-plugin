@@ -14,63 +14,47 @@
  * limitations under the License.
  */
 import React from 'react';
-import { useApi } from '@backstage/core-plugin-api';
-import { cortexApiRef } from '../../api';
-import { useAsync } from 'react-use';
-import { Entity } from '@backstage/catalog-model';
-import {
-  EmptyState,
-  InfoCard,
-  Progress,
-  WarningPanel,
-} from '@backstage/core-components';
-import { Table, TableBody } from '@material-ui/core';
+import { InfoCard } from '@backstage/core-components';
+import { makeStyles, Table, TableBody } from '@material-ui/core';
 import { EntityScorecardsCardRow } from './EntityScorecardsCardRow';
-import { stringifyAnyEntityRef } from '../../utils/types';
+import { BackstageTheme } from '@backstage/theme';
+import { ServiceScorecardScore } from '../../api/types';
+
+const useStyles = makeStyles<BackstageTheme>(theme => ({
+  table: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: `${theme.palette.background.paper}!important`,
+    },
+    '&:nth-of-type(even)': {
+      backgroundColor: `${theme.palette.background.paper}!important`,
+    },
+  },
+}));
 
 interface EntityScorecardsCardProps {
-  entity: Entity;
+  scores: ServiceScorecardScore[];
+  selectedScorecardId?: number;
+  onSelect: (scorecardId: number) => void;
 }
 
-export const EntityScorecardsCard = ({ entity }: EntityScorecardsCardProps) => {
-  const cortexApi = useApi(cortexApiRef);
-
-  const {
-    value: scores,
-    loading,
-    error,
-  } = useAsync(async () => {
-    return await cortexApi.getServiceScores(stringifyAnyEntityRef(entity));
-  }, []);
-
-  if (loading) {
-    return <Progress />;
-  }
-
-  if (error || scores === undefined) {
-    return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
-        {error?.message}
-      </WarningPanel>
-    );
-  }
-
-  if (scores.length === 0) {
-    return (
-      <EmptyState
-        missing="info"
-        title="No scorecards to display"
-        description="You haven't added any scorecards yet."
-      />
-    );
-  }
+export const EntityScorecardsCard = ({
+  scores,
+  selectedScorecardId,
+  onSelect,
+}: EntityScorecardsCardProps) => {
+  const classes = useStyles();
 
   return (
     <InfoCard title="Scorecards">
-      <Table>
+      <Table className={classes.table}>
         <TableBody>
           {scores.map(score => (
-            <EntityScorecardsCardRow key={score.scorecardId} score={score} />
+            <EntityScorecardsCardRow
+              key={score.scorecard.id}
+              score={score}
+              onSelect={() => onSelect(score.scorecard.id)}
+              selected={selectedScorecardId === score.scorecard.id}
+            />
           ))}
         </TableBody>
       </Table>

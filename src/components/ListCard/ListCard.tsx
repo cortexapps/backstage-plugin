@@ -15,8 +15,8 @@
  */
 import { Card, CardActions, CardContent, CardMedia } from '@material-ui/core';
 import React from 'react';
-import { ItemCardHeader } from '../ItemCardHeader';
-import { Button } from '@backstage/core-components';
+// import { ItemCardHeader } from '../ItemCardHeader';
+import { Button, ItemCardHeader } from '@backstage/core-components';
 
 interface ListCardProps {
   name: string;
