@@ -31,7 +31,7 @@ export const InitiativeCard = ({ initiative }: InitiativeCardProps) => {
       name={initiative.name}
       creatorName={initiative.creator.name}
       description={initiative.description}
-      url={initiativeRef({ id: initiative.id })}
+      url={initiativeRef({ id: `${initiative.id}` })}
     />
   );
 };

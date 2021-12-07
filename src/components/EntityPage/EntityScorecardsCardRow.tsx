@@ -14,23 +14,49 @@
  * limitations under the License.
  */
 import React from 'react';
-import { ServiceScorecardScore } from "../../api/types";
-import { TableCell, TableRow } from "@material-ui/core";
-import Box from "@material-ui/core/Box";
-import { Gauge } from "../Gauge";
-import { ScorecardRefLink } from "../ScorecardRefLink";
+import { ServiceScorecardScore } from '../../api/types';
+import { makeStyles, TableCell, TableRow } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
+import { Gauge } from '../Gauge';
+import { ScorecardRefLink } from '../ScorecardRefLink';
+import { BackstageTheme } from '@backstage/theme';
+
+const useStyles = makeStyles<BackstageTheme, EntityScorecardsCardRowProps>(
+  theme => ({
+    tableRow: {
+      '&:hover': {
+        background: `${theme.palette.background.default}!important`,
+      },
+    },
+    unselected: {
+      background: `${theme.palette.background.paper}!important`,
+    },
+    selected: {
+      background: `${theme.palette.background.default}!important`,
+    },
+  }),
+);
 
 interface EntityScorecardsCardRowProps {
-  score: ServiceScorecardScore
+  score: ServiceScorecardScore;
+  selected: boolean;
+  onSelect: () => void;
 }
 
-export const EntityScorecardsCardRow = ({
-  score
-}: EntityScorecardsCardRowProps) => {
+export const EntityScorecardsCardRow = (
+  props: EntityScorecardsCardRowProps,
+) => {
+  const { score, onSelect } = props;
+  const classes = useStyles(props);
 
   return (
     <React.Fragment>
-      <TableRow>
+      <TableRow
+        className={`${classes.tableRow} ${
+          props.selected ? classes.selected : classes.unselected
+        }`}
+        onClick={onSelect}
+      >
         <TableCell>
           <Box
             flexDirection="row"
@@ -38,17 +64,21 @@ export const EntityScorecardsCardRow = ({
             justifyContent="flex-start"
             alignItems="center"
           >
-            <Box alignSelf="center" width={1/4}>
-              <Gauge value={score.scorePercentage} strokeWidth={8} trailWidth={8}/>
+            <Box alignSelf="center" width={1 / 4}>
+              <Gauge
+                value={score.score.scorePercentage}
+                strokeWidth={8}
+                trailWidth={8}
+              />
             </Box>
             <Box alignSelf="center">
-              <ScorecardRefLink scorecardId={score.scorecardId}>
-                <b>{ score.scorecardName }</b>
+              <ScorecardRefLink scorecardId={score.scorecard.id}>
+                <b>{score.scorecard.name}</b>
               </ScorecardRefLink>
             </Box>
           </Box>
         </TableCell>
       </TableRow>
     </React.Fragment>
-  )
-}
+  );
+};

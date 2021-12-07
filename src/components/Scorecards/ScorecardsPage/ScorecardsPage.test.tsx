@@ -28,7 +28,7 @@ describe('ScorecardsPage', () => {
       Promise.resolve([
         {
           creator: { name: 'Billy Bob', email: 'billybob@cortex.io' },
-          id: '1',
+          id: 1,
           name: 'My Scorecard',
           description: 'Some description',
           rules: [],

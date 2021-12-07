@@ -25,7 +25,7 @@ import { GroupByDropdown } from '../Common/GroupByDropdown';
 
 export const HeatmapPage = () => {
   const [selectedScorecardId, setSelectedScorecardId] = useState<
-    string | undefined
+    number | undefined
   >();
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
     GroupByOption.SCORECARD,

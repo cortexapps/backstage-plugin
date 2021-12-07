@@ -13,21 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { useRouteRef } from '@backstage/core-plugin-api';
-import { scorecardRouteRef } from '../../routes';
-import { Link } from '@backstage/core-components';
-
-interface ScorecardRefLinkProps {
-  scorecardId: number;
-  children?: React.ReactNode;
-}
-
-export const ScorecardRefLink = ({
-  scorecardId,
-  children,
-}: ScorecardRefLinkProps) => {
-  const scorecardRef = useRouteRef(scorecardRouteRef);
-
-  return <Link to={scorecardRef({ id: `${scorecardId}` })}>{children}</Link>;
-};
+export { EntityScorecardOverview } from './EntityScorecardOverview';

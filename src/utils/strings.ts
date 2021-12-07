@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { useRouteRef } from '@backstage/core-plugin-api';
-import { scorecardRouteRef } from '../../routes';
-import { Link } from '@backstage/core-components';
 
-interface ScorecardRefLinkProps {
-  scorecardId: number;
-  children?: React.ReactNode;
-}
-
-export const ScorecardRefLink = ({
-  scorecardId,
-  children,
-}: ScorecardRefLinkProps) => {
-  const scorecardRef = useRouteRef(scorecardRouteRef);
-
-  return <Link to={scorecardRef({ id: `${scorecardId}` })}>{children}</Link>;
+const suffixes: Record<string, string> = {
+  one: 'st',
+  two: 'nd',
+  few: 'rd',
+  other: 'th',
 };
+
+const english_ordinal_rules = new Intl.PluralRules('en', { type: 'ordinal' });
+
+export function ordinal(value: number) {
+  return suffixes[english_ordinal_rules.select(value)];
+}

@@ -51,7 +51,7 @@ const useStyles = makeStyles({
 });
 
 interface ScorecardsTableRowProps {
-  scorecardId: string;
+  scorecardId: number;
   score: ScorecardServiceScore;
 }
 
@@ -95,7 +95,7 @@ export const ScorecardsTableRow = ({
             <Box alignSelf="center" flex="1">
               <Link
                 to={serviceDetailsRef({
-                  scorecardId: scorecardId,
+                  scorecardId: `${scorecardId}`,
                   ...entityName,
                 })}
               >
@@ -109,12 +109,12 @@ export const ScorecardsTableRow = ({
                 </b>
               </Link>
             </Box>
-            {currentLevel &&
-            <Box display="flex" alignItems="center">
-              <LoyaltyIcon style={{ color: `${currentLevel.color}` }}/>
-              {currentLevel.name}
-            </Box>
-            }
+            {currentLevel && (
+              <Box display="flex" alignItems="center">
+                <LoyaltyIcon style={{ color: `${currentLevel.color}` }} />
+                {currentLevel.name}
+              </Box>
+            )}
           </Box>
         </TableCell>
       </TableRow>

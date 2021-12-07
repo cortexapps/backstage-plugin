@@ -14,73 +14,71 @@
  * limitations under the License.
  */
 import React from 'react';
+import { ruleName } from '../../../../api/types';
 import {
-    ruleName,
-} from '../../../../api/types';
-import {
-    Grid,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
-    makeStyles,
-    Typography,
+  Grid,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  makeStyles,
+  Typography,
 } from '@material-ui/core';
 import ErrorIcon from '@material-ui/icons/Error';
 import CheckIcon from '@material-ui/icons/Check';
-import {ScorecardServiceScoreRuleName} from "./ScorecardResultDetails";
+import { ScorecardServiceScoreRuleName } from './ScorecardResultDetails';
 
 const useStyles = makeStyles({
-    rule: {
-        borderRadius: 8,
-    },
+  rule: {
+    borderRadius: 8,
+  },
 });
 
 interface RuleResultDetailsProps {
-    rule: ScorecardServiceScoreRuleName;
-    hideWeight?: boolean;
+  rule: ScorecardServiceScoreRuleName;
+  hideWeight?: boolean;
 }
 
 export const RuleResultDetails = ({
-                                      rule,
-                                      hideWeight,
-                                  }: RuleResultDetailsProps) => {
-    const classes = useStyles();
+  rule,
+  hideWeight,
+}: RuleResultDetailsProps) => {
+  const classes = useStyles();
 
-    return (
-        <ListItem alignItems="flex-start">
-            <ListItemAvatar>
-                {rule.score > 0 ? (
-                    <CheckIcon color="primary" />
-                ) : (
-                    <ErrorIcon color="error" />
-                )}
-            </ListItemAvatar>
-            <Grid
-                container
-                direction="row"
-                justify="space-between"
-                alignItems="center"
-                className={classes.rule}
-            >
-                <Grid item xs={9}>
-                    <ListItemText
-                        primary={ruleName(rule.rule)}
-                        style={{ wordWrap: 'break-word' }}
-                    />
-                </Grid>
-                {hideWeight !== true && (
-                    <Grid item>
-                        <ListItemText primary={`${rule.rule.weight}`} />
-                    </Grid>
-                )}
-                {rule.error && (
-                    <Grid item xs={9}>
-                        <Typography color="error" style={{ wordWrap: 'break-word' }}>
-                            {rule.error}
-                        </Typography>
-                    </Grid>
-                )}
-            </Grid>
-        </ListItem>
-    );
+  return (
+    <ListItem alignItems="flex-start">
+      <ListItemAvatar>
+        {rule.score > 0 ? (
+          <CheckIcon color="primary" />
+        ) : (
+          <ErrorIcon color="error" />
+        )}
+      </ListItemAvatar>
+      <Grid
+        container
+        direction="row"
+        justify="space-between"
+        alignItems="center"
+        className={classes.rule}
+      >
+        <Grid item xs={9}>
+          <ListItemText
+            primary={ruleName(rule.rule)}
+            style={{ wordWrap: 'break-word' }}
+          />
+        </Grid>
+        {hideWeight !== true && (
+          <Grid item>
+            <ListItemText primary={`${rule.rule.weight}`} />
+          </Grid>
+        )}
+        {rule.error && (
+          <Grid item xs={9}>
+            <Typography color="error" style={{ wordWrap: 'break-word' }}>
+              {rule.error}
+            </Typography>
+          </Grid>
+        )}
+      </Grid>
+    </ListItem>
+  );
 };
