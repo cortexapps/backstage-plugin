@@ -18,7 +18,7 @@ export function isRulePassing<T extends { score: number }>(rule: T): boolean {
 }
 
 export function isRuleFailing<T extends { score: number }>(rule: T): boolean {
-  return rule.score > 0;
+  return rule.score === 0;
 }
 
 export function filterPassingRules<T extends { score: number }>(
