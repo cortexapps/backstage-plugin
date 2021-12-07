@@ -86,6 +86,19 @@ export interface ScorecardScoreLadderResult {
   currentLevel?: ScorecardScoreLadderLevel;
 }
 
+export interface ServiceLadderLevels {
+  serviceId: number;
+  ladderDetails: {
+    id: number;
+    name: string;
+  };
+  currentLevel?: {
+    name: string;
+    color: string;
+    rank: number;
+  };
+}
+
 export interface ServiceScorecardScore {
   score: {
     scorePercentage: number;
@@ -100,30 +113,13 @@ export interface ServiceScorecardScore {
   evaluation: {
     rules: {
       rule: {
-        id: number;
-        expression: string;
-        description?: string;
-        title?: string;
         failureMessage?: string;
-        weight: number;
-        dateCreated: string;
-      };
+      } & Rule;
       score: number;
       leftResult?: number | string;
       error?: string;
     }[];
-    ladderLevels: {
-      serviceId: number;
-      ladderDetails: {
-        id: number;
-        name: string;
-      };
-      currentLevel?: {
-        name: string;
-        color: string;
-        rank: number;
-      };
-    }[];
+    ladderLevels: ServiceLadderLevels[];
   };
 }
 

@@ -17,6 +17,12 @@ import React, { useMemo, useState } from 'react';
 import { HeaderTabs, InfoCard, Progress } from '@backstage/core-components';
 import { ServiceScorecardScore } from '../../../api/types';
 import { ScorecardResultDetails } from '../../Scorecards/ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
+import {
+  filterFailingRules,
+  filterPassingRules,
+  isRuleFailing,
+  isRulePassing,
+} from '../../../utils/rules';
 
 interface EntityScorecardRulesProps {
   score?: ServiceScorecardScore;
@@ -27,7 +33,7 @@ export const EntityScorecardRules = ({ score }: EntityScorecardRulesProps) => {
 
   const selectedRules = useMemo(() => {
     return score?.evaluation?.rules?.filter(rule =>
-      selectedIndex === 0 ? rule.score === 0 : rule.score > 0,
+      selectedIndex === 0 ? isRuleFailing(rule) : isRulePassing(rule),
     );
   }, [selectedIndex, score]);
 
@@ -35,15 +41,15 @@ export const EntityScorecardRules = ({ score }: EntityScorecardRulesProps) => {
     return <Progress />;
   }
 
-  const passing = score.evaluation.rules.filter(rule => rule.score > 0);
-  const failing = score.evaluation.rules.filter(rule => rule.score === 0);
+  const numPassing = filterPassingRules(score.evaluation.rules).length;
+  const numFailing = filterFailingRules(score.evaluation.rules).length;
 
   return (
     <InfoCard title="All Rules">
       <HeaderTabs
         tabs={[
-          { id: 'failing', label: `Failing (${failing.length})` },
-          { id: 'passing', label: `Passing (${passing.length})` },
+          { id: 'failing', label: `Failing (${numFailing})` },
+          { id: 'passing', label: `Passing (${numPassing})` },
         ]}
         onChange={setSelectedIndex}
       />
