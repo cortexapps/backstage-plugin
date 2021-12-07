@@ -58,8 +58,8 @@ export const ScorecardsServicePage = () => {
   >([]);
 
   const { value, loading, error } = useAsync(async () => {
-    const allScores = await cortexApi.getScorecardScores(scorecardId);
-    const ladders = await cortexApi.getScorecardLadders(scorecardId);
+    const allScores = await cortexApi.getScorecardScores(+scorecardId);
+    const ladders = await cortexApi.getScorecardLadders(+scorecardId);
 
     const score = allScores.find(serviceScore =>
       entityEquals(serviceScore.componentRef, entityRef),

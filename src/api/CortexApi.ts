@@ -42,7 +42,7 @@ export interface CortexApi {
     endDate?: Moment,
   ): Promise<ScorecardResult[]>;
   getAverageHistoricalScores(
-    scorecardId: string,
+    scorecardId: number,
     groupBy: GroupByOption,
     options: {
       ruleExpression?: string;

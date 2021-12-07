@@ -22,7 +22,7 @@ import { ScorecardsTableRow } from './ScorecardsTableRow';
 import { EmptyState } from '@backstage/core-components';
 
 interface ScorecardsTableProps {
-  scorecardId: string;
+  scorecardId: number;
   scores: ScorecardServiceScore[];
 }
 

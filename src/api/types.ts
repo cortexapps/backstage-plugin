@@ -16,7 +16,7 @@
 
 export interface Scorecard {
   creator: { name: string; email: string };
-  id: string;
+  id: number;
   name: string;
   description?: string;
   rules: Rule[];

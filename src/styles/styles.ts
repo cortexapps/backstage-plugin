@@ -26,9 +26,8 @@ export const percentageToStatus = (percentage: number) => {
     return Status.OKAY;
   } else if (percentage > 0.49) {
     return Status.WARNING;
-  } else {
-    return Status.ERROR;
   }
+  return Status.ERROR;
 };
 
 const cortexStyles = (theme: Theme) =>

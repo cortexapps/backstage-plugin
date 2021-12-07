@@ -24,7 +24,7 @@ import { HeatmapTableByLevels } from './HeatmapTableByLevels';
 import { HeatmapTableByService } from './HeatmapTableByService';
 
 interface SingleScorecardHeatmapTableProps {
-  scorecardId: string;
+  scorecardId: number;
   groupBy: GroupByOption;
   scores: ScorecardServiceScore[];
 }

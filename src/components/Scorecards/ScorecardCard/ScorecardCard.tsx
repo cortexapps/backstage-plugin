@@ -31,7 +31,7 @@ export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
       name={scorecard.name}
       creatorName={scorecard.creator.name}
       description={scorecard.description}
-      url={scorecardRef({ id: scorecard.id })}
+      url={scorecardRef({ id: `${scorecard.id}` })}
     />
   );
 };

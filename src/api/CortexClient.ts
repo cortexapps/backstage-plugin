@@ -103,7 +103,7 @@ export class CortexClient implements CortexApi {
   }
 
   async getAverageHistoricalScores(
-    scorecardId: string,
+    scorecardId: number,
     groupBy: GroupByOption,
     options: {
       ruleExpression?: string;
@@ -152,18 +152,18 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/scorecards/scores`, args);
   }
 
-  async getScorecard(scorecardId: string): Promise<Scorecard> {
+  async getScorecard(scorecardId: number): Promise<Scorecard> {
     return await this.get(`/api/backstage/v1/scorecards/${scorecardId}`);
   }
 
-  async getScorecardLadders(scorecardId: string): Promise<ScorecardLadder[]> {
+  async getScorecardLadders(scorecardId: number): Promise<ScorecardLadder[]> {
     return await this.get(
       `/api/backstage/v1/scorecards/${scorecardId}/ladders`,
     );
   }
 
   async getScorecardScores(
-    scorecardId: string,
+    scorecardId: number,
   ): Promise<ScorecardServiceScore[]> {
     return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/scores`);
   }
@@ -172,11 +172,11 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/initiatives`);
   }
 
-  async getInitiative(id: string): Promise<Initiative> {
+  async getInitiative(id: number): Promise<Initiative> {
     return await this.get(`/api/backstage/v1/initiatives/${id}`);
   }
 
-  async getInitiativeActionItems(id: string): Promise<InitiativeActionItem[]> {
+  async getInitiativeActionItems(id: number): Promise<InitiativeActionItem[]> {
     return await this.get(`/api/backstage/v1/initiatives/${id}/actionitems`);
   }
 
