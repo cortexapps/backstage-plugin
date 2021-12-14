@@ -22,12 +22,11 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "^0.9.4",
-    "@backstage/core": "^0.7.14",
     "@backstage/core-components": "^0.7.0",
     "@backstage/core-plugin-api": "^0.2.0",
     "@backstage/plugin-catalog-react": "^0.6.0",
     "@backstage/theme": "^0.2.11",
-    "@cortexapps/backstage-plugin-extensions": "0.0.5",
+    "@cortexapps/backstage-plugin-extensions": "0.0.6",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "4.0.0-alpha.45",
@@ -52,7 +51,7 @@
   "devDependencies": {
     "@backstage/cli": "^0.8.1",
     "@backstage/dev-utils": "^0.2.7",
-    "@backstage/test-utils": "^0.1.17",
+    "@backstage/test-utils": "^0.1.24",
     "@cortexapps/eslint-config-oss": "^0.0.1",
     "@spotify/prettier-config": "^11.0.0",
     "@testing-library/jest-dom": "^5.10.1",
