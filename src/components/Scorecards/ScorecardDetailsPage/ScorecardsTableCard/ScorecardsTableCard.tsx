@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InfoCard } from '@backstage/core';
 import React from 'react';
 import { ScorecardServiceScore } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { Table, TableBody } from '@material-ui/core';
 import { ScorecardsTableRow } from './ScorecardsTableRow';
-import { EmptyState } from '@backstage/core-components';
+import { EmptyState, InfoCard } from '@backstage/core-components';
 
 interface ScorecardsTableProps {
   scorecardId: number;
