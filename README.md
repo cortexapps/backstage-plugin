@@ -98,13 +98,8 @@ To do this, instead of importing `cortexPlugin`, `CortexPage`, and `EntityCortex
 ### **`cortex.ts`**
 
 ```tsx
-import { ExtensionApi } from '../../../../backstage-plugin/src';
-import {
-  CustomMapping,
-  EntityFilterGroup,
-  extendableCortexPlugin,
-} from '@cortexapps/backstage-plugin';
-import { Entity } from '../../catalog-model';
+import { CustomMapping, EntityFilterGroup, extendableCortexPlugin, ExtensionApi } from '@cortexapps/backstage-plugin';
+import { Entity } from '@backstage/catalog-model'
 
 class ExtensionApiImpl implements ExtensionApi {
   async getAdditionalFilters(): Promise<EntityFilterGroup[]> {
