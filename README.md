@@ -115,7 +115,21 @@ class ExtensionApiImpl implements ExtensionApi {
   }
 
   async getCustomMappings(): Promise<CustomMapping[]> {
-    return [];
+    return [
+      (entity: Entity) => {
+        if (!componentEntityV1alpha1Validator.check(entity)) {
+          return {}
+        }
+
+        const component = entity as ComponentEntityV1alpha1
+        const system = component.spec.system
+        const serviceGroup = system ? `system:${system}` : undefined
+
+        return {
+          'x-cortex-service-groups': [...(component.metadata.tags ?? []), ...(serviceGroup ?? [])],
+        }
+      }
+    ];
   }
 }
 
