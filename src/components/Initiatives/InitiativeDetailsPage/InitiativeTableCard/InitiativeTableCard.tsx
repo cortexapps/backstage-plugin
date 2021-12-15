@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InfoCard } from '@backstage/core';
 import React from 'react';
 import { InitiativeActionItem } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
-import { EmptyState } from '@backstage/core-components';
+import { EmptyState, InfoCard } from '@backstage/core-components';
 import { FailingComponentsTable } from './FailingComponentsTable';
 import { PassingComponentsTable } from './PassingComponentsTable';
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { createApiRef, DiscoveryApi } from '@backstage/core';
 import {
   GroupByOption,
   Initiative,
@@ -32,6 +31,7 @@ import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
 import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
 import { applyCustomMappings } from '../utils/ComponentUtils';
+import { createApiRef, DiscoveryApi } from '@backstage/core-plugin-api';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
