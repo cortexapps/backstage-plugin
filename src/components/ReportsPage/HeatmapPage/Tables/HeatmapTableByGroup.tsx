@@ -21,7 +21,7 @@ import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
 import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
-import { mean as _average, round as _round } from 'lodash';
+import { mean as _average } from 'lodash';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
 
 interface HeatmapTableByGroupProps {
@@ -50,10 +50,6 @@ export const HeatmapTableByGroup = ({
         {Object.entries(data).map(([key, values]) => {
           const firstScore = values[0];
           const serviceCount = values.length;
-          const averageScore = _round(
-            _average(values.map(score => score.score)),
-            2,
-          );
           const averageScorePercentage = _average(
             values.map(score => score.scorePercentage),
           );
@@ -63,7 +59,6 @@ export const HeatmapTableByGroup = ({
             <TableRow key={firstScore.componentRef}>
               <TableCell>{key}</TableCell>
               <TableCell>{serviceCount}</TableCell>
-              <HeatmapCell score={averageScore} />
               <HeatmapCell score={averageScorePercentage} />
               {averageRuleScores.map((score, idx) => (
                 <HeatmapCell key={`HeatmapCell-${key}-${idx}`} score={score} />
