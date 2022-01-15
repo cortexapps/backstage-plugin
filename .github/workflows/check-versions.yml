@@ -1,0 +1,49 @@
+name: Backstage Version Check
+
+on:
+  schedule:
+    - cron: '30 17 * * 1-5'
+
+jobs:
+  build:
+    name: backstage-version-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.17.0
+      - run: yarn install
+      - name: Check Backstage versions
+        id: check-versions
+        run: |
+          yarn backstage-cli versions:check | awk 'NR > 3 { print last} {last=$0}' | sed -e 's/  @/      • @/g' | awk '{printf "%s\\n", $0}' | tee version_check.txt
+          RC=( "${PIPESTATUS[@]}" )
+          if [ "${RC[0]}" -ne "0" ]; then
+            echo "::set-output name=failure::true"
+            echo "::set-output name=failure_message::$(cat version_check.txt)"
+          else
+            echo "::set-output name=failure::false"
+          fi
+      - run: cat version_check.txt
+      - if: steps.check-versions.outputs.failure == 'true'
+        name: Alert on Slack
+        uses: slackapi/slack-github-action@v1.17.0
+        with:
+          channel-id: '#project-backstage'
+          payload: |
+            {
+              "text": "Detected out of date Backstage dependencies",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ steps.check-versions.outputs.failure_message }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_ERROR_REPORTING_BOT_TOKEN }}
