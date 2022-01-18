@@ -13,46 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ScorecardLevel, ScorecardLadder } from '../../../../api/types';
 import { Grid, Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import { useDetailCardStyles } from '../../../../styles/styles';
+import { getSortedLadderLevels } from '../../../../utils/ScorecardLadderUtils';
 
 interface ScorecardLaddersCardProps {
-    ladder: ScorecardLadder;
+  ladder: ScorecardLadder;
 }
 
 const ScorecardLevelsRow = ({ level }: { level: ScorecardLevel }) => {
-    const classes = useDetailCardStyles();
+  const classes = useDetailCardStyles();
 
-    return (
-        <React.Fragment>
-            <Grid item lg={10}>
-                <Typography variant="subtitle1" className={classes.level}>
-                    {level.name}
-                </Typography>
-                {level.description && <i>{level.description}<br/></i>}
-                {level.rules.map(rule => <i>&#8226; {rule.title ?? rule.expression}<br/></i>)}
-            </Grid>
-            <Grid item lg={2}>
-                <LoyaltyIcon style={{ color: `${level.color}` }}/>
-            </Grid>
-        </React.Fragment>
-    );
+  return (
+    <React.Fragment>
+      <Grid item lg={10}>
+        <Typography variant="subtitle1" className={classes.level}>
+          {level.name}
+        </Typography>
+        {level.description && (
+          <i>
+            {level.description}
+            <br />
+          </i>
+        )}
+        {level.rules.map(rule => (
+          <i>
+            &#8226; {rule.title ?? rule.expression}
+            <br />
+          </i>
+        ))}
+      </Grid>
+      <Grid item lg={2}>
+        <LoyaltyIcon style={{ color: `${level.color}` }} />
+      </Grid>
+    </React.Fragment>
+  );
 };
 
 export const ScorecardLaddersCard = ({ ladder }: ScorecardLaddersCardProps) => {
-    const classes = useDetailCardStyles();
+  const classes = useDetailCardStyles();
+  const levels = useMemo(() => getSortedLadderLevels(ladder), [ladder]);
 
-    return (
-        <InfoCard title="Ladders" className={classes.root}>
-            <Grid container>
-                {ladder.levels.map(level => (
-                    <ScorecardLevelsRow key={level.id} level={level} />
-                ))}
-            </Grid>
-        </InfoCard>
-    );
+  return (
+    <InfoCard title="Ladders" className={classes.root}>
+      <Grid container>
+        {levels.map(level => (
+          <ScorecardLevelsRow key={level.id} level={level} />
+        ))}
+      </Grid>
+    </InfoCard>
+  );
 };

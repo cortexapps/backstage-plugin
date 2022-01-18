@@ -19,6 +19,7 @@ import { Grid, Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import { useDetailCardStyles } from '../../../styles/styles';
+import { getSortedLadderLevels } from '../../../utils/ScorecardLadderUtils';
 
 interface ScorecardsServiceNextRulesProps {
   ladder: ScorecardLadder;
@@ -32,10 +33,7 @@ export const ScorecardsServiceNextRules = ({
   const classes = useDetailCardStyles();
 
   const currentLevel = score.ladderLevels?.[0]?.currentLevel ?? undefined;
-  const levels = useMemo(
-    () => [...(ladder?.levels ?? [])].sort((a, b) => a.rank - b.rank),
-    [ladder],
-  );
+  const levels = useMemo(() => getSortedLadderLevels(ladder), [ladder]);
 
   const nextLevel = useMemo(() => {
     if (currentLevel === undefined) {
