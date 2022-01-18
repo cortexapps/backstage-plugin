@@ -25,8 +25,8 @@ import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../utils/hooks';
 
 interface ScorecardSelectorCard {
-  selectedScorecardId?: string;
-  onSelect: (id?: string) => void;
+  selectedScorecardId?: number;
+  onSelect: (id?: number) => void;
   hideReset?: boolean;
 }
 
@@ -67,7 +67,7 @@ export const ScorecardSelector = ({
         <InputLabel>Select a Scorecard</InputLabel>
         <Select
           value={selected}
-          onChange={event => onSelect(event.target.value as string | undefined)}
+          onChange={event => onSelect(event.target.value as number | undefined)}
         >
           {sortedScorecards.map(scorecard => (
             <MenuItem key={scorecard.id} value={scorecard.id}>

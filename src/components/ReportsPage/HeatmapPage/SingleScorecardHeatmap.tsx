@@ -20,7 +20,7 @@ import { GroupByOption } from '../../../api/types';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
 
 interface SingleScorecardHeatmapProps {
-  scorecardId: string;
+  scorecardId: number;
   groupBy: GroupByOption;
 }
 

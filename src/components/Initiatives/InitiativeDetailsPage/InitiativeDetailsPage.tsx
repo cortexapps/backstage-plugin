@@ -27,9 +27,10 @@ import { Grid } from '@material-ui/core';
 import { initiativeRouteRef } from '../../../routes';
 import { InitiativeMetadataCard } from './InitiativeMetadataCard';
 import { InitiativeTableCard } from './InitiativeTableCard';
-import { InitiativeSummaryCard } from './InitiativeSummaryCard';
 import { InitiativeFilterCard } from './InitiativeFilterCard';
 import { Predicate } from '../../../utils/types';
+import { StatsCard } from '../../StatsCard';
+import { Status } from '../../../styles/styles';
 
 export const InitiativeDetailsPage = () => {
   const { id: initiativeId } = useRouteRefParams(initiativeRouteRef);
@@ -43,8 +44,8 @@ export const InitiativeDetailsPage = () => {
 
   const { value, loading, error } = useAsync(async () => {
     return await Promise.all([
-      cortexApi.getInitiative(initiativeId),
-      cortexApi.getInitiativeActionItems(initiativeId),
+      cortexApi.getInitiative(+initiativeId),
+      cortexApi.getInitiativeActionItems(+initiativeId),
     ]);
   }, []);
 
@@ -108,9 +109,11 @@ export const InitiativeDetailsPage = () => {
           />
         </Grid>
         <Grid item lg={8} xs={12}>
-          <InitiativeSummaryCard
-            numPassing={numPassing}
-            numFailing={numFailing}
+          <StatsCard
+            stats={[
+              { label: 'Passing', status: Status.OKAY, value: numPassing },
+              { label: 'Failing', status: Status.ERROR, value: numFailing },
+            ]}
           />
           <InitiativeTableCard
             componentRefs={filteredComponentRefs}

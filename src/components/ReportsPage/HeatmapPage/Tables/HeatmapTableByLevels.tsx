@@ -31,7 +31,7 @@ import { useCortexApi } from '../../../../utils/hooks';
 import { Progress, WarningPanel } from '@backstage/core-components';
 
 interface HeatmapTableByLevelsProps {
-  scorecardId: string;
+  scorecardId: number;
   rules: string[];
   data: StringIndexable<ScorecardServiceScore[]>;
 }

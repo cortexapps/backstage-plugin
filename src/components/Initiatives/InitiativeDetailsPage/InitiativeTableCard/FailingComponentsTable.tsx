@@ -15,11 +15,11 @@
  */
 import React from 'react';
 import { InitiativeActionItem } from '../../../../api/types';
-import { InfoCard } from '@backstage/core';
 import { Table, TableBody } from '@material-ui/core';
 import { groupByString } from '../../../../utils/collections';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { FailingComponentsTableRow } from './FailingComponentsTableRow';
+import { InfoCard } from '@backstage/core-components';
 
 interface FailingComponentsTableProps {
   actionItems: InitiativeActionItem[];

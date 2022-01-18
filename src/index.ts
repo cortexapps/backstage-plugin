@@ -22,10 +22,11 @@ export {
   EntityCortexContent,
   extendableCortexPlugin,
 } from './plugin';
+export { extensionApiRef } from './api/ExtensionApi';
 export type {
   ExtensionApi,
   CortexYaml,
   CustomMapping,
-} from './api/ExtensionApi';
+} from '@cortexapps/backstage-plugin-extensions';
 export type { EntityFilterGroup } from './filters';
 export const CortexIcon: IconComponent = CortexIconComponent as IconComponent;

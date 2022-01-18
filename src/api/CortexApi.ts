@@ -27,13 +27,13 @@ import {
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef } from '../utils/types';
-import { CustomMapping } from './ExtensionApi';
+import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
-  getScorecard(scorecardId: string): Promise<Scorecard | undefined>;
-  getScorecardLadders(scorecardId: string): Promise<ScorecardLadder[]>;
-  getScorecardScores(scorecardId: string): Promise<ScorecardServiceScore[]>;
+  getScorecard(scorecardId: number): Promise<Scorecard | undefined>;
+  getScorecardLadders(scorecardId: number): Promise<ScorecardLadder[]>;
+  getScorecardScores(scorecardId: number): Promise<ScorecardServiceScore[]>;
   getServiceScores(entityRef: AnyEntityRef): Promise<ServiceScorecardScore[]>;
   getHistoricalScores(
     scorecardId: string,
@@ -42,7 +42,7 @@ export interface CortexApi {
     endDate?: Moment,
   ): Promise<ScorecardResult[]>;
   getAverageHistoricalScores(
-    scorecardId: string,
+    scorecardId: number,
     groupBy: GroupByOption,
     options: {
       ruleExpression?: string;
@@ -56,8 +56,8 @@ export interface CortexApi {
   ): Promise<ScoresByIdentifier[]>;
 
   getInitiatives(): Promise<Initiative[]>;
-  getInitiative(id: string): Promise<Initiative>;
-  getInitiativeActionItems(id: string): Promise<InitiativeActionItem[]>;
+  getInitiative(id: number): Promise<Initiative>;
+  getInitiativeActionItems(id: number): Promise<InitiativeActionItem[]>;
   getComponentActionItems(
     entityRef: AnyEntityRef,
   ): Promise<InitiativeActionItem[]>;

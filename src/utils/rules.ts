@@ -13,4 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { InitiativeSummaryCard } from './InitiativeSummaryCard';
+export function isRulePassing<T extends { score: number }>(rule: T): boolean {
+  return rule.score > 0;
+}
+
+export function isRuleFailing<T extends { score: number }>(rule: T): boolean {
+  return rule.score === 0;
+}
+
+export function filterPassingRules<T extends { score: number }>(
+  rules: T[],
+): T[] {
+  return rules.filter(isRulePassing);
+}
+
+export function filterFailingRules<T extends { score: number }>(
+  rules: T[],
+): T[] {
+  return rules.filter(isRuleFailing);
+}

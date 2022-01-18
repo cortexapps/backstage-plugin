@@ -98,13 +98,8 @@ To do this, instead of importing `cortexPlugin`, `CortexPage`, and `EntityCortex
 ### **`cortex.ts`**
 
 ```tsx
-import { ExtensionApi } from '../../../../backstage-plugin/src';
-import {
-  CustomMapping,
-  EntityFilterGroup,
-  extendableCortexPlugin,
-} from '@cortexapps/backstage-plugin';
-import { Entity } from '../../catalog-model';
+import { CustomMapping, EntityFilterGroup, extendableCortexPlugin, ExtensionApi } from '@cortexapps/backstage-plugin';
+import { Entity } from '@backstage/catalog-model'
 
 class ExtensionApiImpl implements ExtensionApi {
   async getAdditionalFilters(): Promise<EntityFilterGroup[]> {
@@ -120,7 +115,21 @@ class ExtensionApiImpl implements ExtensionApi {
   }
 
   async getCustomMappings(): Promise<CustomMapping[]> {
-    return [];
+    return [
+      (entity: Entity) => {
+        if (!componentEntityV1alpha1Validator.check(entity)) {
+          return {}
+        }
+
+        const component = entity as ComponentEntityV1alpha1
+        const system = component.spec.system
+        const serviceGroup = system ? `system:${system}` : undefined
+
+        return {
+          'x-cortex-service-groups': [...(component.metadata.tags ?? []), ...(serviceGroup ?? [])],
+        }
+      }
+    ];
   }
 }
 

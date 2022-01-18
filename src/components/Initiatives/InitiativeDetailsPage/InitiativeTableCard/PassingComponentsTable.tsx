@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import React from 'react';
-import { InfoCard } from '@backstage/core';
 import {
   IconButton,
   Table,
@@ -30,6 +29,7 @@ import { parseEntityName } from '@backstage/catalog-model';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useActionItemsStyles } from './FailingComponentsTableRow';
+import { InfoCard } from '@backstage/core-components';
 
 interface PassingComponentsTableProps {
   componentRefs: string[];

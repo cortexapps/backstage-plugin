@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { createApiRef, DiscoveryApi } from '@backstage/core';
 import {
   GroupByOption,
   Initiative,
@@ -30,8 +29,9 @@ import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
-import { CustomMapping } from './ExtensionApi';
+import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
 import { applyCustomMappings } from '../utils/ComponentUtils';
+import { createApiRef, DiscoveryApi } from '@backstage/core-plugin-api';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -75,7 +75,7 @@ export class CortexClient implements CortexApi {
   async getServiceScores(
     entityRef: AnyEntityRef,
   ): Promise<ServiceScorecardScore[]> {
-    return await this.get(`/api/backstage/v1/entities/scorecards`, {
+    return await this.get(`/api/backstage/v2/entities/scorecards`, {
       ref: stringifyAnyEntityRef(entityRef),
     });
   }
@@ -103,7 +103,7 @@ export class CortexClient implements CortexApi {
   }
 
   async getAverageHistoricalScores(
-    scorecardId: string,
+    scorecardId: number,
     groupBy: GroupByOption,
     options: {
       ruleExpression?: string;
@@ -152,18 +152,18 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/scorecards/scores`, args);
   }
 
-  async getScorecard(scorecardId: string): Promise<Scorecard> {
+  async getScorecard(scorecardId: number): Promise<Scorecard> {
     return await this.get(`/api/backstage/v1/scorecards/${scorecardId}`);
   }
 
-  async getScorecardLadders(scorecardId: string): Promise<ScorecardLadder[]> {
+  async getScorecardLadders(scorecardId: number): Promise<ScorecardLadder[]> {
     return await this.get(
       `/api/backstage/v1/scorecards/${scorecardId}/ladders`,
     );
   }
 
   async getScorecardScores(
-    scorecardId: string,
+    scorecardId: number,
   ): Promise<ScorecardServiceScore[]> {
     return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/scores`);
   }
@@ -172,11 +172,11 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/initiatives`);
   }
 
-  async getInitiative(id: string): Promise<Initiative> {
+  async getInitiative(id: number): Promise<Initiative> {
     return await this.get(`/api/backstage/v1/initiatives/${id}`);
   }
 
-  async getInitiativeActionItems(id: string): Promise<InitiativeActionItem[]> {
+  async getInitiativeActionItems(id: number): Promise<InitiativeActionItem[]> {
     return await this.get(`/api/backstage/v1/initiatives/${id}/actionitems`);
   }
 

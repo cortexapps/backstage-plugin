@@ -34,11 +34,11 @@ import { Lookback, lookbackLabels } from '../../../utils/lookback';
 import { AggregatedScorecardProgress } from './AggregatedScorecardProgress';
 import { GroupByOption, ruleName } from '../../../api/types';
 import { SerieFilter } from './SerieFilter';
-import {GroupByDropdown} from "../Common/GroupByDropdown";
+import { GroupByDropdown } from '../Common/GroupByDropdown';
 
 export const ProgressPage = () => {
   const [selectedScorecardId, setSelectedScorecardId] = useState<
-    string | undefined
+    number | undefined
   >();
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
@@ -80,9 +80,9 @@ export const ProgressPage = () => {
           <Grid container direction="row">
             <Grid item lg={8}>
               <ScorecardSelector
-                  onSelect={setSelectedScorecardId}
-                  selectedScorecardId={selectedScorecardId}
-                  hideReset
+                onSelect={setSelectedScorecardId}
+                selectedScorecardId={selectedScorecardId}
+                hideReset
               />
             </Grid>
             <Grid item lg={4}>
@@ -90,9 +90,9 @@ export const ProgressPage = () => {
                 <InputLabel>Time Range</InputLabel>
                 <Select value={lookback} onChange={setLookback}>
                   {enumKeys(Lookback).map(key => (
-                      <MenuItem key={key} value={Lookback[key]}>
-                        {lookbackLabels(Lookback[key])}
-                      </MenuItem>
+                    <MenuItem key={key} value={Lookback[key]}>
+                      {lookbackLabels(Lookback[key])}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>

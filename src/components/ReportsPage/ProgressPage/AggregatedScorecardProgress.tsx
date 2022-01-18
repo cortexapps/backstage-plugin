@@ -25,7 +25,7 @@ import { mapByString } from '../../../utils/collections';
 import { GroupByOption } from '../../../api/types';
 
 interface AggregatedScorecardProgressProps {
-  scorecardId: string;
+  scorecardId: number;
   lookback: Lookback;
   groupBy: GroupByOption;
   filters?: string[];

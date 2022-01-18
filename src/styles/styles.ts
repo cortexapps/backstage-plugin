@@ -15,6 +15,21 @@
  */
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
+export enum Status {
+  OKAY,
+  WARNING,
+  ERROR,
+}
+
+export const percentageToStatus = (percentage: number) => {
+  if (percentage > 0.9) {
+    return Status.OKAY;
+  } else if (percentage > 0.49) {
+    return Status.WARNING;
+  }
+  return Status.ERROR;
+};
+
 const cortexStyles = (theme: Theme) =>
   createStyles({
     label: {
@@ -40,7 +55,7 @@ const detailCardStyles = createStyles({
   },
   level: {
     marginBottom: '2px',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 });
 

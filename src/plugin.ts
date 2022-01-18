@@ -25,8 +25,9 @@ import {
 
 import { rootRouteRef, scorecardRouteRef, scorecardsRouteRef } from './routes';
 import { cortexApiRef, CortexClient } from './api';
-import { ExtensionApi, extensionApiRef } from './api/ExtensionApi';
+import { ExtensionApi } from '@cortexapps/backstage-plugin-extensions';
 import { NoopExtensionClient } from './api/NoopExtensionClient';
+import { extensionApiRef } from './api/ExtensionApi';
 
 export const cortexPlugin = createPlugin({
   id: 'cortex',
@@ -78,6 +79,7 @@ export const extendableCortexPlugin = <
 
   const CortexPage = plugin.provide(
     createRoutableExtension({
+      name: "CortexPage",
       component: () =>
         import('./components/CortexPage').then(m => m.CortexPage),
       mountPoint: rootRouteRef,
@@ -86,6 +88,7 @@ export const extendableCortexPlugin = <
 
   const EntityCortexContent = plugin.provide(
     createComponentExtension({
+      name: "EntityCortexContent",
       component: {
         lazy: () => import('./components/EntityPage').then(m => m.EntityPage),
       },
@@ -97,6 +100,7 @@ export const extendableCortexPlugin = <
 
 export const CortexPage = cortexPlugin.provide(
   createRoutableExtension({
+    name: "CortexPage",
     component: () => import('./components/CortexPage').then(m => m.CortexPage),
     mountPoint: rootRouteRef,
   }),
@@ -104,6 +108,7 @@ export const CortexPage = cortexPlugin.provide(
 
 export const EntityCortexContent = cortexPlugin.provide(
   createComponentExtension({
+    name: "EntityCortexContent",
     component: {
       lazy: () => import('./components/EntityPage').then(m => m.EntityPage),
     },

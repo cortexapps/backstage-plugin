@@ -50,7 +50,7 @@ export const InitiativeMetadataCard = ({
             label={initiative.scorecard.name}
             clickable
             component="a"
-            href={scorecardRef({ id: initiative.scorecard.id })}
+            href={scorecardRef({ id: `${initiative.scorecard.id}` })}
           />
         </MetadataItem>
         <MetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Owner">

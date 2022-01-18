@@ -16,7 +16,7 @@
 
 export interface Scorecard {
   creator: { name: string; email: string };
-  id: string;
+  id: number;
   name: string;
   description?: string;
   rules: Rule[];
@@ -86,17 +86,45 @@ export interface ScorecardScoreLadderResult {
   currentLevel?: ScorecardScoreLadderLevel;
 }
 
+export interface ServiceLadderLevels {
+  serviceId: number;
+  ladderDetails: {
+    id: number;
+    name: string;
+  };
+  currentLevel?: {
+    name: string;
+    color: string;
+    rank: number;
+  };
+}
+
 export interface ServiceScorecardScore {
-  scorecardId: string;
-  scorecardName: string;
-  scorePercentage: number;
-  score: number;
-  totalPossibleScore: number;
-  ladderLevels: ScorecardScoreLadderResult[];
+  score: {
+    scorePercentage: number;
+    score: number;
+    totalPossibleScore: number;
+  };
+  scorecard: {
+    id: number;
+    name: string;
+    description?: string;
+  };
+  evaluation: {
+    rules: {
+      rule: {
+        failureMessage?: string;
+      } & Rule;
+      score: number;
+      leftResult?: number | string;
+      error?: string;
+    }[];
+    ladderLevels: ServiceLadderLevels[];
+  };
 }
 
 export interface ScorecardServiceScore {
-  serviceId: string;
+  serviceId: number;
   componentRef: string;
   score: number;
   scorePercentage: number;
@@ -115,7 +143,7 @@ export interface ScorecardServiceScoresRule {
 }
 
 export interface ScorecardResult {
-  scorecardId: string;
+  scorecardId: number;
   componentRef: string;
   totalScore: number;
   possibleScore: number;
@@ -124,7 +152,7 @@ export interface ScorecardResult {
 }
 
 export interface RuleResult {
-  id: string;
+  id: number;
   expression: string;
   result: boolean;
   score: number;
@@ -157,7 +185,7 @@ export enum GroupByOption {
 }
 
 export interface ScorecardScore {
-  scorecardId: string;
+  scorecardId: number;
   scorecardName?: string;
   scorePercentage: number;
   dateCreated?: string;
@@ -166,13 +194,19 @@ export interface ScorecardScore {
 export interface Initiative {
   creator: { name: string; email: string };
   description?: string;
-  id: string;
+  id: number;
   name: string;
   scorecard: Scorecard;
   scores: InitiativeServiceScores[];
-  emphasizedRules: string[];
+  emphasizedRules: InitiativeRule[];
   targetDate: string;
+  targetScore?: number;
   tags: ServiceGroup[];
+}
+
+export interface InitiativeRule {
+  ruleId: number;
+  expression: string;
 }
 
 export interface InitiativeServiceScores {
@@ -184,9 +218,10 @@ export interface InitiativeActionItem {
   rule: Rule;
   componentRef: string;
   initiative: {
-    initiativeId: string;
+    initiativeId: number;
     name: string;
     targetDate: string;
+    targetScore?: number;
     description?: string;
   };
 }

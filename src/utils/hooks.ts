@@ -40,9 +40,9 @@ import {
 } from './ComponentUtils';
 import { cortexApiRef } from '../api';
 import { CortexApi } from '../api/CortexApi';
-import { extensionApiRef } from '../api/ExtensionApi';
 import { EntityFilterGroup } from '../filters';
 import { FilterDefinition } from '../components/FilterCard/Filters';
+import { extensionApiRef } from '../api/ExtensionApi';
 
 export function useDropdown<T>(
   initialValue: T | undefined,

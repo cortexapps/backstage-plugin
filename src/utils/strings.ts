@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  CustomMapping,
-  EntityFilterGroup,
-  ExtensionApi,
-} from '@cortexapps/backstage-plugin-extensions';
 
-export class NoopExtensionClient implements ExtensionApi {
-  async getAdditionalFilters(): Promise<EntityFilterGroup[]> {
-    return [];
-  }
+const suffixes: Record<string, string> = {
+  one: 'st',
+  two: 'nd',
+  few: 'rd',
+  other: 'th',
+};
 
-  async getCustomMappings(): Promise<CustomMapping[]> {
-    return [];
-  }
+const english_ordinal_rules = new Intl.PluralRules('en', { type: 'ordinal' });
+
+export function ordinal(value: number) {
+  return suffixes[english_ordinal_rules.select(value)];
 }
