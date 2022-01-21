@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import React, { useMemo } from 'react';
 import { Button } from '@material-ui/core';
-import React from 'react';
-import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
+import { Route } from 'react-router-dom';
+import { Routes } from 'react-router';
+
 import {
   Content,
   ContentHeader,
@@ -26,11 +28,13 @@ import {
   WarningPanel,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
+
+import { cortexApiRef } from '../../../api';
 import { ScorecardCard } from '../ScorecardCard';
-import { Route } from 'react-router-dom';
 import { ScorecardDetailsPage } from '../ScorecardDetailsPage';
-import { Routes } from 'react-router';
 import { ScorecardsServicePage } from '../ScorecardsServicePage';
+
+import { Scorecard } from '../../../api/types';
 
 const ScorecardsPageBody = () => {
   const cortexApi = useApi(cortexApiRef);
@@ -42,6 +46,14 @@ const ScorecardsPageBody = () => {
   } = useAsync(async () => {
     return await cortexApi.getScorecards();
   }, []);
+
+  const sortedScorecards = useMemo(
+    () =>
+      scorecards?.sort((a: Scorecard, b: Scorecard) =>
+        a.name > b.name ? 1 : -1,
+      ),
+    [scorecards],
+  );
 
   if (loading) {
     return <Progress />;
@@ -55,7 +67,7 @@ const ScorecardsPageBody = () => {
     );
   }
 
-  if (!scorecards?.length) {
+  if (!sortedScorecards?.length) {
     return (
       <EmptyState
         missing="info"
@@ -76,7 +88,7 @@ const ScorecardsPageBody = () => {
 
   return (
     <ItemCardGrid>
-      {scorecards.map(scorecard => (
+      {sortedScorecards.map(scorecard => (
         <ScorecardCard key={scorecard.id} scorecard={scorecard} />
       ))}
     </ItemCardGrid>
