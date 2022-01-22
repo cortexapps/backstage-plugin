@@ -56,6 +56,8 @@
     "@backstage/dev-utils": "^0.2.7",
     "@backstage/test-utils": "^0.2.3",
     "@cortexapps/eslint-config-oss": "^0.0.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "@spotify/prettier-config": "^11.0.0",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^11.2.5",
