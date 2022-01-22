@@ -1353,7 +1353,16 @@
     react-router "6.0.0-beta.0"
     react-router-dom "6.0.0-beta.0"
 
-"@backstage/errors@^0.1.2", "@backstage/errors@^0.1.4", "@backstage/errors@^0.1.5":
+"@backstage/errors@^0.1.2", "@backstage/errors@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/@backstage/errors/-/errors-0.1.4.tgz#8aa4f9451f031cdcac3b377f1de214a7a81c064c"
+  integrity sha512-5KucsSD+tnz3vZAkz+pClDiqVThb5ONupcodTHOAkcFYRR0WPgo6p4bBvdUzPLX66emIg7NZIN5xzA0nReFSEg==
+  dependencies:
+    "@backstage/types" "^0.1.1"
+    cross-fetch "^3.0.6"
+    serialize-error "^8.0.1"
+
+"@backstage/errors@^0.1.5":
   version "0.1.5"
   resolved "https://registry.npmjs.org/@backstage/errors/-/errors-0.1.5.tgz#94679c2ecd0ea22d0fbfc542c9af3a7fca362411"
   integrity sha512-lL1ZYNfx0j5Y4JsSu5VvLXWAuoNkrCL1FSrTTCKOr+lqPgUhr69r2mfDNjFa+fjotQx6QptAv2QFoacU2ijC3w==
@@ -1427,7 +1436,27 @@
     react-use "^17.2.4"
     zen-observable "^0.8.15"
 
-"@backstage/test-utils@^0.1.19", "@backstage/test-utils@^0.1.24":
+"@backstage/test-utils@^0.1.19":
+  version "0.1.20"
+  resolved "https://registry.npmjs.org/@backstage/test-utils/-/test-utils-0.1.20.tgz#194ed7c8726225e60cc6c0e4ab6f76673bcadd92"
+  integrity sha512-Z/xco+hXQLifonZERQlxqaNbGGWqitPr+Rc2dRZkOIg0zUlge9Sb9gQtaFpdiZI7iT8zACOiRvgzg7uG+70p0w==
+  dependencies:
+    "@backstage/core-app-api" "^0.1.19"
+    "@backstage/core-plugin-api" "^0.1.12"
+    "@backstage/theme" "^0.2.12"
+    "@backstage/types" "^0.1.1"
+    "@material-ui/core" "^4.12.2"
+    "@testing-library/jest-dom" "^5.10.1"
+    "@testing-library/react" "^11.2.5"
+    "@testing-library/user-event" "^13.1.8"
+    "@types/react" "*"
+    react "^16.12.0"
+    react-dom "^16.12.0"
+    react-router "6.0.0-beta.0"
+    react-router-dom "6.0.0-beta.0"
+    zen-observable "^0.8.15"
+
+"@backstage/test-utils@^0.1.24":
   version "0.1.24"
   resolved "https://registry.npmjs.org/@backstage/test-utils/-/test-utils-0.1.24.tgz#1af2ea1fe3daa7df5545cc6d41271d59c2076f48"
   integrity sha512-zfqhY5AS8tNOFoP8Kmpb3zE1vCbbHCXwsvxtTEq7UsRJiGpzTMN7pn+GQpddMgMHJc+IB0y25Xflw3grNEKTbA==
@@ -1445,7 +1474,14 @@
     react-router-dom "6.0.0-beta.0"
     zen-observable "^0.8.15"
 
-"@backstage/theme@^0.2.11", "@backstage/theme@^0.2.12", "@backstage/theme@^0.2.14":
+"@backstage/theme@^0.2.11", "@backstage/theme@^0.2.12":
+  version "0.2.12"
+  resolved "https://registry.npmjs.org/@backstage/theme/-/theme-0.2.12.tgz#a11c07dac1ffb1bbdd7758752d3e996120cc19e9"
+  integrity sha512-1S81lNzNC+30qogWSMEasR6cYzozwW4U6Zi02nWfS8KcMT+o8kqY7MNlCibo+lLsKXs7gZwTNYUxq7lAkkNSAA==
+  dependencies:
+    "@material-ui/core" "^4.12.2"
+
+"@backstage/theme@^0.2.14":
   version "0.2.14"
   resolved "https://registry.npmjs.org/@backstage/theme/-/theme-0.2.14.tgz#5f285f4c1e4642b5bbf975d2cb2343c57816cf6d"
   integrity sha512-M1O9pye+rslfaj56Mv7/GSbWCFLB0jQc0SWuWbD4xdZ9nQ3N7DPG8q6Qc7n+X6xn8e9hiq9YrKz9+TD+ZP3UxQ==
@@ -1457,7 +1493,15 @@
   resolved "https://registry.npmjs.org/@backstage/types/-/types-0.1.1.tgz#9d3091daef5cba7329d7ee98b82ea27430234201"
   integrity sha512-ju+T86ogNPnwjjXjSaa4FIb6H/+J0DLWvxfdmqYOrLuuuJvZ5v3wwg7c2SHWfQhokjj8fqA1oERliCIiqcNHIg==
 
-"@backstage/version-bridge@^0.1.0", "@backstage/version-bridge@^0.1.1":
+"@backstage/version-bridge@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/@backstage/version-bridge/-/version-bridge-0.1.0.tgz#546dc1ec48aa0d5f317777921d659fc0ff067436"
+  integrity sha512-5GhZpeqgr/I5kiwMAJaTa7vLMjINGvze2xsaU96v1gMXuJTj/kKCa5Y9QMEuNn/SS6gMIzlTiUEvxfqVsxvLxw==
+  dependencies:
+    "@types/react" "*"
+    react "^16.12.0"
+
+"@backstage/version-bridge@^0.1.1":
   version "0.1.1"
   resolved "https://registry.npmjs.org/@backstage/version-bridge/-/version-bridge-0.1.1.tgz#6066d0f7515f19201c25220a900b3d1cf55c2fb1"
   integrity sha512-zCxLkWlWTeCpmEoREiOVmfzej8tv+ZTHYmcXFiel993z3pwsVuKadFMGaQuiIAXBtPaAFiDovIj6PlK4BZjRQA==
@@ -1480,10 +1524,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@cortexapps/backstage-plugin-extensions@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.npmjs.org/@cortexapps/backstage-plugin-extensions/-/backstage-plugin-extensions-0.0.6.tgz#129ef6db69e6f55d31c4fbad3cfc950476366a10"
-  integrity sha512-kB1p781/PgPMfUx8nGeXWbX+4u8VagZSyeXPOKh3gBhB0SKe1uhEH39nWvFtPV/HNPyCGGZiNuWVK2X1xWK+Cg==
+"@cortexapps/backstage-plugin-extensions@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.npmjs.org/@cortexapps/backstage-plugin-extensions/-/backstage-plugin-extensions-0.0.7.tgz#f5ba3d2476936876797461e005b083ba4c3f07d7"
+  integrity sha512-fdPFeajoVpgQQwGUfcRrD4if6favXgJSEl6+9cuBKelcEgpesuffClD7XAt35mGpECPBL1M42lVzPdVY1KCUMg==
   dependencies:
     "@backstage/catalog-model" "^0.9.6"
 
