@@ -22,8 +22,9 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "^0.9.4",
+    "@backstage/core-app-api": "^0.5.0",
     "@backstage/core-components": "^0.8.0",
-    "@backstage/core-plugin-api": "^0.3.0",
+    "@backstage/core-plugin-api": "^0.6.0",
     "@backstage/plugin-catalog-react": "^0.6.0",
     "@backstage/theme": "^0.2.11",
     "@cortexapps/backstage-plugin-extensions": "0.0.7",
@@ -41,17 +42,19 @@
     "material-table": "^1.69.2",
     "moment": "^2.29.1",
     "rc-progress": "^3.1.4",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
     "react-router": "6.0.0-beta.0",
     "react-router-dom": "6.0.0-beta.0",
     "react-use": "^15.3.3",
     "simple-statistics": "^7.7.0"
   },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0"
+  },
   "devDependencies": {
-    "@backstage/cli": "^0.11.0",
+    "@backstage/cli": "^0.12.0",
     "@backstage/dev-utils": "^0.2.7",
-    "@backstage/test-utils": "^0.1.24",
+    "@backstage/test-utils": "^0.2.3",
     "@cortexapps/eslint-config-oss": "^0.0.1",
     "@spotify/prettier-config": "^11.0.0",
     "@testing-library/jest-dom": "^5.10.1",
