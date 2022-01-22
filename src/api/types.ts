@@ -170,13 +170,6 @@ export interface ScoresByIdentifier {
   scores: ScorecardScore[];
 }
 
-export interface AverageScoresByIdentifier {
-  groupByIdentifier: string;
-  scorecardId: string;
-  averageScore: number;
-  dateCreated: string;
-}
-
 export enum GroupByOption {
   SCORECARD = 'Scorecard',
   TEAM = 'Team',

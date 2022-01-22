@@ -50,7 +50,7 @@ export const AllScorecardsHeatmapTable = ({
       <HeatmapTableHeader headers={headers} />
       <TableBody>
         {data.map(groupScore => {
-          const averageScore = _round(
+          const averageScorePercentage = _round(
             _average(
               filterNotUndefined(
                 groupScore.scores.map(score => score?.scorePercentage),
@@ -73,7 +73,7 @@ export const AllScorecardsHeatmapTable = ({
                   <>{groupScore.identifier!!}</>
                 )}
               </TableCell>
-              <HeatmapCell score={averageScore} />
+              <HeatmapCell score={averageScorePercentage} />
               {groupScore.scores.map((score, idx) => (
                 <React.Fragment key={`ReportsTableRuleRow-${idx}`}>
                   <HeatmapCell
