@@ -18,5 +18,4 @@ import { ExtensionApi } from '@cortexapps/backstage-plugin-extensions';
 
 export const extensionApiRef = createApiRef<ExtensionApi>({
   id: 'plugin.cortex.extension',
-  description: 'Used by the Cortex plugin to customize behavior',
 });

@@ -126,3 +126,6 @@ dist-types
 
 # MkDocs build output
 site
+
+# Backstage installation
+scripts/backstage-cortex/

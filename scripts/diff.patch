@@ -1,0 +1,105 @@
+diff --git a/app-config.yaml b/app-config.yaml
+index 1a622a2..60a1676 100644
+--- a/app-config.yaml
++++ b/app-config.yaml
+@@ -42,6 +42,10 @@ proxy:
+   '/test':
+     target: 'https://example.com'
+     changeOrigin: true
++  '/cortex':
++    target: ${CORTEX_BACKEND_HOST_URL}
++    headers:
++      Authorization: ${CORTEX_TOKEN} # this should include the "Bearer" keyword
+ 
+ # Reference documentation http://backstage.io/docs/features/techdocs/configuration
+ # Note: After experimenting with basic setup, use CI/CD to generate docs
+diff --git a/package.json b/package.json
+index 2454755..943bf4d 100644
+--- a/package.json
++++ b/package.json
+@@ -26,7 +26,9 @@
+   "workspaces": {
+     "packages": [
+       "packages/*",
+-      "plugins/*"
++      "plugins/*",
++      ".yalc/*",
++      ".yalc/@*/*"
+     ]
+   },
+   "devDependencies": {
+diff --git a/packages/app/src/App.tsx b/packages/app/src/App.tsx
+index 78949b0..d023f4a 100644
+--- a/packages/app/src/App.tsx
++++ b/packages/app/src/App.tsx
+@@ -21,6 +21,7 @@ import {
+   TechDocsReaderPage,
+ } from '@backstage/plugin-techdocs';
+ import { UserSettingsPage } from '@backstage/plugin-user-settings';
++import { CortexPage } from '@cortexapps/backstage-plugin';
+ import { apis } from './apis';
+ import { entityPage } from './components/catalog/EntityPage';
+ import { searchPage } from './components/search/SearchPage';
+@@ -30,8 +31,11 @@ import { AlertDisplay, OAuthRequestDialog } from '@backstage/core-components';
+ import { createApp } from '@backstage/app-defaults';
+ import { FlatRoutes } from '@backstage/core-app-api';
+ 
++import * as plugins from './plugins';
++
+ const app = createApp({
+   apis,
++  plugins: Object.values(plugins),
+   bindRoutes({ bind }) {
+     bind(catalogPlugin.externalRoutes, {
+       createComponent: scaffolderPlugin.routes.root,
+@@ -62,6 +66,7 @@ const routes = (
+     >
+       {entityPage}
+     </Route>
++    <Route path="/cortex" element={<CortexPage />} />
+     <Route path="/docs" element={<TechDocsIndexPage />}>
+       <DefaultTechDocsHome />
+     </Route>
+diff --git a/packages/app/src/components/Root/Root.tsx b/packages/app/src/components/Root/Root.tsx
+index 7e98c7d..9729b4c 100644
+--- a/packages/app/src/components/Root/Root.tsx
++++ b/packages/app/src/components/Root/Root.tsx
+@@ -32,6 +32,7 @@ import {
+   SidebarSearchModal,
+   SearchContextProvider,
+ } from '@backstage/plugin-search';
++import { CortexIcon } from '@cortexapps/backstage-plugin';
+ import {
+   Sidebar,
+   sidebarConfig,
+@@ -92,6 +93,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
+       <SidebarGroup label="Menu" icon={<MenuIcon />}>
+         {/* Global nav, not org-specific */}
+         <SidebarItem icon={HomeIcon} to="catalog" text="Home" />
++        <SidebarItem icon={CortexIcon} to="cortex" text="Cortex" />
+         <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
+         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
+         <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
+diff --git a/packages/app/src/components/catalog/EntityPage.tsx b/packages/app/src/components/catalog/EntityPage.tsx
+index d3b4b78..3cb62ba 100644
+--- a/packages/app/src/components/catalog/EntityPage.tsx
++++ b/packages/app/src/components/catalog/EntityPage.tsx
+@@ -52,6 +52,7 @@ import {
+   EntityMembersListCard,
+   EntityOwnershipCard,
+ } from '@backstage/plugin-org';
++import { EntityCortexContent } from '@cortexapps/backstage-plugin';
+ import { EntityTechdocsContent } from '@backstage/plugin-techdocs';
+ import { EmptyState } from '@backstage/core-components';
+ 
+@@ -123,6 +124,10 @@ const serviceEntityPage = (
+       {overviewContent}
+     </EntityLayout.Route>
+ 
++    <EntityLayout.Route path="/cortex" title="Cortex">
++      <EntityCortexContent />
++    </EntityLayout.Route>;
++
+     <EntityLayout.Route path="/ci-cd" title="CI/CD">
+       {cicdContent}
+     </EntityLayout.Route>

@@ -35,7 +35,6 @@ import { createApiRef, DiscoveryApi } from '@backstage/core-plugin-api';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
-  description: 'Used by the Cortex plugin to make requests',
 });
 
 type Options = {
