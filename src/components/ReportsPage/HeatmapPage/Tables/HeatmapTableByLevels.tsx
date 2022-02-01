@@ -70,7 +70,6 @@ export const HeatmapTableByLevels = ({
   const headers = [
     'Level',
     'Service Count',
-    'Average Score',
     'Average Score Percentage',
     ...rulesByLevels,
   ];
