@@ -38,7 +38,6 @@ export const HeatmapTableByGroup = ({
   const headers = [
     header,
     'Service Count',
-    'Average Score',
     'Average Score Percentage',
     ...rules,
   ];
