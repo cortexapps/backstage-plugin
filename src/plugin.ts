@@ -95,7 +95,16 @@ export const extendableCortexPlugin = <
     }),
   );
 
-  return { plugin, CortexPage, EntityCortexContent };
+  const SystemCortexContent = plugin.provide(
+    createComponentExtension({
+      name: "SystemCortexContent",
+      component: {
+        lazy: () => import('./components/SystemPage/SystemPage').then(m => m.SystemPage),
+      },
+    }),
+  );
+
+  return { plugin, CortexPage, EntityCortexContent, SystemCortexContent };
 };
 
 export const CortexPage = cortexPlugin.provide(
@@ -111,6 +120,15 @@ export const EntityCortexContent = cortexPlugin.provide(
     name: "EntityCortexContent",
     component: {
       lazy: () => import('./components/EntityPage').then(m => m.EntityPage),
+    },
+  }),
+);
+
+export const SystemCortexContent = cortexPlugin.provide(
+  createComponentExtension({
+    name: "SystemCortexContent",
+    component: {
+      lazy: () => import('./components/SystemPage/SystemPage').then(m => m.SystemPage),
     },
   }),
 );

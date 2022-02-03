@@ -20,6 +20,7 @@ export {
   cortexPlugin,
   CortexPage,
   EntityCortexContent,
+  SystemCortexContent,
   extendableCortexPlugin,
 } from './plugin';
 export { extensionApiRef } from './api/ExtensionApi';
