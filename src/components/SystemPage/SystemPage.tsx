@@ -42,7 +42,7 @@ export const SystemPage = () => {
         );
         return name === entity?.metadata.name;
       })?.[0],
-    [serviceGroupScores],
+    [serviceGroupScores, entity],
   );
   const myComponents = useMemo(
     () =>
