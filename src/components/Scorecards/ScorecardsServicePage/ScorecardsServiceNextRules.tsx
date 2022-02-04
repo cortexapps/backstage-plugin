@@ -86,7 +86,7 @@ export const ScorecardsServiceNextRules = ({
                 Complete these rules to get to the next level:
                 <br />
                 {nextRules.map(rule => (
-                  <i>
+                  <i key={`NextRule-${rule.id}`}>
                     &#8226; {rule.title ?? rule.expression}
                     <br />
                   </i>
