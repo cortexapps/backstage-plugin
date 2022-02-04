@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "@cortexapps/backstage-plugin": {
+      "version": "0.1.22",
+      "signature": "b821b36982ead393b3120812be6fa2a7",
+      "pure": true
+    }
+  }
+}

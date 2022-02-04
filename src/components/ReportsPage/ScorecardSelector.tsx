@@ -45,6 +45,13 @@ export const ScorecardSelector = ({
     return scorecards?.sort((a, b) => a.name.localeCompare(b.name)) ?? [];
   }, [scorecards]);
 
+  const selected = useMemo(
+    () =>
+      scorecards &&
+      scorecards.find(scorecard => scorecard.id === selectedScorecardId),
+    [scorecards, selectedScorecardId],
+  );
+
   if (loading) {
     return <Progress />;
   }
@@ -57,16 +64,12 @@ export const ScorecardSelector = ({
     );
   }
 
-  const selected = scorecards.find(
-    scorecard => scorecard.id === selectedScorecardId,
-  );
-
   return (
     <Card>
       <FormControl variant="standard">
         <InputLabel>Select a Scorecard</InputLabel>
         <Select
-          value={selected}
+          value={selected?.id}
           onChange={event => onSelect(event.target.value as number | undefined)}
         >
           {sortedScorecards.map(scorecard => (

@@ -36,7 +36,7 @@ export const HeatmapTableByService = ({
   rules,
   data,
 }: HeatmapTableByServiceProps) => {
-  const headers = ['Service Details', 'Score', 'Score Percentage', ...rules];
+  const headers = ['Service Details', 'Score', ...rules];
 
   return (
     <Table>
@@ -53,12 +53,13 @@ export const HeatmapTableByService = ({
           return (
             <TableRow key={firstScore.componentRef}>
               <TableCell>
-                <EntityRefLink
-                  entityRef={parseEntityName(
-                    firstScore.componentRef,
-                    defaultComponentRefContext,
-                  )}
-                />
+                <>{key}</>
+                {/*<EntityRefLink*/}
+                {/*  entityRef={parseEntityName(*/}
+                {/*    firstScore.componentRef,*/}
+                {/*    defaultComponentRefContext,*/}
+                {/*  )}*/}
+                {/*/>*/}
               </TableCell>
               <HeatmapCell score={averageScorePercentage} />
               {averageRuleScores.map((score, idx) => (

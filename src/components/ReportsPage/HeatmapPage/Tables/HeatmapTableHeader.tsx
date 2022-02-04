@@ -26,11 +26,18 @@ interface HeatmapTableHeaderProps {
 export const HeatmapTableHeader = ({ headers }: HeatmapTableHeaderProps) => {
   const classes = useHeatmapStyles();
 
+  const cellWidth = 100 / headers.length;
+  const style = { width: `${cellWidth}%` };
+
   return (
     <TableHead>
       <TableRow>
         {headers.map((headerText, idx) => (
-          <TableCell key={`HeatmapTableHeader-${idx}`} className={classes.root}>
+          <TableCell
+            key={`HeatmapTableHeader-${idx}`}
+            className={classes.root}
+            style={style}
+          >
             {headerText}
           </TableCell>
         ))}
