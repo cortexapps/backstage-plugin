@@ -30,7 +30,7 @@ export const FilterCard = <T extends {}>({
 }: FilterCardProps<T>) => {
   const classes = useDetailCardStyles();
 
-  const [_, setAllFilters] = useState<Predicate<T>[]>([]);
+  const [, setAllFilters] = useState<Predicate<T>[]>([]);
 
   const updateFilter = (i: number, filter: Predicate<T>) => {
     setAllFilters(prevFilters => {
