@@ -54,7 +54,7 @@ export const HeatmapPage = () => {
   return (
     <Content>
       <ContentHeader title="Bird's Eye">
-        <CopyButton label={'Share link'} textToCopy={getShareableLink} />
+        <CopyButton label="Share link" textToCopy={getShareableLink} />
       </ContentHeader>
       <Grid container direction="column">
         <Grid item lg={12}>

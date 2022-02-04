@@ -27,9 +27,7 @@ export const CopyButton: React.FC<CopyButtonProps> = ({
 }) => {
   const onShareLink = useCallback(async () => {
     const text = typeof textToCopy === 'function' ? textToCopy() : textToCopy;
-    navigator.clipboard
-      ? await navigator.clipboard.writeText(text)
-      : console.log(text);
+    return await navigator.clipboard.writeText(text);
   }, [textToCopy]);
 
   return (
