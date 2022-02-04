@@ -65,13 +65,12 @@ export const AllScorecardsHeatmapTable = ({
                 {groupBy === GroupByOption.SCORECARD ? (
                   <>{groupScore.identifier!!}</>
                 ) : (
-                  // <EntityRefLink
-                  //   entityRef={parseEntityName(
-                  //     groupScore.identifier!!,
-                  //     defaultComponentRefContext,
-                  //   )}
-                  // />
-                  <>{groupScore.identifier!!}</>
+                  <EntityRefLink
+                    entityRef={parseEntityName(
+                      groupScore.identifier!!,
+                      defaultComponentRefContext,
+                    )}
+                  />
                 )}
               </TableCell>
               <HeatmapCell

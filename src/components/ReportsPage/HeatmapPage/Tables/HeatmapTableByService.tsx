@@ -53,13 +53,12 @@ export const HeatmapTableByService = ({
           return (
             <TableRow key={firstScore.componentRef}>
               <TableCell>
-                <>{key}</>
-                {/*<EntityRefLink*/}
-                {/*  entityRef={parseEntityName(*/}
-                {/*    firstScore.componentRef,*/}
-                {/*    defaultComponentRefContext,*/}
-                {/*  )}*/}
-                {/*/>*/}
+                <EntityRefLink
+                  entityRef={parseEntityName(
+                    firstScore.componentRef,
+                    defaultComponentRefContext,
+                  )}
+                />
               </TableCell>
               <HeatmapCell score={averageScorePercentage} />
               {averageRuleScores.map((score, idx) => (
