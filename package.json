@@ -41,6 +41,7 @@
     "lodash": "^4.17.21",
     "material-table": "^1.69.2",
     "moment": "^2.29.1",
+    "query-string": "^7.1.0",
     "rc-progress": "^3.1.4",
     "react-router": "6.0.0-beta.0",
     "react-router-dom": "6.0.0-beta.0",
@@ -56,8 +57,6 @@
     "@backstage/dev-utils": "^0.2.7",
     "@backstage/test-utils": "^0.2.3",
     "@cortexapps/eslint-config-oss": "^0.0.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
     "@spotify/prettier-config": "^11.0.0",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^11.2.5",
@@ -72,7 +71,9 @@
     "lint-staged": "^11.1.2",
     "msw": "^0.21.2",
     "prettier": "^2.3.2",
-    "pretty-quick": "^3.1.1"
+    "pretty-quick": "^3.1.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "prettier": "@spotify/prettier-config",
   "husky": {
