@@ -1,4 +1,5 @@
 .idea/
+.yalc/
 .DS_Store
 .vscode/
 .vsls.json

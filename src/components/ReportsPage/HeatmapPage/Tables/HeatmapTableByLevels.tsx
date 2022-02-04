@@ -25,7 +25,7 @@ import {
   getSortedRulesByLevels,
   StringIndexable,
 } from '../HeatmapUtils';
-import { mean as _average, round as _round } from 'lodash';
+import { mean as _average } from 'lodash';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
 import { useCortexApi } from '../../../../utils/hooks';
 import { Progress, WarningPanel } from '@backstage/core-components';
@@ -67,12 +67,7 @@ export const HeatmapTableByLevels = ({
   const ladder = ladders?.[0];
   const rulesByLevels = getSortedRulesByLevels(rules, ladder?.levels);
 
-  const headers = [
-    'Level',
-    'Service Count',
-    'Average Score Percentage',
-    ...rulesByLevels,
-  ];
+  const headers = ['Level', 'Service Count', 'Average Score', ...rulesByLevels];
 
   return (
     <Table>

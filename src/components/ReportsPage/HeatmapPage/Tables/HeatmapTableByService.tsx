@@ -36,7 +36,7 @@ export const HeatmapTableByService = ({
   rules,
   data,
 }: HeatmapTableByServiceProps) => {
-  const headers = ['Service Details', 'Score', 'Score Percentage', ...rules];
+  const headers = ['Service Details', 'Score', ...rules];
 
   return (
     <Table>

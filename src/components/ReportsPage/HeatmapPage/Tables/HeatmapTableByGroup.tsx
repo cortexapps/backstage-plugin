@@ -35,12 +35,7 @@ export const HeatmapTableByGroup = ({
   rules,
   data,
 }: HeatmapTableByGroupProps) => {
-  const headers = [
-    header,
-    'Service Count',
-    'Average Score Percentage',
-    ...rules,
-  ];
+  const headers = [header, 'Service Count', 'Average Score', ...rules];
 
   return (
     <Table>
@@ -49,7 +44,7 @@ export const HeatmapTableByGroup = ({
         {Object.entries(data).map(([key, values]) => {
           const firstScore = values[0];
           const serviceCount = values.length;
-          const averageScorePercentage = _average(
+          const averageScore = _average(
             values.map(score => score.scorePercentage),
           );
           const averageRuleScores = getAverageRuleScores(values, serviceCount);
@@ -58,7 +53,7 @@ export const HeatmapTableByGroup = ({
             <TableRow key={firstScore.componentRef}>
               <TableCell>{key}</TableCell>
               <TableCell>{serviceCount}</TableCell>
-              <HeatmapCell score={averageScorePercentage} />
+              <HeatmapCell score={averageScore} />
               {averageRuleScores.map((score, idx) => (
                 <HeatmapCell key={`HeatmapCell-${key}-${idx}`} score={score} />
               ))}
