@@ -31,6 +31,7 @@ export const DefaultEntityRefLink = ({
     <EntityRefLink
       entityRef={entityRef}
       defaultKind={defaultComponentRefContext.defaultKind}
+      /* eslint-disable-next-line react/no-children-prop */
       children={children}
     />
   );

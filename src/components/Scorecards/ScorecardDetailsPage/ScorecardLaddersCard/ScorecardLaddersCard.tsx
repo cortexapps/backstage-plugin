@@ -41,7 +41,7 @@ const ScorecardLevelsRow = ({ level }: { level: ScorecardLevel }) => {
           </i>
         )}
         {level.rules.map(rule => (
-          <i>
+          <i key={`NextRule-${rule.id}`}>
             &#8226; {rule.title ?? rule.expression}
             <br />
           </i>
