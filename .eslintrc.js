@@ -15,5 +15,5 @@
  */
 module.exports = {
   extends: ['@cortexapps/eslint-config-oss'],
-  ignorePatterns: ['dist-types/dist/*'],
+  ignorePatterns: ['dist/*', 'dist-types/*', 'node_modules/*'],
 };

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CortexLayout } from '../CortexLayout';
 import React from 'react';
+import { CortexLayout } from '../CortexLayout';
 import { ScorecardsPage } from '../../extensions';
 import { SettingsPage } from '../SettingsPage';
 import { InitiativesPage } from '../Initiatives/InitiativesPage';
