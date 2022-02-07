@@ -84,6 +84,7 @@ export const SystemPage = () => {
             <TableBody>
               {data?.map(_ => (
                 <SystemPageRow
+                  key={_.score.scorecardId}
                   score={_.score}
                   scoresForScorecard={_.scoresForScorecard}
                 />

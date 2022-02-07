@@ -46,7 +46,7 @@ export const SystemPageRowDetails: React.FC<Props> = ({
   return (
     <Table>
       {scoresForScorecard.map(score => (
-        <TableRow className={classes.root}>
+        <TableRow className={classes.root} key={score.serviceId}>
           <TableCell>
             <Box
               flexDirection="row"
