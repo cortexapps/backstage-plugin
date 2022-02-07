@@ -15,6 +15,7 @@
  */
 import React from 'react';
 import { Box, makeStyles, Table, TableCell, TableRow } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 import { Gauge } from '../Gauge/Gauge';
 
@@ -61,7 +62,11 @@ export const SystemPageRowDetails: React.FC<Props> = ({
                 />
               </Box>
               <Box alignSelf="center" flex="1">
-                <b>{score?.componentRef}</b>
+                {score && (
+                  <Link to={`/catalog/default/component/${score?.componentRef}`}>
+                    {score?.componentRef}
+                  </Link>
+                )}
               </Box>
             </Box>
           </TableCell>

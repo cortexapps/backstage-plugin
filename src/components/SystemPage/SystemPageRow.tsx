@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Box,
   Collapse,
@@ -30,6 +29,7 @@ import { useRouteRef } from '@backstage/core-plugin-api';
 import { Gauge } from '../Gauge/Gauge';
 import { SystemPageRowDetails } from './SystemPageRowDetails';
 import { scorecardRouteRef } from '../../routes';
+import { ScorecardRefLink } from '../ScorecardRefLink';
 
 import { ScorecardScore, ScorecardServiceScore } from '../../api/types';
 
@@ -85,9 +85,9 @@ export const SystemPageRow: React.FC<Props> = ({
               />
             </Box>
             <Box alignSelf="center" flex="1">
-              <Link to={scorecardRef({ id: `${score.scorecardId}` })}>
+              <ScorecardRefLink scorecardId={score.scorecardId}>
                 <b>{name}</b>
-              </Link>
+              </ScorecardRefLink>
             </Box>
           </Box>
         </TableCell>
