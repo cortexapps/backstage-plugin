@@ -24,11 +24,9 @@ import {
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { useRouteRef } from '@backstage/core-plugin-api';
 
 import { Gauge } from '../Gauge/Gauge';
 import { SystemPageRowDetails } from './SystemPageRowDetails';
-import { scorecardRouteRef } from '../../routes';
 import { ScorecardRefLink } from '../ScorecardRefLink';
 
 import { ScorecardScore, ScorecardServiceScore } from '../../api/types';
@@ -60,7 +58,6 @@ export const SystemPageRow: React.FC<Props> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
-  const scorecardRef = useRouteRef(scorecardRouteRef);
   const name = score?.scorecardName ?? '';
   return (
     <React.Fragment>
