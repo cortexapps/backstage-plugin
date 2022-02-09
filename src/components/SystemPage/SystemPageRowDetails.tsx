@@ -15,7 +15,6 @@
  */
 import React from 'react';
 import { Box, makeStyles, Table, TableCell, TableRow } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 
 import { Gauge } from '../Gauge/Gauge';
 
