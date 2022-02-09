@@ -20,6 +20,9 @@ import { Link } from 'react-router-dom';
 import { Gauge } from '../Gauge/Gauge';
 
 import { ScorecardServiceScore } from '../../api/types';
+import {DefaultEntityRefLink} from "../DefaultEntityLink";
+import {parseEntityName} from "@backstage/catalog-model";
+import {defaultComponentRefContext} from "../../utils/ComponentUtils";
 
 interface Props {
   scoresForScorecard: ScorecardServiceScore[];
@@ -63,9 +66,7 @@ export const SystemPageRowDetails: React.FC<Props> = ({
               </Box>
               <Box alignSelf="center" flex="1">
                 {score && (
-                  <Link to={`/catalog/default/component/${score?.componentRef}`}>
-                    {score?.componentRef}
-                  </Link>
+                  <DefaultEntityRefLink entityRef={parseEntityName(score.componentRef, defaultComponentRefContext)}/>
                 )}
               </Box>
             </Box>
