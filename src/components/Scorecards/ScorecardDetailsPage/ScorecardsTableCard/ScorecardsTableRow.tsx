@@ -26,13 +26,10 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Box from '@material-ui/core/Box';
 import { ScorecardResultDetails } from './ScorecardResultDetails';
-import { parseEntityName, parseEntityRef } from '@backstage/catalog-model';
+import { parseEntityRef } from '@backstage/catalog-model';
 import { Gauge } from '../../../Gauge';
-import { Link } from '@backstage/core-components';
-import { useRouteRef } from '@backstage/core-plugin-api';
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
-import { scorecardServiceDetailsRouteRef } from '../../../../routes';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 
 const useStyles = makeStyles({
   root: {
@@ -60,13 +57,7 @@ export const ScorecardsTableRow = ({
   score,
 }: ScorecardsTableRowProps) => {
   const classes = useStyles();
-  const serviceDetailsRef = useRouteRef(scorecardServiceDetailsRouteRef);
   const currentLevel = score.ladderLevels?.[0]?.currentLevel;
-
-  const entityName = parseEntityName(
-    score.componentRef,
-    defaultComponentRefContext,
-  );
 
   const [open, setOpen] = useState(false);
 
@@ -93,11 +84,9 @@ export const ScorecardsTableRow = ({
               />
             </Box>
             <Box alignSelf="center" flex="1">
-              <Link
-                to={serviceDetailsRef({
-                  scorecardId: `${scorecardId}`,
-                  ...entityName,
-                })}
+              <ScorecardServiceRefLink
+                scorecardId={scorecardId}
+                componentRef={score.componentRef}
               >
                 <b>
                   {
@@ -107,7 +96,7 @@ export const ScorecardsTableRow = ({
                     }).name
                   }
                 </b>
-              </Link>
+              </ScorecardServiceRefLink>
             </Box>
             {currentLevel && (
               <Box display="flex" alignItems="center">

@@ -19,6 +19,7 @@ import { IconComponent } from '@backstage/core-plugin-api';
 export {
   cortexPlugin,
   CortexPage,
+  CortexScorecardWidget,
   EntityCortexContent,
   SystemCortexContent,
   extendableCortexPlugin,

@@ -97,6 +97,7 @@ export const EntityPage = () => {
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <EntityScorecardsCard
+            componentRef={stringifyAnyEntityRef(entity)}
             scores={scores}
             onSelect={setSelectedScorecardId}
             selectedScorecardId={selectedScorecardId}
