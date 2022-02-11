@@ -115,6 +115,15 @@ export const CortexPage = cortexPlugin.provide(
   }),
 );
 
+export const CortexScorecardWidget = cortexPlugin.provide(
+  createComponentExtension({
+    name: "CortexScorecardWidget",
+    component: {
+      lazy: () => import('./components/CortexScorecardWidget').then(m => m.CortexScorecardWidget),
+    },
+  }),
+);
+
 export const EntityCortexContent = cortexPlugin.provide(
   createComponentExtension({
     name: "EntityCortexContent",

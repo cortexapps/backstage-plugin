@@ -82,7 +82,17 @@ import { EntityCortexContent } from '@cortexapps/backstage-plugin';
 </EntityLayout.Route>;
 ```
 
-6. Add a new sidebar item in [Root.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/Root/Root.tsx)
+6. Import `CortexScorecardWidget` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new component widget for Cortex:
+
+```tsx
+import { CortexScorecardWidget } from '@cortexapps/backstage-plugin';
+
+<Grid item md={4} xs={12}>
+  <CortexScorecardWidget />
+</Grid>
+```
+
+7. Add a new sidebar item in [Root.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/Root/Root.tsx)
 
 ```tsx
 import { CortexIcon } from '@cortexapps/backstage-plugin';

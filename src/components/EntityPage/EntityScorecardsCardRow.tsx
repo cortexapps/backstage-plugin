@@ -18,8 +18,8 @@ import { ServiceScorecardScore } from '../../api/types';
 import { makeStyles, TableCell, TableRow } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { Gauge } from '../Gauge';
-import { ScorecardRefLink } from '../ScorecardRefLink';
 import { BackstageTheme } from '@backstage/theme';
+import {ScorecardServiceRefLink} from "../ScorecardServiceRefLink";
 
 const useStyles = makeStyles<BackstageTheme, EntityScorecardsCardRowProps>(
   theme => ({
@@ -38,6 +38,7 @@ const useStyles = makeStyles<BackstageTheme, EntityScorecardsCardRowProps>(
 );
 
 interface EntityScorecardsCardRowProps {
+  componentRef: string;
   score: ServiceScorecardScore;
   selected: boolean;
   onSelect: () => void;
@@ -46,7 +47,7 @@ interface EntityScorecardsCardRowProps {
 export const EntityScorecardsCardRow = (
   props: EntityScorecardsCardRowProps,
 ) => {
-  const { score, onSelect } = props;
+  const { componentRef, score, onSelect } = props;
   const classes = useStyles(props);
 
   return (
@@ -72,9 +73,9 @@ export const EntityScorecardsCardRow = (
               />
             </Box>
             <Box alignSelf="center">
-              <ScorecardRefLink scorecardId={score.scorecard.id}>
+              <ScorecardServiceRefLink scorecardId={score.scorecard.id} componentRef={componentRef}>
                 <b>{score.scorecard.name}</b>
-              </ScorecardRefLink>
+              </ScorecardServiceRefLink>
             </Box>
           </Box>
         </TableCell>

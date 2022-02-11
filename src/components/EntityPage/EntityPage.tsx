@@ -16,9 +16,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   Content,
-  EmptyState,
-  Progress,
-  WarningPanel,
 } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { EntityScorecardsCard } from './EntityScorecardsCard';
@@ -62,32 +59,17 @@ export const EntityPage = () => {
     return scores?.find(score => score.scorecard.id === selectedScorecardId);
   }, [scores, selectedScorecardId]);
 
-  if (entityLoading || scoresLoading) {
-    return <Progress />;
-  }
-
-  if (entity === undefined || entityError) {
+  if (selectedScore === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load entity.">
-        {entityError?.message}
-      </WarningPanel>
-    );
-  }
-
-  if (scoresError || scores === undefined) {
-    return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
-        {scoresError?.message}
-      </WarningPanel>
-    );
-  }
-
-  if (scores.length === 0) {
-    return (
-      <EmptyState
-        missing="info"
-        title="No scorecards to display"
-        description="You haven't added any scorecards yet."
+      <EntityScorecardsCard
+        entityLoading={entityLoading}
+        scoresLoading={scoresLoading}
+        entity={entity}
+        entityError={entityError}
+        scoresError={scoresError}
+        scores={scores}
+        onSelect={setSelectedScorecardId}
+        selectedScorecardId={selectedScorecardId}
       />
     );
   }
@@ -97,6 +79,11 @@ export const EntityPage = () => {
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <EntityScorecardsCard
+            entityLoading={entityLoading}
+            scoresLoading={scoresLoading}
+            entity={entity}
+            entityError={entityError}
+            scoresError={scoresError}
             scores={scores}
             onSelect={setSelectedScorecardId}
             selectedScorecardId={selectedScorecardId}
