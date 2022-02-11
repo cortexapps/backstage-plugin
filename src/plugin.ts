@@ -95,6 +95,18 @@ export const extendableCortexPlugin = <
     }),
   );
 
+  const CortexScorecardWidget = plugin.provide(
+    createComponentExtension({
+      name: 'CortexScorecardWidget',
+      component: {
+        lazy: () =>
+          import('./components/CortexScorecardWidget').then(
+            m => m.CortexScorecardWidget,
+          ),
+      },
+    }),
+  );
+
   const SystemCortexContent = plugin.provide(
     createComponentExtension({
       name: 'SystemCortexContent',
@@ -105,7 +117,13 @@ export const extendableCortexPlugin = <
     }),
   );
 
-  return { plugin, CortexPage, EntityCortexContent, SystemCortexContent };
+  return {
+    plugin,
+    CortexPage,
+    EntityCortexContent,
+    CortexScorecardWidget,
+    SystemCortexContent,
+  };
 };
 
 export const CortexPage = cortexPlugin.provide(

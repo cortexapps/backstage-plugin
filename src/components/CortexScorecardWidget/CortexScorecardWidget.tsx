@@ -18,6 +18,7 @@ import { useCortexApi } from '../../utils/hooks';
 import { stringifyAnyEntityRef } from '../../utils/types';
 import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
 import { EntityScorecardsCard } from '../EntityPage/EntityScorecardsCard';
+import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 
 export const CortexScorecardWidget = () => {
   const {
@@ -39,13 +40,39 @@ export const CortexScorecardWidget = () => {
     [entity],
   );
 
+  if (entityLoading || scoresLoading) {
+    return <Progress />;
+  }
+
+  if (entity === undefined || entityError) {
+    return (
+      <WarningPanel severity="error" title="Could not load entity.">
+        {entityError?.message}
+      </WarningPanel>
+    );
+  }
+
+  if (scoresError || scores === undefined) {
+    return (
+      <WarningPanel severity="error" title="Could not load scorecards.">
+        {scoresError?.message}
+      </WarningPanel>
+    );
+  }
+
+  if (scores.length === 0) {
+    return (
+      <EmptyState
+        missing="info"
+        title="No scorecards to display"
+        description="You haven't added any scorecards yet."
+      />
+    );
+  }
+
   return (
     <EntityScorecardsCard
-      entityLoading={entityLoading}
-      scoresLoading={scoresLoading}
-      entity={entity}
-      entityError={entityError}
-      scoresError={scoresError}
+      componentRef={stringifyAnyEntityRef(entity)}
       scores={scores}
       onSelect={() => {}}
     />

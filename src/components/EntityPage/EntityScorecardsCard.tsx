@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 import React from 'react';
-import {
-  EmptyState,
-  InfoCard,
-  Progress,
-  WarningPanel,
-} from '@backstage/core-components';
+import { InfoCard } from '@backstage/core-components';
 import { makeStyles, Table, TableBody } from '@material-ui/core';
 import { EntityScorecardsCardRow } from './EntityScorecardsCardRow';
 import { BackstageTheme } from '@backstage/theme';
 import { ServiceScorecardScore } from '../../api/types';
-import { Entity } from '@backstage/catalog-model';
-import { stringifyAnyEntityRef } from '../../utils/types';
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   table: {
@@ -39,57 +32,19 @@ const useStyles = makeStyles<BackstageTheme>(theme => ({
 }));
 
 interface EntityScorecardsCardProps {
-  entityLoading: boolean;
-  scoresLoading: boolean;
-  entity: Entity | undefined;
-  entityError: Error | undefined;
-  scoresError: Error | undefined;
-  scores: ServiceScorecardScore[] | undefined;
+  componentRef: string;
+  scores: ServiceScorecardScore[];
   selectedScorecardId?: number;
   onSelect: (scorecardId: number) => void;
 }
 
 export const EntityScorecardsCard = ({
-  entityLoading,
-  scoresLoading,
-  entity,
-  entityError,
-  scoresError,
+  componentRef,
   scores,
   selectedScorecardId,
   onSelect,
 }: EntityScorecardsCardProps) => {
   const classes = useStyles();
-
-  if (entityLoading || scoresLoading) {
-    return <Progress />;
-  }
-
-  if (entity === undefined || entityError) {
-    return (
-      <WarningPanel severity="error" title="Could not load entity.">
-        {entityError?.message}
-      </WarningPanel>
-    );
-  }
-
-  if (scoresError || scores === undefined) {
-    return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
-        {scoresError?.message}
-      </WarningPanel>
-    );
-  }
-
-  if (scores.length === 0) {
-    return (
-      <EmptyState
-        missing="info"
-        title="No scorecards to display"
-        description="You haven't added any scorecards yet."
-      />
-    );
-  }
 
   return (
     <InfoCard title="Scorecards">
@@ -97,7 +52,7 @@ export const EntityScorecardsCard = ({
         <TableBody>
           {scores.map(score => (
             <EntityScorecardsCardRow
-              componentRef={stringifyAnyEntityRef(entity)}
+              componentRef={componentRef}
               key={score.scorecard.id}
               score={score}
               onSelect={() => onSelect(score.scorecard.id)}
