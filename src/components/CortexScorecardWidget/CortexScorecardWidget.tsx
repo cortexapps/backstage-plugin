@@ -16,16 +16,12 @@
 import React from 'react';
 import { useCortexApi } from '../../utils/hooks';
 import { stringifyAnyEntityRef } from '../../utils/types';
-import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
+import { useEntity } from '@backstage/plugin-catalog-react';
 import { EntityScorecardsCard } from '../EntityPage/EntityScorecardsCard';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 
 export const CortexScorecardWidget = () => {
-  const {
-    entity,
-    loading: entityLoading,
-    error: entityError,
-  } = useEntityFromUrl();
+  const { entity, loading: entityLoading, error: entityError } = useEntity();
 
   const {
     value: scores,
