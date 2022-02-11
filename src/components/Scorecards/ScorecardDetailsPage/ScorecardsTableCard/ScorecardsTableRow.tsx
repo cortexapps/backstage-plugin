@@ -29,7 +29,7 @@ import { ScorecardResultDetails } from './ScorecardResultDetails';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Gauge } from '../../../Gauge';
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
-import {ScorecardServiceRefLink} from "../../../ScorecardServiceRefLink";
+import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 
 const useStyles = makeStyles({
   root: {
@@ -84,7 +84,10 @@ export const ScorecardsTableRow = ({
               />
             </Box>
             <Box alignSelf="center" flex="1">
-              <ScorecardServiceRefLink scorecardId={scorecardId} componentRef={score.componentRef}>
+              <ScorecardServiceRefLink
+                scorecardId={scorecardId}
+                componentRef={score.componentRef}
+              >
                 <b>
                   {
                     parseEntityRef(score.componentRef, {

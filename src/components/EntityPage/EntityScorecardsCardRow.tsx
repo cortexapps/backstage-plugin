@@ -19,7 +19,7 @@ import { makeStyles, TableCell, TableRow } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { Gauge } from '../Gauge';
 import { BackstageTheme } from '@backstage/theme';
-import {ScorecardServiceRefLink} from "../ScorecardServiceRefLink";
+import { ScorecardServiceRefLink } from '../ScorecardServiceRefLink';
 
 const useStyles = makeStyles<BackstageTheme, EntityScorecardsCardRowProps>(
   theme => ({
@@ -73,7 +73,10 @@ export const EntityScorecardsCardRow = (
               />
             </Box>
             <Box alignSelf="center">
-              <ScorecardServiceRefLink scorecardId={score.scorecard.id} componentRef={componentRef}>
+              <ScorecardServiceRefLink
+                scorecardId={score.scorecard.id}
+                componentRef={componentRef}
+              >
                 <b>{score.scorecard.name}</b>
               </ScorecardServiceRefLink>
             </Box>

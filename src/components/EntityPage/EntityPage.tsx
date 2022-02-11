@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  Content,
-} from '@backstage/core-components';
+import { Content } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { EntityScorecardsCard } from './EntityScorecardsCard';
 import { useEntityFromUrl } from '@backstage/plugin-catalog-react';

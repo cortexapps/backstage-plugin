@@ -13,41 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from "react";
-import {useCortexApi} from "../../utils/hooks";
-import {stringifyAnyEntityRef} from "../../utils/types";
-import {useEntityFromUrl} from "@backstage/plugin-catalog-react";
-import {EntityScorecardsCard} from "../EntityPage/EntityScorecardsCard";
+import React from 'react';
+import { useCortexApi } from '../../utils/hooks';
+import { stringifyAnyEntityRef } from '../../utils/types';
+import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
+import { EntityScorecardsCard } from '../EntityPage/EntityScorecardsCard';
 
 export const CortexScorecardWidget = () => {
-    const {
-        entity,
-        loading: entityLoading,
-        error: entityError,
-    } = useEntityFromUrl();
+  const {
+    entity,
+    loading: entityLoading,
+    error: entityError,
+  } = useEntityFromUrl();
 
-    const {
-        value: scores,
-        loading: scoresLoading,
-        error: scoresError,
-    } = useCortexApi(
-      async cortexApi => {
-          return entity !== undefined
-            ? await cortexApi.getServiceScores(stringifyAnyEntityRef(entity))
-            : undefined;
-      },
-      [entity],
-    );
+  const {
+    value: scores,
+    loading: scoresLoading,
+    error: scoresError,
+  } = useCortexApi(
+    async cortexApi => {
+      return entity !== undefined
+        ? await cortexApi.getServiceScores(stringifyAnyEntityRef(entity))
+        : undefined;
+    },
+    [entity],
+  );
 
-    return (
-      <EntityScorecardsCard
-        entityLoading={entityLoading}
-        scoresLoading={scoresLoading}
-        entity={entity}
-        entityError={entityError}
-        scoresError={scoresError}
-        scores={scores}
-        onSelect={() => {}}
-      />
-    );
-}
+  return (
+    <EntityScorecardsCard
+      entityLoading={entityLoading}
+      scoresLoading={scoresLoading}
+      entity={entity}
+      entityError={entityError}
+      scoresError={scoresError}
+      scores={scores}
+      onSelect={() => {}}
+    />
+  );
+};

@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 import React from 'react';
-import {EmptyState, InfoCard, Progress, WarningPanel} from '@backstage/core-components';
+import {
+  EmptyState,
+  InfoCard,
+  Progress,
+  WarningPanel,
+} from '@backstage/core-components';
 import { makeStyles, Table, TableBody } from '@material-ui/core';
 import { EntityScorecardsCardRow } from './EntityScorecardsCardRow';
 import { BackstageTheme } from '@backstage/theme';
 import { ServiceScorecardScore } from '../../api/types';
-import {Entity} from "@backstage/catalog-model";
-import {stringifyAnyEntityRef} from "../../utils/types";
+import { Entity } from '@backstage/catalog-model';
+import { stringifyAnyEntityRef } from '../../utils/types';
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   table: {

@@ -15,10 +15,10 @@
  */
 import React from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import {scorecardServiceDetailsRouteRef} from '../../routes';
+import { scorecardServiceDetailsRouteRef } from '../../routes';
 import { Link } from '@backstage/core-components';
-import {parseEntityName} from "@backstage/catalog-model";
-import {defaultComponentRefContext} from "../../utils/ComponentUtils";
+import { parseEntityName } from '@backstage/catalog-model';
+import { defaultComponentRefContext } from '../../utils/ComponentUtils';
 
 interface ScorecardRefLinkProps {
   scorecardId: number;
@@ -31,12 +31,20 @@ export const ScorecardServiceRefLink = ({
   scorecardId,
   children,
 }: ScorecardRefLinkProps) => {
-  const scorecardServiceDetailsRef = useRouteRef(scorecardServiceDetailsRouteRef);
-
-  const entityName = parseEntityName(
-    componentRef,
-    defaultComponentRefContext,
+  const scorecardServiceDetailsRef = useRouteRef(
+    scorecardServiceDetailsRouteRef,
   );
 
-  return <Link to={scorecardServiceDetailsRef({scorecardId: `${scorecardId}`, ...entityName })}>{children}</Link>;
+  const entityName = parseEntityName(componentRef, defaultComponentRefContext);
+
+  return (
+    <Link
+      to={scorecardServiceDetailsRef({
+        scorecardId: `${scorecardId}`,
+        ...entityName,
+      })}
+    >
+      {children}
+    </Link>
+  );
 };
