@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { GroupByOption, ScorecardServiceScore } from '../../../../api/types';
+import {
+  GroupByOption,
+  HeaderType,
+  ScorecardLadder,
+  ScorecardServiceScore,
+} from '../../../../api/types';
 import {
   getScorecardServiceScoresByGroupByOption,
   getSortedRuleNames,
@@ -22,42 +27,67 @@ import {
 import { HeatmapTableByGroup } from './HeatmapTableByGroup';
 import { HeatmapTableByLevels } from './HeatmapTableByLevels';
 import { HeatmapTableByService } from './HeatmapTableByService';
+import { LevelsDrivenTable } from './LevelsDrivenTable';
+import { WarningPanel } from '@backstage/core-components';
+import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
 
 interface SingleScorecardHeatmapTableProps {
-  scorecardId: number;
   groupBy: GroupByOption;
+  headerType: HeaderType;
   scores: ScorecardServiceScore[];
+  ladder: ScorecardLadder | undefined;
 }
 
 export const SingleScorecardHeatmapTable = ({
-  scorecardId,
   groupBy,
+  headerType,
   scores,
+  ladder,
 }: SingleScorecardHeatmapTableProps) => {
-  const rules = useMemo(
-    () => (scores[0] && getSortedRuleNames(scores[0])) ?? [],
-    [scores],
+  const levelsDriven = headerType === HeaderType.LEVELS;
+  const headers = useMemo(
+    () =>
+      (ladder !== undefined && levelsDriven
+        ? getSortedLadderLevelNames(ladder)
+        : scores[0] && getSortedRuleNames(scores[0])) ?? [],
+    [levelsDriven, ladder, scores],
   );
+
   const data = useMemo(() => {
     return getScorecardServiceScoresByGroupByOption(scores, groupBy);
   }, [scores, groupBy]);
 
+  if (headerType === HeaderType.LEVELS) {
+    if (ladder === undefined) {
+      return (
+        <WarningPanel
+          severity="error"
+          title="Scorecard has no levels defined."
+        />
+      );
+    } else {
+      return (
+        <LevelsDrivenTable levels={headers} groupBy={groupBy} data={data} />
+      );
+    }
+  }
+
   switch (groupBy) {
     case GroupByOption.SCORECARD:
-      return <HeatmapTableByService rules={rules} data={data} />;
+      return <HeatmapTableByService rules={headers} data={data} />;
     case GroupByOption.SERVICE_GROUP:
       return (
-        <HeatmapTableByGroup header="Service Group" rules={rules} data={data} />
-      );
-    case GroupByOption.TEAM:
-      return <HeatmapTableByGroup header="Team" rules={rules} data={data} />;
-    case GroupByOption.LEVEL:
-      return (
-        <HeatmapTableByLevels
-          scorecardId={scorecardId}
-          rules={rules}
+        <HeatmapTableByGroup
+          header="Service Group"
+          rules={headers}
           data={data}
         />
+      );
+    case GroupByOption.TEAM:
+      return <HeatmapTableByGroup header="Team" rules={headers} data={data} />;
+    case GroupByOption.LEVEL:
+      return (
+        <HeatmapTableByLevels ladder={ladder} rules={headers} data={data} />
       );
     default:
       return <>Hi</>;

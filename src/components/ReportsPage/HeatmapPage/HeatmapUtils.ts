@@ -23,6 +23,7 @@ import {
   ScorecardLevel,
 } from '../../../api/types';
 import { groupBy as _groupBy, flatten as _flatten } from 'lodash';
+import { filterNotUndefined } from '../../../utils/collections';
 
 export type StringIndexable<T> = { [index: string]: T };
 
@@ -53,6 +54,16 @@ export const getSortedRulesByLevels = (
   const remainingRules = rules.filter(rule => !sortedLevelRules.includes(rule));
   return [...sortedLevelRules, ...remainingRules];
 };
+
+export const getSortedRulesByLevelsFromScores = (
+  sortedRulesByLevels: string[],
+  score: ScorecardServiceScore,
+): ScorecardServiceScoresRule[] =>
+  filterNotUndefined(
+    sortedRulesByLevels.map(ruleTitle =>
+      score.rules.find(r => ruleName(r.rule) === ruleTitle),
+    ),
+  );
 
 type GroupByKeys = 'teams' | 'tags' | 'ladderLevels';
 type GroupByValues = {
@@ -114,6 +125,29 @@ export const getAverageRuleScores = (
 ): number[] => {
   return scores
     .map(score => getSortedRulesFromScores(score).map(rule => rule.score))
+    .reduce((r, a) => a.map((b, i) => (r[i] || 0) + (b ? 1 : 0)), [])
+    .map(score => score / serviceCount);
+};
+
+export const getServicesInLevelsFromScores = (
+  ladderLevels: string[],
+  scores: ScorecardServiceScore[],
+): ScorecardServiceScore[][] => {
+  const groupedByLevels = groupReportDataBy(scores, 'ladderLevels');
+  return ladderLevels.map(level => groupedByLevels[level] ?? []);
+};
+
+export const getAverageRuleScoresByLevels = (
+  sortedRulesByLevels: string[],
+  scores: ScorecardServiceScore[],
+  serviceCount: number,
+): number[] => {
+  return scores
+    .map(score =>
+      getSortedRulesByLevelsFromScores(sortedRulesByLevels, score).map(
+        rule => rule.score,
+      ),
+    )
     .reduce((r, a) => a.map((b, i) => (r[i] || 0) + (b ? 1 : 0)), [])
     .map(score => score / serviceCount);
 };

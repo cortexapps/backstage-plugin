@@ -16,32 +16,39 @@
 import React from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../../utils/hooks';
-import { GroupByOption } from '../../../api/types';
+import { GroupByOption, HeaderType } from '../../../api/types';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
 
 interface SingleScorecardHeatmapProps {
   scorecardId: number;
   groupBy: GroupByOption;
+  headerType: HeaderType;
 }
 
 export const SingleScorecardHeatmap = ({
   scorecardId,
   groupBy,
+  headerType,
 }: SingleScorecardHeatmapProps) => {
   const {
     value: scores,
-    loading,
-    error,
+    loading: loadingScores,
+    error: scoresError,
   } = useCortexApi(api => api.getScorecardScores(scorecardId), [scorecardId]);
 
-  if (loading) {
+  const { value: ladders, loading: loadingLadders } = useCortexApi(
+    api => api.getScorecardLadders(scorecardId),
+    [scorecardId],
+  );
+
+  if (loadingScores || loadingLadders) {
     return <Progress />;
   }
 
-  if (error || scores === undefined) {
+  if (scoresError || scores === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecard.">
-        {error?.message}
+      <WarningPanel severity="error" title="Could not load scorecard scores.">
+        {scoresError?.message}
       </WarningPanel>
     );
   }
@@ -57,9 +64,10 @@ export const SingleScorecardHeatmap = ({
 
   return (
     <SingleScorecardHeatmapTable
-      scorecardId={scorecardId}
       groupBy={groupBy}
+      headerType={headerType}
       scores={scores}
+      ladder={ladders?.[0]}
     />
   );
 };

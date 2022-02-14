@@ -16,8 +16,7 @@
 import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow/TableRow';
-import { TableCell } from '@material-ui/core';
-import { ScorecardServiceScore } from '../../../../api/types';
+import { ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
 import { HeatmapCell } from '../HeatmapCell';
 import {
@@ -27,53 +26,34 @@ import {
 } from '../HeatmapUtils';
 import { mean as _average } from 'lodash';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
-import { useCortexApi } from '../../../../utils/hooks';
-import { Progress, WarningPanel } from '@backstage/core-components';
+import { WarningPanel } from '@backstage/core-components';
 
 interface HeatmapTableByLevelsProps {
-  scorecardId: number;
+  ladder: ScorecardLadder | undefined;
   rules: string[];
   data: StringIndexable<ScorecardServiceScore[]>;
 }
 
 export const HeatmapTableByLevels = ({
-  scorecardId,
+  ladder,
   rules,
   data,
 }: HeatmapTableByLevelsProps) => {
-  const {
-    value: ladders,
-    loading,
-    error,
-  } = useCortexApi(api => api.getScorecardLadders(scorecardId), [scorecardId]);
-
-  if (loading) {
-    return <Progress />;
-  }
-
-  if (error || ladders === undefined) {
-    return (
-      <WarningPanel severity="error" title="Could not load scorecard.">
-        {error?.message}
-      </WarningPanel>
-    );
-  }
-
-  if (ladders.length === 0 || ladders?.[0] === undefined) {
-    return <WarningPanel severity="error" title="Scorecard has no ladders." />;
-  }
-
-  // currently we only support 1 ladder per Scorecard
-  const ladder = ladders?.[0];
   const rulesByLevels = getSortedRulesByLevels(rules, ladder?.levels);
 
   const headers = ['Level', 'Service Count', 'Average Score', ...rulesByLevels];
+
+  if (ladder === undefined) {
+    return (
+      <WarningPanel severity="error" title="Scorecard has no levels defined." />
+    );
+  }
 
   return (
     <Table>
       <HeatmapTableHeader headers={headers} />
       <TableBody>
-        {Object.entries(data).map(([key, values]) => {
+        {Object.entries(data).map(([identifier, values]) => {
           const firstScore = values[0];
           const serviceCount = values.length;
           const averageScorePercentage = _average(
@@ -83,12 +63,12 @@ export const HeatmapTableByLevels = ({
 
           return (
             <TableRow key={firstScore.componentRef}>
-              <TableCell>{key}</TableCell>
-              <TableCell>{serviceCount}</TableCell>
+              <HeatmapCell text={identifier} />
+              <HeatmapCell text={serviceCount.toString()} />
               <HeatmapCell score={averageScorePercentage} />
               {averageRuleScores.map((score, idx) => (
                 <HeatmapCell
-                  key={`HeatmapCell-${key}-${idx}`}
+                  key={`HeatmapCell-${identifier}-${idx}`}
                   score={score > 0 ? 1 : 0}
                   text={score > 0 ? '1' : '0'}
                 />

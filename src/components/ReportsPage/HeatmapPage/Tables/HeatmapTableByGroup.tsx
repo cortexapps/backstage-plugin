@@ -16,7 +16,6 @@
 import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow/TableRow';
-import { TableCell } from '@material-ui/core';
 import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
 import { HeatmapCell } from '../HeatmapCell';
@@ -41,7 +40,7 @@ export const HeatmapTableByGroup = ({
     <Table>
       <HeatmapTableHeader headers={headers} />
       <TableBody>
-        {Object.entries(data).map(([key, values]) => {
+        {Object.entries(data).map(([identifier, values]) => {
           const firstScore = values[0];
           const serviceCount = values.length;
           const averageScore = _average(
@@ -51,11 +50,14 @@ export const HeatmapTableByGroup = ({
 
           return (
             <TableRow key={firstScore.componentRef}>
-              <TableCell>{key}</TableCell>
-              <TableCell>{serviceCount}</TableCell>
+              <HeatmapCell text={identifier} />
+              <HeatmapCell text={serviceCount.toString()} />
               <HeatmapCell score={averageScore} />
               {averageRuleScores.map((score, idx) => (
-                <HeatmapCell key={`HeatmapCell-${key}-${idx}`} score={score} />
+                <HeatmapCell
+                  key={`HeatmapCell-${identifier}-${idx}`}
+                  score={score}
+                />
               ))}
             </TableRow>
           );

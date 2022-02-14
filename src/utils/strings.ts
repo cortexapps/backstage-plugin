@@ -26,3 +26,18 @@ const english_ordinal_rules = new Intl.PluralRules('en', { type: 'ordinal' });
 export function ordinal(value: number) {
   return suffixes[english_ordinal_rules.select(value)];
 }
+
+// Only handles cases where the plural form has a suffix appended. Does not handle cases like baby => babies, person => people
+export const maybePluralizeOnlyNoun = (
+  count = 0,
+  singularNoun = '',
+  suffix = 's',
+) => `${singularNoun}${count !== 1 ? suffix : ''}`;
+
+export function maybePluralize(
+  count: number = 0,
+  singularNoun: string = '',
+  suffix: string = 's',
+): string {
+  return `${count} ${maybePluralizeOnlyNoun(count, singularNoun, suffix)}`;
+}

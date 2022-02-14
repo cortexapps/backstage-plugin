@@ -177,6 +177,11 @@ export enum GroupByOption {
   LEVEL = 'Level',
 }
 
+export enum HeaderType {
+  RULES = 'Rules',
+  LEVELS = 'Levels',
+}
+
 export interface ScorecardScore {
   scorecardId: number;
   scorecardName?: string;
