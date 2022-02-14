@@ -23,7 +23,7 @@ import {RuleName, ScorecardServiceScoresRule} from "../../../../api/types";
 export type ScorecardServiceScoreRuleName = Omit<
     ScorecardServiceScoresRule,
     'rule'
-    > & { rule: RuleName & { weight: number; } };
+    > & { rule: RuleName & { weight: number; failureMessage?: string } };
 
 interface ScorecardResultDetailsProps {
   rules: ScorecardServiceScoreRuleName[];

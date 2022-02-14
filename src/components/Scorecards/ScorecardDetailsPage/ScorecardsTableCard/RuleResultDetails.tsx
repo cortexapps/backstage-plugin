@@ -78,6 +78,13 @@ export const RuleResultDetails = ({
             </Typography>
           </Grid>
         )}
+        {rule.rule.failureMessage && (
+          <Grid item xs={9}>
+            <Typography color="error" style={{ wordWrap: 'break-word' }}>
+              {rule.rule.failureMessage}
+            </Typography>
+          </Grid>
+        )}
       </Grid>
     </ListItem>
   );
