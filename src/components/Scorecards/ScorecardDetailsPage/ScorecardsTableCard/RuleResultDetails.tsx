@@ -78,7 +78,7 @@ export const RuleResultDetails = ({
             </Typography>
           </Grid>
         )}
-        {rule.rule.failureMessage && (
+        {rule.score === 0 && rule.rule.failureMessage && (
           <Grid item xs={9}>
             <Typography color="error" style={{ wordWrap: 'break-word' }}>
               {rule.rule.failureMessage}
