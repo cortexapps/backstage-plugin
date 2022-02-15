@@ -76,7 +76,7 @@ export const SingleScorecardHeatmapTable = ({
   }
 
   switch (groupBy) {
-    case GroupByOption.SCORECARD:
+    case GroupByOption.SERVICE:
       return <HeatmapTableByService rules={headers} data={data} />;
     case GroupByOption.SERVICE_GROUP:
       return (

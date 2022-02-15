@@ -61,7 +61,7 @@ export const AllScorecardsHeatmapTable = ({
           return (
             <TableRow key={groupScore.identifier}>
               <TableCell>
-                {groupBy === GroupByOption.SCORECARD ? (
+                {groupBy === GroupByOption.SERVICE ? (
                   <>{groupScore.identifier!!}</>
                 ) : (
                   <EntityRefLink

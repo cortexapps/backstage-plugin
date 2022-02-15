@@ -45,7 +45,7 @@ export const LevelsDrivenTable = ({
   groupBy,
   data,
 }: LevelsDrivenTableProps) => {
-  const notGroupedByServices = groupBy !== GroupByOption.SCORECARD;
+  const notGroupedByServices = groupBy !== GroupByOption.SERVICE;
   const headers = [
     groupBy,
     ...(notGroupedByServices ? ['Service Count'] : []),

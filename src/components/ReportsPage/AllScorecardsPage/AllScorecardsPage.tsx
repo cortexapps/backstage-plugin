@@ -29,7 +29,7 @@ export const AllScorecardsPage = () => {
   const queryParams = new URLSearchParams(useLocation().search);
 
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
-    (queryParams.get('groupBy') as GroupByOption) ?? GroupByOption.SCORECARD,
+    (queryParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
   );
 
   const getShareableLink = useCallback(() => {

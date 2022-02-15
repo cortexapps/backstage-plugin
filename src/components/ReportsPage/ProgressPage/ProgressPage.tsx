@@ -42,7 +42,7 @@ export const ProgressPage = () => {
   >();
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
-    GroupByOption.SCORECARD,
+    GroupByOption.SERVICE,
   );
   const [selectedRule, setSelectedRule] = useDropdown<string>(undefined);
   const [filterOptions, setFilterOptions] = useState<string[] | undefined>();

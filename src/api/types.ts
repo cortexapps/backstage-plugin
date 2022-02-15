@@ -171,7 +171,7 @@ export interface ScoresByIdentifier {
 }
 
 export enum GroupByOption {
-  SCORECARD = 'Scorecard',
+  SERVICE = 'Service',
   TEAM = 'Team',
   SERVICE_GROUP = 'Service Group',
   LEVEL = 'Level',

@@ -41,7 +41,7 @@ export const HeatmapPage = () => {
   >(initialScorecardId);
 
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
-    (queryParams.get('groupBy') as GroupByOption) ?? GroupByOption.SCORECARD,
+    (queryParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
   );
   const [headerType, setHeaderType] = useDropdown<HeaderType>(
     (queryParams.get('headerType') as HeaderType) ?? HeaderType.RULES,
