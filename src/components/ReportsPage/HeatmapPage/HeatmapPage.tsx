@@ -25,6 +25,7 @@ import { CopyButton } from '../../Common/CopyButton';
 import { useLocation } from 'react-router';
 import { buildUrl } from '../../../utils/URLUtils';
 import { HeaderTypeDropdown } from '../Common/HeaderTypeDropdown';
+import { isUndefined } from 'lodash';
 
 export const HeatmapPage = () => {
   const location = useLocation();
@@ -79,7 +80,7 @@ export const HeatmapPage = () => {
           </Grid>
         </Grid>
         <Grid item lg={12}>
-          {selectedScorecardId === undefined ? (
+          {isUndefined(selectedScorecardId) ? (
             <EmptyState title="Select a scorecard" missing="data" />
           ) : (
             <SingleScorecardHeatmap

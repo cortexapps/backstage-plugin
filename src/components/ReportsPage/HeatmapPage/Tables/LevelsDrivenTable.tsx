@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 import React from 'react';
-import Table from '@material-ui/core/Table';
-import TableRow from '@material-ui/core/TableRow/TableRow';
-import { TableCell, Typography } from '@material-ui/core';
-import { GroupByOption, ScorecardServiceScore } from '../../../../api/types';
-import TableBody from '@material-ui/core/TableBody/TableBody';
+import {
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  Typography,
+} from '@material-ui/core';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityName } from '@backstage/catalog-model';
+
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { HeatmapTableHeader } from './HeatmapTableHeader';
+import { LevelsInfoCell } from '../LevelsInfoCell';
 import {
   getServicesInLevelsFromScores,
   StringIndexable,
 } from '../HeatmapUtils';
-import { HeatmapTableHeader } from './HeatmapTableHeader';
-import { LevelsInfoCell } from '../LevelsInfoCell';
+
+import { GroupByOption, ScorecardServiceScore } from '../../../../api/types';
 
 interface LevelsDrivenTableProps {
   levels: string[];

@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
+import { isUndefined } from 'lodash';
+import { WarningPanel } from '@backstage/core-components';
+
+import { HeatmapTableByGroup } from './HeatmapTableByGroup';
+import { HeatmapTableByLevels } from './HeatmapTableByLevels';
+import { HeatmapTableByService } from './HeatmapTableByService';
+import { LevelsDrivenTable } from './LevelsDrivenTable';
+import {
+  getScorecardServiceScoresByGroupByOption,
+  getSortedRuleNames,
+} from '../HeatmapUtils';
+import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
+
 import {
   GroupByOption,
   HeaderType,
   ScorecardLadder,
   ScorecardServiceScore,
 } from '../../../../api/types';
-import {
-  getScorecardServiceScoresByGroupByOption,
-  getSortedRuleNames,
-} from '../HeatmapUtils';
-import { HeatmapTableByGroup } from './HeatmapTableByGroup';
-import { HeatmapTableByLevels } from './HeatmapTableByLevels';
-import { HeatmapTableByService } from './HeatmapTableByService';
-import { LevelsDrivenTable } from './LevelsDrivenTable';
-import { WarningPanel } from '@backstage/core-components';
-import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
 
 interface SingleScorecardHeatmapTableProps {
   groupBy: GroupByOption;
@@ -47,7 +50,7 @@ export const SingleScorecardHeatmapTable = ({
   const levelsDriven = headerType === HeaderType.LEVELS;
   const headers = useMemo(
     () =>
-      (ladder !== undefined && levelsDriven
+      (!isUndefined(ladder) && levelsDriven
         ? getSortedLadderLevelNames(ladder)
         : scores[0] && getSortedRuleNames(scores[0])) ?? [],
     [levelsDriven, ladder, scores],
@@ -58,7 +61,7 @@ export const SingleScorecardHeatmapTable = ({
   }, [scores, groupBy]);
 
   if (headerType === HeaderType.LEVELS) {
-    if (ladder === undefined) {
+    if (isUndefined(ladder)) {
       return (
         <WarningPanel
           severity="error"

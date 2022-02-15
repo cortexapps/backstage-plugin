@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import React from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -20,13 +21,14 @@ import {
   TableCell,
   Typography,
 } from '@material-ui/core';
-import React from 'react';
-import { ScorecardServiceScore } from '../../../api/types';
-import { maybePluralize } from '../../../utils/strings';
 import { ExpandMore } from '@material-ui/icons';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityName } from '@backstage/catalog-model';
+
+import { maybePluralize } from '../../../utils/strings';
 import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
+
+import { ScorecardServiceScore } from '../../../api/types';
 
 interface LevelsInfoCellProps {
   identifier: string;
@@ -45,21 +47,15 @@ export const LevelsInfoCell = ({ identifier, scores }: LevelsInfoCellProps) => {
             {maybePluralize(scores.length, 'service')}
           </Typography>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails style={{ display: 'flex', flexDirection: 'column' }}>
           {scores?.map(score => (
-            <Typography
+            <EntityRefLink
               key={`LevelService-${identifier}-${score.serviceId}`}
-              variant="h6"
-              style={{ display: 'inline-block' }}
-            >
-              <EntityRefLink
-                entityRef={parseEntityName(
-                  score.componentRef,
-                  defaultComponentRefContext,
-                )}
-              />
-              {score.serviceId}
-            </Typography>
+              entityRef={parseEntityName(
+                score.componentRef,
+                defaultComponentRefContext,
+              )}
+            />
           ))}
         </AccordionDetails>
       </Accordion>

@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 import React from 'react';
-import Table from '@material-ui/core/Table';
-import TableRow from '@material-ui/core/TableRow/TableRow';
-import { ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
-import TableBody from '@material-ui/core/TableBody/TableBody';
+import { isUndefined, mean as _average } from 'lodash';
+import { Table, TableBody, TableRow } from '@material-ui/core';
+import { WarningPanel } from '@backstage/core-components';
+
+import { HeatmapTableHeader } from './HeatmapTableHeader';
 import { HeatmapCell } from '../HeatmapCell';
 import {
   getAverageRuleScores,
   getSortedRulesByLevels,
   StringIndexable,
 } from '../HeatmapUtils';
-import { mean as _average } from 'lodash';
-import { HeatmapTableHeader } from './HeatmapTableHeader';
-import { WarningPanel } from '@backstage/core-components';
+
+import { ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
 
 interface HeatmapTableByLevelsProps {
   ladder: ScorecardLadder | undefined;
@@ -43,7 +43,7 @@ export const HeatmapTableByLevels = ({
 
   const headers = ['Level', 'Service Count', 'Average Score', ...rulesByLevels];
 
-  if (ladder === undefined) {
+  if (isUndefined(ladder)) {
     return (
       <WarningPanel severity="error" title="Scorecard has no levels defined." />
     );
