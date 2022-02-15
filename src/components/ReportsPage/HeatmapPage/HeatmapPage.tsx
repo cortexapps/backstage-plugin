@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 import React, { useCallback, useState } from 'react';
-import { Content, ContentHeader } from '@backstage/core-components';
+import { Content, ContentHeader, EmptyState } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
-import { AllScorecardsHeatmap } from './AllScorecardsHeatmap';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
 import { useDropdown } from '../../../utils/hooks';
-import { GroupByOption } from '../../../api/types';
+import { GroupByOption, HeaderType } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
 import { useLocation } from 'react-router';
 import { buildUrl } from '../../../utils/URLUtils';
+import { HeaderTypeDropdown } from '../Common/HeaderTypeDropdown';
+import { isUndefined } from 'lodash';
 
 export const HeatmapPage = () => {
   const location = useLocation();
@@ -40,16 +41,20 @@ export const HeatmapPage = () => {
   >(initialScorecardId);
 
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
-    (queryParams.get('groupBy') as GroupByOption) ?? GroupByOption.SCORECARD,
+    (queryParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
+  );
+  const [headerType, setHeaderType] = useDropdown<HeaderType>(
+    (queryParams.get('headerType') as HeaderType) ?? HeaderType.RULES,
   );
 
   const getShareableLink = useCallback(() => {
     const queryParamsObj = {
       scorecardId: selectedScorecardId,
       groupBy,
+      headerType,
     };
     return buildUrl(queryParamsObj, location.pathname);
-  }, [location, selectedScorecardId, groupBy]);
+  }, [location, selectedScorecardId, groupBy, headerType]);
 
   return (
     <Content>
@@ -63,16 +68,25 @@ export const HeatmapPage = () => {
             onSelect={setSelectedScorecardId}
           />
         </Grid>
-        <Grid item style={{ marginTop: '20px' }}>
-          <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupBy} />
+        <Grid container direction="row" style={{ marginTop: '20px' }}>
+          <Grid item>
+            <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupBy} />
+          </Grid>
+          <Grid item>
+            <HeaderTypeDropdown
+              headerType={headerType}
+              setHeaderType={setHeaderType}
+            />
+          </Grid>
         </Grid>
         <Grid item lg={12}>
-          {selectedScorecardId === undefined ? (
-            <AllScorecardsHeatmap groupBy={groupBy!!} />
+          {isUndefined(selectedScorecardId) ? (
+            <EmptyState title="Select a scorecard" missing="data" />
           ) : (
             <SingleScorecardHeatmap
               scorecardId={selectedScorecardId}
               groupBy={groupBy!!}
+              headerType={headerType!!}
             />
           )}
         </Grid>

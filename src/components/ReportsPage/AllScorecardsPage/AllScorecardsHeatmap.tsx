@@ -19,7 +19,7 @@ import { useCortexApi } from '../../../utils/hooks';
 import { makeStyles } from '@material-ui/core';
 import { BackstageTheme } from '@backstage/theme';
 import { GroupByOption } from '../../../api/types';
-import { AllScorecardsHeatmapTable } from './Tables/AllScorecardHeatmapTable';
+import { AllScorecardsHeatmapTable } from '../HeatmapPage/Tables/AllScorecardHeatmapTable';
 
 interface AllScorecardsHeatmapProps {
   groupBy: GroupByOption;

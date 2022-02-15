@@ -17,7 +17,7 @@ import React from 'react';
 import TableHead from '@material-ui/core/TableHead/TableHead';
 import TableRow from '@material-ui/core/TableRow/TableRow';
 import { TableCell } from '@material-ui/core';
-import { useHeatmapStyles } from '../AllScorecardsHeatmap';
+import { useHeatmapStyles } from '../../AllScorecardsPage/AllScorecardsHeatmap';
 
 interface HeatmapTableHeaderProps {
   headers: string[];

@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import TableRow from '@material-ui/core/TableRow/TableRow';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody/TableBody';
-import { TableCell } from '@material-ui/core';
-import { HeatmapCell } from '../HeatmapCell';
+import { mean as _average, round as _round } from 'lodash';
+import { Table, TableBody, TableRow, TableCell } from '@material-ui/core';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityName } from '@backstage/catalog-model';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
-import { GroupByOption, ScoresByIdentifier } from '../../../../api/types';
-import { HeatmapTableHeader } from '../Tables/HeatmapTableHeader';
+
+import { HeatmapTableHeader } from './HeatmapTableHeader';
+import { HeatmapCell } from '../HeatmapCell';
 import { getFormattedScorecardScores } from '../HeatmapUtils';
-import { mean as _average, round as _round } from 'lodash';
+import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { filterNotUndefined } from '../../../../utils/collections';
+
+import { GroupByOption, ScoresByIdentifier } from '../../../../api/types';
 
 interface AllScorecardsHeatmapTableProps {
   groupBy: GroupByOption;
@@ -62,7 +61,7 @@ export const AllScorecardsHeatmapTable = ({
           return (
             <TableRow key={groupScore.identifier}>
               <TableCell>
-                {groupBy === GroupByOption.SCORECARD ? (
+                {groupBy === GroupByOption.SERVICE ? (
                   <>{groupScore.identifier!!}</>
                 ) : (
                   <EntityRefLink

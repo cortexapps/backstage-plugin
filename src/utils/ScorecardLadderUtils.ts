@@ -17,3 +17,11 @@ import { ScorecardLadder } from '../api/types';
 
 export const getSortedLadderLevels = (ladder: ScorecardLadder) =>
   [...(ladder?.levels ?? [])].sort((a, b) => a.rank - b.rank);
+
+export const getSortedLadderLevelNames = (
+  ladder: ScorecardLadder,
+  includeNoLevel: boolean = false,
+) => {
+  const sortedLevels = getSortedLadderLevels(ladder).map(level => level.name);
+  return includeNoLevel ? ['No Level', ...sortedLevels] : sortedLevels;
+};

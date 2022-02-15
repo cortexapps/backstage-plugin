@@ -131,7 +131,7 @@ export const AggregatedScorecardProgress = ({
             borderRadius="borderRadius"
             borderColor="divider"
           >
-            {groupBy !== GroupByOption.SCORECARD && (
+            {groupBy !== GroupByOption.SERVICE && (
               <Typography>{point.point.serieId}</Typography>
             )}
             <Typography>

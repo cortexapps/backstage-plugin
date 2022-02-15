@@ -85,10 +85,12 @@ interface HeatmapCellProps {
 
 export const HeatmapCell = ({ score, text }: HeatmapCellProps) => {
   const classes = useStyles();
-  const clazz = getCellClassname(score);
+  const className = getCellClassname(score);
 
   return (
-    <TableCell className={`${classes.root} ${clazz ? classes[clazz] : ''}`}>
+    <TableCell
+      className={`${classes.root} ${className ? classes[className] : ''}`}
+    >
       <Typography variant="h6" style={{ display: 'inline-block' }}>
         {text ?? (score !== undefined ? `${percentify(score)}%` : '')}
       </Typography>
