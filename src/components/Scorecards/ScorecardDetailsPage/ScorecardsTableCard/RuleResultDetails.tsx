@@ -25,6 +25,7 @@ import {
 } from '@material-ui/core';
 import ErrorIcon from '@material-ui/icons/Error';
 import CheckIcon from '@material-ui/icons/Check';
+
 import { ScorecardServiceScoreRuleName } from './ScorecardResultDetails';
 
 const useStyles = makeStyles({
@@ -43,11 +44,12 @@ export const RuleResultDetails = ({
   hideWeight,
 }: RuleResultDetailsProps) => {
   const classes = useStyles();
-
+  const isFailing = rule.score === 0;
+  
   return (
     <ListItem alignItems="flex-start">
       <ListItemAvatar>
-        {rule.score > 0 ? (
+        {!isFailing ? (
           <CheckIcon color="primary" />
         ) : (
           <ErrorIcon color="error" />
@@ -78,7 +80,7 @@ export const RuleResultDetails = ({
             </Typography>
           </Grid>
         )}
-        {rule.score === 0 && rule.rule.failureMessage && (
+        {isFailing && rule.rule.failureMessage && (
           <Grid item xs={9}>
             <Typography color="error" style={{ wordWrap: 'break-word' }}>
               {rule.rule.failureMessage}
