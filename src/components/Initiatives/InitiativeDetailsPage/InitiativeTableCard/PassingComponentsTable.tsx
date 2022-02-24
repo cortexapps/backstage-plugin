@@ -65,8 +65,8 @@ export const PassingComponentsTable = ({
                     <Gauge
                       value={1}
                       textOverride={`${numRules} / ${numRules}`}
-                      strokeWidth={8}
-                      trailWidth={8}
+                      strokeWidth={10}
+                      trailWidth={10}
                     />
                   </Box>
                   <Box alignSelf="center">

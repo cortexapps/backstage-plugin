@@ -17,7 +17,7 @@ import React from 'react';
 import { Scorecard, ScorecardServiceScore } from '../../../../api/types';
 import { Chip, Grid } from '@material-ui/core';
 import moment from 'moment';
-import { InfoCard } from '@backstage/core-components';
+import { InfoCard, MarkdownContent } from '@backstage/core-components';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { MetadataItem } from '../../../MetadataItem';
 
@@ -40,24 +40,21 @@ export const ScorecardMetadataCard = ({
     ? moment.utc(scorecard.nextUpdated)
     : undefined;
 
+  const filteredByQuery = !!scorecard.filterQuery;
+  const showAllTag =
+    scorecard.tags.length === 0 && scorecard.excludedTags.length === 0;
+
   return (
     <InfoCard title="Details" className={classes.root}>
       <Grid container>
         {scorecard.description && (
           <MetadataItem gridSizes={{ xs: 12 }} label="Description">
-            {scorecard.description}
+            <MarkdownContent content={scorecard.description} />
           </MetadataItem>
         )}
         <MetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Owner">
           {scorecard.creator.name}
         </MetadataItem>
-        {scorecard.tags.length > 0 && (
-          <MetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Applies To">
-            {scorecard.tags.map(s => (
-              <Chip key={s.id} size="small" label={s.tag} />
-            ))}
-          </MetadataItem>
-        )}
         {lastUpdated && (
           <MetadataItem
             gridSizes={{ xs: 12, sm: 6, lg: 4 }}
@@ -74,6 +71,38 @@ export const ScorecardMetadataCard = ({
             {nextUpdated.fromNow()}
           </MetadataItem>
         )}
+        <MetadataItem
+          gridSizes={{ xs: 12 }}
+          label={`Filtered by ${filteredByQuery ? 'Query' : 'Service Groups'}`}
+        >
+          {filteredByQuery ? (
+            <>{scorecard.filterQuery}</>
+          ) : (
+            <>
+              {(scorecard.tags.length !== 0 || showAllTag) && (
+                <MetadataItem
+                  gridSizes={{ xs: 12, sm: 6, lg: 4 }}
+                  label="Applies to"
+                >
+                  {scorecard.tags.map(s => (
+                    <Chip key={s.id} size="small" label={s.tag} />
+                  ))}
+                  {showAllTag && <Chip size="small" label="All" />}
+                </MetadataItem>
+              )}
+              {scorecard.excludedTags.length !== 0 && (
+                <MetadataItem
+                  gridSizes={{ xs: 12, sm: 6, lg: 4 }}
+                  label="Does not apply to"
+                >
+                  {scorecard.excludedTags.map(s => (
+                    <Chip key={s.id} size="small" label={s.tag} />
+                  ))}
+                </MetadataItem>
+              )}
+            </>
+          )}
+        </MetadataItem>
       </Grid>
     </InfoCard>
   );

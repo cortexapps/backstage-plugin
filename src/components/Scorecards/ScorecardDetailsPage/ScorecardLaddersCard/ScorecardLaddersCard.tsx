@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   ScorecardLevel,
   ScorecardLadder,
   ruleName,
 } from '../../../../api/types';
-import { Grid, Typography } from '@material-ui/core';
-import { InfoCard } from '@backstage/core-components';
-import LoyaltyIcon from '@material-ui/icons/Loyalty';
+import { Grid, IconButton, Typography, Collapse } from '@material-ui/core';
+import { InfoCard, MarkdownContent } from '@backstage/core-components';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { getSortedLadderLevels } from '../../../../utils/ScorecardLadderUtils';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { MetadataItem } from '../../../MetadataItem';
+import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
 
 interface ScorecardLaddersCardProps {
   ladder: ScorecardLadder;
@@ -32,27 +35,36 @@ interface ScorecardLaddersCardProps {
 const ScorecardLevelsRow = ({ level }: { level: ScorecardLevel }) => {
   const classes = useDetailCardStyles();
 
+  const [open, setOpen] = useState(false);
+
   return (
     <React.Fragment>
-      <Grid item lg={10}>
+      <Grid item lg={1}>
+        <IconButton size="small" onClick={() => setOpen(!open)}>
+          {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+        </IconButton>
+      </Grid>
+      <Grid item lg={9}>
         <Typography variant="subtitle1" className={classes.level}>
           {level.name}
         </Typography>
-        {level.description && (
-          <i>
-            {level.description}
-            <br />
-          </i>
-        )}
-        {level.rules.map(rule => (
-          <i key={`NextRule-${rule.id}`}>
-            &#8226; {ruleName(rule)}
-            <br />
-          </i>
-        ))}
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <>
+            {level.description && (
+              <MetadataItem gridSizes={{ xs: 12 }} label="Description">
+                <MarkdownContent content={level.description} />
+              </MetadataItem>
+            )}
+            <MetadataItem gridSizes={{ xs: 12 }} label="Rules">
+              {level.rules.map(rule => (
+                <div key={`NextRule-${rule.id}`}>&#8226; {ruleName(rule)}</div>
+              ))}
+            </MetadataItem>
+          </>
+        </Collapse>
       </Grid>
       <Grid item lg={2}>
-        <LoyaltyIcon style={{ color: `${level.color}` }} />
+        <ScorecardLadderLevelBadge name={level.name} color={level.color} />
       </Grid>
     </React.Fragment>
   );

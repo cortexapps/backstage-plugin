@@ -74,11 +74,11 @@ export const SystemPageRow: React.FC<Props> = ({
             justifyContent="flex-start"
             alignItems="center"
           >
-            <Box alignSelf="center" width={1 / 8}>
+            <Box alignSelf="center" width={1 / 10}>
               <Gauge
                 value={score?.scorePercentage ?? 0}
-                strokeWidth={8}
-                trailWidth={8}
+                strokeWidth={10}
+                trailWidth={10}
               />
             </Box>
             <Box alignSelf="center" flex="1">

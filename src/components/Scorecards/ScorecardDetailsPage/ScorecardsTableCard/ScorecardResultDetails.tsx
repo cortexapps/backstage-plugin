@@ -16,15 +16,10 @@
 import React, { useMemo } from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { RuleResultDetails } from './RuleResultDetails';
-import { RuleName, ScorecardServiceScoresRule } from '../../../../api/types';
-
-export type ScorecardServiceScoreRuleName = Omit<
-  ScorecardServiceScoresRule,
-  'rule'
-> & { rule: RuleName & { weight: number; failureMessage?: string } };
+import { ScorecardServiceScoresRule } from '../../../../api/types';
 
 interface ScorecardResultDetailsProps {
-  rules: ScorecardServiceScoreRuleName[];
+  rules: ScorecardServiceScoresRule[];
   hideWeights?: boolean;
 }
 

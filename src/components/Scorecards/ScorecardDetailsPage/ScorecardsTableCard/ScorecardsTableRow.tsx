@@ -13,23 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import React from 'react';
 import { ScorecardServiceScore } from '../../../../api/types';
-import {
-  Collapse,
-  IconButton,
-  makeStyles,
-  TableCell,
-  TableRow,
-} from '@material-ui/core';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import { makeStyles, TableCell, TableRow } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
-import { ScorecardResultDetails } from './ScorecardResultDetails';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Gauge } from '../../../Gauge';
-import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
+import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
 
 const useStyles = makeStyles({
   root: {
@@ -59,35 +50,28 @@ export const ScorecardsTableRow = ({
   const classes = useStyles();
   const currentLevel = score.ladderLevels?.[0]?.currentLevel;
 
-  const [open, setOpen] = useState(false);
-
   return (
     <React.Fragment>
       <TableRow className={classes.root}>
-        <TableCell className={classes.openIcon}>
-          <IconButton size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
         <TableCell>
-          <Box
-            flexDirection="row"
-            display="flex"
-            justifyContent="flex-start"
-            alignItems="center"
+          <ScorecardServiceRefLink
+            scorecardId={scorecardId}
+            componentRef={score.componentRef}
           >
-            <Box alignSelf="center" width={1 / 8}>
-              <Gauge
-                value={score.scorePercentage}
-                strokeWidth={8}
-                trailWidth={8}
-              />
-            </Box>
-            <Box alignSelf="center" flex="1">
-              <ScorecardServiceRefLink
-                scorecardId={scorecardId}
-                componentRef={score.componentRef}
-              >
+            <Box
+              flexDirection="row"
+              display="flex"
+              justifyContent="flex-start"
+              alignItems="center"
+            >
+              <Box alignSelf="center" width={1 / 10}>
+                <Gauge
+                  value={score.scorePercentage}
+                  strokeWidth={10}
+                  trailWidth={10}
+                />
+              </Box>
+              <Box alignSelf="center" flex="1">
                 <b>
                   {
                     parseEntityRef(score.componentRef, {
@@ -96,22 +80,17 @@ export const ScorecardsTableRow = ({
                     }).name
                   }
                 </b>
-              </ScorecardServiceRefLink>
-            </Box>
-            {currentLevel && (
-              <Box display="flex" alignItems="center">
-                <LoyaltyIcon style={{ color: `${currentLevel.color}` }} />
-                {currentLevel.name}
               </Box>
-            )}
-          </Box>
-        </TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <ScorecardResultDetails rules={score.rules} />
-          </Collapse>
+              {currentLevel && (
+                <Box display="flex" alignItems="center">
+                  <ScorecardLadderLevelBadge
+                    name={currentLevel.name}
+                    color={currentLevel.color}
+                  />
+                </Box>
+              )}
+            </Box>
+          </ScorecardServiceRefLink>
         </TableCell>
       </TableRow>
     </React.Fragment>

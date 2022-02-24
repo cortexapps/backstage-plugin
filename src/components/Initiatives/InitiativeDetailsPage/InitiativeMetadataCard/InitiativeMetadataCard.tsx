@@ -16,7 +16,7 @@
 import React from 'react';
 import { Initiative } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
-import { InfoCard } from '@backstage/core-components';
+import { InfoCard, MarkdownContent } from '@backstage/core-components';
 import { Chip, Grid } from '@material-ui/core';
 import { MetadataItem } from '../../../MetadataItem';
 import { useRouteRef } from '@backstage/core-plugin-api';
@@ -38,7 +38,7 @@ export const InitiativeMetadataCard = ({
       <Grid container>
         {initiative.description && (
           <MetadataItem gridSizes={{ xs: 12 }} label="Description">
-            {initiative.description}
+            <MarkdownContent content={initiative.description} />
           </MetadataItem>
         )}
         <MetadataItem gridSizes={{ xs: 12 }} label="Deadline">

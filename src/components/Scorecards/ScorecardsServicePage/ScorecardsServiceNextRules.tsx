@@ -16,12 +16,12 @@
 import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
-import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import { useDetailCardStyles } from '../../../styles/styles';
 import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
 import { useCortexApi } from '../../../utils/hooks';
 import { stringifyAnyEntityRef } from '../../../utils/types';
-import { ruleName } from '../../../api/types';
+import { ScorecardRuleRow } from '../ScorecardDetailsPage/ScorecardRulesCard/ScorecardRuleRow';
+import { ScorecardLadderLevelBadge } from '../../Common/ScorecardLadderLevelBadge';
 
 interface ScorecardsServiceNextRulesProps {
   scorecardId: number;
@@ -74,8 +74,9 @@ export const ScorecardsServiceNextRules = ({
           {nextSteps.currentLevel !== undefined ? (
             <Typography variant="subtitle1" className={classes.level}>
               <b>Current Level: </b> {nextSteps.currentLevel.name}
-              <LoyaltyIcon
-                style={{ color: `${nextSteps.currentLevel.color}` }}
+              <ScorecardLadderLevelBadge
+                name={nextSteps.currentLevel.name}
+                color={nextSteps.currentLevel.color}
               />
             </Typography>
           ) : (
@@ -88,15 +89,17 @@ export const ScorecardsServiceNextRules = ({
           {nextSteps.nextLevel !== undefined ? (
             <Typography variant="subtitle1" className={classes.level}>
               <b>Next Level: </b> {nextSteps.nextLevel.name}
-              <LoyaltyIcon style={{ color: `${nextSteps.nextLevel.color}` }} />
+              <ScorecardLadderLevelBadge
+                name={nextSteps.nextLevel.name}
+                color={nextSteps.nextLevel.color}
+              />
               <br />
               Complete these rules to get to the next level:
               <br />
               {nextSteps.rulesToComplete.map(rule => (
-                <i key={`NextRule-${rule.id}`}>
-                  &#8226; {ruleName(rule)}
-                  <br />
-                </i>
+                <Grid key={`NextRule-${rule.id}`} container>
+                  <ScorecardRuleRow rule={rule} />
+                </Grid>
               ))}
             </Typography>
           ) : (

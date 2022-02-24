@@ -28,7 +28,6 @@ const useStyles = makeStyles(theme => ({
     whiteSpace: 'nowrap',
   },
   value: {
-    fontWeight: 'bold',
     overflow: 'hidden',
     lineHeight: '24px',
     wordBreak: 'break-word',

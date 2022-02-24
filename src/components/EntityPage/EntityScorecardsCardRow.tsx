@@ -62,11 +62,11 @@ export const EntityScorecardsCardRow = ({
             justifyContent="flex-start"
             alignItems="center"
           >
-            <Box alignSelf="center" width={1 / 4}>
+            <Box alignSelf="center" width={1 / 6}>
               <Gauge
                 value={score.score.scorePercentage}
-                strokeWidth={8}
-                trailWidth={8}
+                strokeWidth={10}
+                trailWidth={10}
               />
             </Box>
             <Box alignSelf="center">

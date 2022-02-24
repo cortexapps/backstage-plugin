@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { ruleName } from '../../../../api/types';
+import React, { useState } from 'react';
+import { ruleName, ScorecardServiceScoresRule } from '../../../../api/types';
 import {
+  Collapse,
   Grid,
+  IconButton,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -25,8 +27,10 @@ import {
 } from '@material-ui/core';
 import ErrorIcon from '@material-ui/icons/Error';
 import CheckIcon from '@material-ui/icons/Check';
-
-import { ScorecardServiceScoreRuleName } from './ScorecardResultDetails';
+import { MarkdownContent } from '@backstage/core-components';
+import { MetadataItem } from '../../../MetadataItem';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
 const useStyles = makeStyles({
   rule: {
@@ -35,7 +39,7 @@ const useStyles = makeStyles({
 });
 
 interface RuleResultDetailsProps {
-  rule: ScorecardServiceScoreRuleName;
+  rule: ScorecardServiceScoresRule;
   hideWeight?: boolean;
 }
 
@@ -44,10 +48,16 @@ export const RuleResultDetails = ({
   hideWeight,
 }: RuleResultDetailsProps) => {
   const classes = useStyles();
+
+  const [open, setOpen] = useState(false);
+  const hasTitle = rule.rule.title !== undefined;
   const isFailing = rule.score === 0;
 
   return (
     <ListItem alignItems="flex-start">
+      <IconButton size="small" onClick={() => setOpen(!open)}>
+        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+      </IconButton>
       <ListItemAvatar>
         {!isFailing ? (
           <CheckIcon color="primary" />
@@ -62,32 +72,42 @@ export const RuleResultDetails = ({
         alignItems="center"
         className={classes.rule}
       >
-        <Grid item xs={9}>
+        <Grid item xs={10}>
           <ListItemText
             primary={ruleName(rule.rule)}
             style={{ wordWrap: 'break-word' }}
           />
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <>
+              {rule.rule.description && (
+                <MetadataItem gridSizes={{ xs: 12 }} label="Description">
+                  <MarkdownContent content={rule.rule.description} />
+                </MetadataItem>
+              )}
+              {hasTitle && (
+                <MetadataItem gridSizes={{ xs: 12 }} label="Expression">
+                  {rule.rule.expression}
+                </MetadataItem>
+              )}
+            </>
+          </Collapse>
         </Grid>
-        {hideWeight !== true && (
-          <Grid item>
-            <ListItemText primary={`${rule.rule.weight}`} />
-          </Grid>
-        )}
         {rule.error && (
-          <Grid item xs={9}>
+          <Grid item xs={10}>
             <Typography color="error" style={{ wordWrap: 'break-word' }}>
               {rule.error}
             </Typography>
           </Grid>
         )}
         {isFailing && rule.rule.failureMessage && (
-          <Grid item xs={9}>
+          <Grid item xs={10}>
             <Typography color="error" style={{ wordWrap: 'break-word' }}>
-              {rule.rule.failureMessage}
+              <MarkdownContent content={rule.rule.failureMessage} />
             </Typography>
           </Grid>
         )}
       </Grid>
+      {hideWeight !== true && <ListItemText primary={`${rule.rule.weight}`} />}
     </ListItem>
   );
 };

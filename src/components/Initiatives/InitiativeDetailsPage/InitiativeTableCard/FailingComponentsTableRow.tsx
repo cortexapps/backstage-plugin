@@ -82,8 +82,8 @@ export const FailingComponentsTableRow = ({
               <Gauge
                 value={(numRules - actionItems.length) / numRules}
                 textOverride={`${numRules - actionItems.length} / ${numRules}`}
-                strokeWidth={8}
-                trailWidth={8}
+                strokeWidth={10}
+                trailWidth={10}
               />
             </Box>
             <Box alignSelf="center">

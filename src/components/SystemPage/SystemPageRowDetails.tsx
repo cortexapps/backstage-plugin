@@ -59,8 +59,8 @@ export const SystemPageRowDetails: React.FC<Props> = ({
               <Box alignSelf="center" width={1 / 16}>
                 <Gauge
                   value={score.scorePercentage}
-                  strokeWidth={8}
-                  trailWidth={8}
+                  strokeWidth={10}
+                  trailWidth={10}
                 />
               </Box>
               <Box alignSelf="center" flex="1">

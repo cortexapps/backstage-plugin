@@ -28,10 +28,7 @@ import { scorecardServiceDetailsRouteRef } from '../../../routes';
 import { Gauge } from '../../Gauge';
 import Box from '@material-ui/core/Box';
 import { DefaultEntityRefLink } from '../../DefaultEntityLink';
-import {
-  ScorecardResultDetails,
-  ScorecardServiceScoreRuleName,
-} from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
+import { ScorecardResultDetails } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
@@ -99,7 +96,11 @@ export const ScorecardsServicePage = () => {
         style={{ marginBottom: '20px' }}
       >
         <Box alignSelf="center" width={1 / 16}>
-          <Gauge value={score.scorePercentage} strokeWidth={8} trailWidth={8} />
+          <Gauge
+            value={score.scorePercentage}
+            strokeWidth={10}
+            trailWidth={10}
+          />
         </Box>
         <Box alignSelf="center" textAlign="center">
           <Typography variant="h4" component="h2">
