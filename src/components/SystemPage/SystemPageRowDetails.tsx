@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import { Box, makeStyles, Table, TableCell, TableRow } from '@material-ui/core';
 import { Gauge } from '../Gauge/Gauge';
 
 import { ScorecardServiceScore } from '../../api/types';
-import {DefaultEntityRefLink} from "../DefaultEntityLink";
-import {parseEntityName} from "@backstage/catalog-model";
-import {defaultComponentRefContext} from "../../utils/ComponentUtils";
+import { DefaultEntityRefLink } from '../DefaultEntityLink';
+import { parseEntityName } from '@backstage/catalog-model';
+import { defaultComponentRefContext } from '../../utils/ComponentUtils';
 
 interface Props {
   scoresForScorecard: ScorecardServiceScore[];
@@ -65,7 +65,12 @@ export const SystemPageRowDetails: React.FC<Props> = ({
               </Box>
               <Box alignSelf="center" flex="1">
                 {score && (
-                  <DefaultEntityRefLink entityRef={parseEntityName(score.componentRef, defaultComponentRefContext)}/>
+                  <DefaultEntityRefLink
+                    entityRef={parseEntityName(
+                      score.componentRef,
+                      defaultComponentRefContext,
+                    )}
+                  />
                 )}
               </Box>
             </Box>

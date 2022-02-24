@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Grid } from "@material-ui/core";
-import React from "react";
-import { Content, ContentHeader, } from '@backstage/core-components';
-import { SettingsSyncCard } from "./SettingsSyncCard";
+import { Grid } from '@material-ui/core';
+import React from 'react';
+import { Content, ContentHeader } from '@backstage/core-components';
+import { SettingsSyncCard } from './SettingsSyncCard';
 
-export const SettingsPage = () =>  {
+export const SettingsPage = () => {
   return (
     <Content>
-      <ContentHeader title="Settings"/>
+      <ContentHeader title="Settings" />
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
-          <SettingsSyncCard/>
+          <SettingsSyncCard />
         </Grid>
       </Grid>
     </Content>
   );
-}
+};

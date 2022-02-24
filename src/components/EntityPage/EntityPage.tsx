@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   Content,
+  ContentHeader,
   EmptyState,
   Progress,
   WarningPanel,
@@ -26,6 +27,7 @@ import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
 import { stringifyAnyEntityRef } from '../../utils/types';
 import { useCortexApi } from '../../utils/hooks';
 import { EntityScorecardDetails } from './EntityScorecardDetails';
+import { ScorecardServiceRefLink } from '../ScorecardServiceRefLink';
 
 export const EntityPage = () => {
   const {
@@ -106,6 +108,14 @@ export const EntityPage = () => {
 
   return (
     <Content>
+      <ContentHeader title="Scorecards">
+        <ScorecardServiceRefLink
+          scorecardId={selectedScore.scorecard.id}
+          componentRef={stringifyAnyEntityRef(entity)}
+        >
+          <b>View all details</b>
+        </ScorecardServiceRefLink>
+      </ContentHeader>
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <EntityScorecardsCard

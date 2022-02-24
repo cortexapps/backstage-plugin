@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ export const EntityScorecardsCard = ({
   const classes = useStyles();
 
   return (
-    <InfoCard title="Scorecards">
+    <InfoCard>
       <Table className={classes.table}>
         <TableBody>
           {scores.map(score => (
