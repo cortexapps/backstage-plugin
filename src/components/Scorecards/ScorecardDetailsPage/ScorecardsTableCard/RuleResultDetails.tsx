@@ -29,8 +29,8 @@ import ErrorIcon from '@material-ui/icons/Error';
 import CheckIcon from '@material-ui/icons/Check';
 import { MarkdownContent } from '@backstage/core-components';
 import { MetadataItem } from '../../../MetadataItem';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 const useStyles = makeStyles({
   rule: {
@@ -50,14 +50,17 @@ export const RuleResultDetails = ({
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
-  const hasTitle = rule.rule.title !== undefined;
+  const showExpandButton = rule.rule.description || rule.rule.title;
+  const hasTitle = !!rule.rule.title;
   const isFailing = rule.score === 0;
 
   return (
     <ListItem alignItems="flex-start">
-      <IconButton size="small" onClick={() => setOpen(!open)}>
-        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-      </IconButton>
+      {showExpandButton && (
+        <IconButton size="small" onClick={() => setOpen(!open)}>
+          {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
+        </IconButton>
+      )}
       <ListItemAvatar>
         {!isFailing ? (
           <CheckIcon color="primary" />

@@ -23,10 +23,10 @@ import { Grid, IconButton, Typography, Collapse } from '@material-ui/core';
 import { InfoCard, MarkdownContent } from '@backstage/core-components';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { getSortedLadderLevels } from '../../../../utils/ScorecardLadderUtils';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { MetadataItem } from '../../../MetadataItem';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 interface ScorecardLaddersCardProps {
   ladder: ScorecardLadder;
@@ -41,7 +41,7 @@ const ScorecardLevelsRow = ({ level }: { level: ScorecardLevel }) => {
     <React.Fragment>
       <Grid item lg={1}>
         <IconButton size="small" onClick={() => setOpen(!open)}>
-          {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
         </IconButton>
       </Grid>
       <Grid item lg={9}>

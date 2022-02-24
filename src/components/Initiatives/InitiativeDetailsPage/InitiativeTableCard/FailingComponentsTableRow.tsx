@@ -23,7 +23,6 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import Box from '@material-ui/core/Box';
 import { Gauge } from '../../../Gauge';
@@ -31,6 +30,7 @@ import { parseEntityName } from '@backstage/catalog-model';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { DefaultEntityRefLink } from '../../../DefaultEntityLink';
 import { ScorecardResultDetails } from '../../../Scorecards/ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 export const useActionItemsStyles = makeStyles({
   root: {
@@ -68,7 +68,7 @@ export const FailingComponentsTableRow = ({
       <TableRow className={classes.root}>
         <TableCell className={classes.openIcon}>
           <IconButton size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
           </IconButton>
         </TableCell>
         <TableCell>

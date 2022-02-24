@@ -23,13 +23,12 @@ import {
   TableRow,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-
 import { Gauge } from '../Gauge/Gauge';
 import { SystemPageRowDetails } from './SystemPageRowDetails';
 import { ScorecardRefLink } from '../ScorecardRefLink';
 
 import { ScorecardScore, ScorecardServiceScore } from '../../api/types';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 const useStyles = makeStyles({
   root: {
@@ -64,7 +63,7 @@ export const SystemPageRow: React.FC<Props> = ({
       <TableRow className={classes.root}>
         <TableCell className={classes.openIcon}>
           <IconButton size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
           </IconButton>
         </TableCell>
         <TableCell>

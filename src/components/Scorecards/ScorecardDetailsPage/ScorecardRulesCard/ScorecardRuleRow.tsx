@@ -17,8 +17,8 @@ import { Rule, ruleName, ScorecardLevelRule } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import React, { useState } from 'react';
 import { Collapse, Grid, IconButton, Typography } from '@material-ui/core';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import { MetadataItem } from '../../../MetadataItem';
 import { MarkdownContent } from '@backstage/core-components';
 
@@ -30,15 +30,18 @@ export const ScorecardRuleRow = ({ rule }: ScorecardRuleRowProps) => {
   const classes = useDetailCardStyles();
 
   const [open, setOpen] = useState(false);
-  const hasTitle = rule.title !== undefined;
+  const showExpandButton = rule.description || rule.title;
+  const hasTitle = !!rule.title;
   const hasWeight = 'weight' in rule;
 
   return (
     <React.Fragment>
       <Grid item lg={1}>
-        <IconButton size="small" onClick={() => setOpen(!open)}>
-          {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-        </IconButton>
+        {showExpandButton && (
+          <IconButton size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
+          </IconButton>
+        )}
       </Grid>
       <Grid item lg={9}>
         <Typography variant="subtitle1" className={classes.rule}>

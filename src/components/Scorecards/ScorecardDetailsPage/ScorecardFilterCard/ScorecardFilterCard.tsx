@@ -60,7 +60,7 @@ export const ScorecardFilterCard = ({
 }: ScorecardFilterCardProps) => {
   const ruleFilterDefinitions = useMemo(() => {
     return mapValues(
-      mapByString(scorecard.rules, rule => rule.id),
+      mapByString(scorecard.rules, rule => rule.id.toString()),
       rule => {
         return {
           display: ruleName(rule),
