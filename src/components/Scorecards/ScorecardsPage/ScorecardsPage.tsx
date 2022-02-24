@@ -50,7 +50,7 @@ const ScorecardsPageBody = () => {
   const sortedScorecards = useMemo(
     () =>
       scorecards?.sort((a: Scorecard, b: Scorecard) =>
-        a.name > b.name ? 1 : -1,
+        a.name.localeCompare(b.name),
       ),
     [scorecards],
   );

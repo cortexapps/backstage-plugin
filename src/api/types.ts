@@ -86,6 +86,12 @@ export interface ScorecardScoreLadderResult {
   currentLevel?: ScorecardScoreLadderLevel;
 }
 
+export interface ScorecardScoreNextSteps {
+  currentLevel?: ScorecardScoreLadderLevel;
+  nextLevel?: ScorecardScoreLadderLevel;
+  rulesToComplete: ScorecardLevelRule[];
+}
+
 export interface ServiceLadderLevels {
   serviceId: number;
   ladderDetails: {

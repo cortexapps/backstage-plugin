@@ -20,6 +20,7 @@ import {
   Scorecard,
   ScorecardLadder,
   ScorecardResult,
+  ScorecardScoreNextSteps,
   ScorecardServiceScore,
   ScoresByIdentifier,
   ServiceScorecardScore,
@@ -34,7 +35,13 @@ export interface CortexApi {
   getScorecard(scorecardId: number): Promise<Scorecard | undefined>;
   getScorecardLadders(scorecardId: number): Promise<ScorecardLadder[]>;
   getScorecardScores(scorecardId: number): Promise<ScorecardServiceScore[]>;
+
   getServiceScores(entityRef: AnyEntityRef): Promise<ServiceScorecardScore[]>;
+  getServiceNextSteps(
+    entityRef: AnyEntityRef,
+    scorecardId: number,
+  ): Promise<ScorecardScoreNextSteps[]>;
+
   getHistoricalScores(
     scorecardId: string,
     entityRef: AnyEntityRef,

@@ -19,42 +19,39 @@ import { makeStyles, TableCell, TableRow } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { Gauge } from '../Gauge';
 import { BackstageTheme } from '@backstage/theme';
-import { ScorecardServiceRefLink } from '../ScorecardServiceRefLink';
 
-const useStyles = makeStyles<BackstageTheme, EntityScorecardsCardRowProps>(
-  theme => ({
-    tableRow: {
-      '&:hover': {
-        background: `${theme.palette.background.default}!important`,
-      },
-    },
-    unselected: {
-      background: `${theme.palette.background.paper}!important`,
-    },
-    selected: {
+const useStyles = makeStyles<BackstageTheme>(theme => ({
+  tableRow: {
+    '&:hover': {
       background: `${theme.palette.background.default}!important`,
     },
-  }),
-);
+  },
+  unselected: {
+    background: `${theme.palette.background.paper}!important`,
+  },
+  selected: {
+    background: `${theme.palette.background.default}!important`,
+  },
+}));
 
 interface EntityScorecardsCardRowProps {
-  componentRef: string;
   score: ServiceScorecardScore;
   selected: boolean;
   onSelect: () => void;
 }
 
-export const EntityScorecardsCardRow = (
-  props: EntityScorecardsCardRowProps,
-) => {
-  const { componentRef, score, onSelect } = props;
-  const classes = useStyles(props);
+export const EntityScorecardsCardRow = ({
+  score,
+  selected,
+  onSelect,
+}: EntityScorecardsCardRowProps) => {
+  const classes = useStyles();
 
   return (
     <React.Fragment>
       <TableRow
         className={`${classes.tableRow} ${
-          props.selected ? classes.selected : classes.unselected
+          selected ? classes.selected : classes.unselected
         }`}
         onClick={onSelect}
       >
@@ -73,12 +70,7 @@ export const EntityScorecardsCardRow = (
               />
             </Box>
             <Box alignSelf="center">
-              <ScorecardServiceRefLink
-                scorecardId={score.scorecard.id}
-                componentRef={componentRef}
-              >
-                <b>{score.scorecard.name}</b>
-              </ScorecardServiceRefLink>
+              <b>{score.scorecard.name}</b>
             </Box>
           </Box>
         </TableCell>

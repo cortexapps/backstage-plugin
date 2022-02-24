@@ -23,10 +23,9 @@ import {
 import { Grid } from '@material-ui/core';
 import { EntityScorecardsCard } from './EntityScorecardsCard';
 import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
-import { EntityScorecardOverview } from './EntityScorecardOverview';
 import { stringifyAnyEntityRef } from '../../utils/types';
 import { useCortexApi } from '../../utils/hooks';
-import { EntityScorecardRules } from './EntityScorecardRules';
+import { EntityScorecardDetails } from './EntityScorecardDetails';
 
 export const EntityPage = () => {
   const {
@@ -92,20 +91,34 @@ export const EntityPage = () => {
     );
   }
 
+  if (selectedScorecardId === undefined) {
+    return <EmptyState missing="data" title="Select a scorecard" />;
+  }
+
+  if (selectedScore === undefined) {
+    return (
+      <WarningPanel
+        severity="error"
+        title="Scorecard has not been evaluated."
+      />
+    );
+  }
+
   return (
     <Content>
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <EntityScorecardsCard
-            componentRef={stringifyAnyEntityRef(entity)}
             scores={scores}
             onSelect={setSelectedScorecardId}
             selectedScorecardId={selectedScorecardId}
           />
         </Grid>
         <Grid item lg={8}>
-          <EntityScorecardOverview score={selectedScore} />
-          <EntityScorecardRules score={selectedScore} />
+          <EntityScorecardDetails
+            scorecardId={selectedScorecardId}
+            score={selectedScore}
+          />
         </Grid>
       </Grid>
     </Content>

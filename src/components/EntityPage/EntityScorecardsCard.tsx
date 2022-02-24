@@ -32,14 +32,12 @@ const useStyles = makeStyles<BackstageTheme>(theme => ({
 }));
 
 interface EntityScorecardsCardProps {
-  componentRef: string;
   scores: ServiceScorecardScore[];
   selectedScorecardId?: number;
   onSelect: (scorecardId: number) => void;
 }
 
 export const EntityScorecardsCard = ({
-  componentRef,
   scores,
   selectedScorecardId,
   onSelect,
@@ -52,7 +50,6 @@ export const EntityScorecardsCard = ({
         <TableBody>
           {scores.map(score => (
             <EntityScorecardsCardRow
-              componentRef={componentRef}
               key={score.scorecard.id}
               score={score}
               onSelect={() => onSelect(score.scorecard.id)}

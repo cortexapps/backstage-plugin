@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import {
-  List,
-} from '@material-ui/core';
-import {RuleResultDetails} from "./RuleResultDetails";
-import {RuleName, ScorecardServiceScoresRule} from "../../../../api/types";
+import React, { useMemo } from 'react';
+import { List, ListItem, Typography } from '@material-ui/core';
+import { RuleResultDetails } from './RuleResultDetails';
+import { RuleName, ScorecardServiceScoresRule } from '../../../../api/types';
 
 export type ScorecardServiceScoreRuleName = Omit<
-    ScorecardServiceScoresRule,
-    'rule'
-    > & { rule: RuleName & { weight: number; failureMessage?: string } };
+  ScorecardServiceScoresRule,
+  'rule'
+> & { rule: RuleName & { weight: number; failureMessage?: string } };
 
 interface ScorecardResultDetailsProps {
   rules: ScorecardServiceScoreRuleName[];
@@ -34,19 +32,28 @@ export const ScorecardResultDetails = ({
   rules,
   hideWeights,
 }: ScorecardResultDetailsProps) => {
+  const sortedRules = useMemo(
+    () =>
+      [...rules].sort((a, b) => {
+        if (a.score === b.score) {
+          return a.rule.expression.localeCompare(b.rule.expression);
+        }
+
+        return a.score - b.score;
+      }),
+    [rules],
+  );
+
   return (
     <List>
-      {rules
-        .sort((a, b) => {
-          if (a.score === b.score) {
-            return a.rule.expression.localeCompare(b.rule.expression);
-          }
-
-          return a.score - b.score;
-        })
-        .map((rule, i) => (
-          <RuleResultDetails key={i} rule={rule} hideWeight={hideWeights} />
-        ))}
+      {sortedRules.length === 0 && (
+        <ListItem alignItems="flex-start">
+          <Typography variant="body1">No rules.</Typography>
+        </ListItem>
+      )}
+      {sortedRules.map((rule, i) => (
+        <RuleResultDetails key={i} rule={rule} hideWeight={hideWeights} />
+      ))}
     </List>
   );
 };

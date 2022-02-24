@@ -34,7 +34,7 @@ import moment from 'moment';
 import Box from '@material-ui/core/Box';
 import { ScorecardServiceScoreRuleName } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { Point } from '@nivo/line';
-import { toScorecardServiceScoreRuleName } from '../../../utils/scorecards';
+import { toScorecardServiceScoreRuleName } from '../../../utils/ScorecardUtils';
 import {
   getLookbackRange,
   Lookback,

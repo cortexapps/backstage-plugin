@@ -13,62 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
-import { ScorecardLadder, ScorecardServiceScore } from '../../../api/types';
+import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { InfoCard } from '@backstage/core-components';
+import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import { useDetailCardStyles } from '../../../styles/styles';
-import { getSortedLadderLevels } from '../../../utils/ScorecardLadderUtils';
+import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
+import { useCortexApi } from '../../../utils/hooks';
+import { stringifyAnyEntityRef } from '../../../utils/types';
 
 interface ScorecardsServiceNextRulesProps {
-  ladder: ScorecardLadder;
-  score: ScorecardServiceScore;
+  scorecardId: number;
 }
 
 export const ScorecardsServiceNextRules = ({
-  ladder,
-  score,
+  scorecardId,
 }: ScorecardsServiceNextRulesProps) => {
   const classes = useDetailCardStyles();
 
-  const currentLevel = score.ladderLevels?.[0]?.currentLevel ?? undefined;
-  const levels = useMemo(() => getSortedLadderLevels(ladder), [ladder]);
+  const { entity } = useEntityFromUrl();
 
-  const nextLevel = useMemo(() => {
-    if (currentLevel === undefined) {
-      return levels[0];
-    }
-
-    const currLevelIndex = levels.findIndex(
-      level => level.name === currentLevel.name,
-    );
-    const nextLevelIndex = currLevelIndex + 1;
-    return levels.length === nextLevelIndex
-      ? undefined
-      : levels[nextLevelIndex];
-  }, [levels, currentLevel]);
-
-  const nextRules = useMemo(
-    () =>
-      nextLevel?.rules.filter(levelRule => {
-        const ruleScore = score.rules.find(
-          rule => rule.rule.expression === levelRule.expression,
-        );
-        const rulePasses = ruleScore?.score !== 0;
-        return !rulePasses;
-      }) ?? [],
-    [nextLevel, score],
+  const {
+    value,
+    loading: nextStepsLoading,
+    error: nextStepsError,
+  } = useCortexApi(
+    async cortexApi => {
+      return entity !== undefined
+        ? await cortexApi.getServiceNextSteps(
+            stringifyAnyEntityRef(entity),
+            scorecardId,
+          )
+        : undefined;
+    },
+    [entity],
   );
+
+  const nextSteps = value?.[0] ?? undefined;
+
+  if (nextStepsLoading) {
+    return <Progress />;
+  }
+
+  if (nextSteps === undefined || nextStepsError) {
+    return (
+      <WarningPanel
+        severity="error"
+        title="Ran into an error loading next steps for service."
+      >
+        {nextStepsError?.message}
+      </WarningPanel>
+    );
+  }
 
   return (
     <InfoCard title="Ladder Progress" className={classes.root}>
       <Grid container direction="column">
         <Grid item>
-          {currentLevel !== undefined ? (
+          {nextSteps.currentLevel !== undefined ? (
             <Typography variant="subtitle1" className={classes.level}>
-              <b>Current Level: </b> {currentLevel.name}
-              <LoyaltyIcon style={{ color: `${currentLevel.color}` }} />
+              <b>Current Level: </b> {nextSteps.currentLevel.name}
+              <LoyaltyIcon
+                style={{ color: `${nextSteps.currentLevel.color}` }}
+              />
             </Typography>
           ) : (
             <Typography variant="subtitle1" className={classes.level}>
@@ -77,22 +84,20 @@ export const ScorecardsServiceNextRules = ({
           )}
         </Grid>
         <Grid item>
-          {nextLevel !== undefined ? (
-            <>
-              <Typography variant="subtitle1" className={classes.level}>
-                <b>Next Level: </b> {nextLevel.name}
-                <LoyaltyIcon style={{ color: `${nextLevel.color}` }} />
-                <br />
-                Complete these rules to get to the next level:
-                <br />
-                {nextRules.map(rule => (
-                  <i key={`NextRule-${rule.id}`}>
-                    &#8226; {rule.title ?? rule.expression}
-                    <br />
-                  </i>
-                ))}
-              </Typography>
-            </>
+          {nextSteps.nextLevel !== undefined ? (
+            <Typography variant="subtitle1" className={classes.level}>
+              <b>Next Level: </b> {nextSteps.nextLevel.name}
+              <LoyaltyIcon style={{ color: `${nextSteps.nextLevel.color}` }} />
+              <br />
+              Complete these rules to get to the next level:
+              <br />
+              {nextSteps.rulesToComplete.map(rule => (
+                <i key={`NextRule-${rule.id}`}>
+                  &#8226; {rule.title ?? rule.expression}
+                  <br />
+                </i>
+              ))}
+            </Typography>
           ) : (
             <Typography variant="subtitle1" className={classes.level}>
               Congratulations!! This service has achieved all levels!
