@@ -21,6 +21,7 @@ import { useDetailCardStyles } from '../../../styles/styles';
 import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
 import { useCortexApi } from '../../../utils/hooks';
 import { stringifyAnyEntityRef } from '../../../utils/types';
+import { ruleName } from '../../../api/types';
 
 interface ScorecardsServiceNextRulesProps {
   scorecardId: number;
@@ -93,7 +94,7 @@ export const ScorecardsServiceNextRules = ({
               <br />
               {nextSteps.rulesToComplete.map(rule => (
                 <i key={`NextRule-${rule.id}`}>
-                  &#8226; {rule.title ?? rule.expression}
+                  &#8226; {ruleName(rule)}
                   <br />
                 </i>
               ))}

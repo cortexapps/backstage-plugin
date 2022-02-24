@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { ScorecardLevel, ScorecardLadder } from '../../../../api/types';
+import {
+  ScorecardLevel,
+  ScorecardLadder,
+  ruleName,
+} from '../../../../api/types';
 import { Grid, Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
@@ -42,7 +46,7 @@ const ScorecardLevelsRow = ({ level }: { level: ScorecardLevel }) => {
         )}
         {level.rules.map(rule => (
           <i key={`NextRule-${rule.id}`}>
-            &#8226; {rule.title ?? rule.expression}
+            &#8226; {ruleName(rule)}
             <br />
           </i>
         ))}

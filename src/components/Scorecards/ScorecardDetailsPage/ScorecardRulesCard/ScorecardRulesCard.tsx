@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Rule, Scorecard } from '../../../../api/types';
+import { Rule, ruleName, Scorecard } from '../../../../api/types';
 import { Grid, Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import { useDetailCardStyles } from '../../../../styles/styles';
@@ -30,7 +30,7 @@ const ScorecardRulesRow = ({ rule }: { rule: Rule }) => {
     <React.Fragment>
       <Grid item lg={10}>
         <Typography variant="subtitle1" className={classes.rule}>
-          {rule.title ?? rule.expression}
+          {ruleName(rule)}
         </Typography>
         {rule.description && <i>{rule.description}</i>}
       </Grid>
