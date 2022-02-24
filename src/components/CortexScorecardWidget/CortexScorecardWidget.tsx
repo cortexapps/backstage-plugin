@@ -66,11 +66,5 @@ export const CortexScorecardWidget = () => {
     );
   }
 
-  return (
-    <EntityScorecardsCard
-      componentRef={stringifyAnyEntityRef(entity)}
-      scores={scores}
-      onSelect={() => {}}
-    />
-  );
+  return <EntityScorecardsCard scores={scores} onSelect={() => {}} />;
 };
