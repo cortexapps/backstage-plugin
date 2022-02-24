@@ -32,6 +32,7 @@ import { ScorecardResultDetails } from '../ScorecardDetailsPage/ScorecardsTableC
 import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
+import { ScorecardServiceScoresRule } from '../../../api/types';
 
 const useStyles = makeStyles({
   progress: {
@@ -51,7 +52,7 @@ export const ScorecardsServicePage = () => {
   const classes = useStyles();
 
   const [selectedRules, setSelectedRules] = useState<
-    ScorecardServiceScoreRuleName[]
+    ScorecardServiceScoresRule[]
   >([]);
 
   const { value, loading, error } = useAsync(async () => {

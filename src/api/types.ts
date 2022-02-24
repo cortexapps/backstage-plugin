@@ -37,10 +37,10 @@ export interface RuleName {
 }
 
 export interface Rule extends RuleName {
-  id: string;
+  id: number;
   description?: string;
   failureMessage?: string;
-  dateCreated: string;
+  dateCreated?: string;
   weight: number;
 }
 

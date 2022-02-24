@@ -32,6 +32,8 @@ describe('ScorecardsPage', () => {
           description: 'Some description',
           rules: [],
           tags: [],
+          excludedTags: [],
+          filterQuery: undefined,
           nextUpdated: '2021-08-25T04:00:00',
         },
       ]),
