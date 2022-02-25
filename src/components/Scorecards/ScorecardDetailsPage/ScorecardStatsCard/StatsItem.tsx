@@ -25,8 +25,6 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  label: {},
-  value: {},
 });
 
 interface StatsItemProps {
@@ -51,13 +49,11 @@ export const StatsItem = ({
 
   return (
     <Grid item {...gridSizes} className={classes.root}>
-      <Typography variant="h4" className={classes.value} style={style}>
+      <Typography variant="h3" style={style}>
         {valueToDisplay}
         {percentage && '%'}
       </Typography>
-      <Typography variant="body2" className={classes.label}>
-        {label}
-      </Typography>
+      <Typography variant="body2">{label}</Typography>
     </Grid>
   );
 };
