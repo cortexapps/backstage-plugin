@@ -13,20 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Grid } from '@material-ui/core';
-import React from 'react';
-import { Content, ContentHeader } from '@backstage/core-components';
-import { SettingsSyncCard } from './SettingsSyncCard';
-
-export const SettingsPage = () => {
-  return (
-    <Content>
-      <ContentHeader title="Settings" />
-      <Grid container direction="row" spacing={2}>
-        <Grid item lg={4}>
-          <SettingsSyncCard />
-        </Grid>
-      </Grid>
-    </Content>
-  );
-};
+export { EntityScorecardDetails } from './EntityScorecardDetails';

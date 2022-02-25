@@ -21,6 +21,7 @@ import {
   Scorecard,
   ScorecardLadder,
   ScorecardResult,
+  ScorecardScoreNextSteps,
   ScorecardServiceScore,
   ScoresByIdentifier,
   ServiceScorecardScore,
@@ -77,6 +78,18 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v2/entities/scorecards`, {
       ref: stringifyAnyEntityRef(entityRef),
     });
+  }
+
+  async getServiceNextSteps(
+    entityRef: AnyEntityRef,
+    scorecardId: number,
+  ): Promise<ScorecardScoreNextSteps[]> {
+    return await this.get(
+      `/api/backstage/v2/entities/${scorecardId}/ladders/next-steps`,
+      {
+        ref: stringifyAnyEntityRef(entityRef),
+      },
+    );
   }
 
   async getHistoricalScores(

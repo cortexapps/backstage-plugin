@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ describe('ScorecardsPage', () => {
           description: 'Some description',
           rules: [],
           tags: [],
+          excludedTags: [],
+          filterQuery: undefined,
           nextUpdated: '2021-08-25T04:00:00',
         },
       ]),

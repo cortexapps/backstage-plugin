@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Initiative } from '../../../api/types';
-import { useRouteRef } from '@backstage/core-plugin-api';
-import { initiativeRouteRef } from '../../../routes';
-import { ListCard } from '../../ListCard';
+import { Tooltip } from '@material-ui/core';
+import StarIcon from '@material-ui/icons/Star';
 
-type InitiativeCardProps = {
-  initiative: Initiative;
-};
+interface ScorecardLadderLevelBadgeProps {
+  name: string;
+  color: string;
+}
 
-export const InitiativeCard = ({ initiative }: InitiativeCardProps) => {
-  const initiativeRef = useRouteRef(initiativeRouteRef);
-
-  return (
-    <ListCard
-      name={initiative.name}
-      creatorName={initiative.creator.name}
-      description={initiative.description}
-      url={initiativeRef({ id: `${initiative.id}` })}
-    />
-  );
-};
+export const ScorecardLadderLevelBadge = ({
+  name,
+  color,
+}: ScorecardLadderLevelBadgeProps) => (
+  <Tooltip title={name}>
+    <StarIcon style={{ color: `${color}` }} />
+  </Tooltip>
+);

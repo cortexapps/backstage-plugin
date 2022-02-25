@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,18 @@
  */
 import { Content, ContentHeader } from '@backstage/core-components';
 import React, { useMemo, useState } from 'react';
-import {Scorecard, ScorecardLadder, ScorecardServiceScore} from '../../../api/types';
+import {
+  Scorecard,
+  ScorecardLadder,
+  ScorecardServiceScore,
+} from '../../../api/types';
 import { Grid } from '@material-ui/core';
 import { ScorecardMetadataCard } from './ScorecardMetadataCard';
 import { ScorecardRulesCard } from './ScorecardRulesCard';
 import { ScorecardFilterCard } from './ScorecardFilterCard';
 import { ScorecardsTableCard } from './ScorecardsTableCard';
 import { Predicate } from '../../../utils/types';
-import {ScorecardLaddersCard} from "./ScorecardLaddersCard";
+import { ScorecardLaddersCard } from './ScorecardLaddersCard';
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { ruleName } from '../../../../api/types';
+import React, { useState } from 'react';
+import { ruleName, ScorecardServiceScoresRule } from '../../../../api/types';
 import {
+  Collapse,
   Grid,
+  IconButton,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -25,8 +27,11 @@ import {
 } from '@material-ui/core';
 import ErrorIcon from '@material-ui/icons/Error';
 import CheckIcon from '@material-ui/icons/Check';
-
-import { ScorecardServiceScoreRuleName } from './ScorecardResultDetails';
+import { MarkdownContent } from '@backstage/core-components';
+import { MetadataItem } from '../../../MetadataItem';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import { isRuleFailing } from '../../../../utils/rules';
 
 const useStyles = makeStyles({
   rule: {
@@ -35,7 +40,7 @@ const useStyles = makeStyles({
 });
 
 interface RuleResultDetailsProps {
-  rule: ScorecardServiceScoreRuleName;
+  rule: ScorecardServiceScoresRule;
   hideWeight?: boolean;
 }
 
@@ -44,10 +49,21 @@ export const RuleResultDetails = ({
   hideWeight,
 }: RuleResultDetailsProps) => {
   const classes = useStyles();
-  const isFailing = rule.score === 0;
-  
+
+  const [open, setOpen] = useState(false);
+  const showExpandButton = rule.rule.description || rule.rule.title;
+  const hasTitle = !!rule.rule.title;
+  const isFailing = isRuleFailing(rule);
+
   return (
     <ListItem alignItems="flex-start">
+      {showExpandButton && (
+        <ListItemAvatar>
+          <IconButton size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
+          </IconButton>
+        </ListItemAvatar>
+      )}
       <ListItemAvatar>
         {!isFailing ? (
           <CheckIcon color="primary" />
@@ -55,39 +71,51 @@ export const RuleResultDetails = ({
           <ErrorIcon color="error" />
         )}
       </ListItemAvatar>
-      <Grid
-        container
-        direction="row"
-        justify="space-between"
-        alignItems="center"
-        className={classes.rule}
-      >
-        <Grid item xs={9}>
-          <ListItemText
-            primary={ruleName(rule.rule)}
-            style={{ wordWrap: 'break-word' }}
-          />
+      <ListItem>
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          className={classes.rule}
+        >
+          <Grid item xs={10}>
+            <ListItemText
+              primary={ruleName(rule.rule)}
+              style={{ wordWrap: 'break-word' }}
+            />
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <>
+                {rule.rule.description && (
+                  <MetadataItem gridSizes={{ xs: 12 }} label="Description">
+                    <MarkdownContent content={rule.rule.description} />
+                  </MetadataItem>
+                )}
+                {hasTitle && (
+                  <MetadataItem gridSizes={{ xs: 12 }} label="Expression">
+                    {rule.rule.expression}
+                  </MetadataItem>
+                )}
+              </>
+            </Collapse>
+          </Grid>
+          {rule.error && (
+            <Grid item xs={10}>
+              <Typography color="error" style={{ wordWrap: 'break-word' }}>
+                {rule.error}
+              </Typography>
+            </Grid>
+          )}
+          {isFailing && rule.rule.failureMessage && (
+            <Grid item xs={10}>
+              <Typography color="error" style={{ wordWrap: 'break-word' }}>
+                <MarkdownContent content={rule.rule.failureMessage} />
+              </Typography>
+            </Grid>
+          )}
         </Grid>
-        {hideWeight !== true && (
-          <Grid item>
-            <ListItemText primary={`${rule.rule.weight}`} />
-          </Grid>
-        )}
-        {rule.error && (
-          <Grid item xs={9}>
-            <Typography color="error" style={{ wordWrap: 'break-word' }}>
-              {rule.error}
-            </Typography>
-          </Grid>
-        )}
-        {isFailing && rule.rule.failureMessage && (
-          <Grid item xs={9}>
-            <Typography color="error" style={{ wordWrap: 'break-word' }}>
-              {rule.rule.failureMessage}
-            </Typography>
-          </Grid>
-        )}
-      </Grid>
+      </ListItem>
+      {hideWeight !== true && <ListItemText primary={`${rule.rule.weight}`} />}
     </ListItem>
   );
 };

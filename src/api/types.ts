@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
+interface ScorecardCreator {
+  name: string;
+  email: string;
+}
+
 export interface Scorecard {
-  creator: { name: string; email: string };
+  creator: ScorecardCreator;
   id: number;
   name: string;
   description?: string;
   rules: Rule[];
   tags: ServiceGroup[];
+  excludedTags: ServiceGroup[];
+  filterQuery?: string;
   nextUpdated?: string;
 }
 
@@ -30,9 +37,10 @@ export interface RuleName {
 }
 
 export interface Rule extends RuleName {
-  id: string;
+  id: number;
   description?: string;
-  dateCreated: string;
+  failureMessage?: string;
+  dateCreated?: string;
   weight: number;
 }
 
@@ -84,6 +92,12 @@ export interface ScorecardScoreLadderLevel {
 export interface ScorecardScoreLadderResult {
   ladderDetails: ScorecardScoreLadderDetails;
   currentLevel?: ScorecardScoreLadderLevel;
+}
+
+export interface ScorecardScoreNextSteps {
+  currentLevel?: ScorecardScoreLadderLevel;
+  nextLevel?: ScorecardScoreLadderLevel;
+  rulesToComplete: ScorecardLevelRule[];
 }
 
 export interface ServiceLadderLevels {

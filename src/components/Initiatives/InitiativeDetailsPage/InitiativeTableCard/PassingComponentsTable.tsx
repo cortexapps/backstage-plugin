@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,8 +65,8 @@ export const PassingComponentsTable = ({
                     <Gauge
                       value={1}
                       textOverride={`${numRules} / ${numRules}`}
-                      strokeWidth={8}
-                      trailWidth={8}
+                      strokeWidth={10}
+                      trailWidth={10}
                     />
                   </Box>
                   <Box alignSelf="center">

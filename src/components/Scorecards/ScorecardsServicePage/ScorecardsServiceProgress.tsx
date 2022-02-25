@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,19 +32,38 @@ import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { Timeseries } from '../../Timeseries';
 import moment from 'moment';
 import Box from '@material-ui/core/Box';
-import { ScorecardServiceScoreRuleName } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { Point } from '@nivo/line';
-import { toScorecardServiceScoreRuleName } from '../../../utils/scorecards';
 import {
   getLookbackRange,
   Lookback,
   lookbackLabels,
 } from '../../../utils/lookback';
+import { RuleResult, ScorecardServiceScoresRule } from '../../../api/types';
 
 interface ScorecardsServiceProgressProps {
   scorecardId: string;
   entityRef: EntityRef;
-  setSelectedRules: (rules: ScorecardServiceScoreRuleName[]) => void;
+  setSelectedRules: (rules: ScorecardServiceScoresRule[]) => void;
+}
+
+/**
+ * Convert cached results to standardized RuleName version.
+ * TODO: Use current scorecards' rules to use titles where possible
+ * @param cachedRuleResults Cached historical results per rule.
+ */
+export function toScorecardServiceScoresRule(
+  cachedRuleResults: RuleResult[],
+): ScorecardServiceScoresRule[] {
+  return cachedRuleResults.map(ruleResult => {
+    return {
+      ...ruleResult,
+      rule: {
+        id: ruleResult.id,
+        expression: ruleResult.expression,
+        weight: ruleResult.weight,
+      },
+    };
+  });
 }
 
 export const ScorecardsServiceProgress = ({
@@ -130,7 +149,7 @@ export const ScorecardsServiceProgress = ({
           data={[{ id: `${scorecardId}-${entityRef}`, data: data }]}
           onClick={(point: Point) => {
             setSelectedRules(
-              toScorecardServiceScoreRuleName(
+              toScorecardServiceScoresRule(
                 historicalScores[point.index].ruleResults,
               ),
             );

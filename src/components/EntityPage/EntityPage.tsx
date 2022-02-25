@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   Content,
+  ContentHeader,
   EmptyState,
   Progress,
   WarningPanel,
@@ -23,10 +24,10 @@ import {
 import { Grid } from '@material-ui/core';
 import { EntityScorecardsCard } from './EntityScorecardsCard';
 import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
-import { EntityScorecardOverview } from './EntityScorecardOverview';
 import { stringifyAnyEntityRef } from '../../utils/types';
 import { useCortexApi } from '../../utils/hooks';
-import { EntityScorecardRules } from './EntityScorecardRules';
+import { EntityScorecardDetails } from './EntityScorecardDetails';
+import { ScorecardServiceRefLink } from '../ScorecardServiceRefLink';
 
 export const EntityPage = () => {
   const {
@@ -92,20 +93,42 @@ export const EntityPage = () => {
     );
   }
 
+  if (selectedScorecardId === undefined) {
+    return <EmptyState missing="data" title="Select a scorecard" />;
+  }
+
+  if (selectedScore === undefined) {
+    return (
+      <WarningPanel
+        severity="error"
+        title="Scorecard has not been evaluated."
+      />
+    );
+  }
+
   return (
     <Content>
+      <ContentHeader title="Scorecards">
+        <ScorecardServiceRefLink
+          scorecardId={selectedScore.scorecard.id}
+          componentRef={stringifyAnyEntityRef(entity)}
+        >
+          <b>View all details</b>
+        </ScorecardServiceRefLink>
+      </ContentHeader>
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <EntityScorecardsCard
-            componentRef={stringifyAnyEntityRef(entity)}
             scores={scores}
             onSelect={setSelectedScorecardId}
             selectedScorecardId={selectedScorecardId}
           />
         </Grid>
         <Grid item lg={8}>
-          <EntityScorecardOverview score={selectedScore} />
-          <EntityScorecardRules score={selectedScore} />
+          <EntityScorecardDetails
+            scorecardId={selectedScorecardId}
+            score={selectedScore}
+          />
         </Grid>
       </Grid>
     </Content>

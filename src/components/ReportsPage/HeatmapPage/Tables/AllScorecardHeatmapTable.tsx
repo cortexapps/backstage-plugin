@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ export const AllScorecardsHeatmapTable = ({
           return (
             <TableRow key={groupScore.identifier}>
               <TableCell>
-                {groupBy === GroupByOption.SERVICE ? (
+                {groupBy !== GroupByOption.SERVICE ? (
                   <>{groupScore.identifier!!}</>
                 ) : (
                   <EntityRefLink

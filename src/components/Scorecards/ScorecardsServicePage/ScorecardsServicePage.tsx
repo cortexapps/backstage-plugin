@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,13 +28,11 @@ import { scorecardServiceDetailsRouteRef } from '../../../routes';
 import { Gauge } from '../../Gauge';
 import Box from '@material-ui/core/Box';
 import { DefaultEntityRefLink } from '../../DefaultEntityLink';
-import {
-  ScorecardResultDetails,
-  ScorecardServiceScoreRuleName,
-} from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
+import { ScorecardResultDetails } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
+import { ScorecardServiceScoresRule } from '../../../api/types';
 
 const useStyles = makeStyles({
   progress: {
@@ -54,7 +52,7 @@ export const ScorecardsServicePage = () => {
   const classes = useStyles();
 
   const [selectedRules, setSelectedRules] = useState<
-    ScorecardServiceScoreRuleName[]
+    ScorecardServiceScoresRule[]
   >([]);
 
   const { value, loading, error } = useAsync(async () => {
@@ -99,7 +97,11 @@ export const ScorecardsServicePage = () => {
         style={{ marginBottom: '20px' }}
       >
         <Box alignSelf="center" width={1 / 16}>
-          <Gauge value={score.scorePercentage} strokeWidth={8} trailWidth={8} />
+          <Gauge
+            value={score.scorePercentage}
+            strokeWidth={10}
+            trailWidth={10}
+          />
         </Box>
         <Box alignSelf="center" textAlign="center">
           <Typography variant="h4" component="h2">
@@ -115,9 +117,7 @@ export const ScorecardsServicePage = () => {
           </InfoCard>
         </Grid>
         <Grid item lg={8} xs={12}>
-          {ladder && (
-            <ScorecardsServiceNextRules ladder={ladder} score={score} />
-          )}
+          {ladder && <ScorecardsServiceNextRules scorecardId={+scorecardId} />}
           <InfoCard title="Score Progress" className={classes.progress}>
             <ScorecardsServiceProgress
               scorecardId={scorecardId}

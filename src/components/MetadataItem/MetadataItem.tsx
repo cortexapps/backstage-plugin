@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ const useStyles = makeStyles(theme => ({
     whiteSpace: 'nowrap',
   },
   value: {
-    fontWeight: 'bold',
     overflow: 'hidden',
     lineHeight: '24px',
     wordBreak: 'break-word',

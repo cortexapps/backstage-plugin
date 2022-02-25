@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,12 @@ import {
   TableRow,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-
 import { Gauge } from '../Gauge/Gauge';
 import { SystemPageRowDetails } from './SystemPageRowDetails';
 import { ScorecardRefLink } from '../ScorecardRefLink';
 
 import { ScorecardScore, ScorecardServiceScore } from '../../api/types';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 const useStyles = makeStyles({
   root: {
@@ -64,7 +63,7 @@ export const SystemPageRow: React.FC<Props> = ({
       <TableRow className={classes.root}>
         <TableCell className={classes.openIcon}>
           <IconButton size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
           </IconButton>
         </TableCell>
         <TableCell>
@@ -74,11 +73,11 @@ export const SystemPageRow: React.FC<Props> = ({
             justifyContent="flex-start"
             alignItems="center"
           >
-            <Box alignSelf="center" width={1 / 8}>
+            <Box alignSelf="center" width={1 / 10}>
               <Gauge
                 value={score?.scorePercentage ?? 0}
-                strokeWidth={8}
-                trailWidth={8}
+                strokeWidth={10}
+                trailWidth={10}
               />
             </Box>
             <Box alignSelf="center" flex="1">

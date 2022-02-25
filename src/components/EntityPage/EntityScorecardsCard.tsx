@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,14 +32,12 @@ const useStyles = makeStyles<BackstageTheme>(theme => ({
 }));
 
 interface EntityScorecardsCardProps {
-  componentRef: string;
   scores: ServiceScorecardScore[];
   selectedScorecardId?: number;
   onSelect: (scorecardId: number) => void;
 }
 
 export const EntityScorecardsCard = ({
-  componentRef,
   scores,
   selectedScorecardId,
   onSelect,
@@ -47,12 +45,11 @@ export const EntityScorecardsCard = ({
   const classes = useStyles();
 
   return (
-    <InfoCard title="Scorecards">
+    <InfoCard>
       <Table className={classes.table}>
         <TableBody>
           {scores.map(score => (
             <EntityScorecardsCardRow
-              componentRef={componentRef}
               key={score.scorecard.id}
               score={score}
               onSelect={() => onSelect(score.scorecard.id)}
