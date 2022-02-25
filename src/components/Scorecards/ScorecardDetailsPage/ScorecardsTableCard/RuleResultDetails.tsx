@@ -31,6 +31,7 @@ import { MarkdownContent } from '@backstage/core-components';
 import { MetadataItem } from '../../../MetadataItem';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import { isRuleFailing } from '../../../../utils/rules';
 
 const useStyles = makeStyles({
   rule: {
@@ -52,14 +53,16 @@ export const RuleResultDetails = ({
   const [open, setOpen] = useState(false);
   const showExpandButton = rule.rule.description || rule.rule.title;
   const hasTitle = !!rule.rule.title;
-  const isFailing = rule.score === 0;
+  const isFailing = isRuleFailing(rule);
 
   return (
     <ListItem alignItems="flex-start">
       {showExpandButton && (
-        <IconButton size="small" onClick={() => setOpen(!open)}>
-          {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
-        </IconButton>
+        <ListItemAvatar>
+          <IconButton size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
+          </IconButton>
+        </ListItemAvatar>
       )}
       <ListItemAvatar>
         {!isFailing ? (
@@ -68,48 +71,50 @@ export const RuleResultDetails = ({
           <ErrorIcon color="error" />
         )}
       </ListItemAvatar>
-      <Grid
-        container
-        direction="row"
-        justify="space-between"
-        alignItems="center"
-        className={classes.rule}
-      >
-        <Grid item xs={10}>
-          <ListItemText
-            primary={ruleName(rule.rule)}
-            style={{ wordWrap: 'break-word' }}
-          />
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <>
-              {rule.rule.description && (
-                <MetadataItem gridSizes={{ xs: 12 }} label="Description">
-                  <MarkdownContent content={rule.rule.description} />
-                </MetadataItem>
-              )}
-              {hasTitle && (
-                <MetadataItem gridSizes={{ xs: 12 }} label="Expression">
-                  {rule.rule.expression}
-                </MetadataItem>
-              )}
-            </>
-          </Collapse>
+      <ListItem>
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          className={classes.rule}
+        >
+          <Grid item xs={10}>
+            <ListItemText
+              primary={ruleName(rule.rule)}
+              style={{ wordWrap: 'break-word' }}
+            />
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <>
+                {rule.rule.description && (
+                  <MetadataItem gridSizes={{ xs: 12 }} label="Description">
+                    <MarkdownContent content={rule.rule.description} />
+                  </MetadataItem>
+                )}
+                {hasTitle && (
+                  <MetadataItem gridSizes={{ xs: 12 }} label="Expression">
+                    {rule.rule.expression}
+                  </MetadataItem>
+                )}
+              </>
+            </Collapse>
+          </Grid>
+          {rule.error && (
+            <Grid item xs={10}>
+              <Typography color="error" style={{ wordWrap: 'break-word' }}>
+                {rule.error}
+              </Typography>
+            </Grid>
+          )}
+          {isFailing && rule.rule.failureMessage && (
+            <Grid item xs={10}>
+              <Typography color="error" style={{ wordWrap: 'break-word' }}>
+                <MarkdownContent content={rule.rule.failureMessage} />
+              </Typography>
+            </Grid>
+          )}
         </Grid>
-        {rule.error && (
-          <Grid item xs={10}>
-            <Typography color="error" style={{ wordWrap: 'break-word' }}>
-              {rule.error}
-            </Typography>
-          </Grid>
-        )}
-        {isFailing && rule.rule.failureMessage && (
-          <Grid item xs={10}>
-            <Typography color="error" style={{ wordWrap: 'break-word' }}>
-              <MarkdownContent content={rule.rule.failureMessage} />
-            </Typography>
-          </Grid>
-        )}
-      </Grid>
+      </ListItem>
       {hideWeight !== true && <ListItemText primary={`${rule.rule.weight}`} />}
     </ListItem>
   );

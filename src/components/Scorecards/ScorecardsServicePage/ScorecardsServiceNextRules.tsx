@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography, Divider } from '@material-ui/core';
 import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
 import { useDetailCardStyles } from '../../../styles/styles';
 import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
@@ -71,7 +71,7 @@ export const ScorecardsServiceNextRules = ({
     <InfoCard title="Ladder Progress" className={classes.root}>
       <Grid container direction="column">
         <Grid item>
-          {nextSteps.currentLevel !== undefined ? (
+          {nextSteps.currentLevel ? (
             <Typography variant="subtitle1" className={classes.level}>
               <b>Current Level: </b> {nextSteps.currentLevel.name}
               <ScorecardLadderLevelBadge
@@ -85,8 +85,9 @@ export const ScorecardsServiceNextRules = ({
             </Typography>
           )}
         </Grid>
+        <Divider variant="middle" />
         <Grid item>
-          {nextSteps.nextLevel !== undefined ? (
+          {nextSteps.nextLevel ? (
             <Typography variant="subtitle1" className={classes.level}>
               <b>Next Level: </b> {nextSteps.nextLevel.name}
               <ScorecardLadderLevelBadge

@@ -43,7 +43,7 @@ export const ScorecardResultDetails = ({
     <List>
       {sortedRules.length === 0 && (
         <ListItem alignItems="flex-start">
-          <Typography variant="body1">No rules.</Typography>
+          <Typography variant="body1">No rules</Typography>
         </ListItem>
       )}
       {sortedRules.map((rule, i) => (
