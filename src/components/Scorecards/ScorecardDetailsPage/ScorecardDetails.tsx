@@ -27,6 +27,7 @@ import { ScorecardFilterCard } from './ScorecardFilterCard';
 import { ScorecardsTableCard } from './ScorecardsTableCard';
 import { Predicate } from '../../../utils/types';
 import { ScorecardLaddersCard } from './ScorecardLaddersCard';
+import { ScorecardStatsCard } from './ScorecardStatsCard';
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 
@@ -64,6 +65,7 @@ export const ScorecardDetails = ({
           />
         </Grid>
         <Grid item lg={8} xs={12}>
+          <ScorecardStatsCard scores={filteredScores} />
           <ScorecardsTableCard
             scorecardId={scorecard.id}
             scores={filteredScores}
