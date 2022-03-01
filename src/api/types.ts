@@ -211,6 +211,7 @@ export interface Initiative {
   scorecard: Scorecard;
   scores: InitiativeServiceScores[];
   emphasizedRules: InitiativeRule[];
+  emphasizedLevels: InitiativeLevel[];
   targetDate: string;
   targetScore?: number;
   tags: ServiceGroup[];
@@ -219,6 +220,15 @@ export interface Initiative {
 export interface InitiativeRule {
   ruleId: number;
   expression: string;
+  title: string;
+  description?: string;
+}
+
+export interface InitiativeLevel {
+  ladderId: number;
+  levelId: number;
+  levelName: string;
+  levelColor: string;
 }
 
 export interface InitiativeServiceScores {

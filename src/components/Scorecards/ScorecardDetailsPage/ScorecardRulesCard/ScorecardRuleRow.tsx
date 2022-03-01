@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Rule, ruleName, ScorecardLevelRule } from '../../../../api/types';
+import {
+  InitiativeRule,
+  Rule,
+  ruleName,
+  ScorecardLevelRule,
+} from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import React, { useState } from 'react';
 import { Collapse, Grid, IconButton, Typography } from '@material-ui/core';
@@ -23,7 +28,7 @@ import { MetadataItem } from '../../../MetadataItem';
 import { MarkdownContent } from '@backstage/core-components';
 
 interface ScorecardRuleRowProps {
-  rule: Rule | ScorecardLevelRule;
+  rule: Rule | ScorecardLevelRule | InitiativeRule;
 }
 
 export const ScorecardRuleRow = ({ rule }: ScorecardRuleRowProps) => {
@@ -62,11 +67,9 @@ export const ScorecardRuleRow = ({ rule }: ScorecardRuleRowProps) => {
           </>
         </Collapse>
       </Grid>
-      {hasWeight && (
-        <Grid item lg={2}>
-          <b>{rule.weight}</b>
-        </Grid>
-      )}
+      <Grid item lg={2}>
+        {hasWeight && <b>{rule.weight}</b>}
+      </Grid>
     </React.Fragment>
   );
 };

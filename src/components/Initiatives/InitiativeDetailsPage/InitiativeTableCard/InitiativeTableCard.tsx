@@ -57,9 +57,7 @@ export const InitiativeTableCard = ({
         actionItems={filteredActionItems}
         numRules={numRules}
       />
-      {passing.length > 0 && (
-        <PassingComponentsTable componentRefs={passing} numRules={numRules} />
-      )}
+      <PassingComponentsTable componentRefs={passing} numRules={numRules} />
     </>
   );
 };

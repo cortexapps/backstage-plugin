@@ -47,6 +47,11 @@ export const PassingComponentsTable = ({
     <InfoCard title="Passing" className={classes.root}>
       <Table>
         <TableBody>
+          {componentRefs.length === 0 && (
+            <TableRow>
+              <TableCell>No passing services.</TableCell>
+            </TableRow>
+          )}
           {componentRefs.map(componentRef => (
             <TableRow key={componentRef}>
               <TableCell className={actionItemsClasses.openIcon}>
