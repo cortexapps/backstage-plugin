@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { InitiativeActionItem } from '../../../../api/types';
-import { Table, TableBody } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableRow } from '@material-ui/core';
 import { groupByString } from '../../../../utils/collections';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { FailingComponentsTableRow } from './FailingComponentsTableRow';
@@ -41,6 +41,11 @@ export const FailingComponentsTable = ({
     <InfoCard title="Failing" className={classes.root}>
       <Table>
         <TableBody>
+          {Object.keys(failingComponents).length === 0 && (
+            <TableRow>
+              <TableCell>No failing services.</TableCell>
+            </TableRow>
+          )}
           {Object.keys(failingComponents).map(componentRef => (
             <FailingComponentsTableRow
               key={componentRef}

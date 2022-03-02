@@ -22,6 +22,8 @@ import { MetadataItem } from '../../../MetadataItem';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { scorecardRouteRef } from '../../../../routes';
 import moment from 'moment/moment';
+import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
+import { ScorecardRuleRow } from '../../../Scorecards/ScorecardDetailsPage/ScorecardRulesCard/ScorecardRuleRow';
 
 interface InitiativeMetadataCardProps {
   initiative: Initiative;
@@ -53,14 +55,39 @@ export const InitiativeMetadataCard = ({
             href={scorecardRef({ id: `${initiative.scorecard.id}` })}
           />
         </MetadataItem>
-        <MetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Owner">
+        <MetadataItem gridSizes={{ xs: 12 }} label="Owner">
           {initiative.creator.name}
         </MetadataItem>
         {initiative.tags.length > 0 && (
-          <MetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Applies To">
+          <MetadataItem gridSizes={{ xs: 12 }} label="Applies To">
             {initiative.tags.map(s => (
               <Chip key={s.id} size="small" label={s.tag} />
             ))}
+          </MetadataItem>
+        )}
+        {initiative.emphasizedLevels.length !== 0 && (
+          <MetadataItem gridSizes={{ xs: 12 }} label="Prioritized Ladder Level">
+            {initiative.emphasizedLevels.map(level => (
+              <div key={`Initiative-EmphasizeLevel-${level.levelId}`}>
+                {level.levelName}
+                <ScorecardLadderLevelBadge
+                  name={level.levelName}
+                  color={level.levelColor}
+                />
+              </div>
+            ))}
+          </MetadataItem>
+        )}
+        {initiative.emphasizedRules.length !== 0 && (
+          <MetadataItem gridSizes={{ xs: 12 }} label="Prioritized Ladder Level">
+            <Grid container>
+              {initiative.emphasizedRules.map(rule => (
+                <ScorecardRuleRow
+                  key={`Initiative-EmphasizeRule-${rule.ruleId}`}
+                  rule={rule}
+                />
+              ))}
+            </Grid>
           </MetadataItem>
         )}
       </Grid>
