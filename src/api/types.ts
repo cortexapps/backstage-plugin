@@ -214,7 +214,9 @@ export interface Initiative {
   emphasizedLevels: InitiativeLevel[];
   targetDate: string;
   targetScore?: number;
+  // filters
   tags: ServiceGroup[];
+  componentRefs: string[];
 }
 
 export interface InitiativeRule {

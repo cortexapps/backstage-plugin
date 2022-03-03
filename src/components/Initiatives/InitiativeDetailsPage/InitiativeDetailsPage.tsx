@@ -29,8 +29,7 @@ import { InitiativeMetadataCard } from './InitiativeMetadataCard';
 import { InitiativeTableCard } from './InitiativeTableCard';
 import { InitiativeFilterCard } from './InitiativeFilterCard';
 import { Predicate } from '../../../utils/types';
-import { StatsCard } from '../../StatsCard';
-import { Status } from '../../../styles/styles';
+import { InitiativeStatsCard } from './InitiativeStatsCard';
 
 export const InitiativeDetailsPage = () => {
   const { id: initiativeId } = useRouteRefParams(initiativeRouteRef);
@@ -57,33 +56,6 @@ export const InitiativeDetailsPage = () => {
     );
   }, [initiative, filter]);
 
-  const numFailing = useMemo(() => {
-    return (
-      initiative?.scores
-        ?.map(score => score.componentRef)
-        ?.filter(filter)
-        ?.filter(componentRef =>
-          actionItems?.some(
-            actionItem => actionItem.componentRef === componentRef,
-          ),
-        )?.length ?? 0
-    );
-  }, [initiative, filter, actionItems]);
-
-  const numPassing = useMemo(() => {
-    return (
-      initiative?.scores
-        ?.map(score => score.componentRef)
-        ?.filter(filter)
-        ?.filter(
-          componentRef =>
-            !actionItems?.some(
-              actionItem => actionItem.componentRef === componentRef,
-            ),
-        )?.length ?? 0
-    );
-  }, [initiative, filter, actionItems]);
-
   if (loading) {
     return <Progress />;
   }
@@ -109,11 +81,10 @@ export const InitiativeDetailsPage = () => {
           />
         </Grid>
         <Grid item lg={8} xs={12}>
-          <StatsCard
-            stats={[
-              { label: 'Passing', status: Status.OKAY, value: numPassing },
-              { label: 'Failing', status: Status.ERROR, value: numFailing },
-            ]}
+          <InitiativeStatsCard
+            scores={initiative?.scores ?? []}
+            actionItems={actionItems}
+            filter={filter}
           />
           <InitiativeTableCard
             componentRefs={filteredComponentRefs}
