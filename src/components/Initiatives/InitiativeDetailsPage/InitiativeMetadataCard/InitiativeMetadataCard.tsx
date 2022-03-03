@@ -35,7 +35,6 @@ export const InitiativeMetadataCard = ({
   const classes = useDetailCardStyles();
   const scorecardRef = useRouteRef(scorecardRouteRef);
 
-  console.log(initiative);
   const filteredByServiceGroups = initiative.tags.length !== 0;
   const filteredByServices = initiative.componentRefs.length !== 0;
   const filteredByBoth = filteredByServiceGroups && filteredByServices;
