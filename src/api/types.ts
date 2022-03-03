@@ -182,6 +182,7 @@ export interface RuleResult {
 export interface ScoresByIdentifier {
   identifier?: string;
   scores: ScorecardScore[];
+  numberOfServices: number;
 }
 
 export enum GroupByOption {
