@@ -53,7 +53,7 @@ export const PassingComponentsTable = ({
             </TableRow>
           )}
           {componentRefs.map(componentRef => (
-            <TableRow key={componentRef}>
+            <TableRow key={`PassingComponentsTableRow-${componentRef}`}>
               <TableCell className={actionItemsClasses.openIcon}>
                 <IconButton size="small">
                   <KeyboardArrowDownIcon />

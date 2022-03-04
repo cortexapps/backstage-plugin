@@ -43,10 +43,16 @@ export const FilterCard = <T extends {}>({
 
   return (
     <InfoCard title="Filter By" className={classes.root}>
-      {filterDefinitions.map((filterDefinition, i) => {
-        const setPredicate = (filter: Predicate<T>) => updateFilter(i, filter);
+      {filterDefinitions.map((filterDefinition, idx) => {
+        const setPredicate = (filter: Predicate<T>) =>
+          updateFilter(idx, filter);
+
         return (
-          <Filters key={i} setPredicate={setPredicate} {...filterDefinition} />
+          <Filters
+            key={`Filters-${filterDefinition.name}-${idx}`}
+            setPredicate={setPredicate}
+            {...filterDefinition}
+          />
         );
       })}
     </InfoCard>

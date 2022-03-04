@@ -135,7 +135,7 @@ export const Filters = <T extends {}>({
       {Object.keys(filters).length <= 10 ? (
         <React.Fragment>
           {Object.keys(filters).map(id => (
-            <React.Fragment key={`${name}-${id}`}>
+            <React.Fragment key={`Filter-${name}-${id}`}>
               <Grid item lg={2}>
                 <Checkbox
                   checked={checkedFilters[id] ?? false}

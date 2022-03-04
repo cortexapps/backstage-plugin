@@ -32,7 +32,7 @@ export const GroupByDropdown = ({
       <InputLabel style={{ minWidth: '100px' }}>Group By</InputLabel>
       <Select value={groupBy} onChange={setGroupBy}>
         {enumKeys(GroupByOption).map(key => (
-          <MenuItem key={key} value={GroupByOption[key]}>
+          <MenuItem key={`GroupByOption-${key}`} value={GroupByOption[key]}>
             {GroupByOption[key].valueOf()}
           </MenuItem>
         ))}

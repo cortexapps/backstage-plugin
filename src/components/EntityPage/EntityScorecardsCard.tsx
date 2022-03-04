@@ -50,7 +50,7 @@ export const EntityScorecardsCard = ({
         <TableBody>
           {scores.map(score => (
             <EntityScorecardsCardRow
-              key={score.scorecard.id}
+              key={`EntityScorecardsCardRow-${score.scorecard.id}`}
               score={score}
               onSelect={() => onSelect(score.scorecard.id)}
               selected={selectedScorecardId === score.scorecard.id}

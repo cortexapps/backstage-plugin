@@ -82,7 +82,11 @@ export const ScorecardMetadataCard = ({
               {(scorecard.tags.length !== 0 || showAllTag) && (
                 <MetadataItem gridSizes={{ xs: 12 }} label="Applies to">
                   {scorecard.tags.map(s => (
-                    <Chip key={s.id} size="small" label={s.tag} />
+                    <Chip
+                      key={`Scorecard-Filter-IncludedServiceGroup-${s.id}`}
+                      size="small"
+                      label={s.tag}
+                    />
                   ))}
                   {showAllTag && <Chip size="small" label="All" />}
                 </MetadataItem>
@@ -90,7 +94,11 @@ export const ScorecardMetadataCard = ({
               {scorecard.excludedTags.length !== 0 && (
                 <MetadataItem gridSizes={{ xs: 12 }} label="Does not apply to">
                   {scorecard.excludedTags.map(s => (
-                    <Chip key={s.id} size="small" label={s.tag} />
+                    <Chip
+                      key={`Scorecard-Filter-ExcludedServiceGroup-${s.id}`}
+                      size="small"
+                      label={s.tag}
+                    />
                   ))}
                 </MetadataItem>
               )}

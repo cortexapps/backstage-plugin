@@ -49,7 +49,7 @@ export const HeatmapTableByGroup = ({
           const averageRuleScores = getAverageRuleScores(values, serviceCount);
 
           return (
-            <TableRow key={firstScore.componentRef}>
+            <TableRow key={`TableRow-${firstScore.componentRef}`}>
               <HeatmapCell text={identifier} />
               <HeatmapCell text={serviceCount.toString()} />
               <HeatmapCell score={averageScore} />

@@ -15,16 +15,8 @@
  */
 import React, { useMemo } from 'react';
 import { EntityRef } from '@backstage/catalog-model';
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-} from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { useDropdown } from '../../../utils/hooks';
-import { enumKeys } from '../../../utils/types';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
@@ -33,12 +25,9 @@ import { Timeseries } from '../../Timeseries';
 import moment from 'moment';
 import Box from '@material-ui/core/Box';
 import { Point } from '@nivo/line';
-import {
-  getLookbackRange,
-  Lookback,
-  lookbackLabels,
-} from '../../../utils/lookback';
+import { getLookbackRange, Lookback } from '../../../utils/lookback';
 import { RuleResult, ScorecardServiceScoresRule } from '../../../api/types';
+import { LookbackDropdown } from '../../ReportsPage/Common/LookbackDropdown';
 
 interface ScorecardsServiceProgressProps {
   scorecardId: string;
@@ -134,16 +123,7 @@ export const ScorecardsServiceProgress = ({
 
   return (
     <>
-      <FormControl>
-        <InputLabel>Time Range</InputLabel>
-        <Select value={lookback} onChange={setLookback}>
-          {enumKeys(Lookback).map(key => (
-            <MenuItem key={key} value={Lookback[key]}>
-              {lookbackLabels(Lookback[key])}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <LookbackDropdown lookback={lookback} setLookback={setLookback} />
       {data.length > 0 && (
         <Timeseries
           data={[{ id: `${scorecardId}-${entityRef}`, data: data }]}

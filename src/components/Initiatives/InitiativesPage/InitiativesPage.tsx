@@ -66,7 +66,10 @@ const InitiativesPageBody = () => {
   return (
     <ItemCardGrid>
       {initiatives.map(initiative => (
-        <InitiativeCard key={initiative.id} initiative={initiative} />
+        <InitiativeCard
+          key={`InitiativeCard-${initiative.id}`}
+          initiative={initiative}
+        />
       ))}
     </ItemCardGrid>
   );

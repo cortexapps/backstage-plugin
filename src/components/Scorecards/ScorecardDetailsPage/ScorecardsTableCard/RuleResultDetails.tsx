@@ -31,7 +31,7 @@ import { MarkdownContent } from '@backstage/core-components';
 import { MetadataItem } from '../../../MetadataItem';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import { isRuleFailing } from '../../../../utils/rules';
+import { isRuleFailing } from '../../../../utils/ScorecardRules';
 
 const useStyles = makeStyles({
   rule: {

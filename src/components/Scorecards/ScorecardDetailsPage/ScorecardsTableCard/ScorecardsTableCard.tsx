@@ -42,7 +42,7 @@ export const ScorecardsTableCard = ({
               .sort((a, b) => b.scorePercentage - a.scorePercentage)
               .map(score => (
                 <ScorecardsTableRow
-                  key={score.serviceId}
+                  key={`ScorecardsTableRow-${score.serviceId}`}
                   scorecardId={scorecardId}
                   score={score}
                 />
