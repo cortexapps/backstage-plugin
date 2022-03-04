@@ -16,24 +16,24 @@
 import React from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { enumKeys } from '../../../utils/types';
-import { HeaderType } from '../../../api/types';
+import { Lookback, lookbackLabels } from '../../../utils/lookback';
 
-interface HeaderTypeDropdownProps {
-  headerType: HeaderType | undefined;
-  setHeaderType: (event: React.ChangeEvent<{ value: unknown }>) => void;
+interface LookbackDropdownProps {
+  lookback: Lookback | undefined;
+  setLookback: (event: React.ChangeEvent<{ value: unknown }>) => void;
 }
 
-export const HeaderTypeDropdown = ({
-  headerType,
-  setHeaderType,
-}: HeaderTypeDropdownProps) => {
+export const LookbackDropdown = ({
+  lookback,
+  setLookback,
+}: LookbackDropdownProps) => {
   return (
     <FormControl>
-      <InputLabel style={{ minWidth: '100px' }}>Driven By</InputLabel>
-      <Select value={headerType} onChange={setHeaderType}>
-        {enumKeys(HeaderType).map(key => (
-          <MenuItem key={`HeaderType-${key}`} value={HeaderType[key]}>
-            {HeaderType[key].valueOf()}
+      <InputLabel>Time Range</InputLabel>
+      <Select value={lookback} onChange={setLookback}>
+        {enumKeys(Lookback).map(key => (
+          <MenuItem key={`Lookback-${key}`} value={Lookback[key]}>
+            {lookbackLabels(Lookback[key])}
           </MenuItem>
         ))}
       </Select>

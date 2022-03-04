@@ -29,12 +29,12 @@ import {
 } from '@material-ui/core';
 import { ScorecardSelector } from '../ScorecardSelector';
 import { useCortexApi, useDropdown } from '../../../utils/hooks';
-import { enumKeys } from '../../../utils/types';
-import { Lookback, lookbackLabels } from '../../../utils/lookback';
+import { Lookback } from '../../../utils/lookback';
 import { AggregatedScorecardProgress } from './AggregatedScorecardProgress';
 import { GroupByOption, ruleName } from '../../../api/types';
 import { SerieFilter } from './SerieFilter';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
+import { LookbackDropdown } from '../Common/LookbackDropdown';
 
 export const ProgressPage = () => {
   const [selectedScorecardId, setSelectedScorecardId] = useState<
@@ -86,16 +86,7 @@ export const ProgressPage = () => {
               />
             </Grid>
             <Grid item lg={4}>
-              <FormControl>
-                <InputLabel>Time Range</InputLabel>
-                <Select value={lookback} onChange={setLookback}>
-                  {enumKeys(Lookback).map(key => (
-                    <MenuItem key={key} value={Lookback[key]}>
-                      {lookbackLabels(Lookback[key])}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <LookbackDropdown lookback={lookback} setLookback={setLookback} />
             </Grid>
           </Grid>
           <Grid container style={{ marginTop: '20px' }}>
@@ -114,7 +105,7 @@ export const ProgressPage = () => {
                   >
                     <MenuItem value={undefined}>Overall</MenuItem>
                     {scorecard.rules.map(rule => (
-                      <MenuItem key={rule.id} value={rule.expression}>
+                      <MenuItem key={`Rule-${rule.id}`} value={rule.expression}>
                         {ruleName(rule)}
                       </MenuItem>
                     ))}

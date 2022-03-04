@@ -46,8 +46,12 @@ export const ScorecardResultDetails = ({
           <Typography variant="body1">No rules</Typography>
         </ListItem>
       )}
-      {sortedRules.map((rule, i) => (
-        <RuleResultDetails key={i} rule={rule} hideWeight={hideWeights} />
+      {sortedRules.map(rule => (
+        <RuleResultDetails
+          key={`RuleResultDetails-${rule.rule.id}`}
+          rule={rule}
+          hideWeight={hideWeights}
+        />
       ))}
     </List>
   );

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Initiative } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { InfoCard, MarkdownContent } from '@backstage/core-components';
@@ -24,6 +24,7 @@ import { scorecardRouteRef } from '../../../../routes';
 import moment from 'moment/moment';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
 import { ScorecardRuleRow } from '../../../Scorecards/ScorecardDetailsPage/ScorecardRulesCard/ScorecardRuleRow';
+import { sortRules } from '../../../../utils/ScorecardRules';
 
 interface InitiativeMetadataCardProps {
   initiative: Initiative;
@@ -34,6 +35,11 @@ export const InitiativeMetadataCard = ({
 }: InitiativeMetadataCardProps) => {
   const classes = useDetailCardStyles();
   const scorecardRef = useRouteRef(scorecardRouteRef);
+
+  const sortedEmphasizedRules = useMemo(
+    () => sortRules(initiative.emphasizedRules),
+    [initiative],
+  );
 
   const filteredByServiceGroups = initiative.tags.length !== 0;
   const filteredByServices = initiative.componentRefs.length !== 0;
@@ -70,13 +76,6 @@ export const InitiativeMetadataCard = ({
         <MetadataItem gridSizes={{ xs: 12 }} label="Owner">
           {initiative.creator.name}
         </MetadataItem>
-        {initiative.tags.length > 0 && (
-          <MetadataItem gridSizes={{ xs: 12 }} label="Applies To">
-            {initiative.tags.map(s => (
-              <Chip key={s.id} size="small" label={s.tag} />
-            ))}
-          </MetadataItem>
-        )}
         {initiative.emphasizedLevels.length !== 0 && (
           <MetadataItem gridSizes={{ xs: 12 }} label="Prioritized Ladder Level">
             {initiative.emphasizedLevels.map(level => (
@@ -90,10 +89,10 @@ export const InitiativeMetadataCard = ({
             ))}
           </MetadataItem>
         )}
-        {initiative.emphasizedRules.length !== 0 && (
+        {sortedEmphasizedRules.length !== 0 && (
           <MetadataItem gridSizes={{ xs: 12 }} label="Prioritized Ladder Level">
             <Grid container>
-              {initiative.emphasizedRules.map(rule => (
+              {sortedEmphasizedRules.map(rule => (
                 <ScorecardRuleRow
                   key={`Initiative-EmphasizeRule-${rule.ruleId}`}
                   rule={rule}
@@ -109,7 +108,11 @@ export const InitiativeMetadataCard = ({
               label={filteredByBoth ? 'Service Groups' : 'Applies to'}
             >
               {initiative.tags.map(s => (
-                <Chip key={s.id} size="small" label={s.tag} />
+                <Chip
+                  key={`Initiative-Filter-ServiceGroup-${s.id}`}
+                  size="small"
+                  label={s.tag}
+                />
               ))}
               {initiative.tags.length === 0 && (
                 <Chip size="small" label="All" />

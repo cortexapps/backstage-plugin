@@ -62,7 +62,7 @@ export const LevelsDrivenTable = ({
           const firstScore = values?.[0];
 
           return (
-            <TableRow key={firstScore.componentRef}>
+            <TableRow key={`TableRow-${firstScore.componentRef}`}>
               {notGroupedByServices ? (
                 <TableCell>
                   <Typography variant="h6" style={{ display: 'inline-block' }}>

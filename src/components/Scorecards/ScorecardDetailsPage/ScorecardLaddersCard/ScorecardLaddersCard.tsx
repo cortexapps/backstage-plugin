@@ -78,7 +78,10 @@ export const ScorecardLaddersCard = ({ ladder }: ScorecardLaddersCardProps) => {
     <InfoCard title="Ladders" className={classes.root}>
       <Grid container>
         {levels.map(level => (
-          <ScorecardLevelsRow key={level.id} level={level} />
+          <ScorecardLevelsRow
+            key={`ScorecardLevelsRow-${level.id}`}
+            level={level}
+          />
         ))}
       </Grid>
     </InfoCard>

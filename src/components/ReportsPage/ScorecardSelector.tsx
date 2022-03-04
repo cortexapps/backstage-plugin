@@ -73,7 +73,10 @@ export const ScorecardSelector = ({
           onChange={event => onSelect(event.target.value as number | undefined)}
         >
           {sortedScorecards.map(scorecard => (
-            <MenuItem key={scorecard.id} value={scorecard.id}>
+            <MenuItem
+              key={`ScorecardOption-${scorecard.id}`}
+              value={scorecard.id}
+            >
               {scorecard.name}
             </MenuItem>
           ))}

@@ -48,7 +48,7 @@ export const FailingComponentsTable = ({
           )}
           {Object.keys(failingComponents).map(componentRef => (
             <FailingComponentsTableRow
-              key={componentRef}
+              key={`FailingComponentsTableRow-${componentRef}`}
               componentRef={componentRef}
               actionItems={failingComponents[componentRef]}
               numRules={numRules}

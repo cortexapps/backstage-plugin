@@ -16,7 +16,11 @@
 import { Card, CardActions, CardContent, CardMedia } from '@material-ui/core';
 import React from 'react';
 // import { ItemCardHeader } from '../ItemCardHeader';
-import { Button, ItemCardHeader } from '@backstage/core-components';
+import {
+  Button,
+  ItemCardHeader,
+  MarkdownContent,
+} from '@backstage/core-components';
 
 interface ListCardProps {
   name: string;
@@ -36,7 +40,11 @@ export const ListCard = ({
       <CardMedia>
         <ItemCardHeader title={name} subtitle={`By ${creatorName}`} />
       </CardMedia>
-      <CardContent>{description}</CardContent>
+      {description && (
+        <CardContent>
+          <MarkdownContent content={description} />
+        </CardContent>
+      )}
       <CardActions>
         <Button to={url} color="primary">
           Details

@@ -22,7 +22,7 @@ import {
   filterPassingRules,
   isRuleFailing,
   isRulePassing,
-} from '../../../utils/rules';
+} from '../../../utils/ScorecardRules';
 
 interface EntityScorecardRulesProps {
   score?: ServiceScorecardScore;

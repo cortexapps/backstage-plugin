@@ -97,10 +97,10 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
   return (
     <Card className={cardClasses.root}>
       <Grid container direction="row" justify="space-evenly">
-        {stats.map((stat, i) => {
+        {stats.map((stat, idx) => {
           const { formattedValue, suffix } = suffixify(stat);
           return (
-            <React.Fragment key={stat.label}>
+            <React.Fragment key={`Stat-${stat.label}`}>
               <Grid item>
                 <Box
                   flexDirection="column"
@@ -120,7 +120,7 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
                   <Typography variant="body2">{stat.label}</Typography>
                 </Box>
               </Grid>
-              {i < stats.length - 1 && (
+              {idx < stats.length - 1 && (
                 <Divider orientation="vertical" variant="middle" flexItem />
               )}
             </React.Fragment>

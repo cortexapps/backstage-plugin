@@ -51,7 +51,7 @@ export const HeatmapTableByService = ({
           const averageRuleScores = getAverageRuleScores(values, serviceCount);
 
           return (
-            <TableRow key={firstScore.componentRef}>
+            <TableRow key={`TableRow-${firstScore.componentRef}`}>
               <TableCell>
                 <EntityRefLink
                   entityRef={parseEntityName(

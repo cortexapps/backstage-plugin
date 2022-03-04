@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Scorecard } from '../../../../api/types';
 import { Grid } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import { ScorecardRuleRow } from './ScorecardRuleRow';
 import { useDetailCardStyles } from '../../../../styles/styles';
+import { sortRules } from '../../../../utils/ScorecardRules';
 
 interface ScorecardRulesCardProps {
   scorecard: Scorecard;
@@ -27,10 +28,12 @@ interface ScorecardRulesCardProps {
 export const ScorecardRulesCard = ({ scorecard }: ScorecardRulesCardProps) => {
   const classes = useDetailCardStyles();
 
+  const sortedRules = useMemo(() => sortRules(scorecard.rules), [scorecard]);
+
   return (
     <InfoCard title="Rules" className={classes.root}>
       <Grid container>
-        {scorecard.rules.map(rule => (
+        {sortedRules.map(rule => (
           <ScorecardRuleRow key={`ScorecardRuleRow-${rule.id}`} rule={rule} />
         ))}
       </Grid>
