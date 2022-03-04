@@ -35,6 +35,18 @@ export const InitiativeMetadataCard = ({
   const classes = useDetailCardStyles();
   const scorecardRef = useRouteRef(scorecardRouteRef);
 
+  const filteredByServiceGroups = initiative.tags.length !== 0;
+  const filteredByServices = initiative.componentRefs.length !== 0;
+  const filteredByBoth = filteredByServiceGroups && filteredByServices;
+
+  const filtersLabel = `Filtered ${
+    filteredByBoth
+      ? 'by Services & Service Groups'
+      : filteredByServices
+      ? `to ${initiative.componentRefs.length} Services`
+      : 'by Service Groups'
+  }`;
+
   return (
     <InfoCard title="Details" className={classes.root}>
       <Grid container>
@@ -90,6 +102,21 @@ export const InitiativeMetadataCard = ({
             </Grid>
           </MetadataItem>
         )}
+        <MetadataItem gridSizes={{ xs: 12 }} label={filtersLabel}>
+          {(filteredByServiceGroups || !filteredByServices) && (
+            <MetadataItem
+              gridSizes={{ xs: 12 }}
+              label={filteredByBoth ? 'Service Groups' : 'Applies to'}
+            >
+              {initiative.tags.map(s => (
+                <Chip key={s.id} size="small" label={s.tag} />
+              ))}
+              {initiative.tags.length === 0 && (
+                <Chip size="small" label="All" />
+              )}
+            </MetadataItem>
+          )}
+        </MetadataItem>
       </Grid>
     </InfoCard>
   );

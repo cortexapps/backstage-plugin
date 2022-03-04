@@ -80,10 +80,7 @@ export const ScorecardMetadataCard = ({
           ) : (
             <>
               {(scorecard.tags.length !== 0 || showAllTag) && (
-                <MetadataItem
-                  gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-                  label="Applies to"
-                >
+                <MetadataItem gridSizes={{ xs: 12 }} label="Applies to">
                   {scorecard.tags.map(s => (
                     <Chip key={s.id} size="small" label={s.tag} />
                   ))}
@@ -91,10 +88,7 @@ export const ScorecardMetadataCard = ({
                 </MetadataItem>
               )}
               {scorecard.excludedTags.length !== 0 && (
-                <MetadataItem
-                  gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-                  label="Does not apply to"
-                >
+                <MetadataItem gridSizes={{ xs: 12 }} label="Does not apply to">
                   {scorecard.excludedTags.map(s => (
                     <Chip key={s.id} size="small" label={s.tag} />
                   ))}
