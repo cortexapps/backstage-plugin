@@ -147,6 +147,7 @@ export class CortexClient implements CortexApi {
             new Date(b.dateCreated!!).getTime()
           );
         }),
+        numberOfServices: 1
       };
     });
   }

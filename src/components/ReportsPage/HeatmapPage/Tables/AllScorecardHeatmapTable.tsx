@@ -42,7 +42,16 @@ export const AllScorecardsHeatmapTable = ({
     () => getFormattedScorecardScores(scorecardNames, serviceScores),
     [scorecardNames, serviceScores],
   );
-  const headers = ['Entity', 'Average Score', ...scorecardNames];
+  const isGroupedByService = groupBy === GroupByOption.SERVICE;
+  const numberOfServicesOrEmpty = !isGroupedByService
+    ? ['Number of Services']
+    : [];
+  const headers = [
+    'Entity',
+    ...numberOfServicesOrEmpty,
+    'Average Score',
+    ...scorecardNames,
+  ];
 
   return (
     <Table>
@@ -61,7 +70,7 @@ export const AllScorecardsHeatmapTable = ({
           return (
             <TableRow key={`TableRow-${groupScore.identifier}`}>
               <TableCell>
-                {groupBy !== GroupByOption.SERVICE ? (
+                {!isGroupedByService ? (
                   <>{groupScore.identifier!!}</>
                 ) : (
                   <EntityRefLink
@@ -72,6 +81,11 @@ export const AllScorecardsHeatmapTable = ({
                   />
                 )}
               </TableCell>
+              {!isGroupedByService && (
+                <TableCell style={{ textAlign: 'center' }}>
+                  {groupScore.numberOfServices}
+                </TableCell>
+              )}
               <HeatmapCell
                 score={isNaN(averageScore) ? undefined : averageScore}
                 text={isNaN(averageScore) ? 'N/A' : undefined}
