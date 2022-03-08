@@ -32,7 +32,7 @@ import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
 import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
 import { applyCustomMappings } from '../utils/ComponentUtils';
-import { createApiRef, DiscoveryApi } from '@backstage/core-plugin-api';
+import {createApiRef, DiscoveryApi, IdentityApi} from '@backstage/core-plugin-api';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -40,6 +40,7 @@ export const cortexApiRef = createApiRef<CortexApi>({
 
 type Options = {
   discoveryApi: DiscoveryApi;
+  identityApi?: IdentityApi;
 };
 
 type QueryParamVal = string | string[];
@@ -50,9 +51,11 @@ function isString(val: QueryParamVal): val is string {
 
 export class CortexClient implements CortexApi {
   private readonly discoveryApi: DiscoveryApi;
+  private readonly identityApi?: IdentityApi;
 
   constructor(options: Options) {
     this.discoveryApi = options.discoveryApi;
+    this.identityApi = options.identityApi
   }
 
   async getScorecards(): Promise<Scorecard[]> {
@@ -244,7 +247,7 @@ export class CortexClient implements CortexApi {
         .join('&');
 
     const queryUrl = queryParams ? `${url}?${queryParams}` : url;
-    const response = await fetch(queryUrl);
+    const response = await this.fetchAuthenticated(queryUrl);
     const body = await response.json();
 
     if (response.status === 404) {
@@ -264,7 +267,7 @@ export class CortexClient implements CortexApi {
     const basePath = await this.getBasePath();
     const url = `${basePath}${path}`;
 
-    const response = await fetch(url, {
+    const response = await this.fetchAuthenticated(url, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
@@ -278,5 +281,24 @@ export class CortexClient implements CortexApi {
     }
 
     return responseBody;
+  }
+
+  private async fetchAuthenticated(input: RequestInfo, init?: RequestInit): Promise<Response> {
+    let token: string | undefined = undefined;
+    if (this.identityApi !== undefined) {
+      ({ token } = await this.identityApi.getCredentials());
+    }
+
+    if (token !== undefined) {
+      return fetch(input, {
+        ...init,
+        headers: {
+          ...init?.headers,
+          Authorization: `Bearer ${token}`
+        }
+      });
+    } else {
+      return fetch(input, init);
+    }
   }
 }

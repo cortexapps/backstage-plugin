@@ -19,7 +19,7 @@ import {
   createComponentExtension,
   createPlugin,
   createRoutableExtension,
-  discoveryApiRef,
+  discoveryApiRef, identityApiRef,
   TypesToApiRefs,
 } from '@backstage/core-plugin-api';
 
@@ -34,8 +34,8 @@ export const cortexPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: cortexApiRef,
-      deps: { discoveryApi: discoveryApiRef },
-      factory: ({ discoveryApi }) => new CortexClient({ discoveryApi }),
+      deps: { discoveryApi: discoveryApiRef, identityApi: identityApiRef },
+      factory: ({ discoveryApi, identityApi }) => new CortexClient({ discoveryApi, identityApi }),
     }),
     createApiFactory({
       api: extensionApiRef,
@@ -61,8 +61,8 @@ export const extendableCortexPlugin = <
     apis: [
       createApiFactory({
         api: cortexApiRef,
-        deps: { discoveryApi: discoveryApiRef },
-        factory: ({ discoveryApi }) => new CortexClient({ discoveryApi }),
+        deps: { discoveryApi: discoveryApiRef, identityApi: identityApiRef },
+        factory: ({ discoveryApi, identityApi }) => new CortexClient({ discoveryApi, identityApi }),
       }),
       createApiFactory({
         api: extensionApiRef,
