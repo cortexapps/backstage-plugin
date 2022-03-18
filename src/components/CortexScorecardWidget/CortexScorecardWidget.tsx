@@ -16,13 +16,13 @@
 import React from 'react';
 import { useCortexApi } from '../../utils/hooks';
 import { stringifyAnyEntityRef } from '../../utils/types';
-import { useEntity } from '@backstage/plugin-catalog-react';
+import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { EntityScorecardsCard } from '../EntityPage/EntityScorecardsCard';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { useNavigate, useLocation } from 'react-router';
 
 export const CortexScorecardWidget = () => {
-  const { entity, loading: entityLoading, error: entityError } = useEntity();
+  const { entity, loading: entityLoading, error: entityError } = useAsyncEntity();
   const location = useLocation();
   const navigate = useNavigate();
 

@@ -20,7 +20,7 @@ import { Gauge } from '../Gauge/Gauge';
 
 import { ScorecardServiceScore } from '../../api/types';
 import { DefaultEntityRefLink } from '../DefaultEntityLink';
-import { parseEntityName } from '@backstage/catalog-model';
+import { parseEntityRef } from '@backstage/catalog-model';
 import { defaultComponentRefContext } from '../../utils/ComponentUtils';
 
 interface Props {
@@ -66,7 +66,7 @@ export const SystemPageRowDetails: React.FC<Props> = ({
               <Box alignSelf="center" flex="1">
                 {score && (
                   <DefaultEntityRefLink
-                    entityRef={parseEntityName(
+                    entityRef={parseEntityRef(
                       score.componentRef,
                       defaultComponentRefContext,
                     )}

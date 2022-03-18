@@ -16,10 +16,10 @@
 import React from 'react';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { defaultComponentRefContext } from '../../utils/ComponentUtils';
-import { Entity, EntityName } from '@backstage/catalog-model';
+import { Entity, CompoundEntityRef } from '@backstage/catalog-model';
 
 interface DefaultEntityRefLinkProps {
-  entityRef: Entity | EntityName;
+  entityRef: Entity | CompoundEntityRef;
   children?: React.ReactNode;
 }
 

@@ -23,7 +23,7 @@ import {
 } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { EntityScorecardsCard } from './EntityScorecardsCard';
-import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
+import { useEntity } from '@backstage/plugin-catalog-react';
 import { stringifyAnyEntityRef } from '../../utils/types';
 import { useCortexApi } from '../../utils/hooks';
 import { EntityScorecardDetails } from './EntityScorecardDetails';
@@ -31,19 +31,16 @@ import { ScorecardServiceRefLink } from '../ScorecardServiceRefLink';
 import { useLocation } from 'react-router';
 
 export const EntityPage = () => {
-  const {
-    entity,
-    loading: entityLoading,
-    error: entityError,
-  } = useEntityFromUrl();
+  const { entity } = useEntity();
+  const [selectedScorecardId, setSelectedScorecardId] = useState<
+    number | undefined
+    >();
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const queryScorecardId = Number(queryParams.get('scorecardId') ?? undefined);
 
-  const [selectedScorecardId, setSelectedScorecardId] = useState<
-    number | undefined
-  >();
+
 
   const {
     value: scores,
@@ -69,16 +66,8 @@ export const EntityPage = () => {
     return scores?.find(score => score.scorecard.id === selectedScorecardId);
   }, [scores, selectedScorecardId]);
 
-  if (entityLoading || scoresLoading) {
+  if (scoresLoading) {
     return <Progress />;
-  }
-
-  if (entity === undefined || entityError) {
-    return (
-      <WarningPanel severity="error" title="Could not load entity.">
-        {entityError?.message}
-      </WarningPanel>
-    );
   }
 
   if (scoresError || scores === undefined) {

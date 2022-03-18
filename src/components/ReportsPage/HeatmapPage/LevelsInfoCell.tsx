@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { parseEntityName } from '@backstage/catalog-model';
+import { parseEntityRef } from '@backstage/catalog-model';
 
 import { maybePluralize } from '../../../utils/strings';
 import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
@@ -51,7 +51,7 @@ export const LevelsInfoCell = ({ identifier, scores }: LevelsInfoCellProps) => {
           {scores?.map(score => (
             <EntityRefLink
               key={`LevelService-${identifier}-${score.serviceId}`}
-              entityRef={parseEntityName(
+              entityRef={parseEntityRef(
                 score.componentRef,
                 defaultComponentRefContext,
               )}

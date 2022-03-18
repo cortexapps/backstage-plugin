@@ -17,7 +17,7 @@ import React from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { scorecardServiceDetailsRouteRef } from '../../routes';
 import { Link } from '@backstage/core-components';
-import { parseEntityName } from '@backstage/catalog-model';
+import { parseEntityRef } from '@backstage/catalog-model';
 import { defaultComponentRefContext } from '../../utils/ComponentUtils';
 
 interface ScorecardRefLinkProps {
@@ -35,7 +35,7 @@ export const ScorecardServiceRefLink = ({
     scorecardServiceDetailsRouteRef,
   );
 
-  const entityName = parseEntityName(componentRef, defaultComponentRefContext);
+  const entityName = parseEntityRef(componentRef, defaultComponentRefContext);
 
   return (
     <Link

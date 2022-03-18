@@ -16,8 +16,8 @@
 // @ts-ignore
 import {
   Entity,
-  EntityName,
-  parseEntityName,
+  CompoundEntityRef,
+  parseEntityRef,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import { defaultComponentRefContext, EntityRefContext } from './ComponentUtils';
@@ -50,18 +50,18 @@ export function stringifyAnyEntityRef(
   entityRefContext: EntityRefContext = defaultComponentRefContext,
 ): string {
   if (typeof entityRef === 'string') {
-    return stringifyEntityRef(parseEntityName(entityRef, entityRefContext));
+    return stringifyEntityRef(parseEntityRef(entityRef, entityRefContext));
   } else if (
-    (entityRef as EntityName).namespace !== undefined &&
-    (entityRef as EntityName).kind !== undefined
+    (entityRef as CompoundEntityRef).namespace !== undefined &&
+    (entityRef as CompoundEntityRef).kind !== undefined
   ) {
-    return stringifyEntityRef(entityRef as EntityName);
+    return stringifyEntityRef(entityRef as CompoundEntityRef);
   } else if ((entityRef as Entity).apiVersion !== undefined) {
     return stringifyEntityRef(entityRef as Entity);
   }
 
   return stringifyEntityRef(
-    parseEntityName(entityRef as PartialEntityName, entityRefContext),
+    parseEntityRef(entityRef as PartialEntityName, entityRefContext),
   );
 }
 
@@ -81,4 +81,4 @@ export type PartialEntityName = {
   name: string;
 };
 
-export type AnyEntityRef = string | PartialEntityName | EntityName | Entity;
+export type AnyEntityRef = string | PartialEntityName | CompoundEntityRef | Entity;
