@@ -17,7 +17,7 @@ import React from 'react';
 import { Grid, Typography, Divider } from '@material-ui/core';
 import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
 import { useDetailCardStyles } from '../../../styles/styles';
-import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
+import { useEntity } from '@backstage/plugin-catalog-react';
 import { useCortexApi } from '../../../utils/hooks';
 import { stringifyAnyEntityRef } from '../../../utils/types';
 import { ScorecardRuleRow } from '../ScorecardDetailsPage/ScorecardRulesCard/ScorecardRuleRow';
@@ -32,7 +32,7 @@ export const ScorecardsServiceNextRules = ({
 }: ScorecardsServiceNextRulesProps) => {
   const classes = useDetailCardStyles();
 
-  const { entity } = useEntityFromUrl();
+  const { entity } = useEntity();
 
   const {
     value,

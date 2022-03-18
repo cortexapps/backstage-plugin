@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { EntityRef } from '@backstage/catalog-model';
 import { Button, Typography } from '@material-ui/core';
 import { useDropdown } from '../../../utils/hooks';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
+import { CompoundEntityRef } from '@backstage/catalog-model';
 import { Timeseries } from '../../Timeseries';
 import moment from 'moment';
 import Box from '@material-ui/core/Box';
@@ -31,7 +31,7 @@ import { LookbackDropdown } from '../../ReportsPage/Common/LookbackDropdown';
 
 interface ScorecardsServiceProgressProps {
   scorecardId: string;
-  entityRef: EntityRef;
+  entityRef: CompoundEntityRef;
   setSelectedRules: (rules: ScorecardServiceScoresRule[]) => void;
 }
 

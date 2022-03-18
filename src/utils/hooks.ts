@@ -24,13 +24,13 @@ import { useAsync } from 'react-use';
 import { useApi } from '@backstage/core-plugin-api';
 import {
   catalogApiRef,
-  formatEntityRefTitle,
+  humanizeEntityRef,
   getEntityRelations,
 } from '@backstage/plugin-catalog-react';
 import { groupByString, mapByString, mapValues } from './collections';
 import {
   Entity,
-  parseEntityName,
+  parseEntityRef,
   RELATION_OWNED_BY,
   RELATION_PART_OF,
 } from '@backstage/catalog-model';
@@ -150,8 +150,8 @@ export function useGroupsAndSystemsFilters<T>(
       mapByString(Object.keys(groups ?? {}), groupRef => groupRef),
       groupRef => {
         return {
-          display: formatEntityRefTitle(
-            parseEntityName(groupRef),
+          display: humanizeEntityRef(
+            parseEntityRef(groupRef),
             defaultGroupRefContext,
           ),
           value: groupRef,
@@ -175,8 +175,8 @@ export function useGroupsAndSystemsFilters<T>(
       mapByString(Object.keys(systems ?? {}), systemRef => systemRef),
       systemRef => {
         return {
-          display: formatEntityRefTitle(
-            parseEntityName(systemRef),
+          display: humanizeEntityRef(
+            parseEntityRef(systemRef),
             defaultSystemRefContext,
           ),
           value: systemRef,
