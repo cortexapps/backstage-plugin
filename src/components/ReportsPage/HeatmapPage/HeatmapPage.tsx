@@ -29,7 +29,7 @@ import { isUndefined } from 'lodash';
 
 export const HeatmapPage = () => {
   const location = useLocation();
-  const queryParams = new URLSearchParams(useLocation().search);
+  const queryParams = new URLSearchParams(location.search);
 
   const queryScorecardId = Number(queryParams.get('scorecardId') ?? undefined);
   const initialScorecardId = Number.isNaN(queryScorecardId)
