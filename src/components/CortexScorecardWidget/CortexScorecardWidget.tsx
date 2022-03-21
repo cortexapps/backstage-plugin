@@ -19,9 +19,12 @@ import { stringifyAnyEntityRef } from '../../utils/types';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { EntityScorecardsCard } from '../EntityPage/EntityScorecardsCard';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
+import { useNavigate, useLocation } from 'react-router';
 
 export const CortexScorecardWidget = () => {
   const { entity, loading: entityLoading, error: entityError } = useEntity();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const {
     value: scores,
@@ -66,5 +69,12 @@ export const CortexScorecardWidget = () => {
     );
   }
 
-  return <EntityScorecardsCard scores={scores} onSelect={() => {}} />;
+  return (
+    <EntityScorecardsCard
+      scores={scores}
+      onSelect={scorecardId =>
+        navigate(`${location.pathname}cortex?scorecardId=${scorecardId}`)
+      }
+    />
+  );
 };

@@ -28,6 +28,7 @@ import { stringifyAnyEntityRef } from '../../utils/types';
 import { useCortexApi } from '../../utils/hooks';
 import { EntityScorecardDetails } from './EntityScorecardDetails';
 import { ScorecardServiceRefLink } from '../ScorecardServiceRefLink';
+import { useLocation } from 'react-router';
 
 export const EntityPage = () => {
   const {
@@ -35,6 +36,11 @@ export const EntityPage = () => {
     loading: entityLoading,
     error: entityError,
   } = useEntityFromUrl();
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const queryScorecardId = Number(queryParams.get('scorecardId') ?? undefined);
+
   const [selectedScorecardId, setSelectedScorecardId] = useState<
     number | undefined
   >();
@@ -53,11 +59,11 @@ export const EntityPage = () => {
   );
 
   useEffect(() => {
-    const first = scores?.[0];
-    if (first !== undefined) {
-      setSelectedScorecardId(first.scorecard.id);
+    const scorecardId = queryScorecardId ?? scores?.[0].scorecard.id;
+    if (scorecardId !== undefined) {
+      setSelectedScorecardId(scorecardId);
     }
-  }, [scores, setSelectedScorecardId]);
+  }, [queryScorecardId, scores, setSelectedScorecardId]);
 
   const selectedScore = useMemo(() => {
     return scores?.find(score => score.scorecard.id === selectedScorecardId);
