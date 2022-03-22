@@ -15,6 +15,10 @@
  */
 import { get } from 'lodash';
 
+export function hasText<T>(item: T, key: string, query: string): boolean {
+  return get(item, key)?.toLowerCase()?.includes(query.toLowerCase());
+}
+
 export function searchItems<T>(
   items: T[],
   keys: string[],
@@ -24,12 +28,10 @@ export function searchItems<T>(
     return items;
   }
 
-  const query = searchQuery.toLowerCase();
-
   return items.filter(item =>
     keys.reduce(
-      (containsQuery, key) =>
-        containsQuery || get(item, key)?.toLowerCase()?.includes(query),
+      (containsQuery: boolean, key: string) =>
+        containsQuery || hasText(item, key, searchQuery),
       false,
     ),
   );
