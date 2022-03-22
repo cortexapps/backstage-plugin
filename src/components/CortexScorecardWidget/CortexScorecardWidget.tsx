@@ -27,7 +27,7 @@ interface ScorecardFilter {
   name?: string;
 }
 
-interface CortexScorecardWidgetProps {
+export interface CortexScorecardWidgetProps {
   filters?: ScorecardFilter[];
 }
 
