@@ -63,7 +63,6 @@ export const CortexScorecardWidget = ({
                 ? hasText(score, 'scorecard.name', filter?.name)
                 : false;
 
-              console.log(score, filter, includedById, includedByName);
               return include || includedById || includedByName;
             }, false)
           : true,
