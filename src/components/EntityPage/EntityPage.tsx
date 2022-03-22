@@ -66,7 +66,7 @@ export const EntityPage = () => {
     if (scorecardId !== undefined) {
       setSelectedScorecardId(scorecardId);
     }
-  }, [queryScorecardId, scores, setSelectedScorecardId]);
+  }, [initialScorecardId, scores, setSelectedScorecardId]);
 
   const selectedScore = useMemo(() => {
     return scores?.find(score => score.scorecard.id === selectedScorecardId);
