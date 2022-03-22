@@ -71,9 +71,10 @@ export const CortexScorecardWidget = () => {
 
   return (
     <EntityScorecardsCard
+      title={'Cortex Scorecards'}
       scores={scores}
       onSelect={scorecardId =>
-        navigate(`${location.pathname}cortex?scorecardId=${scorecardId}`)
+        navigate(`${location.pathname}/cortex?scorecardId=${scorecardId}`)
       }
     />
   );

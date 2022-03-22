@@ -61,6 +61,15 @@ export const EntityScorecardOverview = ({
     );
   }
 
+  if (sortedScores.length === 0) {
+    return (
+      <WarningPanel
+        severity="error"
+        title="Error getting stats for service score."
+      />
+    );
+  }
+
   const rank =
     [...new Set(sortedScores)].reverse().indexOf(score.score.scorePercentage) +
     1;

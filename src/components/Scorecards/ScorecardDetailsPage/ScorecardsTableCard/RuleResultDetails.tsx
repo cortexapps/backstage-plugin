@@ -57,13 +57,15 @@ export const RuleResultDetails = ({
 
   return (
     <ListItem alignItems="flex-start">
-      {showExpandButton && (
-        <ListItemAvatar>
+      <ListItemAvatar>
+        {showExpandButton ? (
           <IconButton size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
           </IconButton>
-        </ListItemAvatar>
-      )}
+        ) : (
+          <></>
+        )}
+      </ListItemAvatar>
       <ListItemAvatar>
         {!isFailing ? (
           <CheckIcon color="primary" />

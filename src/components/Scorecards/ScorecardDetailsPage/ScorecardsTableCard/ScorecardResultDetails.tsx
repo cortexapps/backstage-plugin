@@ -16,7 +16,7 @@
 import React, { useMemo } from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { RuleResultDetails } from './RuleResultDetails';
-import { ScorecardServiceScoresRule } from '../../../../api/types';
+import { ruleName, ScorecardServiceScoresRule } from '../../../../api/types';
 
 interface ScorecardResultDetailsProps {
   rules: ScorecardServiceScoresRule[];
@@ -31,7 +31,7 @@ export const ScorecardResultDetails = ({
     () =>
       [...rules].sort((a, b) => {
         if (a.score === b.score) {
-          return a.rule.expression.localeCompare(b.rule.expression);
+          return ruleName(a.rule).localeCompare(ruleName(b.rule));
         }
 
         return a.score - b.score;
@@ -43,7 +43,7 @@ export const ScorecardResultDetails = ({
     <List>
       {sortedRules.length === 0 && (
         <ListItem alignItems="flex-start">
-          <Typography variant="body1">No rules</Typography>
+          <Typography variant="body1">No rules.</Typography>
         </ListItem>
       )}
       {sortedRules.map(rule => (

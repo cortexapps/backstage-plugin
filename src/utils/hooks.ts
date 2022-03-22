@@ -44,6 +44,27 @@ import { EntityFilterGroup } from '../filters';
 import { FilterDefinition } from '../components/FilterCard/Filters';
 import { extensionApiRef } from '../api/ExtensionApi';
 
+export function useInput(
+  initialValue: string | undefined = undefined,
+): [
+  string | undefined,
+  (event: React.ChangeEvent<{ value: unknown }>) => void,
+] {
+  const [value, setValue] = useState<string | undefined>(initialValue);
+  const onChange = useCallback(
+    (event: React.ChangeEvent<{ value: unknown }>) => {
+      setValue(
+        event.target.value === ''
+          ? undefined
+          : (event.target.value as string | undefined),
+      );
+    },
+    [setValue],
+  );
+
+  return [value, onChange];
+}
+
 export function useDropdown<T>(
   initialValue: T | undefined,
 ): [T | undefined, (event: React.ChangeEvent<{ value: unknown }>) => void] {
