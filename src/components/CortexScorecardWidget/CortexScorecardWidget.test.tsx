@@ -57,7 +57,7 @@ describe('<CortexScorecardWidget />', () => {
           scorecard: {
             id: 2,
             name: 'Test Scorecard 2',
-            description: 'Test Scorecard 1 description',
+            description: 'Test Scorecard 2 description',
           },
           evaluation: { rules: [], ladderLevels: [] },
         },
@@ -66,7 +66,7 @@ describe('<CortexScorecardWidget />', () => {
           scorecard: {
             id: 3,
             name: 'Test Scorecard 3',
-            description: 'Test Scorecard 1 description',
+            description: 'Test Scorecard 3 description',
           },
           evaluation: { rules: [], ladderLevels: [] },
         },
@@ -277,14 +277,14 @@ describe('<CortexScorecardWidget />', () => {
 
     expect(await findByText(/42%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 1/)).toBeInTheDocument();
+    expect(await findByText(/15%/)).toBeInTheDocument();
+    expect(await findByText(/Test Scorecard 2/)).toBeInTheDocument();
     expect(await findByText(/50%/)).toBeInTheDocument();
     expect(await findByText(/Basic Scorecard/)).toBeInTheDocument();
+    expect(await findByText(/75%/)).toBeInTheDocument();
+    expect(await findByText(/Migration/)).toBeInTheDocument();
 
-    expect(await queryByText(/15%/)).not.toBeInTheDocument();
-    expect(await queryByText(/Test Scorecard 2/)).not.toBeInTheDocument();
     expect(await queryByText(/100%/)).not.toBeInTheDocument();
     expect(await queryByText(/Test Scorecard 3/)).not.toBeInTheDocument();
-    expect(await queryByText(/75%/)).not.toBeInTheDocument();
-    expect(await queryByText(/Migration/)).not.toBeInTheDocument();
   });
 });
