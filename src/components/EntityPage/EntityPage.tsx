@@ -13,34 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useMemo, useState } from 'react';
-import {
-  Content,
-  ContentHeader,
-  EmptyState,
-  Progress,
-  WarningPanel,
-} from '@backstage/core-components';
-import { Grid } from '@material-ui/core';
-import { EntityScorecardsCard } from './EntityScorecardsCard';
-import { useEntity } from '@backstage/plugin-catalog-react';
-import { stringifyAnyEntityRef } from '../../utils/types';
-import { useCortexApi } from '../../utils/hooks';
-import { EntityScorecardDetails } from './EntityScorecardDetails';
-import { ScorecardServiceRefLink } from '../ScorecardServiceRefLink';
-import { useLocation } from 'react-router';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Content, ContentHeader, EmptyState, Progress, WarningPanel,} from '@backstage/core-components';
+import {Grid} from '@material-ui/core';
+import {EntityScorecardsCard} from './EntityScorecardsCard';
+import {useAsyncEntity} from '@backstage/plugin-catalog-react';
+import {stringifyAnyEntityRef} from '../../utils/types';
+import {useCortexApi} from '../../utils/hooks';
+import {EntityScorecardDetails} from './EntityScorecardDetails';
+import {ScorecardServiceRefLink} from '../ScorecardServiceRefLink';
+import {useLocation} from "react-router";
 
 export const EntityPage = () => {
-  const { entity } = useEntity();
-  const [selectedScorecardId, setSelectedScorecardId] = useState<
-    number | undefined
-    >();
+  const { entity, loading: entityLoading, error: entityError } = useAsyncEntity();
+  const [selectedScorecardId, setSelectedScorecardId] = useState<number | undefined>();
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const queryScorecardId = Number(queryParams.get('scorecardId') ?? undefined);
-
-
 
   const {
     value: scores,
@@ -66,7 +56,7 @@ export const EntityPage = () => {
     return scores?.find(score => score.scorecard.id === selectedScorecardId);
   }, [scores, selectedScorecardId]);
 
-  if (scoresLoading) {
+  if (entityLoading || scoresLoading) {
     return <Progress />;
   }
 
@@ -74,6 +64,14 @@ export const EntityPage = () => {
     return (
       <WarningPanel severity="error" title="Could not load scorecards.">
         {scoresError?.message}
+      </WarningPanel>
+    );
+  }
+
+  if (entity === undefined || entityError) {
+    return (
+      <WarningPanel severity="error" title="Could not load entity.">
+        {entityError?.message}
       </WarningPanel>
     );
   }
