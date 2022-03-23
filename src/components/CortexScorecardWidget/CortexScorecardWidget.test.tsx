@@ -270,20 +270,20 @@ describe('<CortexScorecardWidget />', () => {
   it('Properly handles includeFilters & excludeFilters', async () => {
     const { findByText, queryByText } = renderWrapped(
       <CortexScorecardWidget
-        includeFilters={{ names: ['test'] }}
+        includeFilters={{ ids: [1], names: ['basic'] }}
         excludeFilters={{ scores: [1] }}
       />,
     );
 
     expect(await findByText(/42%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 1/)).toBeInTheDocument();
-    expect(await findByText(/15%/)).toBeInTheDocument();
-    expect(await findByText(/Test Scorecard 2/)).toBeInTheDocument();
+    expect(await findByText(/50%/)).toBeInTheDocument();
+    expect(await findByText(/Basic Scorecard/)).toBeInTheDocument();
 
+    expect(await queryByText(/15%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Test Scorecard 2/)).not.toBeInTheDocument();
     expect(await queryByText(/100%/)).not.toBeInTheDocument();
     expect(await queryByText(/Test Scorecard 3/)).not.toBeInTheDocument();
-    expect(await queryByText(/50%/)).not.toBeInTheDocument();
-    expect(await queryByText(/Basic Scorecard/)).not.toBeInTheDocument();
     expect(await queryByText(/75%/)).not.toBeInTheDocument();
     expect(await queryByText(/Migration/)).not.toBeInTheDocument();
   });
