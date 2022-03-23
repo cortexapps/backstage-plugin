@@ -1,0 +1,38 @@
+/*
+ * Copyright 2022 Cortex Applications, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { get } from 'lodash';
+
+export function hasText<T>(item: T, key: string, query: string): boolean {
+  return get(item, key)?.toLowerCase()?.includes(query.toLowerCase());
+}
+
+export function searchItems<T>(
+  items: T[],
+  keys: string[],
+  searchQuery: string | undefined,
+): T[] {
+  if (searchQuery === undefined || searchQuery.length === 0) {
+    return items;
+  }
+
+  return items.filter(item =>
+    keys.reduce(
+      (containsQuery: boolean, key: string) =>
+        containsQuery || hasText(item, key, searchQuery),
+      false,
+    ),
+  );
+}

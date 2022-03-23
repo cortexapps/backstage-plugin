@@ -13,15 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useCortexApi } from '../../utils/hooks';
 import { stringifyAnyEntityRef } from '../../utils/types';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { EntityScorecardsCard } from '../EntityPage/EntityScorecardsCard';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { useNavigate, useLocation } from 'react-router';
+import { hasText } from '../../utils/SearchUtils';
+import { ServiceScorecardScore } from '../../api/types';
 
-export const CortexScorecardWidget = () => {
+interface ScorecardFilters {
+  ids?: number[];
+  names?: string[];
+  scores?: number[];
+}
+
+export interface CortexScorecardWidgetProps {
+  includeFilters?: ScorecardFilters;
+  excludeFilters?: ScorecardFilters;
+}
+
+const isScoreFiltered = (
+  score: ServiceScorecardScore,
+  filters: ScorecardFilters,
+) => {
+  const filteredById =
+    filters?.ids && filters?.ids?.length !== 0
+      ? filters?.ids?.includes(score.scorecard.id)
+      : false;
+  const filteredByName =
+    filters?.names && filters?.names?.length !== 0
+      ? filters?.names
+          ?.map(name => name.toLowerCase())
+          ?.reduce(
+            (includes: boolean, query: string) =>
+              includes || hasText(score, 'scorecard.name', query),
+            false,
+          )
+      : false;
+  const filteredByScore =
+    filters?.scores && filters?.scores?.length !== 0
+      ? filters?.scores?.includes(score.score.scorePercentage)
+      : false;
+
+  return filteredById || filteredByName || filteredByScore;
+};
+
+export const CortexScorecardWidget = ({
+  includeFilters,
+  excludeFilters,
+}: CortexScorecardWidgetProps) => {
   const { entity, loading: entityLoading, error: entityError } = useEntity();
   const location = useLocation();
   const navigate = useNavigate();
@@ -39,6 +81,23 @@ export const CortexScorecardWidget = () => {
     [entity],
   );
 
+  const scoresToDisplay = useMemo(
+    () =>
+      scores?.filter(score => {
+        if (includeFilters === undefined && excludeFilters === undefined) {
+          return true;
+        }
+
+        return (
+          (includeFilters !== undefined &&
+            isScoreFiltered(score, includeFilters)) ||
+          (excludeFilters !== undefined &&
+            !isScoreFiltered(score, excludeFilters))
+        );
+      }),
+    [scores, includeFilters, excludeFilters],
+  );
+
   if (entityLoading || scoresLoading) {
     return <Progress />;
   }
@@ -51,7 +110,7 @@ export const CortexScorecardWidget = () => {
     );
   }
 
-  if (scoresError || scores === undefined) {
+  if (scoresError || scoresToDisplay === undefined) {
     return (
       <WarningPanel severity="error" title="Could not load scorecards.">
         {scoresError?.message}
@@ -59,7 +118,7 @@ export const CortexScorecardWidget = () => {
     );
   }
 
-  if (scores.length === 0) {
+  if (scoresToDisplay.length === 0) {
     return (
       <EmptyState
         missing="info"
@@ -71,9 +130,10 @@ export const CortexScorecardWidget = () => {
 
   return (
     <EntityScorecardsCard
-      scores={scores}
+      title={'Cortex Scorecards'}
+      scores={scoresToDisplay}
       onSelect={scorecardId =>
-        navigate(`${location.pathname}cortex?scorecardId=${scorecardId}`)
+        navigate(`${location.pathname}/cortex?scorecardId=${scorecardId}`)
       }
     />
   );

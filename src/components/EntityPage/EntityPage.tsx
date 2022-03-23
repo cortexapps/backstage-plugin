@@ -40,6 +40,9 @@ export const EntityPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const queryScorecardId = Number(queryParams.get('scorecardId') ?? undefined);
+  const initialScorecardId = Number.isNaN(queryScorecardId)
+    ? undefined
+    : queryScorecardId;
 
   const [selectedScorecardId, setSelectedScorecardId] = useState<
     number | undefined
@@ -59,11 +62,11 @@ export const EntityPage = () => {
   );
 
   useEffect(() => {
-    const scorecardId = queryScorecardId ?? scores?.[0].scorecard.id;
+    const scorecardId = initialScorecardId ?? scores?.[0].scorecard.id;
     if (scorecardId !== undefined) {
       setSelectedScorecardId(scorecardId);
     }
-  }, [queryScorecardId, scores, setSelectedScorecardId]);
+  }, [initialScorecardId, scores, setSelectedScorecardId]);
 
   const selectedScore = useMemo(() => {
     return scores?.find(score => score.scorecard.id === selectedScorecardId);

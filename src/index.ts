@@ -25,6 +25,7 @@ export {
   extendableCortexPlugin,
 } from './plugin';
 export { extensionApiRef } from './api/ExtensionApi';
+export type { CortexScorecardWidgetProps } from './components/CortexScorecardWidget/CortexScorecardWidget';
 export type {
   ExtensionApi,
   CortexYaml,
