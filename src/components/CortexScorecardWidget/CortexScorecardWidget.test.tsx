@@ -195,18 +195,18 @@ describe('<CortexScorecardWidget />', () => {
     const { findByText, queryByText } = renderWrapped(
       <CortexScorecardWidget excludeFilters={{ ids: [1, 3, 5] }} />,
     );
-    expect(await findByText(/42%/)).not.toBeInTheDocument();
-    expect(await findByText(/Test Scorecard 1/)).not.toBeInTheDocument();
-    expect(await findByText(/100%/)).not.toBeInTheDocument();
-    expect(await findByText(/Test Scorecard 3/)).not.toBeInTheDocument();
-    expect(await findByText(/75%/)).not.toBeInTheDocument();
-    expect(await findByText(/Migration/)).not.toBeInTheDocument();
+    expect(await queryByText(/42%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Test Scorecard 1/)).not.toBeInTheDocument();
+    expect(await queryByText(/100%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Test Scorecard 3/)).not.toBeInTheDocument();
+    expect(await queryByText(/75%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Migration/)).not.toBeInTheDocument();
 
     // included based on filters
-    expect(await queryByText(/15%/)).toBeInTheDocument();
-    expect(await queryByText(/Test Scorecard 2/)).toBeInTheDocument();
-    expect(await queryByText(/50%/)).toBeInTheDocument();
-    expect(await queryByText(/Basic Scorecard/)).toBeInTheDocument();
+    expect(await findByText(/15%/)).toBeInTheDocument();
+    expect(await findByText(/Test Scorecard 2/)).toBeInTheDocument();
+    expect(await findByText(/50%/)).toBeInTheDocument();
+    expect(await findByText(/Basic Scorecard/)).toBeInTheDocument();
   });
 
   it('Properly handles excludeFilters for names', async () => {
@@ -215,36 +215,36 @@ describe('<CortexScorecardWidget />', () => {
         excludeFilters={{ names: ['test', 'migration'] }}
       />,
     );
-    expect(await findByText(/42%/)).not.toBeInTheDocument();
-    expect(await findByText(/Test Scorecard 1/)).not.toBeInTheDocument();
-    expect(await findByText(/15%/)).not.toBeInTheDocument();
-    expect(await findByText(/Test Scorecard 2/)).not.toBeInTheDocument();
-    expect(await findByText(/100%/)).not.toBeInTheDocument();
-    expect(await findByText(/Test Scorecard 3/)).not.toBeInTheDocument();
-    expect(await findByText(/75%/)).not.toBeInTheDocument();
-    expect(await findByText(/Migration/)).not.toBeInTheDocument();
+    expect(await queryByText(/42%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Test Scorecard 1/)).not.toBeInTheDocument();
+    expect(await queryByText(/15%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Test Scorecard 2/)).not.toBeInTheDocument();
+    expect(await queryByText(/100%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Test Scorecard 3/)).not.toBeInTheDocument();
+    expect(await queryByText(/75%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Migration/)).not.toBeInTheDocument();
 
     // included based on filters
-    expect(await queryByText(/50%/)).toBeInTheDocument();
-    expect(await queryByText(/Basic Scorecard/)).toBeInTheDocument();
+    expect(await findByText(/50%/)).toBeInTheDocument();
+    expect(await findByText(/Basic Scorecard/)).toBeInTheDocument();
   });
 
   it('Properly handles excludeFilters for scores', async () => {
     const { findByText, queryByText } = renderWrapped(
       <CortexScorecardWidget excludeFilters={{ scores: [1] }} />,
     );
-    expect(await findByText(/100%/)).not.toBeInTheDocument();
-    expect(await findByText(/Test Scorecard 3/)).not.toBeInTheDocument();
+    expect(await queryByText(/100%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Test Scorecard 3/)).not.toBeInTheDocument();
 
     // included based on filters
-    expect(await queryByText(/42%/)).toBeInTheDocument();
-    expect(await queryByText(/Test Scorecard 1/)).toBeInTheDocument();
-    expect(await queryByText(/15%/)).toBeInTheDocument();
-    expect(await queryByText(/Test Scorecard 2/)).toBeInTheDocument();
-    expect(await queryByText(/50%/)).toBeInTheDocument();
-    expect(await queryByText(/Basic Scorecard/)).toBeInTheDocument();
-    expect(await queryByText(/75%/)).toBeInTheDocument();
-    expect(await queryByText(/Migration/)).toBeInTheDocument();
+    expect(await findByText(/42%/)).toBeInTheDocument();
+    expect(await findByText(/Test Scorecard 1/)).toBeInTheDocument();
+    expect(await findByText(/15%/)).toBeInTheDocument();
+    expect(await findByText(/Test Scorecard 2/)).toBeInTheDocument();
+    expect(await findByText(/50%/)).toBeInTheDocument();
+    expect(await findByText(/Basic Scorecard/)).toBeInTheDocument();
+    expect(await findByText(/75%/)).toBeInTheDocument();
+    expect(await findByText(/Migration/)).toBeInTheDocument();
   });
 
   it('Properly handles complex excludeFilters', async () => {
@@ -253,18 +253,18 @@ describe('<CortexScorecardWidget />', () => {
         excludeFilters={{ ids: [1, 2], names: ['basic'], scores: [1] }}
       />,
     );
-    expect(await findByText(/42%/)).not.toBeInTheDocument();
-    expect(await findByText(/Test Scorecard 1/)).not.toBeInTheDocument();
-    expect(await findByText(/15%/)).not.toBeInTheDocument();
-    expect(await findByText(/Test Scorecard 2/)).not.toBeInTheDocument();
-    expect(await findByText(/100%/)).not.toBeInTheDocument();
-    expect(await findByText(/Test Scorecard 3/)).not.toBeInTheDocument();
-    expect(await findByText(/50%/)).not.toBeInTheDocument();
-    expect(await findByText(/Basic Scorecard/)).not.toBeInTheDocument();
+    expect(await queryByText(/42%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Test Scorecard 1/)).not.toBeInTheDocument();
+    expect(await queryByText(/15%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Test Scorecard 2/)).not.toBeInTheDocument();
+    expect(await queryByText(/100%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Test Scorecard 3/)).not.toBeInTheDocument();
+    expect(await queryByText(/50%/)).not.toBeInTheDocument();
+    expect(await queryByText(/Basic Scorecard/)).not.toBeInTheDocument();
 
     // included based on filters
-    expect(await queryByText(/75%/)).toBeInTheDocument();
-    expect(await queryByText(/Migration/)).toBeInTheDocument();
+    expect(await findByText(/75%/)).toBeInTheDocument();
+    expect(await findByText(/Migration/)).toBeInTheDocument();
   });
 
   it('Properly handles includeFilters & excludeFilters', async () => {
