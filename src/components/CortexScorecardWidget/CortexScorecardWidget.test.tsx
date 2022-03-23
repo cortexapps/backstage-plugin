@@ -53,7 +53,7 @@ describe('<CortexScorecardWidget />', () => {
           evaluation: { rules: [], ladderLevels: [] },
         },
         {
-          score: { scorePercentage: 0, score: 0, totalPossibleScore: 100 },
+          score: { scorePercentage: 0.15, score: 15, totalPossibleScore: 100 },
           scorecard: {
             id: 2,
             name: 'Test Scorecard 2',
@@ -105,7 +105,7 @@ describe('<CortexScorecardWidget />', () => {
     const { findByText } = renderWrapped(<CortexScorecardWidget />);
     expect(await findByText(/42%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 1/)).toBeInTheDocument();
-    expect(await findByText(/0%/)).toBeInTheDocument();
+    expect(await findByText(/15%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 2/)).toBeInTheDocument();
     expect(await findByText(/100%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 3/)).toBeInTheDocument();
@@ -127,7 +127,7 @@ describe('<CortexScorecardWidget />', () => {
     expect(await findByText(/Migration/)).toBeInTheDocument();
 
     // excluded based on filters
-    expect(await findByText(/0%/)).not.toBeInTheDocument();
+    expect(await findByText(/15%/)).not.toBeInTheDocument();
     expect(await findByText(/Test Scorecard 2/)).not.toBeInTheDocument();
     expect(await findByText(/50%/)).not.toBeInTheDocument();
     expect(await findByText(/Basic Scorecard/)).not.toBeInTheDocument();
@@ -141,7 +141,7 @@ describe('<CortexScorecardWidget />', () => {
     );
     expect(await findByText(/42%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 1/)).toBeInTheDocument();
-    expect(await findByText(/0%/)).toBeInTheDocument();
+    expect(await findByText(/15%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 2/)).toBeInTheDocument();
     expect(await findByText(/100%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 3/)).toBeInTheDocument();
@@ -163,7 +163,7 @@ describe('<CortexScorecardWidget />', () => {
     // excluded based on filters
     expect(await findByText(/42%/)).not.toBeInTheDocument();
     expect(await findByText(/Test Scorecard 1/)).not.toBeInTheDocument();
-    expect(await findByText(/0%/)).not.toBeInTheDocument();
+    expect(await findByText(/15%/)).not.toBeInTheDocument();
     expect(await findByText(/Test Scorecard 2/)).not.toBeInTheDocument();
     expect(await findByText(/50%/)).not.toBeInTheDocument();
     expect(await findByText(/Basic Scorecard/)).not.toBeInTheDocument();
@@ -179,7 +179,7 @@ describe('<CortexScorecardWidget />', () => {
     );
     expect(await findByText(/42%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 1/)).toBeInTheDocument();
-    expect(await findByText(/0%/)).toBeInTheDocument();
+    expect(await findByText(/15%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 2/)).toBeInTheDocument();
     expect(await findByText(/100%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 3/)).toBeInTheDocument();
@@ -203,7 +203,7 @@ describe('<CortexScorecardWidget />', () => {
     expect(await findByText(/Migration/)).not.toBeInTheDocument();
 
     // included based on filters
-    expect(await findByText(/0%/)).toBeInTheDocument();
+    expect(await findByText(/15%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 2/)).toBeInTheDocument();
     expect(await findByText(/50%/)).toBeInTheDocument();
     expect(await findByText(/Basic Scorecard/)).toBeInTheDocument();
@@ -217,7 +217,7 @@ describe('<CortexScorecardWidget />', () => {
     );
     expect(await findByText(/42%/)).not.toBeInTheDocument();
     expect(await findByText(/Test Scorecard 1/)).not.toBeInTheDocument();
-    expect(await findByText(/0%/)).not.toBeInTheDocument();
+    expect(await findByText(/15%/)).not.toBeInTheDocument();
     expect(await findByText(/Test Scorecard 2/)).not.toBeInTheDocument();
     expect(await findByText(/100%/)).not.toBeInTheDocument();
     expect(await findByText(/Test Scorecard 3/)).not.toBeInTheDocument();
@@ -239,7 +239,7 @@ describe('<CortexScorecardWidget />', () => {
     // included based on filters
     expect(await findByText(/42%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 1/)).toBeInTheDocument();
-    expect(await findByText(/0%/)).toBeInTheDocument();
+    expect(await findByText(/15%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 2/)).toBeInTheDocument();
     expect(await findByText(/50%/)).toBeInTheDocument();
     expect(await findByText(/Basic Scorecard/)).toBeInTheDocument();
@@ -255,7 +255,7 @@ describe('<CortexScorecardWidget />', () => {
     );
     expect(await findByText(/42%/)).not.toBeInTheDocument();
     expect(await findByText(/Test Scorecard 1/)).not.toBeInTheDocument();
-    expect(await findByText(/0%/)).not.toBeInTheDocument();
+    expect(await findByText(/15%/)).not.toBeInTheDocument();
     expect(await findByText(/Test Scorecard 2/)).not.toBeInTheDocument();
     expect(await findByText(/100%/)).not.toBeInTheDocument();
     expect(await findByText(/Test Scorecard 3/)).not.toBeInTheDocument();
@@ -277,7 +277,7 @@ describe('<CortexScorecardWidget />', () => {
 
     expect(await findByText(/42%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 1/)).toBeInTheDocument();
-    expect(await findByText(/0%/)).toBeInTheDocument();
+    expect(await findByText(/15%/)).toBeInTheDocument();
     expect(await findByText(/Test Scorecard 2/)).toBeInTheDocument();
     expect(await findByText(/100%/)).not.toBeInTheDocument();
     expect(await findByText(/Test Scorecard 3/)).not.toBeInTheDocument();
