@@ -21,18 +21,48 @@ import { EntityScorecardsCard } from '../EntityPage/EntityScorecardsCard';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { useNavigate, useLocation } from 'react-router';
 import { hasText } from '../../utils/SearchUtils';
+import { ServiceScorecardScore } from '../../api/types';
 
-interface ScorecardFilter {
-  id?: number;
-  name?: string;
+interface ScorecardFilters {
+  ids?: number[];
+  names?: string[];
+  scores?: number[];
 }
 
 export interface CortexScorecardWidgetProps {
-  filters?: ScorecardFilter[];
+  includeFilters?: ScorecardFilters;
+  excludeFilters?: ScorecardFilters;
 }
 
+const isScoreFiltered = (
+  score: ServiceScorecardScore,
+  filters: ScorecardFilters,
+) => {
+  const filteredById =
+    filters?.ids && filters?.ids?.length !== 0
+      ? filters?.ids?.includes(score.scorecard.id)
+      : false;
+  const filteredByName =
+    filters?.names && filters?.names?.length !== 0
+      ? filters?.names
+          ?.map(name => name.toLowerCase())
+          ?.reduce(
+            (includes: boolean, query: string) =>
+              includes || hasText(score, 'scorecard.name', query),
+            false,
+          )
+      : false;
+  const filteredByScore =
+    filters?.scores && filters?.scores?.length !== 0
+      ? filters?.scores?.includes(score.score.scorePercentage)
+      : false;
+
+  return filteredById || filteredByName || filteredByScore;
+};
+
 export const CortexScorecardWidget = ({
-  filters,
+  includeFilters,
+  excludeFilters,
 }: CortexScorecardWidgetProps) => {
   const { entity, loading: entityLoading, error: entityError } = useEntity();
   const location = useLocation();
@@ -53,21 +83,19 @@ export const CortexScorecardWidget = ({
 
   const scoresToDisplay = useMemo(
     () =>
-      scores?.filter(score =>
-        filters
-          ? filters.reduce((include: boolean, filter: ScorecardFilter) => {
-              const includedById = filter?.id
-                ? score.scorecard.id === filter?.id
-                : false;
-              const includedByName = filter?.name
-                ? hasText(score, 'scorecard.name', filter?.name)
-                : false;
+      scores?.filter(score => {
+        if (includeFilters === undefined && excludeFilters === undefined) {
+          return true;
+        }
 
-              return include || includedById || includedByName;
-            }, false)
-          : true,
-      ),
-    [scores, filters],
+        return (
+          (includeFilters !== undefined &&
+            isScoreFiltered(score, includeFilters)) ||
+          (excludeFilters !== undefined &&
+            !isScoreFiltered(score, excludeFilters))
+        );
+      }),
+    [scores, includeFilters, excludeFilters],
   );
 
   if (entityLoading || scoresLoading) {
