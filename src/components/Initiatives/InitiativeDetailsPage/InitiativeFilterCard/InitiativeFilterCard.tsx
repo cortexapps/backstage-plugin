@@ -25,11 +25,11 @@ import {
 import { useFilters } from '../../../../utils/hooks';
 import { Progress } from '@backstage/core-components';
 import {
-  formatEntityRefTitle,
+  humanizeEntityRef,
   getEntityRelations,
 } from '@backstage/plugin-catalog-react';
 import {
-  parseEntityName,
+  parseEntityRef,
   RELATION_OWNED_BY,
   RELATION_PART_OF,
 } from '@backstage/catalog-model';
@@ -90,8 +90,8 @@ export const InitiativeFilterCard = ({
               stringifyAnyEntityRef(entityRef, { defaultKind: 'group' }),
             ),
           formatProperty: (groupRef: string) =>
-            formatEntityRefTitle(
-              parseEntityName(groupRef),
+            humanizeEntityRef(
+              parseEntityRef(groupRef),
               defaultGroupRefContext,
             ),
         },
@@ -104,8 +104,8 @@ export const InitiativeFilterCard = ({
               stringifyAnyEntityRef(entityRef, { defaultKind: 'system' }),
             ),
           formatProperty: (groupRef: string) =>
-            formatEntityRefTitle(
-              parseEntityName(groupRef),
+            humanizeEntityRef(
+              parseEntityRef(groupRef),
               defaultSystemRefContext,
             ),
         },

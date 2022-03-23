@@ -22,7 +22,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { parseEntityName } from '@backstage/catalog-model';
+import { parseEntityRef } from '@backstage/catalog-model';
 
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
@@ -72,7 +72,7 @@ export const LevelsDrivenTable = ({
               ) : (
                 <TableCell>
                   <EntityRefLink
-                    entityRef={parseEntityName(
+                    entityRef={parseEntityRef(
                       firstScore.componentRef,
                       defaultComponentRefContext,
                     )}

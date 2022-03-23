@@ -16,7 +16,7 @@
 import React, { useMemo } from 'react';
 import { useCortexApi } from '../../utils/hooks';
 import { stringifyAnyEntityRef } from '../../utils/types';
-import { useEntity } from '@backstage/plugin-catalog-react';
+import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { EntityScorecardsCard } from '../EntityPage/EntityScorecardsCard';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { useNavigate, useLocation } from 'react-router';
@@ -56,7 +56,6 @@ const isScoreFiltered = (
     filters?.scores && filters?.scores?.length !== 0
       ? filters?.scores?.includes(score.score.scorePercentage)
       : false;
-
   return filteredById || filteredByName || filteredByScore;
 };
 
@@ -64,7 +63,7 @@ export const CortexScorecardWidget = ({
   includeFilters,
   excludeFilters,
 }: CortexScorecardWidgetProps) => {
-  const { entity, loading: entityLoading, error: entityError } = useEntity();
+  const { entity, loading: entityLoading, error: entityError } = useAsyncEntity();
   const location = useLocation();
   const navigate = useNavigate();
 

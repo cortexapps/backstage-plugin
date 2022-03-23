@@ -25,7 +25,7 @@ import { useDetailCardStyles } from '../../../../styles/styles';
 import Box from '@material-ui/core/Box';
 import { Gauge } from '../../../Gauge';
 import { DefaultEntityRefLink } from '../../../DefaultEntityLink';
-import { parseEntityName } from '@backstage/catalog-model';
+import { parseEntityRef } from '@backstage/catalog-model';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useActionItemsStyles } from './FailingComponentsTableRow';
@@ -76,7 +76,7 @@ export const PassingComponentsTable = ({
                   </Box>
                   <Box alignSelf="center">
                     <DefaultEntityRefLink
-                      entityRef={parseEntityName(
+                      entityRef={parseEntityRef(
                         componentRef,
                         defaultComponentRefContext,
                       )}

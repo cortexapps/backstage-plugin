@@ -16,8 +16,8 @@
 import React, { useMemo } from 'react';
 import { Table, TableBody } from '@material-ui/core';
 import { Content, EmptyState, InfoCard } from '@backstage/core-components';
-import { useEntityFromUrl } from '@backstage/plugin-catalog-react';
-import { parseEntityName } from '@backstage/catalog-model';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { parseEntityRef } from '@backstage/catalog-model';
 
 import { useCortexApi } from '../../utils/hooks';
 import { defaultSystemRefContext } from '../../utils/ComponentUtils';
@@ -28,7 +28,7 @@ import { GroupByOption } from '../../api/types';
 
 export const SystemPage = () => {
   const classes = useDetailCardStyles();
-  const { entity } = useEntityFromUrl();
+  const { entity } = useEntity();
   const { value: serviceGroupScores } = useCortexApi(
     api => api.getServiceScorecardScores(GroupByOption.SERVICE_GROUP),
     [GroupByOption.SERVICE_GROUP],
@@ -36,7 +36,7 @@ export const SystemPage = () => {
   const mySystemScores = useMemo(
     () =>
       serviceGroupScores?.filter(serviceGroupScore => {
-        const { name } = parseEntityName(
+        const { name } = parseEntityRef(
           serviceGroupScore?.identifier ?? '',
           defaultSystemRefContext,
         );
@@ -48,7 +48,7 @@ export const SystemPage = () => {
     () =>
       entity?.relations
         ?.filter(({ type }) => type === 'hasPart')
-        .map(({ target }) => target.name),
+        .map(({ targetRef }) => parseEntityRef(targetRef).name),
     [entity],
   );
   const { value: scorecardScores } = useCortexApi(

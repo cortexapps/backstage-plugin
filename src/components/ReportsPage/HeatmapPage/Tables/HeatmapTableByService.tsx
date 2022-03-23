@@ -20,7 +20,7 @@ import { TableCell } from '@material-ui/core';
 import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { parseEntityName } from '@backstage/catalog-model';
+import { parseEntityRef } from '@backstage/catalog-model';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
@@ -54,7 +54,7 @@ export const HeatmapTableByService = ({
             <TableRow key={`TableRow-${firstScore.componentRef}`}>
               <TableCell>
                 <EntityRefLink
-                  entityRef={parseEntityName(
+                  entityRef={parseEntityRef(
                     firstScore.componentRef,
                     defaultComponentRefContext,
                   )}
