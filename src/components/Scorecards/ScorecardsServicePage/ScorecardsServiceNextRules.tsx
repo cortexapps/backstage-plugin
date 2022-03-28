@@ -18,7 +18,7 @@ import { Grid, Typography, Divider } from '@material-ui/core';
 import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
 import { useDetailCardStyles } from '../../../styles/styles';
 import { useCortexApi } from '../../../utils/hooks';
-import {AnyEntityRef, stringifyAnyEntityRef} from '../../../utils/types';
+import { AnyEntityRef, stringifyAnyEntityRef } from '../../../utils/types';
 import { ScorecardRuleRow } from '../ScorecardDetailsPage/ScorecardRulesCard/ScorecardRuleRow';
 import { ScorecardLadderLevelBadge } from '../../Common/ScorecardLadderLevelBadge';
 
