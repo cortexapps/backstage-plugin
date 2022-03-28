@@ -122,6 +122,7 @@ export const EntityPage = () => {
         </Grid>
         <Grid item lg={8}>
           <EntityScorecardDetails
+            entityRef={entity}
             scorecardId={selectedScorecardId}
             score={selectedScore}
           />

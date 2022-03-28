@@ -17,22 +17,21 @@ import React from 'react';
 import { Grid, Typography, Divider } from '@material-ui/core';
 import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
 import { useDetailCardStyles } from '../../../styles/styles';
-import { useEntity } from '@backstage/plugin-catalog-react';
 import { useCortexApi } from '../../../utils/hooks';
-import { stringifyAnyEntityRef } from '../../../utils/types';
+import { AnyEntityRef, stringifyAnyEntityRef } from '../../../utils/types';
 import { ScorecardRuleRow } from '../ScorecardDetailsPage/ScorecardRulesCard/ScorecardRuleRow';
 import { ScorecardLadderLevelBadge } from '../../Common/ScorecardLadderLevelBadge';
 
 interface ScorecardsServiceNextRulesProps {
   scorecardId: number;
+  entityRef: AnyEntityRef;
 }
 
 export const ScorecardsServiceNextRules = ({
+  entityRef,
   scorecardId,
 }: ScorecardsServiceNextRulesProps) => {
   const classes = useDetailCardStyles();
-
-  const { entity } = useEntity();
 
   const {
     value,
@@ -40,14 +39,12 @@ export const ScorecardsServiceNextRules = ({
     error: nextStepsError,
   } = useCortexApi(
     async cortexApi => {
-      return entity !== undefined
-        ? await cortexApi.getServiceNextSteps(
-            stringifyAnyEntityRef(entity),
-            scorecardId,
-          )
-        : undefined;
+        return await cortexApi.getServiceNextSteps(
+          stringifyAnyEntityRef(entityRef),
+          scorecardId,
+        )
     },
-    [entity],
+    [entityRef],
   );
 
   const nextSteps = value?.[0] ?? undefined;

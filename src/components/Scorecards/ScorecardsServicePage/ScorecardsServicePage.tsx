@@ -117,7 +117,7 @@ export const ScorecardsServicePage = () => {
           </InfoCard>
         </Grid>
         <Grid item lg={8} xs={12}>
-          {ladder && <ScorecardsServiceNextRules scorecardId={+scorecardId} />}
+          {ladder && <ScorecardsServiceNextRules scorecardId={+scorecardId} entityRef={entityRef} />}
           <InfoCard title="Score Progress" className={classes.progress}>
             <ScorecardsServiceProgress
               scorecardId={scorecardId}
