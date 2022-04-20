@@ -46,18 +46,19 @@ const useStyles = makeStyles({
   },
 });
 
-interface Props {
+interface SystemPageRowProps {
   score: ScorecardScore;
   scoresForScorecard: ScorecardServiceScore[];
 }
 
-export const SystemPageRow: React.FC<Props> = ({
+export const SystemPageRow: React.FC<SystemPageRowProps> = ({
   score,
   scoresForScorecard,
 }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const name = score?.scorecardName ?? '';
+
   return (
     <React.Fragment>
       <TableRow className={classes.root}>

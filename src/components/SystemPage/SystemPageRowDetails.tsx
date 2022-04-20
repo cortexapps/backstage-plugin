@@ -22,8 +22,9 @@ import { ScorecardServiceScore } from '../../api/types';
 import { DefaultEntityRefLink } from '../DefaultEntityLink';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { defaultComponentRefContext } from '../../utils/ComponentUtils';
+import { ScorecardLadderLevelBadge } from '../Common/ScorecardLadderLevelBadge';
 
-interface Props {
+interface SystemPageRowDetailsProps {
   scoresForScorecard: ScorecardServiceScore[];
 }
 
@@ -40,43 +41,55 @@ const useStyles = makeStyles({
   },
 });
 
-export const SystemPageRowDetails: React.FC<Props> = ({
+export const SystemPageRowDetails: React.FC<SystemPageRowDetailsProps> = ({
   scoresForScorecard,
 }) => {
   const classes = useStyles();
 
   return (
     <Table>
-      {scoresForScorecard.map(score => (
-        <TableRow className={classes.root} key={`TableRow${score.serviceId}`}>
-          <TableCell>
-            <Box
-              flexDirection="row"
-              display="flex"
-              justifyContent="flex-start"
-              alignItems="center"
-            >
-              <Box alignSelf="center" width={1 / 16}>
-                <Gauge
-                  value={score.scorePercentage}
-                  strokeWidth={10}
-                  trailWidth={10}
-                />
-              </Box>
-              <Box alignSelf="center" flex="1">
-                {score && (
-                  <DefaultEntityRefLink
-                    entityRef={parseEntityRef(
-                      score.componentRef,
-                      defaultComponentRefContext,
-                    )}
+      {scoresForScorecard.map(score => {
+        const currentLevel = score.ladderLevels?.[0]?.currentLevel;
+
+        return (
+          <TableRow className={classes.root} key={`TableRow${score.serviceId}`}>
+            <TableCell>
+              <Box
+                flexDirection="row"
+                display="flex"
+                justifyContent="flex-start"
+                alignItems="center"
+              >
+                <Box alignSelf="center">
+                  <Gauge
+                    value={score.scorePercentage}
+                    strokeWidth={10}
+                    trailWidth={10}
                   />
+                </Box>
+                <Box alignSelf="center" flex="1">
+                  {score && (
+                    <DefaultEntityRefLink
+                      entityRef={parseEntityRef(
+                        score.componentRef,
+                        defaultComponentRefContext,
+                      )}
+                    />
+                  )}
+                </Box>
+                {currentLevel && (
+                  <Box display="flex" alignItems="center">
+                    <ScorecardLadderLevelBadge
+                      name={currentLevel.name}
+                      color={currentLevel.color}
+                    />
+                  </Box>
                 )}
               </Box>
-            </Box>
-          </TableCell>
-        </TableRow>
-      ))}
+            </TableCell>
+          </TableRow>
+        );
+      })}
     </Table>
   );
 };

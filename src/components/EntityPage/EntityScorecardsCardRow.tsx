@@ -19,9 +19,11 @@ import { makeStyles, TableCell, TableRow } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { Gauge } from '../Gauge';
 import { BackstageTheme } from '@backstage/theme';
+import { ScorecardLadderLevelBadge } from '../Common/ScorecardLadderLevelBadge';
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   tableRow: {
+    cursor: 'pointer',
     '&:hover': {
       background: `${theme.palette.background.default}!important`,
     },
@@ -46,6 +48,7 @@ export const EntityScorecardsCardRow = ({
   onSelect,
 }: EntityScorecardsCardRowProps) => {
   const classes = useStyles();
+  const currentLevel = score.evaluation.ladderLevels?.[0]?.currentLevel;
 
   return (
     <React.Fragment>
@@ -62,16 +65,20 @@ export const EntityScorecardsCardRow = ({
             justifyContent="flex-start"
             alignItems="center"
           >
-            <Box alignSelf="center" width={1 / 5}>
-              <Gauge
-                value={score.score.scorePercentage}
-                strokeWidth={10}
-                trailWidth={10}
-              />
-            </Box>
             <Box alignSelf="center">
+              <Gauge value={score.score.scorePercentage} />
+            </Box>
+            <Box alignSelf="center" flex="1">
               <b>{score.scorecard.name}</b>
             </Box>
+            {currentLevel && (
+              <Box display="flex" alignItems="center">
+                <ScorecardLadderLevelBadge
+                  name={currentLevel.name}
+                  color={currentLevel.color}
+                />
+              </Box>
+            )}
           </Box>
         </TableCell>
       </TableRow>

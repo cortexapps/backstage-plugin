@@ -23,3 +23,13 @@ export const buildUrl = (
     url: pathname,
     query: queryParamsObj,
   })}`;
+
+const cortexURL = 'https://app.getcortexapp.com/admin/';
+
+export const cortexScorecardPageURL = (scorecardId: string | number) =>
+  `${cortexURL}scorecards/${scorecardId}`;
+
+export const cortexScorecardServicePageURL = (
+  scorecardId: string | number,
+  serviceId: string | number,
+) => `${cortexScorecardPageURL(scorecardId)}?service=${serviceId}`;

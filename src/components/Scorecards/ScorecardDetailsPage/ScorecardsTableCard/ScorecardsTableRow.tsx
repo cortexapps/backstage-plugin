@@ -64,7 +64,7 @@ export const ScorecardsTableRow = ({
               justifyContent="flex-start"
               alignItems="center"
             >
-              <Box alignSelf="center" width={1 / 10}>
+              <Box alignSelf="center">
                 <Gauge
                   value={score.scorePercentage}
                   strokeWidth={10}

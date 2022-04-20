@@ -33,6 +33,7 @@ export const SystemPage = () => {
     api => api.getServiceScorecardScores(GroupByOption.SERVICE_GROUP),
     [GroupByOption.SERVICE_GROUP],
   );
+
   const mySystemScores = useMemo(
     () =>
       serviceGroupScores?.filter(serviceGroupScore => {
@@ -44,6 +45,7 @@ export const SystemPage = () => {
       })?.[0],
     [serviceGroupScores, entity],
   );
+
   const myComponents = useMemo(
     () =>
       entity?.relations
@@ -51,6 +53,7 @@ export const SystemPage = () => {
         .map(({ targetRef }) => parseEntityRef(targetRef).name),
     [entity],
   );
+
   const { value: scorecardScores } = useCortexApi(
     api =>
       mySystemScores?.scores
@@ -62,6 +65,7 @@ export const SystemPage = () => {
         : Promise.resolve([]),
     [mySystemScores],
   );
+
   const data = useMemo(
     () =>
       mySystemScores?.scores.map((score, index) => ({

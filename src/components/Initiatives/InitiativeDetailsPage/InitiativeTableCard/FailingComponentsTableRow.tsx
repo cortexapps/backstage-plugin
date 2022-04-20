@@ -78,7 +78,7 @@ export const FailingComponentsTableRow = ({
             justifyContent="flex-start"
             alignItems="center"
           >
-            <Box alignSelf="center" width={1 / 8}>
+            <Box alignSelf="center">
               <Gauge
                 value={(numRules - actionItems.length) / numRules}
                 textOverride={`${numRules - actionItems.length} / ${numRules}`}
