@@ -17,10 +17,11 @@ import React from 'react';
 import { ScorecardServiceScore } from '../../../../api/types';
 import { makeStyles, TableCell, TableRow } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
-import { parseEntityRef } from '@backstage/catalog-model';
 import { Gauge } from '../../../Gauge';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
+import { stringifyAnyEntityRef } from '../../../../utils/types';
+import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 
 const useStyles = makeStyles({
   root: {
@@ -73,12 +74,10 @@ export const ScorecardsTableRow = ({
               </Box>
               <Box alignSelf="center" flex="1">
                 <b>
-                  {
-                    parseEntityRef(score.componentRef, {
-                      defaultKind: 'Component',
-                      defaultNamespace: 'default',
-                    }).name
-                  }
+                  {stringifyAnyEntityRef(
+                    score.componentRef,
+                    defaultComponentRefContext,
+                  )}
                 </b>
               </Box>
               {currentLevel && (
