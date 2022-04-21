@@ -18,6 +18,7 @@ import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import {
   Content,
   InfoCard,
+  Link,
   Progress,
   WarningPanel,
 } from '@backstage/core-components';
@@ -33,6 +34,7 @@ import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
 import { ScorecardServiceScoresRule } from '../../../api/types';
+import { cortexScorecardServicePageURL } from '../../../utils/URLUtils';
 
 const useStyles = makeStyles({
   progress: {
@@ -96,17 +98,25 @@ export const ScorecardsServicePage = () => {
         alignItems="center"
         style={{ marginBottom: '20px' }}
       >
-        <Box alignSelf="center" width={1 / 16}>
+        <Box alignSelf="center">
           <Gauge
             value={score.scorePercentage}
             strokeWidth={10}
             trailWidth={10}
           />
         </Box>
-        <Box alignSelf="center" textAlign="center">
+        <Box alignSelf="center" flex="1">
           <Typography variant="h4" component="h2">
             <DefaultEntityRefLink entityRef={entityRef} />
           </Typography>
+        </Box>
+        <Box alignSelf="center">
+          <Link
+            to={cortexScorecardServicePageURL(scorecardId, score.serviceId)}
+            target="_blank"
+          >
+            <b>View in Cortex</b>
+          </Link>
         </Box>
       </Box>
 
@@ -117,7 +127,12 @@ export const ScorecardsServicePage = () => {
           </InfoCard>
         </Grid>
         <Grid item lg={8} xs={12}>
-          {ladder && <ScorecardsServiceNextRules scorecardId={+scorecardId} entityRef={entityRef} />}
+          {ladder && (
+            <ScorecardsServiceNextRules
+              scorecardId={+scorecardId}
+              entityRef={entityRef}
+            />
+          )}
           <InfoCard title="Score Progress" className={classes.progress}>
             <ScorecardsServiceProgress
               scorecardId={scorecardId}

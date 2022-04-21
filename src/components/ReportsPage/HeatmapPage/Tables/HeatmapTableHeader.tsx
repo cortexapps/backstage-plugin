@@ -26,21 +26,26 @@ interface HeatmapTableHeaderProps {
 export const HeatmapTableHeader = ({ headers }: HeatmapTableHeaderProps) => {
   const classes = useHeatmapStyles();
 
-  const cellWidth = 100 / headers.length;
-  const style = { width: `${cellWidth}%` };
+  const cellWidth = 85 / headers.length;
 
   return (
     <TableHead>
       <TableRow>
-        {headers.map((headerText, idx) => (
-          <TableCell
-            key={`HeatmapTableHeader-${idx}`}
-            className={classes.root}
-            style={style}
-          >
-            {headerText}
-          </TableCell>
-        ))}
+        {headers.map((headerText, idx) => {
+          // first column set to 10% so that names don't get squished
+          const style =
+            idx === 0 ? { width: `15%` } : { width: `${cellWidth}%` };
+
+          return (
+            <TableCell
+              key={`HeatmapTableHeader-${idx}`}
+              className={classes.root}
+              style={style}
+            >
+              {headerText}
+            </TableCell>
+          );
+        })}
       </TableRow>
     </TableHead>
   );

@@ -66,7 +66,7 @@ export const PassingComponentsTable = ({
                   justifyContent="flex-start"
                   alignItems="center"
                 >
-                  <Box alignSelf="center" width={1 / 8}>
+                  <Box alignSelf="center">
                     <Gauge
                       value={1}
                       textOverride={`${numRules} / ${numRules}`}

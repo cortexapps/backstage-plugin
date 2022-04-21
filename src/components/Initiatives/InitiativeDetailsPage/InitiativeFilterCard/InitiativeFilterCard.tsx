@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { Initiative, InitiativeActionItem } from '../../../../api/types';
+import {
+  Initiative,
+  InitiativeActionItem,
+  ruleName,
+} from '../../../../api/types';
 import { FilterCard } from '../../../FilterCard';
 import { mapByString, mapValues } from '../../../../utils/collections';
 import {
@@ -70,7 +74,7 @@ export const InitiativeFilterCard = ({
       mapByString(initiative.emphasizedRules, rule => `${rule.ruleId}`),
       rule => {
         return {
-          display: rule.expression,
+          display: ruleName(rule),
           value: rule.expression,
         };
       },
@@ -90,10 +94,7 @@ export const InitiativeFilterCard = ({
               stringifyAnyEntityRef(entityRef, { defaultKind: 'group' }),
             ),
           formatProperty: (groupRef: string) =>
-            humanizeEntityRef(
-              parseEntityRef(groupRef),
-              defaultGroupRefContext,
-            ),
+            humanizeEntityRef(parseEntityRef(groupRef), defaultGroupRefContext),
         },
         {
           name: 'Systems',

@@ -23,6 +23,7 @@ const useStyles = makeStyles<BackstageTheme>(theme => ({
   root: {
     position: 'relative',
     lineHeight: 0,
+    width: '80px',
   },
   overlay: {
     position: 'absolute',
