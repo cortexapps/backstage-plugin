@@ -65,7 +65,7 @@ export const ScorecardsServiceNextRules = ({
   }
 
   return (
-    <InfoCard title="Ladder Progress" className={classes.root}>
+    <InfoCard title="Level Progress" className={classes.root}>
       <Grid container direction="column">
         <Grid item>
           {nextSteps.currentLevel ? (
