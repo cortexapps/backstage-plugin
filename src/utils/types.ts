@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 // @ts-ignore
-import {CompoundEntityRef, Entity, parseEntityRef, stringifyEntityRef,} from '@backstage/catalog-model';
-import {defaultComponentRefContext, EntityRefContext} from './ComponentUtils';
+import { CompoundEntityRef, Entity, parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
+import { defaultComponentRefContext, EntityRefContext } from './ComponentUtils';
 
 export const identity = <T>(t: T) => t;
 
