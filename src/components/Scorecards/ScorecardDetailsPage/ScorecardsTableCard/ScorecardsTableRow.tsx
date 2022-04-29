@@ -20,7 +20,7 @@ import Box from '@material-ui/core/Box';
 import { Gauge } from '../../../Gauge';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
-import { stringifyAnyEntityRef } from '../../../../utils/types';
+import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 
 const useStyles = makeStyles({
@@ -74,7 +74,7 @@ export const ScorecardsTableRow = ({
               </Box>
               <Box alignSelf="center" flex="1">
                 <b>
-                  {stringifyAnyEntityRef(
+                  {humanizeAnyEntityRef(
                     score.componentRef,
                     defaultComponentRefContext,
                   )}
