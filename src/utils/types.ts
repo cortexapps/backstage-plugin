@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 // @ts-ignore
-import {
-  Entity,
-  CompoundEntityRef,
-  parseEntityRef,
-  stringifyEntityRef,
-} from '@backstage/catalog-model';
+import { CompoundEntityRef, Entity, parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
 import { defaultComponentRefContext, EntityRefContext } from './ComponentUtils';
 
 export const identity = <T>(t: T) => t;
@@ -63,6 +58,26 @@ export function stringifyAnyEntityRef(
   return stringifyEntityRef(
     parseEntityRef(entityRef as PartialEntityName, entityRefContext),
   );
+}
+
+
+export function humanizeAnyEntityRef(
+  entityRef: AnyEntityRef,
+  entityRefContext: EntityRefContext = defaultComponentRefContext,
+): string {
+  let minifiedRef = stringifyAnyEntityRef(entityRef, entityRefContext)
+
+  if (entityRefContext.defaultKind !== undefined) {
+    const kind = entityRefContext.defaultKind.toLowerCase();
+    minifiedRef = minifiedRef.replace(`${kind}:`, '')
+  }
+
+  if (entityRefContext.defaultNamespace !== undefined) {
+    const namespace = entityRefContext.defaultNamespace.toLowerCase();
+    minifiedRef = minifiedRef.replace(`${namespace}/`, '')
+  }
+
+  return minifiedRef
 }
 
 export function entityEquals(
