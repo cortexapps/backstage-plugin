@@ -19,7 +19,8 @@ import {
   createComponentExtension,
   createPlugin,
   createRoutableExtension,
-  discoveryApiRef, identityApiRef,
+  discoveryApiRef,
+  identityApiRef,
   TypesToApiRefs,
 } from '@backstage/core-plugin-api';
 
@@ -35,7 +36,8 @@ export const cortexPlugin = createPlugin({
     createApiFactory({
       api: cortexApiRef,
       deps: { discoveryApi: discoveryApiRef, identityApi: identityApiRef },
-      factory: ({ discoveryApi, identityApi }) => new CortexClient({ discoveryApi, identityApi }),
+      factory: ({ discoveryApi, identityApi }) =>
+        new CortexClient({ discoveryApi, identityApi }),
     }),
     createApiFactory({
       api: extensionApiRef,
@@ -62,7 +64,8 @@ export const extendableCortexPlugin = <
       createApiFactory({
         api: cortexApiRef,
         deps: { discoveryApi: discoveryApiRef, identityApi: identityApiRef },
-        factory: ({ discoveryApi, identityApi }) => new CortexClient({ discoveryApi, identityApi }),
+        factory: ({ discoveryApi, identityApi }) =>
+          new CortexClient({ discoveryApi, identityApi }),
       }),
       createApiFactory({
         api: extensionApiRef,
@@ -141,6 +144,18 @@ export const CortexScorecardWidget = cortexPlugin.provide(
       lazy: () =>
         import('./components/CortexScorecardWidget').then(
           m => m.CortexScorecardWidget,
+        ),
+    },
+  }),
+);
+
+export const CortexTeamActionItemsWidget = cortexPlugin.provide(
+  createComponentExtension({
+    name: 'CortexTeamActionItemsWidget',
+    component: {
+      lazy: () =>
+        import('./components/CortexTeamActionItemsWidget').then(
+          m => m.CortexTeamActionItemsWidget,
         ),
     },
   }),

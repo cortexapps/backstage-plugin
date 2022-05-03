@@ -24,6 +24,7 @@ import {
   ScorecardScoreNextSteps,
   ScorecardServiceScore,
   ScoresByIdentifier,
+  ServiceInitiativeActionItems,
   ServiceScorecardScore,
 } from './types';
 import { CortexApi } from './CortexApi';
@@ -32,7 +33,11 @@ import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
 import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
 import { applyCustomMappings } from '../utils/ComponentUtils';
-import {createApiRef, DiscoveryApi, IdentityApi} from '@backstage/core-plugin-api';
+import {
+  createApiRef,
+  DiscoveryApi,
+  IdentityApi,
+} from '@backstage/core-plugin-api';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -55,7 +60,7 @@ export class CortexClient implements CortexApi {
 
   constructor(options: Options) {
     this.discoveryApi = options.discoveryApi;
-    this.identityApi = options.identityApi
+    this.identityApi = options.identityApi;
   }
 
   async getScorecards(): Promise<Scorecard[]> {
@@ -150,7 +155,7 @@ export class CortexClient implements CortexApi {
             new Date(b.dateCreated!!).getTime()
           );
         }),
-        numberOfServices: 1
+        numberOfServices: 1,
       };
     });
   }
@@ -194,6 +199,17 @@ export class CortexClient implements CortexApi {
 
   async getInitiativeActionItems(id: number): Promise<InitiativeActionItem[]> {
     return await this.get(`/api/backstage/v1/initiatives/${id}/actionitems`);
+  }
+
+  async getInitiativeActionItemsForTeam(
+    entityRef: AnyEntityRef,
+  ): Promise<ServiceInitiativeActionItems[]> {
+    return await this.get(
+      `/api/backstage/v2/entities/initiatives/team-action-items`,
+      {
+        ref: stringifyAnyEntityRef(entityRef),
+      },
+    );
   }
 
   async getComponentActionItems(
@@ -283,7 +299,10 @@ export class CortexClient implements CortexApi {
     return responseBody;
   }
 
-  private async fetchAuthenticated(input: RequestInfo, init?: RequestInit): Promise<Response> {
+  private async fetchAuthenticated(
+    input: RequestInfo,
+    init?: RequestInit,
+  ): Promise<Response> {
     let token: string | undefined = undefined;
     if (this.identityApi !== undefined) {
       ({ token } = await this.identityApi.getCredentials());
@@ -294,8 +313,8 @@ export class CortexClient implements CortexApi {
         ...init,
         headers: {
           ...init?.headers,
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
     } else {
       return fetch(input, init);

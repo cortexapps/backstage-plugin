@@ -250,3 +250,8 @@ export interface InitiativeActionItem {
     description?: string;
   };
 }
+
+export interface ServiceInitiativeActionItems {
+  componentRef: string;
+  actionItems: InitiativeActionItem[];
+}
