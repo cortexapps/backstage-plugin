@@ -20,17 +20,14 @@ import { stringifyAnyEntityRef } from '../../utils/types';
 import {
   EmptyState,
   InfoCard,
-  Link,
   Progress,
   WarningPanel,
 } from '@backstage/core-components';
 import React from 'react';
 import { isUndefined } from 'lodash';
-import { MetadataItem } from '../MetadataItem';
-import { DefaultEntityRefLink } from '../DefaultEntityLink';
-import { useRouteRef } from '@backstage/core-plugin-api';
-import { initiativeRouteRef } from '../../routes';
-import { Grid, TableCell, TableRow } from '@material-ui/core';
+import { TeamServiceActionItemsRow } from './TeamServiceActionItemsRow';
+import { Grid } from '@material-ui/core';
+import { groupByString, mapValues } from '../../utils/collections';
 
 export const CortexTeamActionItemsWidget = () => {
   const {
@@ -38,10 +35,9 @@ export const CortexTeamActionItemsWidget = () => {
     loading: entityLoading,
     error: entityError,
   } = useAsyncEntity();
-  const initiativeRef = useRouteRef(initiativeRouteRef);
 
   const {
-    value: serviceInitiativeActionItems,
+    value: initiativeActionItems,
     loading: actionItemsLoading,
     error: actionItemsError,
   } = useCortexApi(
@@ -67,7 +63,7 @@ export const CortexTeamActionItemsWidget = () => {
     );
   }
 
-  if (actionItemsError || isUndefined(serviceInitiativeActionItems)) {
+  if (actionItemsError || isUndefined(initiativeActionItems)) {
     return (
       <WarningPanel severity="error" title="Could not load team action items.">
         {actionItemsError?.message}
@@ -75,11 +71,7 @@ export const CortexTeamActionItemsWidget = () => {
     );
   }
 
-  if (
-    serviceInitiativeActionItems.flatMap(
-      serviceInitiative => serviceInitiative.actionItems,
-    ).length === 0
-  ) {
+  if (initiativeActionItems.length === 0) {
     return (
       <EmptyState
         missing="info"
@@ -89,56 +81,31 @@ export const CortexTeamActionItemsWidget = () => {
     );
   }
 
+  const serviceToInitiativeActionItems = groupByString(
+    initiativeActionItems,
+    initiativeActionItem => initiativeActionItem.componentRef,
+  );
+
+  const serviceToRuleToInitiative = mapValues(
+    serviceToInitiativeActionItems,
+    items => groupByString(items, item => item.rule.expression),
+  );
+
   return (
     <InfoCard title="Team Action Items">
-      {serviceInitiativeActionItems.map(serviceInitiativeActionItem => (
-        <Grid
-          key={serviceInitiativeActionItem.componentRef}
-          // container
-          // direction="column"
-          spacing={2}
-          // lg={4}
-        >
-          <DefaultEntityRefLink
-            entityRef={{
+      <Grid container direction="column">
+        {Object.keys(serviceToRuleToInitiative).map(service => (
+          <TeamServiceActionItemsRow
+            key={service}
+            serviceComponentRef={{
               kind: 'component',
               namespace: entity.metadata.namespace ?? 'default',
-              name: serviceInitiativeActionItem.componentRef,
+              name: service,
             }}
-          >
-            <MetadataItem gridSizes={{ xs: 12 }} label={'Component name'}>
-              {serviceInitiativeActionItem.componentRef}
-            </MetadataItem>
-          </DefaultEntityRefLink>
-          {serviceInitiativeActionItem.actionItems.map(actionItem => (
-            <TableRow key={actionItem.componentRef}>
-              <TableCell>
-                <Link
-                  to={initiativeRef({
-                    id: `${actionItem.initiative.initiativeId}`,
-                  })}
-                >
-                  <Grid container direction="row" spacing={2}>
-                    <MetadataItem gridSizes={{ xs: 12 }} label={'Initiative'}>
-                      {actionItem.initiative.name}
-                    </MetadataItem>
-                    <MetadataItem gridSizes={{ xs: 12 }} label={'Rule'}>
-                      {actionItem.rule.expression}
-                    </MetadataItem>
-                    <MetadataItem
-                      gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-                      label={'Deadline'}
-                    >
-                      {actionItem.initiative.targetDate}
-                    </MetadataItem>
-                  </Grid>
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-        </Grid>
-      ))}
-      <TableRow></TableRow>
+            ruleToInitiativeActionItem={serviceToRuleToInitiative[service]}
+          />
+        ))}
+      </Grid>
     </InfoCard>
   );
 };

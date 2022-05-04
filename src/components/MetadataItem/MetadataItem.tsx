@@ -16,6 +16,7 @@
 import React from 'react';
 import { Grid, makeStyles, Typography } from '@material-ui/core';
 import { fallbackPalette } from '../../styles/styles';
+import { isUndefined } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   label: {
@@ -35,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface MetadataItemProps {
-  label: string;
+  label?: string;
   children: string | React.ReactNode;
   gridSizes?: Record<string, number>;
 }
@@ -49,9 +50,11 @@ export const MetadataItem = ({
 
   return (
     <Grid item {...gridSizes}>
-      <Typography variant="subtitle2" className={classes.label}>
-        {label}
-      </Typography>
+      {!isUndefined(label) && (
+        <Typography variant="subtitle2" className={classes.label}>
+          {label}
+        </Typography>
+      )}
       {typeof children === 'string' ? (
         <Typography variant="body2" className={classes.value}>
           {children}

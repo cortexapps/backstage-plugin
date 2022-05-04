@@ -23,7 +23,6 @@ import {
   ScorecardScoreNextSteps,
   ScorecardServiceScore,
   ScoresByIdentifier,
-  ServiceInitiativeActionItems,
   ServiceScorecardScore,
 } from './types';
 import { Entity } from '@backstage/catalog-model';
@@ -68,7 +67,7 @@ export interface CortexApi {
   getInitiativeActionItems(id: number): Promise<InitiativeActionItem[]>;
   getInitiativeActionItemsForTeam(
     entityRef: AnyEntityRef,
-  ): Promise<ServiceInitiativeActionItems[]>;
+  ): Promise<InitiativeActionItem[]>;
   getComponentActionItems(
     entityRef: AnyEntityRef,
   ): Promise<InitiativeActionItem[]>;

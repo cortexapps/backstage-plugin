@@ -24,7 +24,6 @@ import {
   ScorecardScoreNextSteps,
   ScorecardServiceScore,
   ScoresByIdentifier,
-  ServiceInitiativeActionItems,
   ServiceScorecardScore,
 } from './types';
 import { CortexApi } from './CortexApi';
@@ -203,7 +202,7 @@ export class CortexClient implements CortexApi {
 
   async getInitiativeActionItemsForTeam(
     entityRef: AnyEntityRef,
-  ): Promise<ServiceInitiativeActionItems[]> {
+  ): Promise<InitiativeActionItem[]> {
     return await this.get(
       `/api/backstage/v2/entities/initiatives/team-action-items`,
       {
