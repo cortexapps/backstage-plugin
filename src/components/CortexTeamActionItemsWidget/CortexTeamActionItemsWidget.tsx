@@ -96,7 +96,7 @@ export const CortexTeamActionItemsWidget = () => {
       <Grid container direction="column">
         {Object.keys(serviceToRuleToInitiative).map(service => (
           <TeamServiceActionItemsRow
-            key={service}
+            key={`${service}-key`}
             serviceComponentRef={{
               kind: 'component',
               namespace: entity.metadata.namespace ?? 'default',

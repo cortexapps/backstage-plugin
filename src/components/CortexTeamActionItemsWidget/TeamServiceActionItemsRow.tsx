@@ -49,7 +49,7 @@ export const TeamServiceActionItemsRow = ({
       </div>
       {Object.keys(ruleToInitiativeActionItem).map(rule => (
         <TeamServiceRuleInitiativesRow
-          key={rule}
+          key={`${rule}-key`}
           ruleExpression={rule}
           initiativeActionItems={ruleToInitiativeActionItem[rule]}
         />

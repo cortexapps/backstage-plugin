@@ -51,7 +51,11 @@ export const TeamServiceRuleInitiativesRow = ({
     <React.Fragment>
       <Grid container className={classes.todo2} direction={'row'}>
         <Grid item lg={1}>
-          <IconButton size="small" onClick={() => setOpen(!open)}>
+          <IconButton
+            aria-label={`Show initiatives for ${ruleExpression}`}
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
           </IconButton>
         </Grid>
@@ -60,9 +64,9 @@ export const TeamServiceRuleInitiativesRow = ({
         </MetadataItem>
       </Grid>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        {initiativeActionItems.map(initiativeActionItem => (
+        {initiativeActionItems.map((initiativeActionItem, index) => (
           <Link
-            key={initiativeActionItem.componentRef}
+            key={`${initiativeActionItem.componentRef}-${index}`}
             to={initiativeRef({
               id: `${initiativeActionItem.initiative.initiativeId}`,
             })}
