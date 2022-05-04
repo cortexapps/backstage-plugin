@@ -25,11 +25,13 @@ import {
 } from '@backstage/core-components';
 import React from 'react';
 import { isUndefined } from 'lodash';
-import { TeamServiceActionItemsRow } from './TeamServiceActionItemsRow';
+import { GroupComponentActionItemsRow } from './GroupComponentActionItemsRow';
 import { Grid } from '@material-ui/core';
 import { groupByString, mapValues } from '../../utils/collections';
+import { parseEntityRef } from '@backstage/catalog-model';
+import { defaultComponentRefContext } from '../../utils/ComponentUtils';
 
-export const CortexTeamActionItemsWidget = () => {
+export const CortexGroupActionItemsWidget = () => {
   const {
     entity,
     loading: entityLoading,
@@ -65,7 +67,7 @@ export const CortexTeamActionItemsWidget = () => {
 
   if (actionItemsError || isUndefined(initiativeActionItems)) {
     return (
-      <WarningPanel severity="error" title="Could not load team action items.">
+      <WarningPanel severity="error" title="Could not load group action items.">
         {actionItemsError?.message}
       </WarningPanel>
     );
@@ -75,34 +77,35 @@ export const CortexTeamActionItemsWidget = () => {
     return (
       <EmptyState
         missing="info"
-        title="No team action items to display"
-        description="The team does not have any action items for the initiatives it is part of."
+        title="No group action items to display"
+        description="The group does not have any action items for the initiatives it is part of."
       />
     );
   }
 
-  const serviceToInitiativeActionItems = groupByString(
+  const componentRefToInitiativeActionItems = groupByString(
     initiativeActionItems,
     initiativeActionItem => initiativeActionItem.componentRef,
   );
 
-  const serviceToRuleToInitiative = mapValues(
-    serviceToInitiativeActionItems,
+  const componentRefToRuleToInitiative = mapValues(
+    componentRefToInitiativeActionItems,
     items => groupByString(items, item => item.rule.expression),
   );
 
   return (
-    <InfoCard title="Team Action Items">
+    <InfoCard title="Group Action Items">
       <Grid container direction="column">
-        {Object.keys(serviceToRuleToInitiative).map(service => (
-          <TeamServiceActionItemsRow
-            key={`${service}-key`}
-            serviceComponentRef={{
-              kind: 'component',
-              namespace: entity.metadata.namespace ?? 'default',
-              name: service,
-            }}
-            ruleToInitiativeActionItem={serviceToRuleToInitiative[service]}
+        {Object.keys(componentRefToRuleToInitiative).map(componentRef => (
+          <GroupComponentActionItemsRow
+            key={`${componentRef}-key`}
+            componentRef={parseEntityRef(
+              componentRef,
+              defaultComponentRefContext,
+            )}
+            ruleToInitiativeActionItem={
+              componentRefToRuleToInitiative[componentRef]
+            }
           />
         ))}
       </Grid>

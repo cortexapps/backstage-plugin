@@ -18,7 +18,7 @@ import { DefaultEntityRefLink } from '../DefaultEntityLink';
 import { MetadataItem } from '../MetadataItem';
 import { CompoundEntityRef } from '@backstage/catalog-model';
 import { InitiativeActionItem } from '../../api/types';
-import { TeamServiceRuleInitiativesRow } from './TeamServiceRuleInitiativesRow';
+import { GroupComponentRuleInitiativesRow } from './GroupComponentRuleInitiativesRow';
 import { makeStyles } from '@material-ui/core';
 import { BackstageTheme } from '@backstage/theme';
 
@@ -28,28 +28,29 @@ const useStyles = makeStyles<BackstageTheme>(_ => ({
   },
 }));
 
-interface TeamServiceActionItemsRowProps {
-  serviceComponentRef: CompoundEntityRef;
+interface GroupComponentActionItemsRowProps {
+  componentRef: CompoundEntityRef;
   ruleToInitiativeActionItem: Record<string, InitiativeActionItem[]>;
 }
 
-export const TeamServiceActionItemsRow = ({
-  serviceComponentRef,
+export const GroupComponentActionItemsRow = ({
+  componentRef,
   ruleToInitiativeActionItem,
-}: TeamServiceActionItemsRowProps) => {
+}: GroupComponentActionItemsRowProps) => {
   const classes = useStyles();
   return (
     <React.Fragment>
       <div className={classes.todo}>
-        <DefaultEntityRefLink entityRef={serviceComponentRef}>
+        <DefaultEntityRefLink entityRef={componentRef}>
           <MetadataItem gridSizes={{ lg: 12 }}>
-            {serviceComponentRef.name}
+            {componentRef.name}
           </MetadataItem>
         </DefaultEntityRefLink>
       </div>
       {Object.keys(ruleToInitiativeActionItem).map(rule => (
-        <TeamServiceRuleInitiativesRow
+        <GroupComponentRuleInitiativesRow
           key={`${rule}-key`}
+          componentName={componentRef.name}
           ruleExpression={rule}
           initiativeActionItems={ruleToInitiativeActionItem[rule]}
         />

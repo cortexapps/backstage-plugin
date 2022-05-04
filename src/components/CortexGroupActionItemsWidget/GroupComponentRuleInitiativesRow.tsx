@@ -35,15 +35,17 @@ const useStyles = makeStyles<BackstageTheme>(_ => ({
   },
 }));
 
-interface TeamServiceRuleInitiativesRowProps {
-  ruleExpression: String;
+interface GroupComponentRuleInitiativesRowProps {
+  componentName: string;
+  ruleExpression: string;
   initiativeActionItems: InitiativeActionItem[];
 }
 
-export const TeamServiceRuleInitiativesRow = ({
+export const GroupComponentRuleInitiativesRow = ({
+  componentName,
   ruleExpression,
   initiativeActionItems,
-}: TeamServiceRuleInitiativesRowProps) => {
+}: GroupComponentRuleInitiativesRowProps) => {
   const [open, setOpen] = useState(false);
   const initiativeRef = useRouteRef(initiativeRouteRef);
   const classes = useStyles();
@@ -52,7 +54,7 @@ export const TeamServiceRuleInitiativesRow = ({
       <Grid container className={classes.todo2} direction={'row'}>
         <Grid item lg={1}>
           <IconButton
-            aria-label={`Show initiatives for ${ruleExpression}`}
+            aria-label={`Show initiatives for ${componentName} with rule ${ruleExpression}`}
             size="small"
             onClick={() => setOpen(!open)}
           >

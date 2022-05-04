@@ -149,13 +149,13 @@ export const CortexScorecardWidget = cortexPlugin.provide(
   }),
 );
 
-export const CortexTeamActionItemsWidget = cortexPlugin.provide(
+export const CortexGroupActionItemsWidget = cortexPlugin.provide(
   createComponentExtension({
-    name: 'CortexTeamActionItemsWidget',
+    name: 'CortexGroupActionItemsWidget',
     component: {
       lazy: () =>
-        import('./components/CortexTeamActionItemsWidget').then(
-          m => m.CortexTeamActionItemsWidget,
+        import('./components/CortexGroupActionItemsWidget').then(
+          m => m.CortexGroupActionItemsWidget,
         ),
     },
   }),

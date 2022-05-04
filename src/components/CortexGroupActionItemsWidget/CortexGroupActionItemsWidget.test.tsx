@@ -16,14 +16,22 @@
 
 import { CortexApi } from '../../api/CortexApi';
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
 import { cortexApiRef } from '../../api';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
+import {
+  EntityProvider,
+  entityRouteRef,
+} from '@backstage/plugin-catalog-react';
 import { initiativeRouteRef, rootRouteRef } from '../../routes';
-import { CortexTeamActionItemsWidget } from './CortexTeamActionItemsWidget';
+import { CortexGroupActionItemsWidget } from './CortexGroupActionItemsWidget';
 
-describe('<CortexTeamActionItemsWidget/>', () => {
+describe('<CortexGroupActionItemsWidget/>', () => {
   const entity = {
     apiVersion: 'v1',
     kind: 'Group',
@@ -101,17 +109,17 @@ describe('<CortexTeamActionItemsWidget/>', () => {
         </TestApiProvider>,
         {
           mountedRoutes: {
-            '/': rootRouteRef as any, // TODO
-            'initiatives/1': initiativeRouteRef as any, // TODO
-            '/initiatives/2': initiativeRouteRef as any, // TODO
+            '/': rootRouteRef,
+            '/entity/:namespace/:kind/:name': entityRouteRef,
+            '/initiatives/:id': initiativeRouteRef as any,
           },
         },
       ),
     );
 
-  it('Properly renders CortexTeamActionItemsWidget', async () => {
+  it('Properly renders CortexGroupActionItemsWidget', async () => {
     const { findByText, queryByText, queryAllByText, queryByLabelText } =
-      renderWrapped(<CortexTeamActionItemsWidget />);
+      renderWrapped(<CortexGroupActionItemsWidget />);
     expect(await findByText(/component1/)).toBeInTheDocument();
     expect(await findByText(/git != null/)).toBeInTheDocument();
     expect(queryAllByText(/description != null/)).toHaveLength(2);
@@ -121,20 +129,35 @@ describe('<CortexTeamActionItemsWidget/>', () => {
     expect(queryByText(/Git initiative/)).not.toBeInTheDocument();
     expect(queryByText(/05\/05\/2000/)).not.toBeInTheDocument();
 
-    fireEvent.click(queryByLabelText('Show initiatives for git != null')!!);
+    await act(async () => {
+      fireEvent.click(
+        queryByLabelText(
+          'Show initiatives for component1 with rule git != null',
+        )!!,
+      );
+    });
     expect(await findByText(/Basic service catalog/)).toBeInTheDocument();
     expect(await findByText(/01\/01\/2000/)).toBeInTheDocument();
     expect(await findByText(/Git initiative/)).toBeInTheDocument();
     expect(await findByText(/05\/05\/2000/)).toBeInTheDocument();
 
-    fireEvent.click(queryByLabelText('Show initiatives for git != null')!!); // TODO this doesn't work
-    expect(queryByText(/Basic service catalog/)).not.toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(
+        queryByLabelText(
+          'Show initiatives for component1 with rule git != null',
+        )!!,
+      );
+    });
+    // The animation takes some time so wait for the elements to be removed
+    await waitForElementToBeRemoved(queryByText(/Basic service catalog/));
     expect(queryByText(/01\/01\/2000/)).not.toBeInTheDocument();
     expect(queryByText(/Git initiative/)).not.toBeInTheDocument();
     expect(queryByText(/05\/05\/2000/)).not.toBeInTheDocument();
 
     fireEvent.click(
-      queryByLabelText('Show initiatives for description != null')!!,
+      queryByLabelText(
+        'Show initiatives for component2 with rule description != null',
+      )!!,
     );
     expect(await findByText(/Basic service catalog/)).toBeInTheDocument();
     expect(await findByText(/01\/01\/2000/)).toBeInTheDocument();
