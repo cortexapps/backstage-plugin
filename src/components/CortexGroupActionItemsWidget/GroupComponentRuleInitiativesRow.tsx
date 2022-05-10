@@ -19,18 +19,12 @@ import { Collapse, Grid, IconButton, makeStyles } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import React, { useState } from 'react';
-import { Link } from '@backstage/core-components';
-import { useRouteRef } from '@backstage/core-plugin-api';
-import { initiativeRouteRef } from '../../routes';
 import { MetadataItem } from '../MetadataItem';
 import { BackstageTheme } from '@backstage/theme';
+import { GroupComponentRuleInitiativeInfo } from './GroupComponentRuleInitiativeInfo';
 
 const useStyles = makeStyles<BackstageTheme>(_ => ({
-  todo: {
-    marginLeft: '2rem',
-    marginBottom: '0.25rem',
-  },
-  todo2: {
+  ruleRow: {
     marginBottom: '0.25rem',
   },
 }));
@@ -47,11 +41,11 @@ export const GroupComponentRuleInitiativesRow = ({
   initiativeActionItems,
 }: GroupComponentRuleInitiativesRowProps) => {
   const [open, setOpen] = useState(false);
-  const initiativeRef = useRouteRef(initiativeRouteRef);
   const classes = useStyles();
+
   return (
     <React.Fragment>
-      <Grid container className={classes.todo2} direction={'row'}>
+      <Grid container className={classes.ruleRow} direction={'row'}>
         <Grid item lg={1}>
           <IconButton
             aria-label={`Show initiatives for ${componentName} with rule ${ruleExpression}`}
@@ -66,22 +60,11 @@ export const GroupComponentRuleInitiativesRow = ({
         </MetadataItem>
       </Grid>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        {initiativeActionItems.map((initiativeActionItem, index) => (
-          <Link
-            key={`${initiativeActionItem.componentRef}-${index}`}
-            to={initiativeRef({
-              id: `${initiativeActionItem.initiative.initiativeId}`,
-            })}
-          >
-            <Grid container direction={'row'} className={classes.todo}>
-              <MetadataItem gridSizes={{ lg: 6 }} label={'Initiative'}>
-                {initiativeActionItem.initiative.name}
-              </MetadataItem>
-              <MetadataItem gridSizes={{ lg: 6 }} label={'Deadline'}>
-                {initiativeActionItem.initiative.targetDate}
-              </MetadataItem>
-            </Grid>
-          </Link>
+        {initiativeActionItems.map(initiativeActionItem => (
+          <GroupComponentRuleInitiativeInfo
+            key={`GroupComponentRuleInitiativeInfo-${initiativeActionItem.componentRef}-${initiativeActionItem.rule.expression}-${initiativeActionItem.initiative.initiativeId}`}
+            initiativeActionItem={initiativeActionItem}
+          />
         ))}
       </Collapse>
     </React.Fragment>

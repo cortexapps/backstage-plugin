@@ -203,7 +203,7 @@ export class CortexClient implements CortexApi {
   async getInitiativeActionItemsForTeam(
     entityRef: AnyEntityRef,
   ): Promise<InitiativeActionItem[]> {
-    return await this.get(`/api/backstage/v1/teams/initiative-action-items`, {
+    return await this.get(`/api/backstage/v1/teams/initiatives/action-items`, {
       ref: stringifyAnyEntityRef(entityRef),
     });
   }

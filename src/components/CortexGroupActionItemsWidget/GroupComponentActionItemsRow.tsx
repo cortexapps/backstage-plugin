@@ -23,7 +23,7 @@ import { makeStyles } from '@material-ui/core';
 import { BackstageTheme } from '@backstage/theme';
 
 const useStyles = makeStyles<BackstageTheme>(_ => ({
-  todo: {
+  componentLink: {
     marginBottom: '0.35rem',
   },
 }));
@@ -38,9 +38,10 @@ export const GroupComponentActionItemsRow = ({
   ruleToInitiativeActionItem,
 }: GroupComponentActionItemsRowProps) => {
   const classes = useStyles();
+
   return (
     <React.Fragment>
-      <div className={classes.todo}>
+      <div className={classes.componentLink}>
         <DefaultEntityRefLink entityRef={componentRef}>
           <MetadataItem gridSizes={{ lg: 12 }}>
             {componentRef.name}
@@ -49,7 +50,7 @@ export const GroupComponentActionItemsRow = ({
       </div>
       {Object.keys(ruleToInitiativeActionItem).map(rule => (
         <GroupComponentRuleInitiativesRow
-          key={`${rule}-key`}
+          key={`GroupComponentActionItemsRow-${rule}`}
           componentName={componentRef.name}
           ruleExpression={rule}
           initiativeActionItems={ruleToInitiativeActionItem[rule]}

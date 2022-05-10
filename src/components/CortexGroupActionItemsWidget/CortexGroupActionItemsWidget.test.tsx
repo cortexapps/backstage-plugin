@@ -120,10 +120,10 @@ describe('<CortexGroupActionItemsWidget/>', () => {
   it('Properly renders CortexGroupActionItemsWidget', async () => {
     const { findByText, queryByText, queryAllByText, queryByLabelText } =
       renderWrapped(<CortexGroupActionItemsWidget />);
-    expect(await findByText(/component1/)).toBeInTheDocument();
-    expect(await findByText(/git != null/)).toBeInTheDocument();
+    expect(await findByText(/component1/)).toBeVisible();
+    expect(await findByText(/git != null/)).toBeVisible();
     expect(queryAllByText(/description != null/)).toHaveLength(2);
-    expect(await findByText(/component2/)).toBeInTheDocument();
+    expect(await findByText(/component2/)).toBeVisible();
     expect(queryByText(/Basic service catalog/)).not.toBeInTheDocument();
     expect(queryByText(/01\/01\/2000/)).not.toBeInTheDocument();
     expect(queryByText(/Git initiative/)).not.toBeInTheDocument();
@@ -136,10 +136,10 @@ describe('<CortexGroupActionItemsWidget/>', () => {
         )!!,
       );
     });
-    expect(await findByText(/Basic service catalog/)).toBeInTheDocument();
-    expect(await findByText(/01\/01\/2000/)).toBeInTheDocument();
-    expect(await findByText(/Git initiative/)).toBeInTheDocument();
-    expect(await findByText(/05\/05\/2000/)).toBeInTheDocument();
+    expect(await findByText(/Basic service catalog/)).toBeVisible();
+    expect(await findByText(/01\/01\/2000/)).toBeVisible();
+    expect(await findByText(/Git initiative/)).toBeVisible();
+    expect(await findByText(/05\/05\/2000/)).toBeVisible();
 
     await act(async () => {
       fireEvent.click(
@@ -159,8 +159,8 @@ describe('<CortexGroupActionItemsWidget/>', () => {
         'Show initiatives for component2 with rule description != null',
       )!!,
     );
-    expect(await findByText(/Basic service catalog/)).toBeInTheDocument();
-    expect(await findByText(/01\/01\/2000/)).toBeInTheDocument();
+    expect(await findByText(/Basic service catalog/)).toBeVisible();
+    expect(await findByText(/01\/01\/2000/)).toBeVisible();
     expect(queryByText(/Git initiative/)).not.toBeInTheDocument();
     expect(queryByText(/05\/05\/2000/)).not.toBeInTheDocument();
   });
