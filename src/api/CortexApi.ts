@@ -65,6 +65,9 @@ export interface CortexApi {
   getInitiatives(): Promise<Initiative[]>;
   getInitiative(id: number): Promise<Initiative>;
   getInitiativeActionItems(id: number): Promise<InitiativeActionItem[]>;
+  getInitiativeActionItemsForTeam(
+    entityRef: AnyEntityRef,
+  ): Promise<InitiativeActionItem[]>;
   getComponentActionItems(
     entityRef: AnyEntityRef,
   ): Promise<InitiativeActionItem[]>;

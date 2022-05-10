@@ -55,8 +55,8 @@ describe('ScorecardsPage', () => {
 
   it('should render', async () => {
     const { findByText } = renderWrapped(<ScorecardsPage />);
-    expect(await findByText(/My Scorecard/)).toBeInTheDocument();
-    expect(await findByText(/Some description/)).toBeInTheDocument();
-    expect(await findByText(/Billy Bob/)).toBeInTheDocument();
+    expect(await findByText(/My Scorecard/)).toBeVisible();
+    expect(await findByText(/Some description/)).toBeVisible();
+    expect(await findByText(/Billy Bob/)).toBeVisible();
   });
 });

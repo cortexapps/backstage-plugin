@@ -39,10 +39,10 @@ describe('<ExploreLayout />', () => {
     );
 
     await waitFor(() => {
-      expect(getByText('Explore our ecosystem')).toBeInTheDocument();
+      expect(getByText('Explore our ecosystem')).toBeVisible();
       expect(
         getByText('Discover solutions available in our ecosystem'),
-      ).toBeInTheDocument();
+      ).toBeVisible();
     });
   });
 
@@ -58,7 +58,7 @@ describe('<ExploreLayout />', () => {
     );
 
     await waitFor(() =>
-      expect(getByText('Explore our universe')).toBeInTheDocument(),
+      expect(getByText('Explore our universe')).toBeVisible(),
     );
   });
 
@@ -74,7 +74,7 @@ describe('<ExploreLayout />', () => {
     );
 
     await waitFor(() =>
-      expect(getByText('Browse the ACME Corp ecosystem')).toBeInTheDocument(),
+      expect(getByText('Browse the ACME Corp ecosystem')).toBeVisible(),
     );
   });
 });

@@ -19,7 +19,8 @@ import {
   createComponentExtension,
   createPlugin,
   createRoutableExtension,
-  discoveryApiRef, identityApiRef,
+  discoveryApiRef,
+  identityApiRef,
   TypesToApiRefs,
 } from '@backstage/core-plugin-api';
 
@@ -35,7 +36,8 @@ export const cortexPlugin = createPlugin({
     createApiFactory({
       api: cortexApiRef,
       deps: { discoveryApi: discoveryApiRef, identityApi: identityApiRef },
-      factory: ({ discoveryApi, identityApi }) => new CortexClient({ discoveryApi, identityApi }),
+      factory: ({ discoveryApi, identityApi }) =>
+        new CortexClient({ discoveryApi, identityApi }),
     }),
     createApiFactory({
       api: extensionApiRef,
@@ -62,7 +64,8 @@ export const extendableCortexPlugin = <
       createApiFactory({
         api: cortexApiRef,
         deps: { discoveryApi: discoveryApiRef, identityApi: identityApiRef },
-        factory: ({ discoveryApi, identityApi }) => new CortexClient({ discoveryApi, identityApi }),
+        factory: ({ discoveryApi, identityApi }) =>
+          new CortexClient({ discoveryApi, identityApi }),
       }),
       createApiFactory({
         api: extensionApiRef,
@@ -107,6 +110,18 @@ export const extendableCortexPlugin = <
     }),
   );
 
+  const CortexGroupActionItemsWidget = plugin.provide(
+    createComponentExtension({
+      name: 'CortexGroupActionItemsWidget',
+      component: {
+        lazy: () =>
+          import('./components/CortexGroupActionItemsWidget').then(
+            m => m.CortexGroupActionItemsWidget,
+          ),
+      },
+    }),
+  );
+
   const SystemCortexContent = plugin.provide(
     createComponentExtension({
       name: 'SystemCortexContent',
@@ -122,6 +137,7 @@ export const extendableCortexPlugin = <
     CortexPage,
     EntityCortexContent,
     CortexScorecardWidget,
+    CortexGroupActionItemsWidget,
     SystemCortexContent,
   };
 };
@@ -141,6 +157,18 @@ export const CortexScorecardWidget = cortexPlugin.provide(
       lazy: () =>
         import('./components/CortexScorecardWidget').then(
           m => m.CortexScorecardWidget,
+        ),
+    },
+  }),
+);
+
+export const CortexGroupActionItemsWidget = cortexPlugin.provide(
+  createComponentExtension({
+    name: 'CortexGroupActionItemsWidget',
+    component: {
+      lazy: () =>
+        import('./components/CortexGroupActionItemsWidget').then(
+          m => m.CortexGroupActionItemsWidget,
         ),
     },
   }),

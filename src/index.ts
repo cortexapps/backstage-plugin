@@ -20,6 +20,7 @@ export {
   cortexPlugin,
   CortexPage,
   CortexScorecardWidget,
+  CortexGroupActionItemsWidget,
   EntityCortexContent,
   SystemCortexContent,
   extendableCortexPlugin,
