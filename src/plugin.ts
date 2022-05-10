@@ -110,6 +110,18 @@ export const extendableCortexPlugin = <
     }),
   );
 
+  const CortexGroupActionItemsWidget = plugin.provide(
+    createComponentExtension({
+      name: 'CortexGroupActionItemsWidget',
+      component: {
+        lazy: () =>
+          import('./components/CortexGroupActionItemsWidget').then(
+            m => m.CortexGroupActionItemsWidget,
+          ),
+      },
+    }),
+  );
+
   const SystemCortexContent = plugin.provide(
     createComponentExtension({
       name: 'SystemCortexContent',
@@ -125,6 +137,7 @@ export const extendableCortexPlugin = <
     CortexPage,
     EntityCortexContent,
     CortexScorecardWidget,
+    CortexGroupActionItemsWidget,
     SystemCortexContent,
   };
 };
