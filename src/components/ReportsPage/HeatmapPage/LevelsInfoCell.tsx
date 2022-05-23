@@ -48,15 +48,18 @@ export const LevelsInfoCell = ({ identifier, scores }: LevelsInfoCellProps) => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails style={{ display: 'flex', flexDirection: 'column' }}>
-          {scores?.map(score => (
-            <EntityRefLink
-              key={`LevelService-${identifier}-${score.serviceId}`}
-              entityRef={parseEntityRef(
-                score.componentRef,
-                defaultComponentRefContext,
-              )}
-            />
-          ))}
+          <ul style={{ paddingLeft: 16 }}>
+            {scores?.map(score => (
+              <li key={`LevelService-${identifier}-${score.serviceId}`}>
+                <EntityRefLink
+                  entityRef={parseEntityRef(
+                    score.componentRef,
+                    defaultComponentRefContext,
+                  )}
+                />
+              </li>
+            ))}
+          </ul>
         </AccordionDetails>
       </Accordion>
     </TableCell>
