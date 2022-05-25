@@ -20,6 +20,7 @@ import {
   AccordionDetails,
   TableCell,
   Typography,
+  makeStyles,
 } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
@@ -29,6 +30,13 @@ import { maybePluralize } from '../../../utils/strings';
 import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
 
 import { ScorecardServiceScore } from '../../../api/types';
+import { BackstageTheme } from '@backstage/theme';
+
+const useStyles = makeStyles<BackstageTheme>(_ => ({
+  componentList: {
+    paddingLeft: '16px',
+  },
+}));
 
 interface LevelsInfoCellProps {
   identifier: string;
@@ -36,6 +44,7 @@ interface LevelsInfoCellProps {
 }
 
 export const LevelsInfoCell = ({ identifier, scores }: LevelsInfoCellProps) => {
+  const classes = useStyles();
   return (
     <TableCell>
       <Accordion>
@@ -48,15 +57,18 @@ export const LevelsInfoCell = ({ identifier, scores }: LevelsInfoCellProps) => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails style={{ display: 'flex', flexDirection: 'column' }}>
-          {scores?.map(score => (
-            <EntityRefLink
-              key={`LevelService-${identifier}-${score.serviceId}`}
-              entityRef={parseEntityRef(
-                score.componentRef,
-                defaultComponentRefContext,
-              )}
-            />
-          ))}
+          <ul className={classes.componentList}>
+            {scores?.map(score => (
+              <li key={`LevelService-${identifier}-${score.serviceId}`}>
+                <EntityRefLink
+                  entityRef={parseEntityRef(
+                    score.componentRef,
+                    defaultComponentRefContext,
+                  )}
+                />
+              </li>
+            ))}
+          </ul>
         </AccordionDetails>
       </Accordion>
     </TableCell>
