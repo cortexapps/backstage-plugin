@@ -13,17 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
+import { EmptyState, InfoCard, Table as BSTable, TableColumn } from '@backstage/core-components';
 import { ScorecardServiceScore } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
-import { Table, TableBody } from '@material-ui/core';
-import { ScorecardsTableRow } from './ScorecardsTableRow';
-import { EmptyState, InfoCard } from '@backstage/core-components';
+import { Gauge } from '../../../Gauge';
+import { humanizeAnyEntityRef } from '../../../../utils/types';
+import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
+import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink/ScorecardServiceRefLink';
 
 interface ScorecardsTableProps {
   scorecardId: number;
   scores: ScorecardServiceScore[];
 }
+
+const PAGE_SIZE = 25;
+
+const columns: TableColumn[] = [{
+  field: 'scorePercentage',
+  sorting: false,
+  title: 'Score',
+}, {
+  customFilterAndSearch: (filter, rowData: { serviceName?: string }) => {
+    return rowData.serviceName?.indexOf(filter) !== -1;
+  },
+  title: 'Service name',
+  field: 'name',
+  sorting: false,
+  highlight: true,
+}, {
+  title: 'Level',
+  field: 'level',
+  sorting: false,
+}];
 
 export const ScorecardsTableCard = ({
   scorecardId,
@@ -31,25 +54,64 @@ export const ScorecardsTableCard = ({
 }: ScorecardsTableProps) => {
   const classes = useDetailCardStyles();
 
-  return (
-    <InfoCard title="Scores" className={classes.root}>
-      {scores.length === 0 ? (
+  const sortedScores = useMemo(() => {
+    scores.sort((a, b) => b.scorePercentage - a.scorePercentage);
+    return scores;
+  }, [scores]);
+
+  const data = useMemo(() => {
+    return sortedScores.map((score) => {
+      const currentLevel = score.ladderLevels?.[0]?.currentLevel;
+      const serviceName = humanizeAnyEntityRef(
+        score.componentRef,
+        defaultComponentRefContext,
+      );
+      return {
+        scorePercentage: (
+          <Gauge
+            value={score.scorePercentage}
+            strokeWidth={10}
+            trailWidth={10}
+          />
+        ),
+        name: (
+          <ScorecardServiceRefLink
+            scorecardId={scorecardId}
+            componentRef={score.componentRef}
+          >
+            {serviceName}
+          </ScorecardServiceRefLink>
+        ),
+        level: currentLevel ? (
+          <ScorecardLadderLevelBadge
+            name={currentLevel.name}
+            color={currentLevel.color}
+          />) : null,
+        serviceName, // for filtering
+      };
+    })
+  }, [scorecardId, sortedScores]);
+
+  const showPagination = sortedScores.length > PAGE_SIZE;
+
+  if (scores.length === 0) {
+    return (
+      <InfoCard title="Scores" className={classes.root}>
         <EmptyState missing="data" title="No components found." />
-      ) : (
-        <Table>
-          <TableBody>
-            {scores
-              .sort((a, b) => b.scorePercentage - a.scorePercentage)
-              .map(score => (
-                <ScorecardsTableRow
-                  key={`ScorecardsTableRow-${score.serviceId}`}
-                  scorecardId={scorecardId}
-                  score={score}
-                />
-              ))}
-          </TableBody>
-        </Table>
-      )}
-    </InfoCard>
+      </InfoCard>
+    );
+  }
+
+  return (
+    <BSTable
+      options={{
+        paging: showPagination,
+        pageSize: PAGE_SIZE,
+        pageSizeOptions: [25, 50, 100],
+      }}
+      data={data}
+      columns={columns}
+      title="Scores"
+    />
   );
 };
