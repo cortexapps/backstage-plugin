@@ -29,19 +29,30 @@ interface ScorecardsTableProps {
 }
 
 const PAGE_SIZE = 25;
-const TEST_MULTIPLIER = 100;
 
 const columns: TableColumn[] = [{
   field: 'scorePercentage',
-  sorting: false,
+  sorting: true,
   title: 'Score',
+  render: (data: { scorePercentage?: number }) => {
+    return (
+      <Gauge
+        value={data?.scorePercentage ?? 0}
+        strokeWidth={10}
+        trailWidth={10}
+      />
+    )
+  }
 }, {
   customFilterAndSearch: (filter, rowData: { serviceName?: string }) => {
     return rowData.serviceName?.indexOf(filter) !== -1;
   },
+  customSort: ((data1: { serviceName?: string }, data2: { serviceName?: string }) => {
+    return (data1?.serviceName ?? '')?.localeCompare(data2?.serviceName ?? '')
+  }),
   field: 'name',
   highlight: true,
-  sorting: false,
+  sorting: true,
   title: 'Service name',
 }, {
   field: 'level',
@@ -55,17 +66,8 @@ export const ScorecardsTableCard = ({
 }: ScorecardsTableProps) => {
   const classes = useDetailCardStyles();
 
-  const sortedScores = useMemo(() => {
-    const repeat = [];
-    for (let i = 0; i < TEST_MULTIPLIER; i++) {
-      repeat.push(...scores);
-    }
-    repeat.sort((a, b) => b.scorePercentage - a.scorePercentage);
-    return repeat;
-  }, [scores]);
-
   const data = useMemo(() => {
-    return sortedScores.map((score) => {
+    return scores.map((score) => {
       const currentLevel = score.ladderLevels?.[0]?.currentLevel;
       const serviceName = humanizeAnyEntityRef(
         score.componentRef,
@@ -85,19 +87,13 @@ export const ScorecardsTableCard = ({
             {serviceName}
           </ScorecardServiceRefLink>
         ),
-        scorePercentage: (
-          <Gauge
-            value={score.scorePercentage}
-            strokeWidth={10}
-            trailWidth={10}
-          />
-        ),
+        scorePercentage: score.scorePercentage,
         serviceName, // for filtering
       };
     })
-  }, [scorecardId, sortedScores]);
+  }, [scorecardId, scores]);
 
-  const showPagination = sortedScores.length > PAGE_SIZE;
+  const showPagination = scores.length > PAGE_SIZE;
 
   if (scores.length === 0) {
     return (
