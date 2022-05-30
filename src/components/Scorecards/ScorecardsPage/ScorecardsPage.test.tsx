@@ -21,8 +21,11 @@ import { cortexApiRef } from '../../../api';
 import { ScorecardsPage } from './ScorecardsPage';
 import { rootRouteRef } from '../../../routes';
 
+type AnyFunction = (args?: [] | [any]) => any;
+type ApiOverrides = Record<string, AnyFunction>;
+
 describe('ScorecardsPage', () => {
-  const cortexApi: Partial<CortexApi> = {
+  const getCortexApi = (overrides?: ApiOverrides): Partial<CortexApi> => ({
     getScorecards: () =>
       Promise.resolve([
         {
@@ -37,12 +40,13 @@ describe('ScorecardsPage', () => {
           nextUpdated: '2021-08-25T04:00:00',
         },
       ]),
-  };
+    ...overrides,
+  });
 
-  const renderWrapped = (children: React.ReactNode) =>
+  const renderWrapped = (children: React.ReactNode, overrides?: ApiOverrides) =>
     render(
       wrapInTestApp(
-        <TestApiProvider apis={[[cortexApiRef, cortexApi]]}>
+        <TestApiProvider apis={[[cortexApiRef, getCortexApi(overrides)]]}>
           {children}
         </TestApiProvider>,
         {
@@ -59,4 +63,11 @@ describe('ScorecardsPage', () => {
     expect(await findByText(/Some description/)).toBeVisible();
     expect(await findByText(/Billy Bob/)).toBeVisible();
   });
+
+  it('should render empty state if no scorecards', async () => {
+    const emptyGetScorecards = () => Promise.resolve([]);
+    const { findByText } = renderWrapped(<ScorecardsPage />, { getScorecards: emptyGetScorecards });
+    expect(await findByText(/No scorecards to display/)).toBeVisible();
+    expect(await findByText(/You haven't added any scorecards yet/)).toBeVisible();
+  })
 });
