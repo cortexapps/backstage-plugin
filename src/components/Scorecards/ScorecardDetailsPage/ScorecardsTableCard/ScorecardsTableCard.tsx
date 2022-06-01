@@ -29,7 +29,10 @@ interface ScorecardsTableProps {
 }
 
 const PAGE_SIZE = 25;
+const TEST_MULTIPLIER = 10;
 
+// we can't seem to Template Type each column independently, so 
+// we have extra null coalesces and `as`s in render methods
 const columns: TableColumn[] = [{
   field: 'scorePercentage',
   sorting: true,
@@ -56,6 +59,13 @@ const columns: TableColumn[] = [{
   title: 'Service name',
 }, {
   field: 'level',
+  render: (currentLevel: { name?: 'string', color?: 'string' }) => {
+    return (
+      currentLevel ?
+      <ScorecardLadderLevelBadge name={currentLevel.name ?? ''} color={currentLevel.color ?? ''} />
+      : null
+    );
+  },
   sorting: false,
   title: 'Level',
 }];
@@ -67,19 +77,22 @@ export const ScorecardsTableCard = ({
   const classes = useDetailCardStyles();
 
   const data = useMemo(() => {
-    return scores.map((score) => {
+    const repeat = [];
+    for (let i = 0; i < TEST_MULTIPLIER; i++) {
+      repeat.push(...scores);
+    }
+
+    return repeat.map((score) => {
       const currentLevel = score.ladderLevels?.[0]?.currentLevel;
       const serviceName = humanizeAnyEntityRef(
         score.componentRef,
         defaultComponentRefContext,
       );
       return {
-        level: currentLevel ? (
-          <ScorecardLadderLevelBadge
-            name={currentLevel.name}
-            color={currentLevel.color}
-          />) : null,
+        level: currentLevel,
         name: (
+          // putting this logic into the column render breaks something with refs
+          // and we have custom filtering on this column anyway so leaving the jsx here
           <ScorecardServiceRefLink
             scorecardId={scorecardId}
             componentRef={score.componentRef}
@@ -88,7 +101,7 @@ export const ScorecardsTableCard = ({
           </ScorecardServiceRefLink>
         ),
         scorePercentage: score.scorePercentage,
-        serviceName, // for filtering
+        serviceName, // for filtering only -- not rendered
       };
     })
   }, [scorecardId, scores]);
