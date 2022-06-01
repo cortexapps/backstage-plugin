@@ -29,7 +29,6 @@ interface ScorecardsTableProps {
 }
 
 const PAGE_SIZE = 25;
-const TEST_MULTIPLIER = 10;
 
 // we can't seem to Template Type each column independently, so 
 // we have extra null coalesces and `as`s in render methods
@@ -77,12 +76,7 @@ export const ScorecardsTableCard = ({
   const classes = useDetailCardStyles();
 
   const data = useMemo(() => {
-    const repeat = [];
-    for (let i = 0; i < TEST_MULTIPLIER; i++) {
-      repeat.push(...scores);
-    }
-
-    return repeat.map((score) => {
+    return scores.map((score) => {
       const currentLevel = score.ladderLevels?.[0]?.currentLevel;
       const serviceName = humanizeAnyEntityRef(
         score.componentRef,
