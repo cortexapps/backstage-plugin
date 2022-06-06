@@ -28,9 +28,10 @@ export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
 
   return (
     <ListCard
-      name={scorecard.name}
       creatorName={scorecard.creator.name}
       description={scorecard.description}
+      name={scorecard.name}
+      truncateToCharacters={200}
       url={scorecardRef({ id: `${scorecard.id}` })}
     />
   );
