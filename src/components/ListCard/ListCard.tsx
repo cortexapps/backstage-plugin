@@ -71,7 +71,6 @@ export const ListCard = ({
           <MarkdownContent content={descriptionToShow ?? ''} />
           {
             truncateToCharacters && description.length > truncateToCharacters && (
-              // <Button to={'#'} onClick={() => setIsExpanded(!isExpanded)}>{isExpanded ? 'Less' : 'More'}</Button>
               <button className={classes.linkButton} onClick={() => setIsExpanded(!isExpanded)}>{isExpanded ? 'Less' : 'More'}</button>
             )
           }
