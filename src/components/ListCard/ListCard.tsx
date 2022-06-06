@@ -22,13 +22,13 @@ import {
 } from '@backstage/core-components';
 import { BackstageTheme } from '@backstage/theme';
 
-const useStyles = makeStyles<BackstageTheme>(_ => ({
+const useStyles = makeStyles<BackstageTheme>(styles => ({
   linkButton: {
     backgroundColor: 'transparent',
     border: 'none',
-    color: '#2E77D0',
+    color: styles.palette.primary.main,
     cursor: 'pointer',
-    fontSize: 14,
+    fontSize: styles.typography.body2.fontSize,
     padding: 0,
   },
 }));
@@ -71,6 +71,7 @@ export const ListCard = ({
           <MarkdownContent content={descriptionToShow ?? ''} />
           {
             truncateToCharacters && description.length > truncateToCharacters && (
+              // <Button to={'#'} onClick={() => setIsExpanded(!isExpanded)}>{isExpanded ? 'Less' : 'More'}</Button>
               <button className={classes.linkButton} onClick={() => setIsExpanded(!isExpanded)}>{isExpanded ? 'Less' : 'More'}</button>
             )
           }
