@@ -29,7 +29,6 @@ export const InitiativeCard = ({ initiative }: InitiativeCardProps) => {
   return (
     <ListCard
       name={initiative.name}
-      creatorName={initiative.creator.name}
       description={initiative.description}
       url={initiativeRef({ id: `${initiative.id}` })}
     />

@@ -61,7 +61,6 @@ describe('ScorecardsPage', () => {
     const { findByText } = renderWrapped(<ScorecardsPage />);
     expect(await findByText(/My Scorecard/)).toBeVisible();
     expect(await findByText(/Some description/)).toBeVisible();
-    expect(await findByText(/Billy Bob/)).toBeVisible();
   });
 
   it('should render empty state if no scorecards', async () => {
