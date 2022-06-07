@@ -28,7 +28,6 @@ export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
 
   return (
     <ListCard
-      creatorName={scorecard.creator.name}
       description={scorecard.description}
       name={scorecard.name}
       truncateToCharacters={200}

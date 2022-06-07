@@ -34,7 +34,6 @@ const useStyles = makeStyles<BackstageTheme>(styles => ({
 }));
 
 interface ListCardProps {
-  creatorName: string;
   description?: string;
   name: string;
   truncateToCharacters?: number;
@@ -42,7 +41,6 @@ interface ListCardProps {
 }
 
 export const ListCard = ({
-  creatorName,
   description,
   name,
   truncateToCharacters,
@@ -64,7 +62,7 @@ export const ListCard = ({
   return (
     <Card>
       <CardMedia>
-        <ItemCardHeader title={name} subtitle={`By ${creatorName}`} />
+        <ItemCardHeader title={name} />
       </CardMedia>
       {description && (
         <CardContent>
