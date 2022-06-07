@@ -68,5 +68,5 @@ describe('ScorecardsPage', () => {
     const { findByText } = renderWrapped(<ScorecardsPage />, { getScorecards: emptyGetScorecards });
     expect(await findByText(/No scorecards to display/)).toBeVisible();
     expect(await findByText(/You haven't added any scorecards yet/)).toBeVisible();
-  })
+  });
 });
