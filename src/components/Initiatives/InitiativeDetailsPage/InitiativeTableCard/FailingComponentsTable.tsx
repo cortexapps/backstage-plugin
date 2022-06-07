@@ -23,6 +23,7 @@ import { useDetailCardStyles } from '../../../../styles/styles';
 import { FailingComponentsTableRow } from './FailingComponentsTableRow';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
+import { Box } from '@material-ui/core';
 
 const columns: TableColumn[] = [{
   field: 'all',
@@ -85,15 +86,17 @@ export const FailingComponentsTable = ({
   }
 
   return (
-    <BSTable
-      columns={columns}
-      data={data}
-      options={{
-        pageSize: defaultPageSize,
-        pageSizeOptions: [defaultPageSize, defaultPageSize * 2, defaultPageSize * 4],
-        paging: showPagination,
-      }}
-      title="Failing"
-    />
+    <Box marginBottom={3}>
+      <BSTable
+        columns={columns}
+        data={data}
+        options={{
+          pageSize: defaultPageSize,
+          pageSizeOptions: [defaultPageSize, defaultPageSize * 2, defaultPageSize * 4],
+          paging: showPagination,
+        }}
+        title="Failing"
+      />
+    </Box>
   );
 };
