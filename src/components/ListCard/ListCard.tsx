@@ -13,36 +13,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Card, CardActions, CardContent, CardMedia } from '@material-ui/core';
-import React from 'react';
-// import { ItemCardHeader } from '../ItemCardHeader';
+import React, { useMemo } from 'react';
+import { Card, CardActions, CardContent, CardMedia, makeStyles } from '@material-ui/core';
 import {
   Button,
   ItemCardHeader,
   MarkdownContent,
 } from '@backstage/core-components';
+import { BackstageTheme } from '@backstage/theme';
+
+const useStyles = makeStyles<BackstageTheme>(styles => ({
+  linkButton: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: styles.palette.primary.main,
+    cursor: 'pointer',
+    fontSize: styles.typography.body2.fontSize,
+    padding: 0,
+  },
+}));
 
 interface ListCardProps {
-  name: string;
-  creatorName: string;
   description?: string;
+  name: string;
+  truncateToCharacters?: number;
   url: string;
 }
 
 export const ListCard = ({
-  name,
-  creatorName,
   description,
+  name,
+  truncateToCharacters,
   url,
 }: ListCardProps) => {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  const classes = useStyles();
+  const descriptionToShow = useMemo(() => {
+    if (!description) {
+      return '';
+    }
+    if (truncateToCharacters && !isExpanded) {
+      return description.substring(0, truncateToCharacters) + '...';
+    }
+
+    return description;
+  }, [description, isExpanded, truncateToCharacters]);
+
   return (
     <Card>
       <CardMedia>
-        <ItemCardHeader title={name} subtitle={`By ${creatorName}`} />
+        <ItemCardHeader title={name} />
       </CardMedia>
       {description && (
         <CardContent>
-          <MarkdownContent content={description} />
+          <MarkdownContent content={descriptionToShow ?? ''} />
+          {
+            truncateToCharacters && description.length > truncateToCharacters && (
+              <button className={classes.linkButton} onClick={() => setIsExpanded(!isExpanded)}>{isExpanded ? 'Less' : 'More'}</button>
+            )
+          }
         </CardContent>
       )}
       <CardActions>
