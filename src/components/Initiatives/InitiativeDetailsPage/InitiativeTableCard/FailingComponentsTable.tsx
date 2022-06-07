@@ -13,21 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
+
+import { EmptyState, InfoCard, Table as BSTable, TableColumn } from '@backstage/core-components';
+
 import { InitiativeActionItem } from '../../../../api/types';
-import { Table, TableBody, TableCell, TableRow } from '@material-ui/core';
 import { groupByString } from '../../../../utils/collections';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { FailingComponentsTableRow } from './FailingComponentsTableRow';
-import { InfoCard } from '@backstage/core-components';
+import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { humanizeAnyEntityRef } from '../../../../utils/types';
+
+const columns: TableColumn[] = [{
+  field: 'all',
+  render: (data: { componentRef?: string, numRules?: number, actionItems?: InitiativeActionItem[] }) => {
+    return (
+      <FailingComponentsTableRow
+        componentRef={data.componentRef ?? ''}
+        actionItems={ data.actionItems ?? [] }
+        numRules={data.numRules ?? 0}
+      />
+    );
+  },
+  customFilterAndSearch: (filter, rowData: { serviceName?: string }) => {
+    return rowData.serviceName?.indexOf(filter) !== -1;
+  },
+  sorting: false,
+  title: '',
+}];
 
 interface FailingComponentsTableProps {
   actionItems: InitiativeActionItem[];
+  defaultPageSize?: number;
   numRules: number;
 }
 
 export const FailingComponentsTable = ({
   actionItems,
+  defaultPageSize = 15,
   numRules,
 }: FailingComponentsTableProps) => {
   const classes = useDetailCardStyles();
@@ -37,25 +60,40 @@ export const FailingComponentsTable = ({
     actionItem => actionItem.componentRef,
   );
 
+  const data = useMemo(() => {
+    return Object.keys(failingComponents).map(componentRef => {
+      const serviceName = humanizeAnyEntityRef(componentRef, defaultComponentRefContext);
+      return {
+        actionItems: failingComponents[componentRef],
+        componentRef,
+        numRules,
+        serviceName,
+      };
+    });
+  }, [failingComponents, numRules]);
+
+  const showPagination = useMemo(() => {
+    return Object.keys(failingComponents).length > defaultPageSize;
+  }, [failingComponents, defaultPageSize]);
+
+  if (data.length === 0) {
+    return (
+      <InfoCard title="Failing" className={classes.root}>
+        <EmptyState missing="data" title="No failing services." />
+      </InfoCard>
+    );
+  }
+
   return (
-    <InfoCard title="Failing" className={classes.root}>
-      <Table>
-        <TableBody>
-          {Object.keys(failingComponents).length === 0 && (
-            <TableRow>
-              <TableCell>No failing services.</TableCell>
-            </TableRow>
-          )}
-          {Object.keys(failingComponents).map(componentRef => (
-            <FailingComponentsTableRow
-              key={`FailingComponentsTableRow-${componentRef}`}
-              componentRef={componentRef}
-              actionItems={failingComponents[componentRef]}
-              numRules={numRules}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </InfoCard>
+    <BSTable
+      columns={columns}
+      data={data}
+      options={{
+        pageSize: defaultPageSize,
+        pageSizeOptions: [defaultPageSize, defaultPageSize * 2, defaultPageSize * 4],
+        paging: showPagination,
+      }}
+      title="Failing"
+    />
   );
 };
