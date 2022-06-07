@@ -28,6 +28,7 @@ import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { DefaultEntityRefLink } from '../../../DefaultEntityLink';
 import { ScorecardResultDetails } from '../../../Scorecards/ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+
 interface FailingComponentsTableRowProps {
   componentRef: string;
   actionItems: InitiativeActionItem[];

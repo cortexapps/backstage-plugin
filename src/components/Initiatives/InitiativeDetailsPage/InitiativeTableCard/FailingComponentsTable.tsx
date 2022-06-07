@@ -31,7 +31,7 @@ const columns: TableColumn[] = [{
     return (
       <FailingComponentsTableRow
         componentRef={data.componentRef ?? ''}
-        actionItems={ data.actionItems ?? [] }
+        actionItems={data.actionItems ?? []}
         numRules={data.numRules ?? 0}
       />
     );
