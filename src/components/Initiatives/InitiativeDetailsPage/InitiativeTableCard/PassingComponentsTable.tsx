@@ -13,81 +13,110 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import {
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from '@material-ui/core';
-import { useDetailCardStyles } from '../../../../styles/styles';
+import React, { useMemo } from 'react';
+
+import { parseEntityRef } from '@backstage/catalog-model';
+import { EmptyState, InfoCard, Table as BSTable, TableColumn } from '@backstage/core-components';
+import { IconButton } from '@material-ui/core';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import Box from '@material-ui/core/Box';
+
+import { useDetailCardStyles } from '../../../../styles/styles';
 import { Gauge } from '../../../Gauge';
 import { DefaultEntityRefLink } from '../../../DefaultEntityLink';
-import { parseEntityRef } from '@backstage/catalog-model';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import { useActionItemsStyles } from './FailingComponentsTableRow';
-import { InfoCard } from '@backstage/core-components';
+import { humanizeAnyEntityRef } from '../../../../utils/types';
+
+const columns: TableColumn[] = [{
+  field: 'all',
+  render: (data: { componentRef?: string, numRules?: number, serviceName?: string }) => {
+    return (
+      <Box display="flex" flexDirection="row" alignItems="center">
+        <Box>
+          <IconButton size="small">
+            <KeyboardArrowDownIcon />
+          </IconButton>
+        </Box>
+
+        <Box paddingLeft={6}>
+          <Gauge
+            value={1}
+            textOverride={`${data?.numRules} / ${data?.numRules}`}
+            strokeWidth={10}
+            trailWidth={10}
+          />
+        </Box>
+        <Box paddingLeft={2}>
+          <DefaultEntityRefLink
+            entityRef={parseEntityRef(
+              data.componentRef ?? '',
+              defaultComponentRefContext,
+            )}
+          />
+        </Box>
+      </Box>
+    );
+  },
+  customFilterAndSearch: (filter, rowData: { serviceName?: string }) => {
+    return rowData.serviceName?.indexOf(filter) !== -1;
+  },
+  sorting: false,
+  title: '',
+}];
 
 interface PassingComponentsTableProps {
   componentRefs: string[];
+  defaultPageSize?: number;
   numRules: number;
 }
 
 export const PassingComponentsTable = ({
   componentRefs,
   numRules,
+  defaultPageSize = 15,
 }: PassingComponentsTableProps) => {
   const classes = useDetailCardStyles();
-  const actionItemsClasses = useActionItemsStyles();
+
+  const data = useMemo(() => {
+    return componentRefs.map(componentRef => {
+      const serviceName = humanizeAnyEntityRef(componentRef, defaultComponentRefContext);
+      return {
+        componentRef,
+        numRules,
+        serviceName, // for custom filtering
+        title: (
+          <DefaultEntityRefLink
+            entityRef={parseEntityRef(
+              componentRef,
+              defaultComponentRefContext,
+            )}
+          />
+        ),
+        toggle: null,
+      }
+    });
+  }, [componentRefs, numRules]);
+
+  const showPagination = useMemo(() => componentRefs.length > defaultPageSize, [componentRefs, defaultPageSize]);
+
+  if (data.length === 0) {
+    return (
+      <InfoCard title="Passing" className={classes.root}>
+        <EmptyState missing="data" title="No passing services." />
+      </InfoCard>
+    );
+  }
 
   return (
-    <InfoCard title="Passing" className={classes.root}>
-      <Table>
-        <TableBody>
-          {componentRefs.length === 0 && (
-            <TableRow>
-              <TableCell>No passing services.</TableCell>
-            </TableRow>
-          )}
-          {componentRefs.map(componentRef => (
-            <TableRow key={`PassingComponentsTableRow-${componentRef}`}>
-              <TableCell className={actionItemsClasses.openIcon}>
-                <IconButton size="small">
-                  <KeyboardArrowDownIcon />
-                </IconButton>
-              </TableCell>
-              <TableCell>
-                <Box
-                  flexDirection="row"
-                  display="flex"
-                  justifyContent="flex-start"
-                  alignItems="center"
-                >
-                  <Box alignSelf="center">
-                    <Gauge
-                      value={1}
-                      textOverride={`${numRules} / ${numRules}`}
-                      strokeWidth={10}
-                      trailWidth={10}
-                    />
-                  </Box>
-                  <Box alignSelf="center">
-                    <DefaultEntityRefLink
-                      entityRef={parseEntityRef(
-                        componentRef,
-                        defaultComponentRefContext,
-                      )}
-                    />
-                  </Box>
-                </Box>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </InfoCard>
+    <BSTable
+      columns={columns}
+      data={data}
+      options={{
+        pageSize: defaultPageSize,
+        pageSizeOptions: [defaultPageSize, defaultPageSize * 2, defaultPageSize * 4],
+        paging: showPagination,
+      }}
+      title="Passing"
+    />
   );
 };

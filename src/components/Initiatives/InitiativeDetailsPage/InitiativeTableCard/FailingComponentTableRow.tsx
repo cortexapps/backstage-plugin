@@ -28,18 +28,17 @@ import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { DefaultEntityRefLink } from '../../../DefaultEntityLink';
 import { ScorecardResultDetails } from '../../../Scorecards/ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-
-interface FailingComponentsTableRowProps {
+interface FailingComponentTableRowProps {
   componentRef: string;
   actionItems: InitiativeActionItem[];
   numRules: number;
 }
 
-export const FailingComponentsTableRow = ({
+export const FailingComponentTableRow = ({
   componentRef,
   actionItems,
   numRules,
-}: FailingComponentsTableRowProps) => {
+}: FailingComponentTableRowProps) => {
   const [isOpen, setOpen] = useState(false);
   const entityName = parseEntityRef(componentRef, defaultComponentRefContext);
 
@@ -61,7 +60,7 @@ export const FailingComponentsTableRow = ({
           />
         </Box>
 
-        <Box paddingLeft={2}>
+        <Box>
           <DefaultEntityRefLink entityRef={entityName} />
         </Box>
       </Box>

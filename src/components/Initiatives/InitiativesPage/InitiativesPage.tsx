@@ -53,6 +53,7 @@ const InitiativesPageBody = () => {
     );
   }
 
+
   if (!initiatives?.length) {
     return (
       <EmptyState
@@ -79,7 +80,7 @@ export const InitiativesPage = () => {
   const cortexApi = useApi(cortexApiRef);
 
   const {
-    value: initiatives,
+    value: scorecards,
     loading,
     error,
   } = useAsync(async () => {
@@ -92,18 +93,18 @@ export const InitiativesPage = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not load initiatives.">
+      <WarningPanel severity="error" title="Could not load scorecards.">
         {error.message}
       </WarningPanel>
     );
   }
 
-  if (!initiatives?.length) {
+  if (!scorecards?.length) {
     return (
       <EmptyState
         missing="info"
         title="No initiatives to display"
-        description="You haven't added any initiatives yet."
+        description="You haven't added any scorecards yet."
       />
     );
   }
