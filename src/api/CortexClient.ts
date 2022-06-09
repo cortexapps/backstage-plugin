@@ -17,7 +17,7 @@
 import {
   GroupByOption,
   Initiative,
-  InitiativeActionItem,
+  InitiativeActionItem, InitiativeWithScores,
   Scorecard,
   ScorecardLadder,
   ScorecardResult,
@@ -192,7 +192,7 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/initiatives`);
   }
 
-  async getInitiative(id: number): Promise<Initiative> {
+  async getInitiative(id: number): Promise<InitiativeWithScores> {
     return await this.get(`/api/backstage/v1/initiatives/${id}`);
   }
 

@@ -210,7 +210,6 @@ export interface Initiative {
   id: number;
   name: string;
   scorecard: Scorecard;
-  scores: InitiativeServiceScores[];
   emphasizedRules: InitiativeRule[];
   emphasizedLevels: InitiativeLevel[];
   targetDate: string;
@@ -218,6 +217,10 @@ export interface Initiative {
   // filters
   tags: ServiceGroup[];
   componentRefs: string[];
+}
+
+export interface InitiativeWithScores extends Initiative {
+  scores: InitiativeServiceScores[];
 }
 
 export interface InitiativeRule {
