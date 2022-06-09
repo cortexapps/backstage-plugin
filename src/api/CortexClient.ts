@@ -17,7 +17,8 @@
 import {
   GroupByOption,
   Initiative,
-  InitiativeActionItem, InitiativeWithScores,
+  InitiativeActionItem,
+  InitiativeWithScores,
   Scorecard,
   ScorecardLadder,
   ScorecardResult,
