@@ -51,7 +51,6 @@ describe('Initiatives Page', () => {
               name: 'My Initiative',
               rules: [],
               scorecard: mockScorecard,
-              scores: [],
               tags: [],
               targetData: [],
               targetDate: '2025-01-01T08:00:00',

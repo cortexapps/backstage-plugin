@@ -17,6 +17,7 @@ import {
   GroupByOption,
   Initiative,
   InitiativeActionItem,
+  InitiativeWithScores,
   Scorecard,
   ScorecardLadder,
   ScorecardResult,
@@ -63,7 +64,7 @@ export interface CortexApi {
   ): Promise<ScoresByIdentifier[]>;
 
   getInitiatives(): Promise<Initiative[]>;
-  getInitiative(id: number): Promise<Initiative>;
+  getInitiative(id: number): Promise<InitiativeWithScores>;
   getInitiativeActionItems(id: number): Promise<InitiativeActionItem[]>;
   getInitiativeActionItemsForTeam(
     entityRef: AnyEntityRef,
