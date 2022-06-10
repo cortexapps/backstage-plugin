@@ -82,7 +82,15 @@ import { EntityCortexContent } from '@cortexapps/backstage-plugin';
 </EntityLayout.Route>;
 ```
 
-6. (Optional) Import `CortexScorecardWidget` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new component widget for Cortex that shows scorecards for that component:
+6. Add a new sidebar item in [Root.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/Root/Root.tsx)
+
+```tsx
+import { CortexIcon } from '@cortexapps/backstage-plugin';
+
+<SidebarItem icon={CortexIcon} to="cortex" text="Cortex" />;
+```
+
+7. (Optional) Import `CortexScorecardWidget` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new component widget for Cortex that shows scorecards for that component:
 
 ```tsx
 import { CortexScorecardWidget } from '@cortexapps/backstage-plugin';
@@ -92,7 +100,7 @@ import { CortexScorecardWidget } from '@cortexapps/backstage-plugin';
 </Grid>
 ```
 
-7. (Optional) Import `CortexGroupActionItemsWidget` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new group widget for Cortex that shows initiative action items for components owned by that group:
+8. (Optional) Import `CortexGroupActionItemsWidget` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new group widget for Cortex that shows initiative action items for components owned by that group:
 
 ```tsx
 import { CortexGroupActionItemsWidget } from '@cortexapps/backstage-plugin';
@@ -102,13 +110,23 @@ import { CortexGroupActionItemsWidget } from '@cortexapps/backstage-plugin';
 </Grid>
 ```
 
-8. Add a new sidebar item in [Root.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/Root/Root.tsx)
+9. (Optional) Import `CortexGroupActionItemsWidget` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new group widget for Cortex that shows initiative action items for components owned by that group:
 
 ```tsx
-import { CortexIcon } from '@cortexapps/backstage-plugin';
+import { CortexGroupActionItemsWidget } from '@cortexapps/backstage-plugin';
 
-<SidebarItem icon={CortexIcon} to="cortex" text="Cortex" />;
+<Grid item md={4} xs={12}>
+   <CortexGroupActionItemsWidget />
+</Grid>
 ```
+
+10. (Optional) Import `SystemCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
+```tsx
+<EntityLayout.Route path="/cortex" title="Cortex">
+<SystemCortexContent />
+</EntityLayout.Route>
+```
+
 
 ## Advanced
 
