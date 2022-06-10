@@ -250,42 +250,61 @@ export function useFilters<T>(
   }, options?.deps ?? []);
 
   const [components, filters] = value ?? [undefined, undefined];
-  const allFilterGroups = (options?.baseFilters ?? []).concat(filters ?? []);
-  const filterGroups =
-    components === undefined
+  const allFilterGroups = useMemo(() => {
+    return (options?.baseFilters ?? []).concat(filters ?? []);
+  }, [options?.baseFilters, filters]);
+
+  // Because searching through all components for matching groups/systems/etc is expensive
+  // we calculate one time and memoize for fast lookup.
+  const groupPropertyLookup: Record<string, Set<string>>[] | undefined = useMemo(() => {
+    return components === undefined
       ? undefined
       : allFilterGroups.map(filterGroup => {
-          return {
-            name: filterGroup.name,
-            filters: mapValues(
-              mapByString(
-                components.flatMap(
-                  component => filterGroup.groupProperty(component) ?? [],
-                ),
-                groupProperty => groupProperty,
+        return components
+          .reduce((mapSoFar, nextComponent) => {
+            filterGroup.groupProperty(nextComponent)?.forEach(groupProperty => {
+              if (mapSoFar[groupProperty] === undefined) {
+                mapSoFar[groupProperty] = new Set();
+              }
+              mapSoFar[groupProperty].add(stringifyAnyEntityRef(nextComponent))
+            })
+
+            return mapSoFar
+          }, {} as Record<string, Set<string>>);
+      })
+  }, [allFilterGroups, components]);
+
+  const filterGroups = useMemo(() => {
+    return components === undefined || groupPropertyLookup === undefined
+      ? undefined
+      : allFilterGroups.map((filterGroup, index) => {
+        return {
+          name: filterGroup.name,
+          filters: mapValues(
+            mapByString(
+              components.flatMap(
+                component => filterGroup.groupProperty(component) ?? [],
               ),
-              groupProperty => {
-                return {
-                  display: filterGroup.formatProperty
-                    ? filterGroup.formatProperty(groupProperty)
-                    : groupProperty,
-                  value: groupProperty,
-                };
-              },
+              groupProperty => groupProperty,
             ),
-            generatePredicate: (groupProperty: string) => {
-              return (t: T) => {
-                return components.some(
-                  component =>
-                    entityEquals(component, entityRef(t)) &&
-                    filterGroup
-                      .groupProperty(component)
-                      ?.includes(groupProperty),
-                );
+            groupProperty => {
+              return {
+                display: filterGroup.formatProperty
+                  ? filterGroup.formatProperty(groupProperty)
+                  : groupProperty,
+                value: groupProperty,
               };
             },
-          };
-        });
+          ),
+          generatePredicate: (groupProperty: string) => {
+            return (t: T) => {
+              return groupPropertyLookup[index][groupProperty].has(stringifyAnyEntityRef(entityRef(t)))
+            };
+          },
+        };
+      });
+  }, [allFilterGroups, components, groupPropertyLookup, entityRef]);
+
 
   return { loading, error, filterGroups };
 }
