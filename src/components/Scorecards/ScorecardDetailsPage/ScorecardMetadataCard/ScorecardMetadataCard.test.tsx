@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import React from 'react';
-import {Fixtures, renderWrapped} from "../../../../utils/TestUtils";
-import {ScorecardMetadataCard} from "./ScorecardMetadataCard";
+import { Fixtures, renderWrapped } from "../../../../utils/TestUtils";
+import { ScorecardMetadataCard } from "./ScorecardMetadataCard";
 
 describe('ScorecardMetadataCard', () => {
 
