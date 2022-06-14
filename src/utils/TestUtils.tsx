@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 import React from "react";
-import {fireEvent, render, screen} from "@testing-library/react";
-import {TestApiProvider, wrapInTestApp} from "@backstage/test-utils";
-import {cortexApiRef} from "../api";
-import {CortexApi} from "../api/CortexApi";
-import {ExternalRouteRef, RouteRef} from "@backstage/core-plugin-api";
-import {Scorecard, ScorecardServiceScore} from "../api/types";
-import {Entity, EntityMeta} from "@backstage/catalog-model";
-import {act} from "react-dom/test-utils";
+import { fireEvent, Matcher, queryByText, render, screen } from "@testing-library/react";
+import { TestApiProvider, wrapInTestApp } from "@backstage/test-utils";
+import { cortexApiRef } from "../api";
+import { CortexApi } from "../api/CortexApi";
+import { ExternalRouteRef, RouteRef } from "@backstage/core-plugin-api";
+import { Scorecard, ScorecardServiceScore } from "../api/types";
+import { Entity, EntityMeta } from "@backstage/catalog-model";
+import { act } from "react-dom/test-utils";
 
 export const renderWrapped = (
   children: React.ReactNode,
@@ -41,21 +41,53 @@ export const renderWrapped = (
     ),
   );
 
+  const { findByText, findAllByText, findByLabelText, container } = rendered;
+
+  const checkForText = async (matcher: Matcher, index?: number) => {
+    if (index === undefined) {
+      expect(await findByText(matcher)).toBeVisible();
+    } else {
+      expect((await findAllByText(matcher))[index]).not.toBe([]);
+    }
+  }
+
+  const checkNotText = async (matcher: Matcher) => {
+    expect(await queryByText(container, matcher)).toBeNull();
+  }
+
+  const clickButton = async (label: string) => {
+    return act(async () => {
+      fireEvent.click(await findByLabelText(label));
+    });
+  }
+
+  const mouseClick = async (label: string) => {
+    return act(async () => {
+      const element = await findByLabelText(label)
+      fireEvent.mouseDown(element);
+      fireEvent.click(element);
+    });
+  }
+
+  const clickButtonByText = async (label: string) => {
+    return act(async () => {
+      fireEvent.click(await findByText(label));
+    });
+  }
+
   return {
     ...rendered,
     clickButton,
-    logScreen
+    clickButtonByText,
+    mouseClick,
+    checkForText,
+    checkNotText,
+    logScreen,
   }
 }
 
 const logScreen = () => {
   screen.debug(undefined, 40000);
-}
-
-const clickButton = (label: string, index?: number) => {
-  return act(async () => {
-    fireEvent.click(screen.getAllByLabelText(label)[index ?? 0]);
-  })
 }
 
 export class Fixtures {

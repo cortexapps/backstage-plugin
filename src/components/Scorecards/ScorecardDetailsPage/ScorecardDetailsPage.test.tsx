@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 import React from 'react';
-import {ScorecardDetailsPage} from "./ScorecardDetailsPage";
-import {Fixtures, renderWrapped} from "../../../utils/TestUtils";
-import {CortexApi} from "../../../api/CortexApi";
-import {Scorecard, ScorecardLadder, ScorecardServiceScore} from "../../../api/types";
-import {rootRouteRef, scorecardRouteRef} from "../../../routes";
-import {CatalogApi, catalogApiRef} from "@backstage/plugin-catalog-react";
-import {CustomMapping, ExtensionApi} from "@cortexapps/backstage-plugin-extensions";
-import {EntityFilterGroup} from "../../../filters";
-import {extensionApiRef} from "../../../api/ExtensionApi";
+import { ScorecardDetailsPage } from "./ScorecardDetailsPage";
+import { Fixtures, renderWrapped } from "../../../utils/TestUtils";
+import { CortexApi } from "../../../api/CortexApi";
+import { Scorecard, ScorecardLadder, ScorecardServiceScore } from "../../../api/types";
+import { rootRouteRef, scorecardRouteRef } from "../../../routes";
+import { CatalogApi, catalogApiRef } from "@backstage/plugin-catalog-react";
+import { CustomMapping, ExtensionApi } from "@cortexapps/backstage-plugin-extensions";
+import { EntityFilterGroup } from "../../../filters";
+import { extensionApiRef } from "../../../api/ExtensionApi";
 
 describe('ScorecardDetailsPage', () => {
 
@@ -52,7 +52,7 @@ describe('ScorecardDetailsPage', () => {
           scorePercentage: 0.5
         }),
         Fixtures.scorecardServiceScore({
-          componentRef: 'default/bar',
+          componentRef: 'bar',
           scorePercentage: 0.7
         }),
       ]
@@ -85,10 +85,10 @@ describe('ScorecardDetailsPage', () => {
   }
 
   function render() {
-   return renderWrapped(<ScorecardDetailsPage />, {
-     '/': rootRouteRef,
-     '/scorecards/:id': scorecardRouteRef as any,
-   }, cortexApi,[catalogApiRef, catalogApi], [extensionApiRef, emptyExtensionApi]);
+    return renderWrapped(<ScorecardDetailsPage />, {
+      '/': rootRouteRef,
+      '/scorecards/:id': scorecardRouteRef as any,
+    }, cortexApi,[catalogApiRef, catalogApi], [extensionApiRef, emptyExtensionApi]);
   }
 
 
@@ -102,26 +102,40 @@ describe('ScorecardDetailsPage', () => {
   });
 
   it('should filter by group', async () => {
-    const { findByText, clickButton, logScreen } = render()
-    expect(await findByText('foo')).toBeVisible();
-    expect(await findByText('bar')).toBeVisible();
+    const { clickButton, checkForText, checkNotText } = render()
+    await checkForText('foo')
+    await checkForText('bar');
 
-    // logScreen()
-    await clickButton('Filter by mine')
+    await clickButton('Filter groups by mine');
+    await checkForText('foo');
+    await checkNotText('bar');
+    await clickButton('Filter groups by mine');
+
+    await clickButton('Filter groups by shared')
+    await checkForText('foo');
+    await checkForText('bar');
+    await clickButton('Filter groups by shared')
+
+    await clickButton('Filter groups by alsomine')
+    await checkNotText('foo');
+    await checkForText('bar');
+    await clickButton('Filter groups by alsomine')
+  });
+
+  // MUI select is broken in a weird way, can't test
+  it.skip('should filter with any of / all of working correctly', async () => {
+    const { mouseClick, clickButton, clickButtonByText, checkForText, checkNotText, logScreen } = render()
+
+    await clickButton('Filter groups by mine');
+    await clickButton('Filter groups by alsomine');
+    await checkForText('foo');
+    await checkForText('bar');
+
+    await mouseClick('Select and/or for groups');
     logScreen()
-    expect(await findByText('foo')).toBeVisible();
-    expect(await findByText('bar')).not.toBeVisible();
-    await clickButton('Filter by mine');
-
-    await clickButton('Filter by shared')
-    expect(await findByText('foo')).toBeVisible();
-    expect(await findByText('bar')).toBeVisible();
-    await clickButton('Filter by shared')
-
-    await clickButton('Filter by alsomine')
-    expect(await findByText('foo')).not.toBeVisible();
-    expect(await findByText('bar')).toBeVisible();
-    await clickButton('Filter by alsomine')
+    await clickButtonByText('All Of');
+    await checkNotText('foo');
+    await checkNotText('bar');
   });
 });
 

@@ -126,6 +126,10 @@ export const Filters = <T extends {}>({
             value={oneOf ? 'One Of' : 'All Of'}
             onChange={() => toggleOneOf()}
             className={classes.select}
+            aria-label={`Select and/or for ${name.toLowerCase()}`}
+            // inputProps={{
+            //   'aria-label': `Select and/or for ${name.toLowerCase()}`
+            // }}
           >
             <MenuItem value="One Of">One Of</MenuItem>
             <MenuItem value="All Of">All Of</MenuItem>
@@ -142,7 +146,7 @@ export const Filters = <T extends {}>({
                   onChange={() => toggleFilter(id)}
                   color="primary"
                   inputProps={{
-                    "aria-label": `Filter by ${filters[id].display}`
+                    "aria-label": `Filter ${name.toLowerCase()} by ${filters[id].display}`
                   }}
                 />
               </Grid>
