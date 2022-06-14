@@ -38,6 +38,7 @@ import {
   defaultGroupRefContext,
   defaultSystemRefContext,
 } from '../../../../utils/ComponentUtils';
+import {EntityFilterGroup} from "../../../../filters";
 
 const createRulePredicate = (pass: boolean, ruleExpression: string) => {
   return (score: ScorecardServiceScore) => {
@@ -48,6 +49,37 @@ const createRulePredicate = (pass: boolean, ruleExpression: string) => {
     return rulePassed === pass;
   };
 };
+
+const groupAndSystemFilters: EntityFilterGroup[] = [
+  {
+    name: 'Groups',
+    groupProperty: entity =>
+      getEntityRelations(entity, RELATION_OWNED_BY, {
+        kind: 'group',
+      }).map(entityRef =>
+        stringifyAnyEntityRef(entityRef, { defaultKind: 'group' }),
+      ),
+    formatProperty: (groupRef: string) =>
+      humanizeEntityRef(
+        parseEntityRef(groupRef),
+        defaultGroupRefContext,
+      ),
+  },
+  {
+    name: 'Systems',
+    groupProperty: entity =>
+      getEntityRelations(entity, RELATION_PART_OF, {
+        kind: 'system',
+      }).map(entityRef =>
+        stringifyAnyEntityRef(entityRef, { defaultKind: 'system' }),
+      ),
+    formatProperty: (groupRef: string) =>
+      humanizeEntityRef(
+        parseEntityRef(groupRef),
+        defaultSystemRefContext,
+      ),
+  },
+]
 
 interface ScorecardFilterCardProps {
   scorecard: Scorecard;
@@ -73,36 +105,7 @@ export const ScorecardFilterCard = ({
   const { filterGroups, loading } = useFilters(
     (score: ScorecardServiceScore) => score.componentRef,
     {
-      baseFilters: [
-        {
-          name: 'Groups',
-          groupProperty: entity =>
-            getEntityRelations(entity, RELATION_OWNED_BY, {
-              kind: 'group',
-            }).map(entityRef =>
-              stringifyAnyEntityRef(entityRef, { defaultKind: 'group' }),
-            ),
-          formatProperty: (groupRef: string) =>
-            humanizeEntityRef(
-              parseEntityRef(groupRef),
-              defaultGroupRefContext,
-            ),
-        },
-        {
-          name: 'Systems',
-          groupProperty: entity =>
-            getEntityRelations(entity, RELATION_PART_OF, {
-              kind: 'system',
-            }).map(entityRef =>
-              stringifyAnyEntityRef(entityRef, { defaultKind: 'system' }),
-            ),
-          formatProperty: (groupRef: string) =>
-            humanizeEntityRef(
-              parseEntityRef(groupRef),
-              defaultSystemRefContext,
-            ),
-        },
-      ],
+      baseFilters: groupAndSystemFilters
     },
   );
 
