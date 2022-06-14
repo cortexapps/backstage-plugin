@@ -92,7 +92,7 @@ describe('ScorecardDetailsPage', () => {
   }
 
 
-  it('should be render all service scores', async () => {
+  it('should render all service scores', async () => {
     const { findByText, findAllByText } = render()
     expect(await findByText('foo')).toBeVisible();
     expect(await findAllByText('50%')).not.toBe([]);
