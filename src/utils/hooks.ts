@@ -104,7 +104,7 @@ export function useGroupsAndSystems(): GroupAndSystemsHookType {
       return getEntityRelations(entity, RELATION_PART_OF, {
         kind: 'system',
       }).map(entityRef =>
-        stringifyAnyEntityRef(entityRef, { defaultKind: 'group' }),
+        stringifyAnyEntityRef(entityRef, { defaultKind: 'system' }),
       );
     });
 
@@ -112,7 +112,7 @@ export function useGroupsAndSystems(): GroupAndSystemsHookType {
       return getEntityRelations(entity, RELATION_OWNED_BY, {
         kind: 'group',
       }).map(entityRef =>
-        stringifyAnyEntityRef(entityRef, { defaultKind: 'system' }),
+        stringifyAnyEntityRef(entityRef, { defaultKind: 'group' }),
       );
     });
 
@@ -275,34 +275,36 @@ export function useFilters<T>(
   }, [allFilterGroups, components]);
 
   const filterGroups = useMemo(() => {
-    return components === undefined || groupPropertyLookup === undefined
-      ? undefined
-      : allFilterGroups.map((filterGroup, index) => {
-        return {
-          name: filterGroup.name,
-          filters: mapValues(
-            mapByString(
-              components.flatMap(
-                component => filterGroup.groupProperty(component) ?? [],
-              ),
-              groupProperty => groupProperty,
+    if (components === undefined || groupPropertyLookup === undefined) {
+      return undefined;
+    }
+
+    return allFilterGroups.map((filterGroup, index) => {
+      return {
+        name: filterGroup.name,
+        filters: mapValues(
+          mapByString(
+            components.flatMap(
+              component => filterGroup.groupProperty(component) ?? [],
             ),
-            groupProperty => {
-              return {
-                display: filterGroup.formatProperty
-                  ? filterGroup.formatProperty(groupProperty)
-                  : groupProperty,
-                value: groupProperty,
-              };
-            },
+            groupProperty => groupProperty,
           ),
-          generatePredicate: (groupProperty: string) => {
-            return (t: T) => {
-              return groupPropertyLookup[index][groupProperty].has(stringifyAnyEntityRef(entityRef(t)))
+          groupProperty => {
+            return {
+              display: filterGroup.formatProperty
+                ? filterGroup.formatProperty(groupProperty)
+                : groupProperty,
+              value: groupProperty,
             };
           },
-        };
-      });
+        ),
+        generatePredicate: (groupProperty: string) => {
+          return (t: T) => {
+            return groupPropertyLookup[index][groupProperty].has(stringifyAnyEntityRef(entityRef(t)))
+          };
+        },
+      };
+    });
   }, [allFilterGroups, components, groupPropertyLookup, entityRef]);
 
 
