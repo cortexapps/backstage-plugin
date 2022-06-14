@@ -38,7 +38,7 @@ import {
   defaultGroupRefContext,
   defaultSystemRefContext,
 } from '../../../../utils/ComponentUtils';
-import {EntityFilterGroup} from "../../../../filters";
+import { EntityFilterGroup } from "../../../../filters";
 
 const createRulePredicate = (pass: boolean, ruleExpression: string) => {
   return (score: ScorecardServiceScore) => {

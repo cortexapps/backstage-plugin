@@ -141,6 +141,9 @@ export const Filters = <T extends {}>({
                   checked={checkedFilters[id] ?? false}
                   onChange={() => toggleFilter(id)}
                   color="primary"
+                  inputProps={{
+                    "aria-label": `Filter by ${filters[id].display}`
+                  }}
                 />
               </Grid>
               <Grid item lg={10}>
