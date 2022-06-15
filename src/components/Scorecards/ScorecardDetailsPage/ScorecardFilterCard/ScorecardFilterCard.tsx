@@ -97,6 +97,7 @@ export const ScorecardFilterCard = ({
         return {
           display: ruleName(rule),
           value: rule.expression,
+          id: rule.id.toString(),
         };
       },
     );

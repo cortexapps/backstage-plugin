@@ -43,9 +43,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+export interface FilterValue {
+  display: string,
+  value: string,
+  id: string,
+}
+
 export interface FilterDefinition<T> {
   name: string;
-  filters: { [id: string]: { display: string; value: string } };
+  filters: { [id: string]: FilterValue };
   generatePredicate: (value: string) => Predicate<T>;
 }
 
@@ -83,10 +89,10 @@ export const Filters = <T extends {}>({
     });
   };
 
-  const toggleAllFilters = (allCheckedFilters: string[]) => {
+  const toggleAllFilters = (allCheckedFilters: FilterValue[]) => {
     setCheckedFilters(() => {
       const newFilters = mapValues(
-        mapByString(allCheckedFilters, filter => filter),
+        mapByString(allCheckedFilters, filter => filter.id),
         () => true,
       );
       updatePredicate(newFilters, oneOf);
@@ -160,11 +166,7 @@ export const Filters = <T extends {}>({
             getOptionLabel={filter => filter.display}
             multiple
             onChange={(_event, values) => {
-              toggleAllFilters(
-                (values as { display: string; value: string }[]).map(
-                  filter => filter.value,
-                ),
-              );
+              toggleAllFilters(values);
             }}
             renderInput={params => <TextField {...params} variant="standard" />}
           />
