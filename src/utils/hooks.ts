@@ -295,6 +295,7 @@ export function useFilters<T>(
                 ? filterGroup.formatProperty(groupProperty)
                 : groupProperty,
               value: groupProperty,
+              id: groupProperty,
             };
           },
         ),
