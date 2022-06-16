@@ -76,6 +76,7 @@ export const InitiativeFilterCard = ({
         return {
           display: ruleName(rule),
           value: rule.expression,
+          id: rule.ruleId.toString(),
         };
       },
     );
