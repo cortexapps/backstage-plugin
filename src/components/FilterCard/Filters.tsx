@@ -162,6 +162,7 @@ export const Filters = <T extends {}>({
       ) : (
         <Grid item sm={12}>
           <Autocomplete
+            aria-label={`Filter ${name.toLowerCase()}`}
             options={Object.values(filters)}
             getOptionLabel={filter => filter.display}
             multiple
