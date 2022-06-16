@@ -143,6 +143,8 @@ describe('ScorecardDetailsPage', () => {
         ],
       });
     };
+    // For some reason, checks would never fail if I used the methods returned
+    // by `render()` so I had to use `screen.*` methods directly here
     render(mockCortexApi);
 
     expect(await screen.findByText(/Failing Rule/)).toBeVisible();
