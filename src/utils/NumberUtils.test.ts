@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@testing-library/jest-dom';
-import 'cross-fetch/polyfill';
-import 'jest-canvas-mock';
-import Adapter from 'enzyme-adapter-react-16';
-import { configure } from "enzyme";
+import { safeDivide } from "./NumberUtils";
 
-configure({ adapter: new Adapter() });
+describe('NumberUtils', () => {
+  it('safeDivide should handle 0 in the denominator', () => {
+    expect(safeDivide(2, 0)).toBe(0)
+  });
+
+  it('safeDivide should handle normal division', () => {
+    expect(safeDivide(1, 2)).toBe(0.5)
+  });
+});

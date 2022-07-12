@@ -25,10 +25,10 @@ import { act } from "react-dom/test-utils";
 
 export const renderWrapped = (
   children: React.ReactNode,
+  cortexApi?: Partial<CortexApi>,
   mountedRoutes?: {
     [path: string]: RouteRef | ExternalRouteRef;
   },
-  cortexApi?: Partial<CortexApi>,
   ...additionalApis: [any, any][]
 ) => {
   const cortexRefPair: [any, any][] = cortexApi ? [[cortexApiRef, cortexApi]] : []

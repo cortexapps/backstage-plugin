@@ -22,8 +22,9 @@ import { Predicate } from '../../../../utils/types';
 import { percentageToStatus, Status } from '../../../../styles/styles';
 import { StatsCard } from '../../../StatsCard';
 import { percentify } from '../../../../utils/numeric';
+import { safeDivide } from "../../../../utils/NumberUtils";
 
-interface InitiativeStatsCardProps {
+export interface InitiativeStatsCardProps {
   scores: InitiativeServiceScores[];
   actionItems: InitiativeActionItem[];
   filter: () => Predicate<string>;
@@ -62,7 +63,7 @@ export const InitiativeStatsCard = ({
   }, [scores, filter, actionItems]);
 
   const complete = useMemo(
-    () => numPassing / (numPassing + numFailing),
+    () => safeDivide(numPassing, (numPassing + numFailing)),
     [numPassing, numFailing],
   );
 
