@@ -87,10 +87,10 @@ describe('ScorecardDetailsPage', () => {
   }
 
   function render(cortexApiOverride: Partial<CortexApi> = cortexApi) {
-    return renderWrapped(<ScorecardDetailsPage />, {
+    return renderWrapped(<ScorecardDetailsPage />, cortexApiOverride, {
       '/': rootRouteRef,
       '/scorecards/:id': scorecardRouteRef as any,
-    }, cortexApiOverride,[catalogApiRef, catalogApi], [extensionApiRef, emptyExtensionApi]);
+    }, [catalogApiRef, catalogApi], [extensionApiRef, emptyExtensionApi]);
   }
 
 

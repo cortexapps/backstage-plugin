@@ -23,6 +23,7 @@ import { useCortexApi } from '../../utils/hooks';
 import { EntityScorecardDetails } from './EntityScorecardDetails';
 import { ScorecardServiceRefLink } from '../ScorecardServiceRefLink';
 import { useLocation } from "react-router";
+import { ServiceScorecardScore } from "../../api/types";
 
 export const EntityPage = () => {
   const { entity, loading: entityLoading, error: entityError } = useAsyncEntity();
@@ -49,13 +50,13 @@ export const EntityPage = () => {
   );
 
   useEffect(() => {
-    const scorecardId = initialScorecardId ?? scores?.[0].scorecard.id;
+    const scorecardId = initialScorecardId ?? scores?.[0]?.scorecard?.id;
     if (scorecardId !== undefined) {
       setSelectedScorecardId(scorecardId);
     }
   }, [initialScorecardId, scores, setSelectedScorecardId]);
 
-  const selectedScore = useMemo(() => {
+  const selectedScore: ServiceScorecardScore | undefined = useMemo(() => {
     return scores?.find(score => score.scorecard.id === selectedScorecardId);
   }, [scores, selectedScorecardId]);
 
@@ -65,7 +66,7 @@ export const EntityPage = () => {
 
   if (scoresError || scores === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
+      <WarningPanel severity="error" title="Could not load Scorecards.">
         {scoresError?.message}
       </WarningPanel>
     );
@@ -83,21 +84,21 @@ export const EntityPage = () => {
     return (
       <EmptyState
         missing="info"
-        title="No scorecards to display"
-        description="You haven't added any scorecards yet."
+        title="No Scorecards to display"
+        description="You haven't added any Scorecards yet."
       />
     );
   }
 
   if (selectedScorecardId === undefined) {
-    return <EmptyState missing="data" title="Select a scorecard" />;
+    return <EmptyState missing="data" title="Select a Scorecard" />;
   }
 
   if (selectedScore === undefined) {
     return (
       <WarningPanel
         severity="error"
-        title="Scorecard has not been evaluated."
+        title="No Scorecard has not been evaluated yet."
       />
     );
   }

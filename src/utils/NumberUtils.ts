@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2022 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@testing-library/jest-dom';
-import 'cross-fetch/polyfill';
-import 'jest-canvas-mock';
-import Adapter from 'enzyme-adapter-react-16';
-import { configure } from "enzyme";
 
-configure({ adapter: new Adapter() });
+/**
+ * Safe division that converts division by 0 errors to 0
+ * @param numerator Numerator
+ * @param denominator Denominator
+ */
+export const safeDivide = (numerator: number, denominator: number) => {
+  if (denominator === 0) {
+    return 0
+  } else {
+    return numerator / denominator
+  }
+}
