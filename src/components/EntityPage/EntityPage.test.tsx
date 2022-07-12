@@ -20,7 +20,6 @@ import { EntityPage } from "./EntityPage";
 import { EntityProvider } from "@backstage/plugin-catalog-react";
 
 describe('EntityPage', () => {
-
   const emptyCortexApi: Partial<CortexApi> = {
     getServiceScores: () =>
       Promise.resolve([]),
