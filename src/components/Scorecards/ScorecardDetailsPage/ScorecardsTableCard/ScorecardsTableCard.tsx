@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { EmptyState, InfoCard, Table as BSTable, TableColumn } from '@backstage/core-components';
+import {
+  EmptyState,
+  InfoCard,
+  Table as BSTable,
+  TableColumn,
+} from '@backstage/core-components';
 import { ScorecardServiceScore } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { Gauge } from '../../../Gauge';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
-import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink/ScorecardServiceRefLink';
+import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 
 interface ScorecardsTableProps {
   scorecardId: number;
@@ -30,35 +35,44 @@ interface ScorecardsTableProps {
 
 const PAGE_SIZE = 25;
 
-const columns: TableColumn[] = [{
-  field: 'scorePercentage',
-  sorting: true,
-  title: 'Score',
-  render: (data: { scorePercentage?: number }) => {
-    return (
-      <Gauge
-        value={data?.scorePercentage ?? 0}
-        strokeWidth={10}
-        trailWidth={10}
-      />
-    )
-  }
-}, {
-  customFilterAndSearch: (filter, rowData: { serviceName?: string }) => {
-    return rowData.serviceName?.indexOf(filter) !== -1;
+const columns: TableColumn[] = [
+  {
+    field: 'scorePercentage',
+    sorting: true,
+    title: 'Score',
+    render: (data: { scorePercentage?: number }) => {
+      return (
+        <Gauge
+          value={data?.scorePercentage ?? 0}
+          strokeWidth={10}
+          trailWidth={10}
+        />
+      );
+    },
   },
-  customSort: ((data1: { serviceName?: string }, data2: { serviceName?: string }) => {
-    return (data1?.serviceName ?? '')?.localeCompare(data2?.serviceName ?? '')
-  }),
-  field: 'name',
-  highlight: true,
-  sorting: true,
-  title: 'Service name',
-}, {
-  field: 'level',
-  sorting: false,
-  title: 'Level',
-}];
+  {
+    customFilterAndSearch: (filter, rowData: { serviceName?: string }) => {
+      return rowData.serviceName?.indexOf(filter) !== -1;
+    },
+    customSort: (
+      data1: { serviceName?: string },
+      data2: { serviceName?: string },
+    ) => {
+      return (data1?.serviceName ?? '')?.localeCompare(
+        data2?.serviceName ?? '',
+      );
+    },
+    field: 'name',
+    highlight: true,
+    sorting: true,
+    title: 'Service name',
+  },
+  {
+    field: 'level',
+    sorting: false,
+    title: 'Level',
+  },
+];
 
 export const ScorecardsTableCard = ({
   scorecardId,
@@ -67,30 +81,33 @@ export const ScorecardsTableCard = ({
   const classes = useDetailCardStyles();
 
   const data = useMemo(() => {
-    return scores.map((score) => {
-      const currentLevel = score.ladderLevels?.[0]?.currentLevel;
-      const serviceName = humanizeAnyEntityRef(
-        score.componentRef,
-        defaultComponentRefContext,
-      );
-      return {
-        level: currentLevel ? (
-          <ScorecardLadderLevelBadge
-            name={currentLevel.name}
-            color={currentLevel.color}
-          />) : null,
-        name: (
-          <ScorecardServiceRefLink
-            scorecardId={scorecardId}
-            componentRef={score.componentRef}
-          >
-            {serviceName}
-          </ScorecardServiceRefLink>
-        ),
-        scorePercentage: score.scorePercentage,
-        serviceName, // for filtering
-      };
-    })
+    return scores
+      .map(score => {
+        const currentLevel = score.ladderLevels?.[0]?.currentLevel;
+        const serviceName = humanizeAnyEntityRef(
+          score.componentRef,
+          defaultComponentRefContext,
+        );
+        return {
+          level: currentLevel ? (
+            <ScorecardLadderLevelBadge
+              name={currentLevel.name}
+              color={currentLevel.color}
+            />
+          ) : null,
+          name: (
+            <ScorecardServiceRefLink
+              scorecardId={scorecardId}
+              componentRef={score.componentRef}
+            >
+              {serviceName}
+            </ScorecardServiceRefLink>
+          ),
+          scorePercentage: score.scorePercentage,
+          serviceName, // for filtering
+        };
+      })
+      .sort((left, right) => right.scorePercentage - left.scorePercentage);
   }, [scorecardId, scores]);
 
   const showPagination = scores.length > PAGE_SIZE;

@@ -16,7 +16,12 @@
 import React, { useMemo } from 'react';
 
 import { parseEntityRef } from '@backstage/catalog-model';
-import { EmptyState, InfoCard, Table as BSTable, TableColumn } from '@backstage/core-components';
+import {
+  EmptyState,
+  InfoCard,
+  Table as BSTable,
+  TableColumn,
+} from '@backstage/core-components';
 import { IconButton } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import Box from '@material-ui/core/Box';
@@ -27,42 +32,48 @@ import { DefaultEntityRefLink } from '../../../DefaultEntityLink';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 
-const columns: TableColumn[] = [{
-  field: 'all',
-  render: (data: { componentRef?: string, numRules?: number, serviceName?: string }) => {
-    return (
-      <Box display="flex" flexDirection="row" alignItems="center">
-        <Box>
-          <IconButton size="small">
-            <KeyboardArrowDownIcon />
-          </IconButton>
-        </Box>
+const columns: TableColumn[] = [
+  {
+    field: 'all',
+    render: (data: {
+      componentRef?: string;
+      numRules?: number;
+      serviceName?: string;
+    }) => {
+      return (
+        <Box display="flex" flexDirection="row" alignItems="center">
+          <Box>
+            <IconButton size="small">
+              <KeyboardArrowDownIcon />
+            </IconButton>
+          </Box>
 
-        <Box paddingLeft={6}>
-          <Gauge
-            value={1}
-            textOverride={`${data?.numRules} / ${data?.numRules}`}
-            strokeWidth={10}
-            trailWidth={10}
-          />
+          <Box paddingLeft={6}>
+            <Gauge
+              value={1}
+              textOverride={`${data?.numRules} / ${data?.numRules}`}
+              strokeWidth={10}
+              trailWidth={10}
+            />
+          </Box>
+          <Box paddingLeft={2}>
+            <DefaultEntityRefLink
+              entityRef={parseEntityRef(
+                data.componentRef ?? '',
+                defaultComponentRefContext,
+              )}
+            />
+          </Box>
         </Box>
-        <Box paddingLeft={2}>
-          <DefaultEntityRefLink
-            entityRef={parseEntityRef(
-              data.componentRef ?? '',
-              defaultComponentRefContext,
-            )}
-          />
-        </Box>
-      </Box>
-    );
+      );
+    },
+    customFilterAndSearch: (filter, rowData: { serviceName?: string }) => {
+      return rowData.serviceName?.indexOf(filter) !== -1;
+    },
+    sorting: false,
+    title: '',
   },
-  customFilterAndSearch: (filter, rowData: { serviceName?: string }) => {
-    return rowData.serviceName?.indexOf(filter) !== -1;
-  },
-  sorting: false,
-  title: '',
-}];
+];
 
 interface PassingComponentsTableProps {
   componentRefs: string[];
@@ -78,26 +89,34 @@ export const PassingComponentsTable = ({
   const classes = useDetailCardStyles();
 
   const data = useMemo(() => {
-    return componentRefs.map(componentRef => {
-      const serviceName = humanizeAnyEntityRef(componentRef, defaultComponentRefContext);
-      return {
-        componentRef,
-        numRules,
-        serviceName, // for custom filtering
-        title: (
-          <DefaultEntityRefLink
-            entityRef={parseEntityRef(
-              componentRef,
-              defaultComponentRefContext,
-            )}
-          />
-        ),
-        toggle: null,
-      }
-    });
+    return componentRefs
+      .map(componentRef => {
+        const serviceName = humanizeAnyEntityRef(
+          componentRef,
+          defaultComponentRefContext,
+        );
+        return {
+          componentRef,
+          numRules,
+          serviceName, // for custom filtering
+          title: (
+            <DefaultEntityRefLink
+              entityRef={parseEntityRef(
+                componentRef,
+                defaultComponentRefContext,
+              )}
+            />
+          ),
+          toggle: null,
+        };
+      })
+      .sort((left, right) => left.serviceName.localeCompare(right.serviceName));
   }, [componentRefs, numRules]);
 
-  const showPagination = useMemo(() => componentRefs.length > defaultPageSize, [componentRefs, defaultPageSize]);
+  const showPagination = useMemo(
+    () => componentRefs.length > defaultPageSize,
+    [componentRefs, defaultPageSize],
+  );
 
   if (data.length === 0) {
     return (
@@ -113,7 +132,11 @@ export const PassingComponentsTable = ({
       data={data}
       options={{
         pageSize: defaultPageSize,
-        pageSizeOptions: [defaultPageSize, defaultPageSize * 2, defaultPageSize * 4],
+        pageSizeOptions: [
+          defaultPageSize,
+          defaultPageSize * 2,
+          defaultPageSize * 4,
+        ],
         paging: showPagination,
       }}
       title="Passing"
