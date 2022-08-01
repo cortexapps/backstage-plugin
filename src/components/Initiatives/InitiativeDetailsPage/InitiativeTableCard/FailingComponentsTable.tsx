@@ -15,7 +15,12 @@
  */
 import React, { useMemo } from 'react';
 
-import { EmptyState, InfoCard, Table as BSTable, TableColumn } from '@backstage/core-components';
+import {
+  EmptyState,
+  InfoCard,
+  Table as BSTable,
+  TableColumn,
+} from '@backstage/core-components';
 
 import { InitiativeActionItem } from '../../../../api/types';
 import { groupByString } from '../../../../utils/collections';
@@ -25,23 +30,29 @@ import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { Box } from '@material-ui/core';
 
-const columns: TableColumn[] = [{
-  field: 'all',
-  render: (data: { componentRef?: string, numRules?: number, actionItems?: InitiativeActionItem[] }) => {
-    return (
-      <FailingComponentsTableRow
-        componentRef={data.componentRef ?? ''}
-        actionItems={data.actionItems ?? []}
-        numRules={data.numRules ?? 0}
-      />
-    );
+const columns: TableColumn[] = [
+  {
+    field: 'all',
+    render: (data: {
+      componentRef?: string;
+      numRules?: number;
+      actionItems?: InitiativeActionItem[];
+    }) => {
+      return (
+        <FailingComponentsTableRow
+          componentRef={data.componentRef ?? ''}
+          actionItems={data.actionItems ?? []}
+          numRules={data.numRules ?? 0}
+        />
+      );
+    },
+    customFilterAndSearch: (filter, rowData: { serviceName?: string }) => {
+      return rowData.serviceName?.indexOf(filter) !== -1;
+    },
+    sorting: false,
+    title: '',
   },
-  customFilterAndSearch: (filter, rowData: { serviceName?: string }) => {
-    return rowData.serviceName?.indexOf(filter) !== -1;
-  },
-  sorting: false,
-  title: '',
-}];
+];
 
 interface FailingComponentsTableProps {
   actionItems: InitiativeActionItem[];
@@ -62,15 +73,21 @@ export const FailingComponentsTable = ({
   );
 
   const data = useMemo(() => {
-    return Object.keys(failingComponents).map(componentRef => {
-      const serviceName = humanizeAnyEntityRef(componentRef, defaultComponentRefContext);
-      return {
-        actionItems: failingComponents[componentRef],
-        componentRef,
-        numRules,
-        serviceName,
-      };
-    });
+    return Object.keys(failingComponents)
+      .map(componentRef => {
+        const serviceName = humanizeAnyEntityRef(
+          componentRef,
+          defaultComponentRefContext,
+        );
+        return {
+          actionItems: failingComponents[componentRef],
+          componentRef,
+          numRules,
+          serviceName,
+        };
+      })
+      .sort((left, right) => left.actionItems.length - right.actionItems.length)
+      .sort((left, right) => left.serviceName.localeCompare(right.serviceName));
   }, [failingComponents, numRules]);
 
   const showPagination = useMemo(() => {
@@ -92,7 +109,11 @@ export const FailingComponentsTable = ({
         data={data}
         options={{
           pageSize: defaultPageSize,
-          pageSizeOptions: [defaultPageSize, defaultPageSize * 2, defaultPageSize * 4],
+          pageSizeOptions: [
+            defaultPageSize,
+            defaultPageSize * 2,
+            defaultPageSize * 4,
+          ],
           paging: showPagination,
         }}
         title="Failing"
