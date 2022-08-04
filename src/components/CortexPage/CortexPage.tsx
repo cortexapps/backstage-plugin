@@ -20,12 +20,12 @@ import { SettingsPage } from '../SettingsPage';
 import { InitiativesPage } from '../Initiatives/InitiativesPage';
 import { ReportsPage } from '../ReportsPage';
 
-export const CortexPage = () => {
+export const CortexPage = ({
+  title = 'Cortex',
+  subtitle = 'Understand and improve your services.',
+}) => {
   return (
-    <CortexLayout
-      title="Cortex"
-      subtitle="Understand and improve your services."
-    >
+    <CortexLayout title={title} subtitle={subtitle}>
       <CortexLayout.Route path="scorecards" title="Scorecards">
         <ScorecardsPage />
       </CortexLayout.Route>
