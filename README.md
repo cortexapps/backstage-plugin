@@ -69,7 +69,7 @@ import { CortexPage } from '@cortexapps/backstage-plugin';
 '/cortex':
   target: ${CORTEX_BACKEND_HOST_URL}
   headers:
-    Authorization: ${CORTEX_TOKEN}
+    Authorization: Bearer ${CORTEX_TOKEN}
 ```
 
 5.Import `EntityCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
@@ -110,17 +110,7 @@ import { CortexGroupActionItemsWidget } from '@cortexapps/backstage-plugin';
 </Grid>
 ```
 
-9. (Optional) Import `CortexGroupActionItemsWidget` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new group widget for Cortex that shows initiative action items for components owned by that group:
-
-```tsx
-import { CortexGroupActionItemsWidget } from '@cortexapps/backstage-plugin';
-
-<Grid item md={4} xs={12}>
-   <CortexGroupActionItemsWidget />
-</Grid>
-```
-
-10. (Optional) Import `SystemCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
+9. (Optional) Import `SystemCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
 ```tsx
 <EntityLayout.Route path="/cortex" title="Cortex">
 <SystemCortexContent />
