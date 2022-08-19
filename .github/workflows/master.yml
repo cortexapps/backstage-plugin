@@ -20,10 +20,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install
-      - run: yarn run tsc
-      - run: yarn run lint
-      - run: yarn run build
+      - run: yarn --frozen-lockfile
+      - run: yarn tsc
+      - run: yarn lint
+      - run: yarn build
       - run: yarn test
         env:
           CI: true

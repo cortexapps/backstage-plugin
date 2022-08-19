@@ -1,11 +1,11 @@
-name: npm-publish
+name: publish
 on:
   push:
     branches:
       - master
 jobs:
-  npm-publish:
-    name: npm-publish
+  publish:
+    name: publish
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 14.17.0
           registry-url: 'https://registry.npmjs.org'
-      - run: yarn install
+      - run: yarn --frozen-lockfile
       - run: yarn tsc
       - run: yarn build
       - run: yarn publish
