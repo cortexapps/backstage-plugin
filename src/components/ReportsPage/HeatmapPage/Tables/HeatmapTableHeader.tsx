@@ -16,8 +16,14 @@
 import React from 'react';
 import TableHead from '@material-ui/core/TableHead/TableHead';
 import TableRow from '@material-ui/core/TableRow/TableRow';
-import { TableCell } from '@material-ui/core';
-import { useHeatmapStyles } from '../../AllScorecardsPage/AllScorecardsHeatmap';
+import { makeStyles, TableCell } from '@material-ui/core';
+import { BackstageTheme } from '@backstage/theme';
+
+const useHeatmapStyles = makeStyles<BackstageTheme>({
+  root: {
+    textAlign: 'center',
+  },
+});
 
 interface HeatmapTableHeaderProps {
   headers: string[];
