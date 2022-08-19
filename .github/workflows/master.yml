@@ -23,7 +23,7 @@ jobs:
       - run: yarn --frozen-lockfile
       - run: yarn tsc
       - run: yarn lint
-      - run: yarn build
       - run: yarn test
+      - run: yarn build
         env:
           CI: true
