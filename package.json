@@ -1,6 +1,6 @@
 {
   "name": "@cortexapps/backstage-plugin",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "main": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "license": "Apache-2.0",
