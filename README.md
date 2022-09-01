@@ -69,7 +69,7 @@ import { CortexPage } from '@cortexapps/backstage-plugin';
 '/cortex':
   target: ${CORTEX_BACKEND_HOST_URL}
   headers:
-    Authorization: ${CORTEX_TOKEN}
+    Authorization: Bearer ${CORTEX_TOKEN}
 ```
 
 5.Import `EntityCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
