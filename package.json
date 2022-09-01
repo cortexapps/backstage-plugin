@@ -26,7 +26,17 @@
     "diff": "backstage-cli plugin:diff",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
-    "clean": "backstage-cli package clean"
+    "clean": "backstage-cli package clean",
+    "dev": "yarn watch",
+    "watch": "npm-watch yalc-push",
+    "yalc-push": "yarn build && yalc push"
+  },
+  "watch": {
+    "yalc-push": {
+      "patterns": ["src"],
+      "extensions": "*",
+      "quiet": true
+    }
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.0.0",
@@ -80,6 +90,7 @@
     "jest-canvas-mock": "^2.3.1",
     "lint-staged": "^11.1.2",
     "msw": "^0.21.2",
+    "npm-watch": "^0.11.0",
     "prettier": "2.3.2",
     "pretty-quick": "^3.1.1",
     "react": "^16.13.1",
@@ -104,6 +115,7 @@
     ]
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ]
 }
