@@ -63,7 +63,7 @@ import { CortexPage } from '@cortexapps/backstage-plugin';
 ```
 
 4. Update [app-config.yaml](https://github.com/backstage/backstage/blob/master/app-config.yaml) to add a new proxy
-   config: Set your `CORTEX_TOKEN` to be of the form `Bearer {token from settings page}`
+   config:
 
 ```yaml
 '/cortex':
