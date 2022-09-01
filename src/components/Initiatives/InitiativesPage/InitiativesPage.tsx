@@ -93,7 +93,7 @@ export const InitiativesPage = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
+      <WarningPanel severity="error" title="Could not load initiatives.">
         {error.message}
       </WarningPanel>
     );
