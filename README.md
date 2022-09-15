@@ -62,8 +62,8 @@ import { CortexPage } from '@cortexapps/backstage-plugin';
 <Route path="/cortex" element={<CortexPage />} />
 ```
 
-4. Update [app-config.yaml](https://github.com/backstage/backstage/blob/master/app-config.yaml) to add a new proxy
-   config:
+4. Update [app-config.yaml](https://github.com/backstage/backstage/blob/master/app-config.yaml#L54) to add a new config under
+   the `proxy` section:
 
 ```yaml
 '/cortex':
