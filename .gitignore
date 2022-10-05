@@ -1,5 +1,6 @@
 .idea/
 .yalc/
+yalc.lock
 .DS_Store
 .vscode/
 .vsls.json
