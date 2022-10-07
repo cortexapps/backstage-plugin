@@ -245,7 +245,7 @@ export function useFilters<T>(
           },
         })
         .then(response => response.items),
-      extensionApi.getAdditionalFilters(),
+      extensionApi.getAdditionalFilters?.() ?? [],
     ]);
   }, options?.deps ?? []);
 

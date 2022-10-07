@@ -15,12 +15,17 @@
  */
 import React, { useState } from 'react';
 import SyncIcon from '@material-ui/icons/Sync';
-import { IconButton, Typography, CircularProgress } from '@material-ui/core';
+import { CircularProgress, DialogContent, DialogTitle, IconButton, Typography } from '@material-ui/core';
+import { Info, Close } from '@material-ui/icons'
 import { InfoCard, Link } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { extensionApiRef } from '../../api/ExtensionApi';
+import Dialog from "@material-ui/core/Dialog";
+import Button from "@material-ui/core/Button";
+import Box from "@material-ui/core/Box";
+import { OverrideViewer } from "./OverrideViewer";
 
 interface SyncButtonProps {
   syncEntities: () => Promise<void>;
@@ -41,6 +46,28 @@ const SyncButton = ({ syncEntities }: SyncButtonProps) => {
   );
 };
 
+const OverrideViewerButton = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button startIcon={<Info/>} onClick={() => setOpen(true)}>
+        Test Custom Mappings
+      </Button>
+      <Dialog fullScreen open={open}>
+        <DialogTitle>
+          Test Custom Mappings
+          <IconButton onClick={() => setOpen(false)}>
+            <Close/>
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <OverrideViewer/>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
+
 export const SettingsSyncCard = () => {
   const catalogApi = useApi(catalogApiRef);
   const cortexApi = useApi(cortexApiRef);
@@ -48,8 +75,9 @@ export const SettingsSyncCard = () => {
 
   const syncEntities = async () => {
     const { items: entities } = await catalogApi.getEntities();
-    const customMappings = await extensionApi.getCustomMappings();
-    await cortexApi.syncEntities(entities, customMappings);
+    const customMappings = await extensionApi.getCustomMappings?.();
+    const groupOverrides = await extensionApi.getTeamOverrides?.(entities)
+    await cortexApi.syncEntities(entities, customMappings, groupOverrides);
   };
 
   return (
@@ -66,6 +94,9 @@ export const SettingsSyncCard = () => {
         </Link>
         .
       </Typography>
+      <Box display="flex" alignItems="center">
+        <OverrideViewerButton/>
+      </Box>
     </InfoCard>
   );
 };
