@@ -79,6 +79,6 @@ export interface CortexApi {
   syncEntities(
     entities: Entity[],
     customMappings?: CustomMapping[],
-    groupOverrides?: TeamOverrides
+    teamOverrides?: TeamOverrides
   ): Promise<void>;
 }

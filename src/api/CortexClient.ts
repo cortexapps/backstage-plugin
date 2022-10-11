@@ -70,7 +70,7 @@ export class CortexClient implements CortexApi {
   async syncEntities(
     entities: Entity[],
     customMappings?: CustomMapping[],
-    groupOverrides?: TeamOverrides,
+    teamOverrides?: TeamOverrides,
   ): Promise<void> {
     const withCustomMappings: Entity[] = customMappings
       ? entities.map(entity => applyCustomMappings(entity, customMappings))
@@ -78,7 +78,7 @@ export class CortexClient implements CortexApi {
 
     return await this.post(`/api/backstage/v1/entities`, {
       entities: withCustomMappings,
-      groupOverrides
+      teamOverrides
     });
   }
 
