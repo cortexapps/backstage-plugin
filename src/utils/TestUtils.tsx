@@ -41,7 +41,7 @@ export const renderWrapped = (
     ),
   );
 
-  const { findByText, findAllByText, findByLabelText, container } = rendered;
+  const { findByText, findAllByText, findByLabelText, container, ...rest } = rendered;
 
   const checkForText = async (matcher: Matcher, index?: number) => {
     if (index === undefined) {
@@ -83,6 +83,7 @@ export const renderWrapped = (
     checkForText,
     checkNotText,
     logScreen,
+    ...rest,
   }
 }
 
