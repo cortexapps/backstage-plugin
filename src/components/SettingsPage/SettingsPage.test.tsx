@@ -16,7 +16,7 @@
 import { CortexApi } from "../../api/CortexApi";
 import React from "react";
 import { CatalogApi, catalogApiRef } from "@backstage/plugin-catalog-react";
-import { Fixtures } from "../../../scripts/backstage-cortex/.yalc/@cortexapps/backstage-plugin/src/utils/TestUtils";
+import { Fixtures } from "../../utils/TestUtils";
 import { renderWrapped } from "../../utils/TestUtils";
 import { SettingsPage } from "./SettingsPage";
 import { captor, mock } from 'jest-mock-extended';
