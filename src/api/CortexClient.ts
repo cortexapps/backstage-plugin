@@ -31,7 +31,7 @@ import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
-import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
+import { CustomMapping, TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
 import { applyCustomMappings } from '../utils/ComponentUtils';
 import {
   createApiRef,
@@ -70,6 +70,7 @@ export class CortexClient implements CortexApi {
   async syncEntities(
     entities: Entity[],
     customMappings?: CustomMapping[],
+    teamOverrides?: TeamOverrides,
   ): Promise<void> {
     const withCustomMappings: Entity[] = customMappings
       ? entities.map(entity => applyCustomMappings(entity, customMappings))
@@ -77,6 +78,7 @@ export class CortexClient implements CortexApi {
 
     return await this.post(`/api/backstage/v1/entities`, {
       entities: withCustomMappings,
+      teamOverrides
     });
   }
 

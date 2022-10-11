@@ -15,7 +15,7 @@
  */
 import React, { useState } from 'react';
 import SyncIcon from '@material-ui/icons/Sync';
-import { IconButton, Typography, CircularProgress } from '@material-ui/core';
+import { CircularProgress, IconButton, Typography } from '@material-ui/core';
 import { InfoCard, Link } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
@@ -35,6 +35,8 @@ const SyncButton = ({ syncEntities }: SyncButtonProps) => {
         setIsSyncing(true);
         syncEntities().finally(() => setIsSyncing(false));
       }}
+      aria-busy={isSyncing}
+      aria-label="Sync Entities"
     >
       {isSyncing ? <CircularProgress /> : <SyncIcon />}
     </IconButton>
@@ -48,8 +50,9 @@ export const SettingsSyncCard = () => {
 
   const syncEntities = async () => {
     const { items: entities } = await catalogApi.getEntities();
-    const customMappings = await extensionApi.getCustomMappings();
-    await cortexApi.syncEntities(entities, customMappings);
+    const customMappings = await extensionApi.getCustomMappings?.();
+    const groupOverrides = await extensionApi.getTeamOverrides?.(entities);
+    await cortexApi.syncEntities(entities, customMappings, groupOverrides);
   };
 
   return (
