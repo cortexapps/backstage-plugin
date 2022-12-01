@@ -81,7 +81,7 @@ interface TimeseriesProps {
   onClick?: PointMouseHandler;
 }
 
-export const Timeseries = ({ data, onClick }: TimeseriesProps) => {
+export const Timeseries = ({ data, tooltip, onClick }: TimeseriesProps) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -94,8 +94,8 @@ export const Timeseries = ({ data, onClick }: TimeseriesProps) => {
         enablePoints={false}
         colors={{ scheme: 'nivo' }}
         margin={{ bottom: 30, top: 30, left: 10, right: 40 }}
-        // tooltip={tooltip}
-        // isInteractive={tooltip !== undefined}
+        tooltip={tooltip}
+        isInteractive={tooltip !== undefined}
         xScale={{
           type: 'time',
           useUTC: true,
