@@ -22,7 +22,7 @@ import {
   Serie,
 } from '@nivo/line';
 import { Theme as NivoTheme } from '@nivo/core';
-import { LinearScale } from '@nivo/scales';
+import { ScaleLinearSpec } from '@nivo/scales';
 
 const useStyles = makeStyles((theme: Theme) => ({
   chartRoot: {
@@ -69,7 +69,7 @@ export function nivoTheme(theme: Theme): NivoTheme {
   };
 }
 
-const percentageYScale: LinearScale = {
+const percentageYScale: ScaleLinearSpec = {
   type: 'linear',
   min: 0,
   max: 100,
@@ -81,7 +81,7 @@ interface TimeseriesProps {
   onClick?: PointMouseHandler;
 }
 
-export const Timeseries = ({ data, tooltip, onClick }: TimeseriesProps) => {
+export const Timeseries = ({ data, onClick }: TimeseriesProps) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -94,8 +94,8 @@ export const Timeseries = ({ data, tooltip, onClick }: TimeseriesProps) => {
         enablePoints={false}
         colors={{ scheme: 'nivo' }}
         margin={{ bottom: 30, top: 30, left: 10, right: 40 }}
-        tooltip={tooltip}
-        isInteractive={tooltip !== undefined}
+        // tooltip={tooltip}
+        // isInteractive={tooltip !== undefined}
         xScale={{
           type: 'time',
           useUTC: true,
