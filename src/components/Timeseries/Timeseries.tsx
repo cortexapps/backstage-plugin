@@ -22,7 +22,7 @@ import {
   Serie,
 } from '@nivo/line';
 import { Theme as NivoTheme } from '@nivo/core';
-import { LinearScale } from '@nivo/scales';
+import { ScaleLinearSpec } from '@nivo/scales';
 
 const useStyles = makeStyles((theme: Theme) => ({
   chartRoot: {
@@ -69,7 +69,7 @@ export function nivoTheme(theme: Theme): NivoTheme {
   };
 }
 
-const percentageYScale: LinearScale = {
+const percentageYScale: ScaleLinearSpec = {
   type: 'linear',
   min: 0,
   max: 100,
