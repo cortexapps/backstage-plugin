@@ -15,6 +15,17 @@
  */
 import { StringifiableRecord, stringifyUrl } from 'query-string';
 
+interface CortexScorecardServicePageURLProperties {
+  scorecardId: string | number;
+  serviceId: string | number;
+  cortexURL?: string;
+}
+
+interface CortexScorecardPageURLProperties {
+  scorecardId: string | number;
+  cortexURL?: string
+}
+
 export const buildUrl = (
   queryParamsObj: StringifiableRecord,
   pathname: string,
@@ -24,12 +35,13 @@ export const buildUrl = (
     query: queryParamsObj,
   })}`;
 
-const cortexURL = 'https://app.getcortexapp.com/admin/';
+const defaultCortexURL = 'https://app.getcortexapp.com';
 
-export const cortexScorecardPageURL = (scorecardId: string | number) =>
-  `${cortexURL}scorecards/${scorecardId}`;
+export const cortexScorecardPageURL = ({scorecardId, cortexURL = defaultCortexURL}: CortexScorecardPageURLProperties) => `${cortexURL}/admin/scorecards/${scorecardId}`;
 
-export const cortexScorecardServicePageURL = (
-  scorecardId: string | number,
-  serviceId: string | number,
-) => `${cortexScorecardPageURL(scorecardId)}?service=${serviceId}`;
+export const cortexScorecardServicePageURL = ({
+  scorecardId,
+  serviceId,
+  cortexURL
+}: CortexScorecardServicePageURLProperties
+) => `${cortexScorecardPageURL({scorecardId, cortexURL})}?service=${serviceId}`;

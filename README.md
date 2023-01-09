@@ -117,6 +117,13 @@ import { CortexGroupActionItemsWidget } from '@cortexapps/backstage-plugin';
 </EntityLayout.Route>
 ```
 
+10. (Optional) Update `app-config.yaml` to point to on-prem instance.
+
+```yaml
+cortex:
+  frontend:
+    baseUrl: ${CORTEX_FRONTEND_HOST_URL}
+```
 
 ## Advanced
 
