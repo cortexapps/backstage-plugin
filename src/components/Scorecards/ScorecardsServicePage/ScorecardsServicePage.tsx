@@ -115,7 +115,7 @@ export const ScorecardsServicePage = () => {
         </Box>
         <Box alignSelf="center">
           <Link
-            to={cortexScorecardServicePageURL({scorecardId, serviceId: score.serviceId, cortexBaseUrl})}
+            to={cortexScorecardServicePageURL({scorecardId, serviceId: score.serviceId, cortexURL: cortexBaseUrl})}
             target="_blank"
           >
             <b>View in Cortex</b>
