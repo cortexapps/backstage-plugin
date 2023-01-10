@@ -23,7 +23,7 @@ interface CortexScorecardServicePageURLProperties {
 
 interface CortexScorecardPageURLProperties {
   scorecardId: string | number;
-  cortexURL?: string
+  cortexURL?: string;
 }
 
 export const buildUrl = (
@@ -35,13 +35,17 @@ export const buildUrl = (
     query: queryParamsObj,
   })}`;
 
-  const defaultCortexURL = 'https://app.getcortexapp.com';
+const defaultCortexURL = 'https://app.getcortexapp.com';
 
-  export const cortexScorecardPageURL = ({scorecardId, cortexURL = defaultCortexURL}: CortexScorecardPageURLProperties) => `${cortexURL}/admin/scorecards/${scorecardId}`;
-  
-  export const cortexScorecardServicePageURL = ({
-    scorecardId,
-    serviceId,
-    cortexURL
-  }: CortexScorecardServicePageURLProperties
-  ) => `${cortexScorecardPageURL({scorecardId, cortexURL})}?service=${serviceId}`;
+export const cortexScorecardPageURL = ({
+  scorecardId,
+  cortexURL = defaultCortexURL,
+}: CortexScorecardPageURLProperties) =>
+  `${cortexURL}/admin/scorecards/${scorecardId}`;
+
+export const cortexScorecardServicePageURL = ({
+  scorecardId,
+  serviceId,
+  cortexURL,
+}: CortexScorecardServicePageURLProperties) =>
+  `${cortexScorecardPageURL({ scorecardId, cortexURL })}?service=${serviceId}`;

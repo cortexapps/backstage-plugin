@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import React, { useEffect, useState } from 'react';
-import { configApiRef, useApi, useRouteRefParams } from '@backstage/core-plugin-api';
+import {
+  configApiRef,
+  useApi,
+  useRouteRefParams,
+} from '@backstage/core-plugin-api';
 import {
   Content,
   InfoCard,
@@ -115,7 +119,11 @@ export const ScorecardsServicePage = () => {
         </Box>
         <Box alignSelf="center">
           <Link
-            to={cortexScorecardServicePageURL({scorecardId, serviceId: score.serviceId, cortexURL: cortexBaseUrl})}
+            to={cortexScorecardServicePageURL({
+              scorecardId,
+              serviceId: score.serviceId,
+              cortexURL: cortexBaseUrl,
+            })}
             target="_blank"
           >
             <b>View in Cortex</b>

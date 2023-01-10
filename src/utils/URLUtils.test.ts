@@ -13,26 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { cortexScorecardPageURL, cortexScorecardServicePageURL } from "./URLUtils";
+import {
+  cortexScorecardPageURL,
+  cortexScorecardServicePageURL,
+} from './URLUtils';
 
 describe('URLUtils', () => {
   describe('cortexScorecardPageURL', () => {
     it('should use default cortex url', () => {
-      expect(cortexScorecardPageURL({scorecardId: '1'})).toEqual('https://app.getcortexapp.com/admin/scorecards/1');
+      expect(cortexScorecardPageURL({ scorecardId: '1' })).toEqual(
+        'https://app.getcortexapp.com/admin/scorecards/1',
+      );
     });
 
     it('should use the provided url', () => {
-      expect(cortexScorecardPageURL({scorecardId: '1', cortexURL: 'https://test.domain'})).toEqual('https://test.domain/admin/scorecards/1');
+      expect(
+        cortexScorecardPageURL({
+          scorecardId: '1',
+          cortexURL: 'https://test.domain',
+        }),
+      ).toEqual('https://test.domain/admin/scorecards/1');
     });
   });
 
   describe('cortexScorecardServicePageURL', () => {
     it('should use default url', () => {
-      expect(cortexScorecardServicePageURL({scorecardId: '1', serviceId: '1'})).toEqual('https://app.getcortexapp.com/admin/scorecards/1?service=1');
+      expect(
+        cortexScorecardServicePageURL({ scorecardId: '1', serviceId: '1' }),
+      ).toEqual('https://app.getcortexapp.com/admin/scorecards/1?service=1');
     });
 
     it('should use custom domain url', () => {
-      expect(cortexScorecardServicePageURL({scorecardId: '1', serviceId: '1', cortexURL: 'https://test.domain'})).toEqual('https://test.domain/admin/scorecards/1?service=1');
+      expect(
+        cortexScorecardServicePageURL({
+          scorecardId: '1',
+          serviceId: '1',
+          cortexURL: 'https://test.domain',
+        }),
+      ).toEqual('https://test.domain/admin/scorecards/1?service=1');
     });
   });
 });
