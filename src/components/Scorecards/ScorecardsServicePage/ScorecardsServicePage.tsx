@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import React, { useEffect, useState } from 'react';
-import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
+import {
+  configApiRef,
+  useApi,
+  useRouteRefParams,
+} from '@backstage/core-plugin-api';
 import {
   Content,
   InfoCard,
@@ -44,6 +48,7 @@ const useStyles = makeStyles({
 
 export const ScorecardsServicePage = () => {
   const cortexApi = useApi(cortexApiRef);
+  const config = useApi(configApiRef);
 
   const { scorecardId, kind, namespace, name } = useRouteRefParams(
     scorecardServiceDetailsRouteRef,
@@ -56,6 +61,8 @@ export const ScorecardsServicePage = () => {
   const [selectedRules, setSelectedRules] = useState<
     ScorecardServiceScoresRule[]
   >([]);
+
+  const cortexBaseUrl = config.getOptionalString('cortex.frontendBaseUrl');
 
   const { value, loading, error } = useAsync(async () => {
     const allScores = await cortexApi.getScorecardScores(+scorecardId);
@@ -112,7 +119,11 @@ export const ScorecardsServicePage = () => {
         </Box>
         <Box alignSelf="center">
           <Link
-            to={cortexScorecardServicePageURL(scorecardId, score.serviceId)}
+            to={cortexScorecardServicePageURL({
+              scorecardId,
+              serviceId: score.serviceId,
+              cortexURL: cortexBaseUrl,
+            })}
             target="_blank"
           >
             <b>View in Cortex</b>
