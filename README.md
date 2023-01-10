@@ -117,6 +117,13 @@ import { CortexGroupActionItemsWidget } from '@cortexapps/backstage-plugin';
 </EntityLayout.Route>
 ```
 
+10. (Optional) Update `app-config.yaml` to point to a self-hosted instance.
+
+```yaml
+cortex:
+  frontendBaseUrl: ${CORTEX_FRONTEND_HOST_URL}
+```
+
 
 ## Advanced
 
