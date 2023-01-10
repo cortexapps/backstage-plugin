@@ -113,7 +113,7 @@ export const ScorecardsServiceProgress = ({
           <Button
             variant="contained"
             color="primary"
-            href={cortexScorecardPageURL(scorecardId)}
+            href={cortexScorecardPageURL({scorecardId})}
           >
             Go to Cortex
           </Button>
