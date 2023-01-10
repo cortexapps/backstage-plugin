@@ -58,7 +58,7 @@ export const ScorecardsServicePage = () => {
     ScorecardServiceScoresRule[]
   >([]);
 
-  const cortexBaseUrl = config.getOptionalConfig('cortex.frontend.baseUrl');
+  const cortexBaseUrl = config.getOptionalString('cortex.frontend.baseUrl');
 
   const { value, loading, error } = useAsync(async () => {
     const allScores = await cortexApi.getScorecardScores(+scorecardId);
