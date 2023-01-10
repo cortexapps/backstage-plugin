@@ -46,8 +46,6 @@ export const ScorecardsServicePage = () => {
   const cortexApi = useApi(cortexApiRef);
   const config = useApi(configApiRef);
 
-  console.log({ configKeys: config.keys() });
-
   const { scorecardId, kind, namespace, name } = useRouteRefParams(
     scorecardServiceDetailsRouteRef,
   );
@@ -61,7 +59,6 @@ export const ScorecardsServicePage = () => {
   >([]);
 
   const cortexBaseUrl = config.getOptionalString('cortex.frontendBaseUrl');
-  console.log({ cortexBaseUrl });
 
   const { value, loading, error } = useAsync(async () => {
     const allScores = await cortexApi.getScorecardScores(+scorecardId);
