@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+import { round } from 'lodash';
+
+export function percentify(value: number): number {
+  return value <= 1 ? round(value * 100) : round(value);
+}
+
 /**
  * Safe division that converts division by 0 errors to 0
  * @param numerator Numerator
@@ -21,8 +27,8 @@
  */
 export const safeDivide = (numerator: number, denominator: number) => {
   if (denominator === 0) {
-    return 0
+    return 0;
   } else {
-    return numerator / denominator
+    return numerator / denominator;
   }
-}
+};
