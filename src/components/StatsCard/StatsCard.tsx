@@ -23,7 +23,7 @@ import {
   useDetailCardStyles,
 } from '../../styles/styles';
 import { ordinal } from '../../utils/strings';
-import { percentify } from '../../utils/numeric';
+import { percentify } from '../../utils/NumberUtils';
 
 export type StatNumberType = 'NTH' | 'PERCENTAGE' | 'NONE';
 

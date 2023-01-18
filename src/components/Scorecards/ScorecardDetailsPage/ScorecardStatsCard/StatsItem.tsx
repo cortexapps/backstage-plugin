@@ -17,7 +17,7 @@ import React from 'react';
 import { Grid, makeStyles, Typography, useTheme } from '@material-ui/core';
 import { BackstageTheme } from '@backstage/theme';
 import { getProgressColor } from '../../../Gauge/Gauge';
-import { percentify } from '../../../../utils/numeric';
+import { percentify } from '../../../../utils/NumberUtils';
 
 const useStyles = makeStyles({
   root: {

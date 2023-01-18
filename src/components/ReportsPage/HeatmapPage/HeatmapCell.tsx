@@ -15,8 +15,8 @@
  */
 import React from 'react';
 import { makeStyles, TableCell, Typography } from '@material-ui/core';
-import { percentify } from '../../../utils/numeric';
 import { BackstageTheme } from '@backstage/theme';
+import { percentify } from '../../../utils/NumberUtils';
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   root: {
