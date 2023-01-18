@@ -59,7 +59,7 @@ export const HeatmapTableByLevels = ({
           const averageScorePercentage = _average(
             values.map(score => score.scorePercentage),
           );
-          const averageRuleScores = getAverageRuleScores(values, serviceCount);
+          const averageRuleScores = getAverageRuleScores(values);
 
           return (
             <TableRow key={`TableRow-${firstScore.componentRef}`}>

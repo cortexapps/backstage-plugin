@@ -26,14 +26,14 @@ import moment from 'moment';
 import Box from '@material-ui/core/Box';
 import { Point } from '@nivo/line';
 import { getLookbackRange, Lookback } from '../../../utils/lookback';
-import { RuleResult, ScorecardServiceScoresRule } from '../../../api/types';
+import { RuleOutcome, RuleResult } from '../../../api/types';
 import { LookbackDropdown } from '../../ReportsPage/Common/LookbackDropdown';
 import { cortexScorecardPageURL } from '../../../utils/URLUtils';
 
 interface ScorecardsServiceProgressProps {
   scorecardId: string;
   entityRef: CompoundEntityRef;
-  setSelectedRules: (rules: ScorecardServiceScoresRule[]) => void;
+  setSelectedRules: (rules: RuleOutcome[]) => void;
 }
 
 /**
@@ -43,7 +43,7 @@ interface ScorecardsServiceProgressProps {
  */
 export function toScorecardServiceScoresRule(
   cachedRuleResults: RuleResult[],
-): ScorecardServiceScoresRule[] {
+): RuleOutcome[] {
   return cachedRuleResults.map(ruleResult => {
     return {
       ...ruleResult,
@@ -52,6 +52,7 @@ export function toScorecardServiceScoresRule(
         expression: ruleResult.expression,
         weight: ruleResult.weight,
       },
+      type: 'APPLICABLE',
     };
   });
 }

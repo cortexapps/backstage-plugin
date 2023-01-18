@@ -78,10 +78,11 @@ export const EntityInitiativesCard = ({
     <InfoCard title="Action Items">
       <ScorecardResultDetails
         hideWeights
-        rules={dedupedActionItems.map(actionItem => {
+        ruleOutcomes={dedupedActionItems.map(actionItem => {
           return {
             rule: actionItem.rule,
             score: 0,
+            type: 'APPLICABLE',
           };
         })}
       />

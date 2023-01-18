@@ -37,7 +37,7 @@ import { ScorecardResultDetails } from '../ScorecardDetailsPage/ScorecardsTableC
 import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
-import { ScorecardServiceScoresRule } from '../../../api/types';
+import { RuleOutcome } from '../../../api/types';
 import { cortexScorecardServicePageURL } from '../../../utils/URLUtils';
 
 const useStyles = makeStyles({
@@ -58,9 +58,7 @@ export const ScorecardsServicePage = () => {
 
   const classes = useStyles();
 
-  const [selectedRules, setSelectedRules] = useState<
-    ScorecardServiceScoresRule[]
-  >([]);
+  const [selectedRules, setSelectedRules] = useState<RuleOutcome[]>([]);
 
   const cortexBaseUrl = config.getOptionalString('cortex.frontendBaseUrl');
 
@@ -134,7 +132,7 @@ export const ScorecardsServicePage = () => {
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <InfoCard title="Rules">
-            <ScorecardResultDetails rules={selectedRules} />
+            <ScorecardResultDetails ruleOutcomes={selectedRules} />
           </InfoCard>
         </Grid>
         <Grid item lg={8} xs={12}>

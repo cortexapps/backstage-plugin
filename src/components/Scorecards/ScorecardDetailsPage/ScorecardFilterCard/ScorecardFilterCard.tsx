@@ -15,6 +15,9 @@
  */
 import React, { useMemo } from 'react';
 import {
+  isApplicableRuleOutcome,
+  isNotApplicableRuleOutcome,
+  isNotEvaluatedRuleOutcome,
   ruleName,
   Scorecard,
   ScorecardServiceScore,
@@ -38,15 +41,35 @@ import {
   defaultGroupRefContext,
   defaultSystemRefContext,
 } from '../../../../utils/ComponentUtils';
-import { EntityFilterGroup } from "../../../../filters";
+import { EntityFilterGroup } from '../../../../filters';
 
-const createRulePredicate = (pass: boolean, ruleExpression: string) => {
+const createExemptRulePredicate = (ruleExpression: string) => {
+  return (score: ScorecardServiceScore) =>
+    isNotApplicableRuleOutcome(
+      score.rules.find(rule => ruleExpression === rule.rule.expression),
+    );
+};
+
+const createNotEvaluatedRulePredicate = (ruleExpression: string) => {
+  return (score: ScorecardServiceScore) =>
+    isNotEvaluatedRuleOutcome(
+      score.rules.find(rule => ruleExpression === rule.rule.expression),
+    );
+};
+
+const createApplicableRulePredicate = (
+  pass: boolean,
+  ruleExpression: string,
+) => {
   return (score: ScorecardServiceScore) => {
-    const rulePassed =
-      (score.rules.find(rule => ruleExpression === rule.rule.expression)
-        ?.score ?? 0) > 0;
-
-    return rulePassed === pass;
+    const rule = score.rules.find(
+      rule => ruleExpression === rule.rule.expression,
+    );
+    if (isApplicableRuleOutcome(rule)) {
+      const rulePassed = rule.score > 0;
+      return rulePassed === pass;
+    }
+    return false;
   };
 };
 
@@ -60,10 +83,7 @@ const groupAndSystemFilters: EntityFilterGroup[] = [
         stringifyAnyEntityRef(entityRef, { defaultKind: 'group' }),
       ),
     formatProperty: (groupRef: string) =>
-      humanizeEntityRef(
-        parseEntityRef(groupRef),
-        defaultGroupRefContext,
-      ),
+      humanizeEntityRef(parseEntityRef(groupRef), defaultGroupRefContext),
   },
   {
     name: 'Systems',
@@ -74,12 +94,9 @@ const groupAndSystemFilters: EntityFilterGroup[] = [
         stringifyAnyEntityRef(entityRef, { defaultKind: 'system' }),
       ),
     formatProperty: (groupRef: string) =>
-      humanizeEntityRef(
-        parseEntityRef(groupRef),
-        defaultSystemRefContext,
-      ),
+      humanizeEntityRef(parseEntityRef(groupRef), defaultSystemRefContext),
   },
-]
+];
 
 interface ScorecardFilterCardProps {
   scorecard: Scorecard;
@@ -106,7 +123,7 @@ export const ScorecardFilterCard = ({
   const { filterGroups, loading } = useFilters(
     (score: ScorecardServiceScore) => score.componentRef,
     {
-      baseFilters: groupAndSystemFilters
+      baseFilters: groupAndSystemFilters,
     },
   );
 
@@ -122,13 +139,25 @@ export const ScorecardFilterCard = ({
           name: 'Failing Rule',
           filters: ruleFilterDefinitions,
           generatePredicate: (failingRule: string) =>
-            createRulePredicate(false, failingRule),
+            createApplicableRulePredicate(false, failingRule),
         },
         {
           name: 'Passing Rule',
           filters: ruleFilterDefinitions,
           generatePredicate: (passingRule: string) =>
-            createRulePredicate(true, passingRule),
+            createApplicableRulePredicate(true, passingRule),
+        },
+        {
+          name: 'Exempt Rule',
+          filters: ruleFilterDefinitions,
+          generatePredicate: (exemptRule: string) =>
+            createExemptRulePredicate(exemptRule),
+        },
+        {
+          name: 'Rule Not Yet Evaluated',
+          filters: ruleFilterDefinitions,
+          generatePredicate: (notEvaluatedRule: string) =>
+            createNotEvaluatedRulePredicate(notEvaluatedRule),
         },
         ...filterGroups,
       ]}

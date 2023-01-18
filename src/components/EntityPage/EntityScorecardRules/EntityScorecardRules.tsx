@@ -18,10 +18,12 @@ import { HeaderTabs, InfoCard, Progress } from '@backstage/core-components';
 import { ServiceScorecardScore } from '../../../api/types';
 import { ScorecardResultDetails } from '../../Scorecards/ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import {
-  filterFailingRules,
-  filterPassingRules,
-  isRuleFailing,
-  isRulePassing,
+  filterFailingRuleOutcomes,
+  filterNotApplicableRuleOutcomes,
+  filterNotEvaluatedRuleOutcomes,
+  filterPassingRuleOutcomes,
+  isRuleOutcomeFailing,
+  isRuleOutcomePassing,
 } from '../../../utils/ScorecardRules';
 
 interface EntityScorecardRulesProps {
@@ -31,18 +33,26 @@ interface EntityScorecardRulesProps {
 export const EntityScorecardRules = ({ score }: EntityScorecardRulesProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const selectedRules = useMemo(() => {
+  const selectedRuleOutcomes = useMemo(() => {
     return score?.evaluation?.rules?.filter(rule =>
-      selectedIndex === 0 ? isRuleFailing(rule) : isRulePassing(rule),
+      selectedIndex === 0
+        ? isRuleOutcomeFailing(rule)
+        : isRuleOutcomePassing(rule),
     );
   }, [selectedIndex, score]);
 
-  if (score === undefined || selectedRules === undefined) {
+  if (score === undefined || selectedRuleOutcomes === undefined) {
     return <Progress />;
   }
 
-  const numPassing = filterPassingRules(score.evaluation.rules).length;
-  const numFailing = filterFailingRules(score.evaluation.rules).length;
+  const numPassing = filterPassingRuleOutcomes(score.evaluation.rules).length;
+  const numFailing = filterFailingRuleOutcomes(score.evaluation.rules).length;
+  const numNotApplicable = filterNotApplicableRuleOutcomes(
+    score.evaluation.rules,
+  ).length;
+  const numNotEvaluated = filterNotEvaluatedRuleOutcomes(
+    score.evaluation.rules,
+  ).length;
 
   return (
     <InfoCard title="All Rules">
@@ -50,10 +60,15 @@ export const EntityScorecardRules = ({ score }: EntityScorecardRulesProps) => {
         tabs={[
           { id: 'failing', label: `Failing (${numFailing})` },
           { id: 'passing', label: `Passing (${numPassing})` },
+          { id: 'not_applicable', label: `Exempt (${numNotApplicable})` },
+          {
+            id: 'not_evaluated',
+            label: `Not Yet Evaluated (${numNotEvaluated})`,
+          },
         ]}
         onChange={setSelectedIndex}
       />
-      <ScorecardResultDetails rules={selectedRules} />
+      <ScorecardResultDetails ruleOutcomes={selectedRuleOutcomes} />
     </InfoCard>
   );
 };

@@ -125,14 +125,7 @@ export interface ServiceScorecardScore {
     description?: string;
   };
   evaluation: {
-    rules: {
-      rule: {
-        failureMessage?: string;
-      } & Rule;
-      score: number;
-      leftResult?: number | string;
-      error?: string;
-    }[];
+    rules: RuleOutcome[];
     ladderLevels: ServiceLadderLevels[];
   };
 }
@@ -143,18 +136,53 @@ export interface ScorecardServiceScore {
   score: number;
   scorePercentage: number;
   totalPossibleScore: number;
-  rules: ScorecardServiceScoresRule[];
+  rules: RuleOutcome[];
   lastUpdated: string;
   tags: string[]; // service groups
   teams: string[]; // owner groups
   ladderLevels: ScorecardScoreLadderResult[];
 }
 
-export interface ScorecardServiceScoresRule {
+export type RuleOutcome =
+  | NotEvaluatedRuleOutcome
+  | ApplicableRuleOutcome
+  | NotApplicableRuleOutcome;
+
+export interface RuleOutcomeBase {
   rule: Rule;
-  score: number;
-  error?: string;
+  type: string;
 }
+
+export interface NotEvaluatedRuleOutcome {
+  rule: Rule;
+  type: 'NOT_EVALUATED';
+}
+
+export interface ApplicableRuleOutcome extends RuleOutcomeBase {
+  score: number;
+  leftResult?: number | string;
+  error?: string;
+  type: 'APPLICABLE';
+}
+
+export interface NotApplicableRuleOutcome extends RuleOutcomeBase {
+  endDate?: string;
+  requestedDate: string;
+  approvedDate: string;
+  type: 'NOT_APPLICABLE';
+}
+
+export const isApplicableRuleOutcome = (
+  rule: RuleOutcome | undefined,
+): rule is ApplicableRuleOutcome => rule?.type === 'APPLICABLE';
+
+export const isNotApplicableRuleOutcome = (
+  rule: RuleOutcome | undefined,
+): rule is NotApplicableRuleOutcome => rule?.type === 'NOT_APPLICABLE';
+
+export const isNotEvaluatedRuleOutcome = (
+  rule: RuleOutcome | undefined,
+): rule is NotEvaluatedRuleOutcome => rule?.type === 'NOT_EVALUATED';
 
 export interface ScorecardResult {
   scorecardId: number;

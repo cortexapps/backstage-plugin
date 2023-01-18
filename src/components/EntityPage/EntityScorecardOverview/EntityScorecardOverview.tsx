@@ -15,7 +15,11 @@
  */
 import React, { useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
-import { ServiceScorecardScore } from '../../../api/types';
+import {
+  ApplicableRuleOutcome,
+  isApplicableRuleOutcome,
+  ServiceScorecardScore,
+} from '../../../api/types';
 import { useCortexApi } from '../../../utils/hooks';
 import { quantileRankSorted } from 'simple-statistics';
 import { StatsCard } from '../../StatsCard';
@@ -77,7 +81,10 @@ export const EntityScorecardOverview = ({
     sortedScores,
     score.score.scorePercentage,
   );
-  const numFailingRules = score.evaluation.rules.filter(
+  const applicableRules = score.evaluation.rules.filter(
+    (rule): rule is ApplicableRuleOutcome => isApplicableRuleOutcome(rule),
+  );
+  const numFailingRules = applicableRules.filter(
     rule => rule.score === 0,
   ).length;
 
@@ -100,7 +107,7 @@ export const EntityScorecardOverview = ({
         {
           label: 'Failing Rules',
           status: percentageToStatus(
-            1 - numFailingRules / score.evaluation.rules.length,
+            1 - numFailingRules / Math.max(applicableRules.length, 1),
           ),
           value: numFailingRules,
         },

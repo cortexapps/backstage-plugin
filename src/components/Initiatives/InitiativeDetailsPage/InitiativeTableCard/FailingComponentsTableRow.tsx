@@ -15,11 +15,7 @@
  */
 import React, { useState } from 'react';
 import { InitiativeActionItem } from '../../../../api/types';
-import {
-  Collapse,
-  IconButton,
-  Typography,
-} from '@material-ui/core';
+import { Collapse, IconButton, Typography } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import Box from '@material-ui/core/Box';
 import { Gauge } from '../../../Gauge';
@@ -65,17 +61,18 @@ export const FailingComponentsTableRow = ({
           <DefaultEntityRefLink entityRef={entityName} />
         </Box>
       </Box>
-      
+
       <Collapse in={isOpen} timeout="auto" unmountOnExit>
         <>
           <Typography variant="h6" style={{ marginTop: '10px' }}>
             Action Items
           </Typography>
           <ScorecardResultDetails
-            rules={actionItems.map(actionItem => {
+            ruleOutcomes={actionItems.map(actionItem => {
               return {
                 rule: actionItem.rule,
                 score: 0,
+                type: 'APPLICABLE',
               };
             })}
           />

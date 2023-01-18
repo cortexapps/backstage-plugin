@@ -16,27 +16,35 @@
 import React, { useMemo } from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { RuleResultDetails } from './RuleResultDetails';
-import { ruleName, ScorecardServiceScoresRule } from '../../../../api/types';
+import {
+  isApplicableRuleOutcome,
+  ruleName,
+  RuleOutcome,
+} from '../../../../api/types';
 
 interface ScorecardResultDetailsProps {
-  rules: ScorecardServiceScoresRule[];
+  ruleOutcomes: RuleOutcome[];
   hideWeights?: boolean;
 }
 
 export const ScorecardResultDetails = ({
-  rules,
+  ruleOutcomes,
   hideWeights,
 }: ScorecardResultDetailsProps) => {
   const sortedRules = useMemo(
     () =>
-      [...rules].sort((a, b) => {
-        if (a.score === b.score) {
+      [...ruleOutcomes].sort((a, b) => {
+        if (
+          !isApplicableRuleOutcome(a) ||
+          !isApplicableRuleOutcome(b) ||
+          a.score === b.score
+        ) {
           return ruleName(a.rule).localeCompare(ruleName(b.rule));
         }
 
         return a.score - b.score;
       }),
-    [rules],
+    [ruleOutcomes],
   );
 
   return (
@@ -49,7 +57,7 @@ export const ScorecardResultDetails = ({
       {sortedRules.map(rule => (
         <RuleResultDetails
           key={`RuleResultDetails-${rule.rule.id}`}
-          rule={rule}
+          ruleOutcome={rule}
           hideWeight={hideWeights}
         />
       ))}
