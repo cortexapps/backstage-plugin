@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import { round } from 'lodash';
+
 export function percentify(value: number): number {
-  return Number(value <= 1 ? (value * 100).toFixed(0) : value.toFixed(0));
+  return value <= 1 ? round(value * 100) : round(value);
 }
 
 /**
