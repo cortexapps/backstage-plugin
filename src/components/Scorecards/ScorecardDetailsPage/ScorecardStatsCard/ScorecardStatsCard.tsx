@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,6 +57,7 @@ export const ScorecardStatsCard = ({ scores }: ScorecardStatsCardProps) => {
           label={'Avg Score'}
           percentage
           gridSizes={{ xs: 3 }}
+          data-testid={'Stat-Scorecard-Avg-Score'}
         />
         <StatsItem
           value={medianVal}

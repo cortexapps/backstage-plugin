@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,6 +111,7 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
                   <Typography
                     variant="h1"
                     className={selectClassname(stat.status)}
+                    data-testid={`Stat-${stat.label}`}
                   >
                     {formattedValue}
                     <span className={colorClasses.suffix}>
