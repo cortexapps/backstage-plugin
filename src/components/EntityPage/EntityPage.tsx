@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import { Content, ContentHeader, EmptyState, Progress, WarningPanel, } from '@backstage/core-components';
+import {
+  Content,
+  ContentHeader,
+  EmptyState,
+  Progress,
+  WarningPanel,
+} from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { EntityScorecardsCard } from './EntityScorecardsCard';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
@@ -22,12 +28,18 @@ import { stringifyAnyEntityRef } from '../../utils/types';
 import { useCortexApi } from '../../utils/hooks';
 import { EntityScorecardDetails } from './EntityScorecardDetails';
 import { ScorecardServiceRefLink } from '../ScorecardServiceRefLink';
-import { useLocation } from "react-router";
-import { ServiceScorecardScore } from "../../api/types";
+import { useLocation } from 'react-router';
+import { ServiceScorecardScore } from '../../api/types';
 
 export const EntityPage = () => {
-  const { entity, loading: entityLoading, error: entityError } = useAsyncEntity();
-  const [selectedScorecardId, setSelectedScorecardId] = useState<number | undefined>();
+  const {
+    entity,
+    loading: entityLoading,
+    error: entityError,
+  } = useAsyncEntity();
+  const [selectedScorecardId, setSelectedScorecardId] = useState<
+    number | undefined
+  >();
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);

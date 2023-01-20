@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from "react";
-import { fireEvent, Matcher, queryByText, render, screen } from "@testing-library/react";
-import { TestApiProvider, wrapInTestApp } from "@backstage/test-utils";
-import { cortexApiRef } from "../api";
-import { CortexApi } from "../api/CortexApi";
-import { ExternalRouteRef, RouteRef } from "@backstage/core-plugin-api";
-import { Scorecard, ScorecardServiceScore } from "../api/types";
-import { Entity, EntityMeta } from "@backstage/catalog-model";
-import { act } from "react-dom/test-utils";
+import React from 'react';
+import {
+  fireEvent,
+  Matcher,
+  queryByText,
+  render,
+  screen,
+} from '@testing-library/react';
+import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
+import { cortexApiRef } from '../api';
+import { CortexApi } from '../api/CortexApi';
+import { ExternalRouteRef, RouteRef } from '@backstage/core-plugin-api';
+import {
+  Scorecard,
+  ScorecardServiceScore,
+  ServiceScorecardScore,
+} from '../api/types';
+import { Entity, EntityMeta } from '@backstage/catalog-model';
+import { act } from 'react-dom/test-utils';
 
 export const renderWrapped = (
   children: React.ReactNode,
@@ -31,7 +41,9 @@ export const renderWrapped = (
   },
   ...additionalApis: [any, any][]
 ) => {
-  const cortexRefPair: [any, any][] = cortexApi ? [[cortexApiRef, cortexApi]] : []
+  const cortexRefPair: [any, any][] = cortexApi
+    ? [[cortexApiRef, cortexApi]]
+    : [];
   const rendered = render(
     wrapInTestApp(
       <TestApiProvider apis={[...cortexRefPair, ...additionalApis]}>
@@ -41,7 +53,8 @@ export const renderWrapped = (
     ),
   );
 
-  const { findByText, findAllByText, findByLabelText, container, ...rest } = rendered;
+  const { findByText, findAllByText, findByLabelText, container, ...rest } =
+    rendered;
 
   const checkForText = async (matcher: Matcher, index?: number) => {
     if (index === undefined) {
@@ -49,31 +62,31 @@ export const renderWrapped = (
     } else {
       expect((await findAllByText(matcher))[index]).not.toBe([]);
     }
-  }
+  };
 
   const checkNotText = async (matcher: Matcher) => {
     expect(await queryByText(container, matcher)).toBeNull();
-  }
+  };
 
   const clickButton = async (label: string) => {
     return act(async () => {
       fireEvent.click(await findByLabelText(label));
     });
-  }
+  };
 
   const mouseClick = async (label: string) => {
     return act(async () => {
-      const element = await findByLabelText(label)
+      const element = await findByLabelText(label);
       fireEvent.mouseDown(element);
       fireEvent.click(element);
     });
-  }
+  };
 
   const clickButtonByText = async (label: string) => {
     return act(async () => {
       fireEvent.click(await findByText(label));
     });
-  }
+  };
 
   return {
     ...rendered,
@@ -84,31 +97,38 @@ export const renderWrapped = (
     checkNotText,
     logScreen,
     ...rest,
-  }
-}
+  };
+};
 
 const logScreen = () => {
   screen.debug(undefined, 40000);
-}
+};
 
 export class Fixtures {
-  static scorecard: (partial?: Partial<Scorecard>) => Scorecard = (partial) => {
+  static scorecard: (partial?: Partial<Scorecard>) => Scorecard = partial => {
     return {
       creator: { name: 'Bob Jones', email: 'bobjones@cortex.io' },
       id: 1,
       name: 'My Scorecard',
       description: 'My Description',
       rules: [
-        { id: 2, expression: 'runbooks.count > 0', description: 'My Rule', weight: 10 },
+        {
+          id: 2,
+          expression: 'runbooks.count > 0',
+          description: 'My Rule',
+          weight: 10,
+        },
         { id: 3, expression: 'documentation.count > 0', weight: 20 },
       ],
       tags: [{ id: '1', tag: 'tag1' }],
       excludedTags: [{ id: '2', tag: 'tag2' }],
-      ...partial
-    }
-  }
+      ...partial,
+    };
+  };
 
-  static scorecardServiceScore: (partial?: Partial<ScorecardServiceScore>) => ScorecardServiceScore = (partial) => {
+  static scorecardServiceScore: (
+    partial?: Partial<ScorecardServiceScore>,
+  ) => ScorecardServiceScore = partial => {
     return {
       serviceId: 1,
       componentRef: 'Component:foo/bar',
@@ -120,23 +140,42 @@ export class Fixtures {
       tags: [],
       teams: [],
       ladderLevels: [],
-      ...partial
-    }
-  }
+      ...partial,
+    };
+  };
 
-  static entity: (partial?: Partial<Entity>) => Entity = (partial) => {
+  static serviceScorecardScore: (
+    partial?: Partial<ServiceScorecardScore>,
+  ) => ServiceScorecardScore = partial => {
+    return {
+      score: {
+        scorePercentage: 1,
+        score: 1,
+        totalPossibleScore: 1,
+      },
+      scorecard: Fixtures.scorecard(),
+      evaluation: {
+        rules: [],
+        ladderLevels: [],
+      },
+      ...partial,
+    };
+  };
+
+  static entity: (partial?: Partial<Entity>) => Entity = partial => {
     return {
       apiVersion: '1',
       kind: 'Component',
       metadata: Fixtures.entityMeta(),
-      ...partial
-    }
-  }
+      ...partial,
+    };
+  };
 
-  static entityMeta: (partial?: Partial<EntityMeta>) => EntityMeta = (partial) => {
-    return {
-      name: 'Foo',
-      ...partial
-    }
-  }
+  static entityMeta: (partial?: Partial<EntityMeta>) => EntityMeta =
+    partial => {
+      return {
+        name: 'Foo',
+        ...partial,
+      };
+    };
 }
