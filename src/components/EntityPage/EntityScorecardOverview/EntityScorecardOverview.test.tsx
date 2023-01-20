@@ -88,7 +88,7 @@ describe('<EntityScorecardOverview />', () => {
 
   const entity = Fixtures.entity();
 
-  it('Properly renders EntityScorecardOverview', async () => {
+  it('Renders EntityScorecardOverview', async () => {
     const { getByText, getByTestId } = renderWrapped(
       <EntityProvider entity={entity}>
         <EntityScorecardOverview score={serviceScorecardScore} />

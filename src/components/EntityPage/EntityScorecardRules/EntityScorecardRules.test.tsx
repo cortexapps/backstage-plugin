@@ -64,22 +64,22 @@ describe('<EntityScorecardRules />', () => {
 
   const entity = Fixtures.entity();
 
-  it('Properly renders EntityScorecardRules', async () => {
-    const { checkNotText, clickButtonByText, findByText } = renderWrapped(
+  it('Renders EntityScorecardRules', async () => {
+    const { checkForText, checkNotText, clickButtonByText } = renderWrapped(
       <EntityProvider entity={entity}>
         <EntityScorecardRules score={serviceScorecardScore} />
       </EntityProvider>,
     );
-    expect(await findByText('All Rules')).toBeVisible();
-    expect(await findByText('Failing (1)')).toBeVisible();
-    expect(await findByText('Passing (2)')).toBeVisible();
-    expect(await findByText('oncall != null')).toBeVisible();
+    await checkForText('All Rules');
+    await checkForText('Failing (1)');
+    await checkForText('Passing (2)');
+    await checkForText('oncall != null');
     await checkNotText('git != null');
     await checkNotText('description != null');
 
     await clickButtonByText('Passing (2)');
-    expect(await findByText('git != null')).toBeVisible();
-    expect(await findByText('description != null')).toBeVisible();
+    await checkForText('git != null');
+    await checkForText('description != null');
     await checkNotText('oncall != null');
   });
 });

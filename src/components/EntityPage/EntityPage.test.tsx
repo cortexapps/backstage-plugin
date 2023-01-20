@@ -83,20 +83,18 @@ describe('EntityPage', () => {
   const entity = Fixtures.entity();
 
   it('should render if there are no scorecard service scores', async () => {
-    const { findByText } = renderWrapped(
+    const { checkForText } = renderWrapped(
       <EntityProvider entity={entity}>
         <EntityPage />
       </EntityProvider>,
       emptyCortexApi,
     );
-    expect(await findByText('No Scorecards to display')).toBeVisible();
-    expect(
-      await findByText("You haven't added any Scorecards yet."),
-    ).toBeVisible();
+    await checkForText('No Scorecards to display');
+    await checkForText("You haven't added any Scorecards yet.");
   });
 
   it('should render scorecard service scores', async () => {
-    const { checkNotText, clickButtonByText, findByText } = renderWrapped(
+    const { checkForText, checkNotText, clickButtonByText } = renderWrapped(
       <EntityProvider entity={entity}>
         <EntityPage />
       </EntityProvider>,
@@ -105,15 +103,15 @@ describe('EntityPage', () => {
         '/': rootRouteRef,
       },
     );
-    expect(await findByText('Test Scorecard 1')).toBeVisible();
-    expect(await findByText('Test Scorecard 2')).toBeVisible();
-    expect(await findByText('oncall != null')).toBeVisible();
+    await checkForText('Test Scorecard 1');
+    await checkForText('Test Scorecard 2');
+    await checkForText('oncall != null');
     await checkNotText('git != null');
     await checkNotText('description != null');
 
     await clickButtonByText('Passing (1)');
     await checkNotText('oncall != null');
-    expect(await findByText('git != null')).toBeVisible();
+    await checkForText('git != null');
 
     await clickButtonByText('Test Scorecard 2');
     await checkNotText('description != null');
@@ -121,6 +119,6 @@ describe('EntityPage', () => {
     await checkNotText('oncall != null');
 
     await clickButtonByText('Passing (1)');
-    expect(await findByText('description != null')).toBeVisible();
+    await checkForText('description != null');
   });
 });
