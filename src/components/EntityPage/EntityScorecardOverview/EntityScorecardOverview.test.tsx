@@ -23,6 +23,27 @@ import { rootRouteRef } from '../../../routes';
 import { waitFor } from '@testing-library/react';
 
 describe('<EntityScorecardOverview />', () => {
+  const gitRule = {
+    id: 1,
+    expression: 'git != null',
+    weight: 1,
+  };
+  const oncallRule = {
+    id: 2,
+    expression: 'oncall != null',
+    weight: 2,
+  };
+  const docsRule = {
+    id: 3,
+    expression: 'documentation.count > 0',
+    weight: 1,
+  };
+  const descriptionRule = {
+    id: 4,
+    expression: 'description != null',
+    weight: 1,
+  };
+
   const serviceScorecardScore = Fixtures.serviceScorecardScore({
     score: {
       score: 1,
@@ -37,20 +58,24 @@ describe('<EntityScorecardOverview />', () => {
     evaluation: {
       rules: [
         {
-          rule: {
-            id: 1,
-            expression: 'git != null',
-            weight: 1,
-          },
+          rule: gitRule,
           score: 1,
+          type: 'APPLICABLE',
         },
         {
-          rule: {
-            id: 2,
-            expression: 'oncall != null',
-            weight: 2,
-          },
+          rule: oncallRule,
           score: 0,
+          type: 'APPLICABLE',
+        },
+        {
+          rule: docsRule,
+          requestedDate: '05/05/2000',
+          approvedDate: '05/05/2000',
+          type: 'NOT_APPLICABLE',
+        },
+        {
+          rule: descriptionRule,
+          type: 'NOT_EVALUATED',
         },
       ],
       ladderLevels: [],
@@ -66,20 +91,24 @@ describe('<EntityScorecardOverview />', () => {
           totalPossibleScore: 3,
           rules: [
             {
-              rule: {
-                id: 1,
-                expression: 'git != null',
-                weight: 1,
-              },
+              rule: gitRule,
               score: 1,
+              type: 'APPLICABLE',
             },
             {
-              rule: {
-                id: 2,
-                expression: 'oncall != null',
-                weight: 2,
-              },
+              rule: oncallRule,
               score: 0,
+              type: 'APPLICABLE',
+            },
+            {
+              rule: docsRule,
+              requestedDate: '05/05/2000',
+              approvedDate: '05/05/2000',
+              type: 'NOT_APPLICABLE',
+            },
+            {
+              rule: descriptionRule,
+              type: 'NOT_EVALUATED',
             },
           ],
         }),

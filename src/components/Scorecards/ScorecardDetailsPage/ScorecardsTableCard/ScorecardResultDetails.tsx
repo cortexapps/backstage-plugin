@@ -34,15 +34,21 @@ export const ScorecardResultDetails = ({
   const sortedRules = useMemo(
     () =>
       [...ruleOutcomes].sort((a, b) => {
-        if (
-          !isApplicableRuleOutcome(a) ||
-          !isApplicableRuleOutcome(b) ||
-          a.score === b.score
-        ) {
-          return ruleName(a.rule).localeCompare(ruleName(b.rule));
+        // Make applicable rule outcomes "smaller" so they'll show up first
+        if (isApplicableRuleOutcome(a) && !isApplicableRuleOutcome(b)) {
+          return -1;
         }
-
-        return a.score - b.score;
+        if (!isApplicableRuleOutcome(a) && isApplicableRuleOutcome(b)) {
+          return 1;
+        }
+        if (isApplicableRuleOutcome(a) && isApplicableRuleOutcome(b)) {
+          if (a.score === b.score) {
+            return ruleName(a.rule).localeCompare(ruleName(b.rule));
+          } else {
+            return a.score - b.score;
+          }
+        }
+        return ruleName(a.rule).localeCompare(ruleName(b.rule));
       }),
     [ruleOutcomes],
   );

@@ -15,7 +15,11 @@
  */
 import React, { useMemo, useState } from 'react';
 import { HeaderTabs, InfoCard, Progress } from '@backstage/core-components';
-import { ServiceScorecardScore } from '../../../api/types';
+import {
+  isNotApplicableRuleOutcome,
+  isNotEvaluatedRuleOutcome,
+  ServiceScorecardScore,
+} from '../../../api/types';
 import { ScorecardResultDetails } from '../../Scorecards/ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import {
   filterFailingRuleOutcomes,
@@ -37,7 +41,11 @@ export const EntityScorecardRules = ({ score }: EntityScorecardRulesProps) => {
     return score?.evaluation?.rules?.filter(rule =>
       selectedIndex === 0
         ? isRuleOutcomeFailing(rule)
-        : isRuleOutcomePassing(rule),
+        : selectedIndex === 1
+        ? isRuleOutcomePassing(rule)
+        : selectedIndex === 2
+        ? isNotApplicableRuleOutcome(rule)
+        : isNotEvaluatedRuleOutcome(rule),
     );
   }, [selectedIndex, score]);
 

@@ -41,14 +41,17 @@ describe('HeatmapUtils', () => {
         {
           rule: gitRule,
           score: 1,
+          type: 'APPLICABLE',
         },
         {
           rule: oncallRule,
           score: 0,
+          type: 'APPLICABLE',
         },
         {
           rule: descriptionRule,
           score: 1,
+          type: 'APPLICABLE',
         },
       ],
     }),
@@ -61,14 +64,17 @@ describe('HeatmapUtils', () => {
         {
           rule: gitRule,
           score: 0,
+          type: 'APPLICABLE',
         },
         {
           rule: oncallRule,
           score: 0,
+          type: 'APPLICABLE',
         },
         {
           rule: descriptionRule,
           score: 1,
+          type: 'APPLICABLE',
         },
       ],
     }),
@@ -81,14 +87,17 @@ describe('HeatmapUtils', () => {
         {
           rule: gitRule,
           score: 1,
+          type: 'APPLICABLE',
         },
         {
           rule: oncallRule,
           score: 2,
+          type: 'APPLICABLE',
         },
         {
           rule: descriptionRule,
           score: 1,
+          type: 'APPLICABLE',
         },
       ],
     }),
@@ -96,10 +105,9 @@ describe('HeatmapUtils', () => {
 
   it('getAverageRuleScores math', async () => {
     // rule order should be description rule => oncall rule => git rule since they're sorted alphabetically by rule name (rule title, or rule expression if no title)
-    const averageRuleScores = getAverageRuleScores(
-      scorecardServiceScores,
-      3,
-    ).map(averageRuleScore => round(averageRuleScore, 2));
+    const averageRuleScores = getAverageRuleScores(scorecardServiceScores).map(
+      averageRuleScore => round(averageRuleScore, 2),
+    );
     expect(averageRuleScores).toEqual([1, 0.33, 0.67]);
   });
 });

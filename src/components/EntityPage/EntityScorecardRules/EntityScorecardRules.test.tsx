@@ -40,6 +40,7 @@ describe('<EntityScorecardRules />', () => {
             weight: 1,
           },
           score: 1,
+          type: 'APPLICABLE',
         },
         {
           rule: {
@@ -48,6 +49,7 @@ describe('<EntityScorecardRules />', () => {
             weight: 2,
           },
           score: 0,
+          type: 'APPLICABLE',
         },
         {
           rule: {
@@ -56,6 +58,7 @@ describe('<EntityScorecardRules />', () => {
             weight: 1,
           },
           score: 1,
+          type: 'APPLICABLE',
         },
       ],
       ladderLevels: [],
