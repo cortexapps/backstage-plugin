@@ -60,6 +60,24 @@ describe('<EntityScorecardRules />', () => {
           score: 1,
           type: 'APPLICABLE',
         },
+        {
+          rule: {
+            id: 4,
+            expression: 'custom("key") != null',
+            weight: 1,
+          },
+          requestedDate: '05/05/2000',
+          approvedDate: '05/05/2000',
+          type: 'NOT_APPLICABLE',
+        },
+        {
+          rule: {
+            id: 5,
+            expression: 'k8s != null',
+            weight: 1,
+          },
+          type: 'NOT_EVALUATED',
+        },
       ],
       ladderLevels: [],
     },
@@ -76,13 +94,19 @@ describe('<EntityScorecardRules />', () => {
     await checkForText('All Rules');
     await checkForText('Failing (1)');
     await checkForText('Passing (2)');
+    await checkForText('Exempt (1)');
+    await checkForText('Not Yet Evaluated (1)');
     await checkForText('oncall != null');
     await checkNotText('git != null');
     await checkNotText('description != null');
+    await checkNotText('custom("key") != null');
+    await checkNotText('k8s != null');
 
     await clickButtonByText('Passing (2)');
     await checkForText('git != null');
     await checkForText('description != null');
     await checkNotText('oncall != null');
+    await checkNotText('custom("key") != null');
+    await checkNotText('k8s != null');
   });
 });
