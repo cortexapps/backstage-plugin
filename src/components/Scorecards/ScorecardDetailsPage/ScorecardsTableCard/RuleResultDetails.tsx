@@ -35,7 +35,11 @@ import { MarkdownContent } from '@backstage/core-components';
 import { MetadataItem } from '../../../MetadataItem';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import { isRuleOutcomeFailing } from '../../../../utils/ScorecardRules';
+import {
+  isRuleOutcomeFailing,
+  isRuleOutcomePassing,
+} from '../../../../utils/ScorecardRules';
+import { NotInterested } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   rule: {
@@ -58,6 +62,7 @@ export const RuleResultDetails = ({
   const showExpandButton =
     ruleOutcome.rule.description || ruleOutcome.rule.title;
   const hasTitle = !!ruleOutcome.rule.title;
+  const isPassing = isRuleOutcomePassing(ruleOutcome);
   const isFailing = isRuleOutcomeFailing(ruleOutcome);
 
   return (
@@ -72,10 +77,12 @@ export const RuleResultDetails = ({
         )}
       </ListItemAvatar>
       <ListItemAvatar>
-        {!isFailing ? (
+        {isPassing ? (
           <CheckIcon color="primary" />
-        ) : (
+        ) : isFailing ? (
           <ErrorIcon color="error" />
+        ) : (
+          <NotInterested color="primary" />
         )}
       </ListItemAvatar>
       <ListItem>
