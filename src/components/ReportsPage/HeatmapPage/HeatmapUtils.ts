@@ -21,10 +21,10 @@ import {
   ruleName,
   ScorecardLevel,
   RuleOutcome,
-  isApplicableRuleOutcome,
 } from '../../../api/types';
 import { groupBy as _groupBy, flatten as _flatten, values } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
+import { isApplicableRuleOutcome } from '../../../utils/ScorecardRules';
 
 export type StringIndexable<T> = { [index: string]: T };
 

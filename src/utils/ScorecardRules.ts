@@ -14,12 +14,27 @@
  * limitations under the License.
  */
 import {
-  isApplicableRuleOutcome,
+  ApplicableRuleOutcome,
   NotApplicableRuleOutcome,
   NotEvaluatedRuleOutcome,
   ruleName,
   RuleOutcome,
+  RuleOutcomeType,
 } from '../api/types';
+
+export const isApplicableRuleOutcome = (
+  rule: RuleOutcome | undefined,
+): rule is ApplicableRuleOutcome => rule?.type === RuleOutcomeType.APPLICABLE;
+
+export const isNotApplicableRuleOutcome = (
+  rule: RuleOutcome | undefined,
+): rule is NotApplicableRuleOutcome =>
+  rule?.type === RuleOutcomeType.NOT_APPLICABLE;
+
+export const isNotEvaluatedRuleOutcome = (
+  rule: RuleOutcome | undefined,
+): rule is NotEvaluatedRuleOutcome =>
+  rule?.type === RuleOutcomeType.NOT_EVALUATED;
 
 export function isRuleOutcomePassing(ruleOutcome: RuleOutcome): boolean {
   return isApplicableRuleOutcome(ruleOutcome) && ruleOutcome.score > 0;

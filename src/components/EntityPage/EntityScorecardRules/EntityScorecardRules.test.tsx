@@ -18,6 +18,7 @@ import React from 'react';
 import { Fixtures, renderWrapped } from '../../../utils/TestUtils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { EntityScorecardRules } from './EntityScorecardRules';
+import { RuleOutcomeType } from '../../../api/types';
 
 describe('<EntityScorecardRules />', () => {
   const serviceScorecardScore = Fixtures.serviceScorecardScore({
@@ -40,7 +41,7 @@ describe('<EntityScorecardRules />', () => {
             weight: 1,
           },
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: {
@@ -49,7 +50,7 @@ describe('<EntityScorecardRules />', () => {
             weight: 2,
           },
           score: 0,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: {
@@ -58,7 +59,7 @@ describe('<EntityScorecardRules />', () => {
             weight: 1,
           },
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: {
@@ -68,7 +69,7 @@ describe('<EntityScorecardRules />', () => {
           },
           requestedDate: '05/05/2000',
           approvedDate: '05/05/2000',
-          type: 'NOT_APPLICABLE',
+          type: RuleOutcomeType.NOT_APPLICABLE,
         },
         {
           rule: {
@@ -76,7 +77,7 @@ describe('<EntityScorecardRules />', () => {
             expression: 'k8s != null',
             weight: 1,
           },
-          type: 'NOT_EVALUATED',
+          type: RuleOutcomeType.NOT_EVALUATED,
         },
       ],
       ladderLevels: [],

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useState } from 'react';
-import { InitiativeActionItem } from '../../../../api/types';
+import { InitiativeActionItem, RuleOutcomeType } from '../../../../api/types';
 import { Collapse, IconButton, Typography } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import Box from '@material-ui/core/Box';
@@ -72,7 +72,7 @@ export const FailingComponentsTableRow = ({
               return {
                 rule: actionItem.rule,
                 score: 0,
-                type: 'APPLICABLE',
+                type: RuleOutcomeType.APPLICABLE,
               };
             })}
           />

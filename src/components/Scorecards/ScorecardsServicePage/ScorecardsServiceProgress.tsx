@@ -26,7 +26,7 @@ import moment from 'moment';
 import Box from '@material-ui/core/Box';
 import { Point } from '@nivo/line';
 import { getLookbackRange, Lookback } from '../../../utils/lookback';
-import { RuleOutcome, RuleResult } from '../../../api/types';
+import { RuleOutcome, RuleOutcomeType, RuleResult } from '../../../api/types';
 import { LookbackDropdown } from '../../ReportsPage/Common/LookbackDropdown';
 import { cortexScorecardPageURL } from '../../../utils/URLUtils';
 
@@ -52,7 +52,7 @@ export function toScorecardServiceScoresRule(
         expression: ruleResult.expression,
         weight: ruleResult.weight,
       },
-      type: 'APPLICABLE',
+      type: RuleOutcomeType.APPLICABLE,
     };
   });
 }

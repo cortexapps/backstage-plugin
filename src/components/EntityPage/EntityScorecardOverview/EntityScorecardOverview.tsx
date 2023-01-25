@@ -17,13 +17,13 @@ import React, { useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import {
   ApplicableRuleOutcome,
-  isApplicableRuleOutcome,
   ServiceScorecardScore,
 } from '../../../api/types';
 import { useCortexApi } from '../../../utils/hooks';
 import { quantileRankSorted } from 'simple-statistics';
 import { StatsCard } from '../../StatsCard';
 import { percentageToStatus } from '../../../styles/styles';
+import { isApplicableRuleOutcome } from '../../../utils/ScorecardRules';
 
 interface EntityScorecardDetailsProps {
   score?: ServiceScorecardScore;

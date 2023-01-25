@@ -16,11 +16,8 @@
 import React, { useMemo } from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { RuleResultDetails } from './RuleResultDetails';
-import {
-  isApplicableRuleOutcome,
-  ruleName,
-  RuleOutcome,
-} from '../../../../api/types';
+import { ruleName, RuleOutcome } from '../../../../api/types';
+import { isApplicableRuleOutcome } from '../../../../utils/ScorecardRules';
 
 interface ScorecardResultDetailsProps {
   ruleOutcomes: RuleOutcome[];

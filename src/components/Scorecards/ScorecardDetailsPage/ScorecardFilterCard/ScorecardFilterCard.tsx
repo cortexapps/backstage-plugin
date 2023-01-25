@@ -15,9 +15,6 @@
  */
 import React, { useMemo } from 'react';
 import {
-  isApplicableRuleOutcome,
-  isNotApplicableRuleOutcome,
-  isNotEvaluatedRuleOutcome,
   ruleName,
   Scorecard,
   ScorecardServiceScore,
@@ -42,6 +39,11 @@ import {
   defaultSystemRefContext,
 } from '../../../../utils/ComponentUtils';
 import { EntityFilterGroup } from '../../../../filters';
+import {
+  isApplicableRuleOutcome,
+  isNotApplicableRuleOutcome,
+  isNotEvaluatedRuleOutcome,
+} from '../../../../utils/ScorecardRules';
 
 const createExemptRulePredicate = (ruleExpression: string) => {
   return (score: ScorecardServiceScore) =>

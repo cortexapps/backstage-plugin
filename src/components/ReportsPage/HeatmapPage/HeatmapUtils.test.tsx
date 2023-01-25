@@ -16,6 +16,7 @@
 import { getAverageRuleScores } from './HeatmapUtils';
 import { Fixtures } from '../../../utils/TestUtils';
 import { round } from 'lodash';
+import { RuleOutcomeType } from '../../../api/types';
 
 describe('HeatmapUtils', () => {
   const gitRule = {
@@ -53,17 +54,17 @@ describe('HeatmapUtils', () => {
         {
           rule: gitRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: oncallRule,
           score: 0,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: descriptionRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
       ],
     }),
@@ -76,17 +77,17 @@ describe('HeatmapUtils', () => {
         {
           rule: gitRule,
           score: 0,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: oncallRule,
           score: 0,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: descriptionRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
       ],
     }),
@@ -99,17 +100,17 @@ describe('HeatmapUtils', () => {
         {
           rule: gitRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: oncallRule,
           score: 2,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: descriptionRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
       ],
     }),
@@ -121,27 +122,27 @@ describe('HeatmapUtils', () => {
         {
           rule: gitRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: oncallRule,
           score: 0,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: descriptionRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: customRule,
-          type: 'NOT_EVALUATED',
+          type: RuleOutcomeType.NOT_EVALUATED,
         },
         {
           rule: k8sRule,
           requestedDate: '05/05/2000',
           approvedDate: '05/05/2000',
-          type: 'NOT_APPLICABLE',
+          type: RuleOutcomeType.NOT_APPLICABLE,
         },
       ],
     }),
@@ -154,26 +155,26 @@ describe('HeatmapUtils', () => {
         {
           rule: gitRule,
           score: 0,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: oncallRule,
           score: 0,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: descriptionRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: customRule,
-          type: 'NOT_EVALUATED',
+          type: RuleOutcomeType.NOT_EVALUATED,
         },
         {
           rule: k8sRule,
           score: 0,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
       ],
     }),
@@ -186,26 +187,26 @@ describe('HeatmapUtils', () => {
         {
           rule: gitRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: oncallRule,
           score: 2,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: descriptionRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: customRule,
-          type: 'NOT_EVALUATED',
+          type: RuleOutcomeType.NOT_EVALUATED,
         },
         {
           rule: k8sRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
       ],
     }),

@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 import React, { useState } from 'react';
-import {
-  isApplicableRuleOutcome,
-  ruleName,
-  RuleOutcome,
-} from '../../../../api/types';
+import { ruleName, RuleOutcome } from '../../../../api/types';
 import {
   Collapse,
   Grid,
@@ -36,6 +32,7 @@ import { MetadataItem } from '../../../MetadataItem';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import {
+  isApplicableRuleOutcome,
   isRuleOutcomeFailing,
   isRuleOutcomePassing,
 } from '../../../../utils/ScorecardRules';

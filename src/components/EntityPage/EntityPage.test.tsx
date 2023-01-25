@@ -19,6 +19,7 @@ import { Fixtures, renderWrapped } from '../../utils/TestUtils';
 import { EntityPage } from './EntityPage';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { rootRouteRef } from '../../routes';
+import { RuleOutcomeType } from '../../api/types';
 
 describe('EntityPage', () => {
   const emptyCortexApi: Partial<CortexApi> = {
@@ -60,22 +61,22 @@ describe('EntityPage', () => {
               {
                 rule: gitRule,
                 score: 1,
-                type: 'APPLICABLE',
+                type: RuleOutcomeType.APPLICABLE,
               },
               {
                 rule: oncallRule,
                 score: 0,
-                type: 'APPLICABLE',
+                type: RuleOutcomeType.APPLICABLE,
               },
               {
                 rule: docsRule,
                 requestedDate: '05/05/2000',
                 approvedDate: '05/05/2000',
-                type: 'NOT_APPLICABLE',
+                type: RuleOutcomeType.NOT_APPLICABLE,
               },
               {
                 rule: descriptionRule,
-                type: 'NOT_EVALUATED',
+                type: RuleOutcomeType.NOT_EVALUATED,
               },
             ],
             ladderLevels: [],
@@ -97,7 +98,7 @@ describe('EntityPage', () => {
                   weight: 1,
                 },
                 score: 1,
-                type: 'APPLICABLE',
+                type: RuleOutcomeType.APPLICABLE,
               },
             ],
             ladderLevels: [],

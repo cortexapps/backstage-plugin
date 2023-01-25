@@ -148,41 +148,35 @@ export type RuleOutcome =
   | ApplicableRuleOutcome
   | NotApplicableRuleOutcome;
 
+export enum RuleOutcomeType {
+  APPLICABLE = 'APPLICABLE',
+  NOT_APPLICABLE = 'NOT_APPLICABLE',
+  NOT_EVALUATED = 'NOT_EVALUATED',
+}
+
 export interface RuleOutcomeBase {
   rule: Rule;
-  type: string;
+  type: RuleOutcomeType;
 }
 
 export interface NotEvaluatedRuleOutcome {
   rule: Rule;
-  type: 'NOT_EVALUATED';
+  type: RuleOutcomeType.NOT_EVALUATED;
 }
 
 export interface ApplicableRuleOutcome extends RuleOutcomeBase {
   score: number;
   leftResult?: number | string;
   error?: string;
-  type: 'APPLICABLE';
+  type: RuleOutcomeType.APPLICABLE;
 }
 
 export interface NotApplicableRuleOutcome extends RuleOutcomeBase {
   endDate?: string;
   requestedDate: string;
   approvedDate: string;
-  type: 'NOT_APPLICABLE';
+  type: RuleOutcomeType.NOT_APPLICABLE;
 }
-
-export const isApplicableRuleOutcome = (
-  rule: RuleOutcome | undefined,
-): rule is ApplicableRuleOutcome => rule?.type === 'APPLICABLE';
-
-export const isNotApplicableRuleOutcome = (
-  rule: RuleOutcome | undefined,
-): rule is NotApplicableRuleOutcome => rule?.type === 'NOT_APPLICABLE';
-
-export const isNotEvaluatedRuleOutcome = (
-  rule: RuleOutcome | undefined,
-): rule is NotEvaluatedRuleOutcome => rule?.type === 'NOT_EVALUATED';
 
 export interface ScorecardResult {
   scorecardId: number;

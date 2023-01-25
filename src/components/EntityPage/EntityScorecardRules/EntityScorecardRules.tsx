@@ -15,17 +15,15 @@
  */
 import React, { useMemo, useState } from 'react';
 import { HeaderTabs, InfoCard, Progress } from '@backstage/core-components';
-import {
-  isNotApplicableRuleOutcome,
-  isNotEvaluatedRuleOutcome,
-  ServiceScorecardScore,
-} from '../../../api/types';
+import { ServiceScorecardScore } from '../../../api/types';
 import { ScorecardResultDetails } from '../../Scorecards/ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import {
   filterFailingRuleOutcomes,
   filterNotApplicableRuleOutcomes,
   filterNotEvaluatedRuleOutcomes,
   filterPassingRuleOutcomes,
+  isNotApplicableRuleOutcome,
+  isNotEvaluatedRuleOutcome,
   isRuleOutcomeFailing,
   isRuleOutcomePassing,
 } from '../../../utils/ScorecardRules';

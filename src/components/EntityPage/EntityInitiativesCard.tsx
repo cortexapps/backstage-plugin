@@ -27,6 +27,7 @@ import {
 import { stringifyAnyEntityRef } from '../../utils/types';
 import { ScorecardResultDetails } from '../Scorecards/ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { dedupeByString } from '../../utils/collections';
+import { RuleOutcomeType } from '../../api/types';
 
 interface EntityInitiativesCardProps {
   entity: Entity;
@@ -82,7 +83,7 @@ export const EntityInitiativesCard = ({
           return {
             rule: actionItem.rule,
             score: 0,
-            type: 'APPLICABLE',
+            type: RuleOutcomeType.APPLICABLE,
           };
         })}
       />

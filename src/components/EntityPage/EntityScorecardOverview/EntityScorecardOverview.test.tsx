@@ -21,6 +21,7 @@ import { CortexApi } from '../../../api/CortexApi';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { rootRouteRef } from '../../../routes';
 import { waitFor } from '@testing-library/react';
+import { RuleOutcomeType } from '../../../api/types';
 
 describe('<EntityScorecardOverview />', () => {
   const gitRule = {
@@ -60,22 +61,22 @@ describe('<EntityScorecardOverview />', () => {
         {
           rule: gitRule,
           score: 1,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: oncallRule,
           score: 0,
-          type: 'APPLICABLE',
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: docsRule,
           requestedDate: '05/05/2000',
           approvedDate: '05/05/2000',
-          type: 'NOT_APPLICABLE',
+          type: RuleOutcomeType.NOT_APPLICABLE,
         },
         {
           rule: descriptionRule,
-          type: 'NOT_EVALUATED',
+          type: RuleOutcomeType.NOT_EVALUATED,
         },
       ],
       ladderLevels: [],
@@ -93,22 +94,22 @@ describe('<EntityScorecardOverview />', () => {
             {
               rule: gitRule,
               score: 1,
-              type: 'APPLICABLE',
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: oncallRule,
               score: 0,
-              type: 'APPLICABLE',
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: docsRule,
               requestedDate: '05/05/2000',
               approvedDate: '05/05/2000',
-              type: 'NOT_APPLICABLE',
+              type: RuleOutcomeType.NOT_APPLICABLE,
             },
             {
               rule: descriptionRule,
-              type: 'NOT_EVALUATED',
+              type: RuleOutcomeType.NOT_EVALUATED,
             },
           ],
         }),

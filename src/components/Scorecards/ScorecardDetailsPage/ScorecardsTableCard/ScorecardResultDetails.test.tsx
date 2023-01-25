@@ -20,6 +20,7 @@ import {
   NotApplicableRuleOutcome,
   NotEvaluatedRuleOutcome,
   RuleOutcome,
+  RuleOutcomeType,
 } from '../../../../api/types';
 import { shallow } from 'enzyme';
 
@@ -64,32 +65,32 @@ describe('ScorecardResultDetails', () => {
       {
         rule: gitRule,
         score: 1,
-        type: 'APPLICABLE',
+        type: RuleOutcomeType.APPLICABLE,
       } as ApplicableRuleOutcome,
       {
         rule: oncallRule,
         score: 1,
-        type: 'APPLICABLE',
+        type: RuleOutcomeType.APPLICABLE,
       } as ApplicableRuleOutcome,
       {
         rule: docsRule,
         requestedDate: '05/05/2000',
         approvedDate: '05/05/2000',
-        type: 'NOT_APPLICABLE',
+        type: RuleOutcomeType.NOT_APPLICABLE,
       } as NotApplicableRuleOutcome,
       {
         rule: descriptionRule,
         score: 1,
-        type: 'APPLICABLE',
+        type: RuleOutcomeType.APPLICABLE,
       } as ApplicableRuleOutcome,
       {
         rule: k8sRule,
         score: 0,
-        type: 'APPLICABLE',
+        type: RuleOutcomeType.APPLICABLE,
       } as ApplicableRuleOutcome,
       {
         rule: customRule,
-        type: 'NOT_EVALUATED',
+        type: RuleOutcomeType.NOT_EVALUATED,
       } as NotEvaluatedRuleOutcome,
     ];
     // First rule displayed is k8s (since score is 0)
