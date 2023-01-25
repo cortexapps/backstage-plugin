@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ScorecardResultDetails check order of applicable scorecard service rules being displayed 1`] = `
+<WithStyles(ForwardRef(List))>
+  <RuleResultDetails
+    key="RuleResultDetails-5"
+    ruleOutcome={
+      Object {
+        "rule": Object {
+          "expression": "k8s != null",
+          "id": 5,
+          "weight": 1,
+        },
+        "score": 0,
+        "type": "APPLICABLE",
+      }
+    }
+  />
+  <RuleResultDetails
+    key="RuleResultDetails-2"
+    ruleOutcome={
+      Object {
+        "rule": Object {
+          "expression": "oncall != null",
+          "id": 2,
+          "title": "abc oncall",
+          "weight": 1,
+        },
+        "score": 1,
+        "type": "APPLICABLE",
+      }
+    }
+  />
+  <RuleResultDetails
+    key="RuleResultDetails-4"
+    ruleOutcome={
+      Object {
+        "rule": Object {
+          "expression": "description != null",
+          "id": 4,
+          "weight": 1,
+        },
+        "score": 1,
+        "type": "APPLICABLE",
+      }
+    }
+  />
+  <RuleResultDetails
+    key="RuleResultDetails-1"
+    ruleOutcome={
+      Object {
+        "rule": Object {
+          "expression": "git != null",
+          "id": 1,
+          "weight": 1,
+        },
+        "score": 1,
+        "type": "APPLICABLE",
+      }
+    }
+  />
+  <RuleResultDetails
+    key="RuleResultDetails-6"
+    ruleOutcome={
+      Object {
+        "rule": Object {
+          "expression": "custom(\\"my_key\\") != null",
+          "id": 6,
+          "weight": 1,
+        },
+        "type": "NOT_EVALUATED",
+      }
+    }
+  />
+  <RuleResultDetails
+    key="RuleResultDetails-3"
+    ruleOutcome={
+      Object {
+        "approvedDate": "05/05/2000",
+        "requestedDate": "05/05/2000",
+        "rule": Object {
+          "expression": "documentation.count > 0",
+          "id": 3,
+          "weight": 1,
+        },
+        "type": "NOT_APPLICABLE",
+      }
+    }
+  />
+</WithStyles(ForwardRef(List))>
+`;

@@ -13,26 +13,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ruleName } from '../api/types';
+import {
+  ApplicableRuleOutcome,
+  NotApplicableRuleOutcome,
+  NotEvaluatedRuleOutcome,
+  ruleName,
+  RuleOutcome,
+  RuleOutcomeType,
+} from '../api/types';
 
-export function isRulePassing<T extends { score: number }>(rule: T): boolean {
-  return rule.score > 0;
+export const isApplicableRuleOutcome = (
+  rule: RuleOutcome | undefined,
+): rule is ApplicableRuleOutcome => rule?.type === RuleOutcomeType.APPLICABLE;
+
+export const isNotApplicableRuleOutcome = (
+  rule: RuleOutcome | undefined,
+): rule is NotApplicableRuleOutcome =>
+  rule?.type === RuleOutcomeType.NOT_APPLICABLE;
+
+export const isNotEvaluatedRuleOutcome = (
+  rule: RuleOutcome | undefined,
+): rule is NotEvaluatedRuleOutcome =>
+  rule?.type === RuleOutcomeType.NOT_EVALUATED;
+
+export function isRuleOutcomePassing(ruleOutcome: RuleOutcome): boolean {
+  return isApplicableRuleOutcome(ruleOutcome) && ruleOutcome.score > 0;
 }
 
-export function isRuleFailing<T extends { score: number }>(rule: T): boolean {
-  return rule.score === 0;
+export function isRuleOutcomeFailing(ruleOutcome: RuleOutcome): boolean {
+  return isApplicableRuleOutcome(ruleOutcome) && ruleOutcome.score === 0;
 }
 
-export function filterPassingRules<T extends { score: number }>(
-  rules: T[],
-): T[] {
-  return rules.filter(isRulePassing);
+export function filterPassingRuleOutcomes(
+  ruleOutcomes: RuleOutcome[],
+): RuleOutcome[] {
+  return ruleOutcomes.filter(isRuleOutcomePassing);
 }
 
-export function filterFailingRules<T extends { score: number }>(
-  rules: T[],
-): T[] {
-  return rules.filter(isRuleFailing);
+export function filterFailingRuleOutcomes(
+  ruleOutcomes: RuleOutcome[],
+): RuleOutcome[] {
+  return ruleOutcomes.filter(isRuleOutcomeFailing);
+}
+
+export function filterNotApplicableRuleOutcomes(
+  ruleOutcomes: RuleOutcome[],
+): NotApplicableRuleOutcome[] {
+  return ruleOutcomes.filter(
+    (ruleOutcome): ruleOutcome is NotApplicableRuleOutcome =>
+      ruleOutcome.type === 'NOT_APPLICABLE',
+  );
+}
+
+export function filterNotEvaluatedRuleOutcomes(
+  ruleOutcomes: RuleOutcome[],
+): NotEvaluatedRuleOutcome[] {
+  return ruleOutcomes.filter(
+    (ruleOutcome): ruleOutcome is NotEvaluatedRuleOutcome =>
+      ruleOutcome.type === 'NOT_EVALUATED',
+  );
 }
 
 type Comparator<T> = (a: T, b: T) => number; // -1 | 0 | 1

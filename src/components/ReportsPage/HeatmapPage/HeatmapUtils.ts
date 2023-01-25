@@ -17,13 +17,14 @@ import {
   GroupByOption,
   ScorecardScoreLadderResult,
   ScorecardServiceScore,
-  ScorecardServiceScoresRule,
   ScoresByIdentifier,
   ruleName,
   ScorecardLevel,
+  RuleOutcome,
 } from '../../../api/types';
-import { groupBy as _groupBy, flatten as _flatten } from 'lodash';
+import { groupBy as _groupBy, flatten as _flatten, values } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
+import { isApplicableRuleOutcome } from '../../../utils/ScorecardRules';
 
 export type StringIndexable<T> = { [index: string]: T };
 
@@ -31,13 +32,6 @@ export const getSortedRuleNames = (score: ScorecardServiceScore): string[] =>
   [...(score?.rules ?? [])]
     .sort((a, b) => ruleName(a.rule).localeCompare(ruleName(b.rule)))
     .map(rule => ruleName(rule.rule));
-
-export const getSortedRulesFromScores = (
-  score: ScorecardServiceScore,
-): ScorecardServiceScoresRule[] =>
-  [...(score?.rules ?? [])].sort((a, b) =>
-    ruleName(a.rule).localeCompare(ruleName(b.rule)),
-  );
 
 export const getSortedRulesByLevels = (
   rules: string[],
@@ -58,7 +52,7 @@ export const getSortedRulesByLevels = (
 export const getSortedRulesByLevelsFromScores = (
   sortedRulesByLevels: string[],
   score: ScorecardServiceScore,
-): ScorecardServiceScoresRule[] =>
+): RuleOutcome[] =>
   filterNotUndefined(
     sortedRulesByLevels.map(ruleTitle =>
       score.rules.find(r => ruleName(r.rule) === ruleTitle),
@@ -119,14 +113,46 @@ export const getScorecardServiceScoresByGroupByOption = (
   }
 };
 
+interface ScorecardRuleMetadata {
+  ruleName: string;
+  totalServicesScore: number;
+  numApplicableServices: number;
+}
+
 export const getAverageRuleScores = (
   scores: ScorecardServiceScore[],
-  serviceCount: number,
 ): number[] => {
-  return scores
-    .map(score => getSortedRulesFromScores(score).map(rule => rule.score))
-    .reduce((r, a) => a.map((b, i) => (r[i] || 0) + (b ? 1 : 0)), [])
-    .map(score => score / serviceCount);
+  const ruleIdToScoreMetadata: Record<number, ScorecardRuleMetadata> = {};
+  scores.forEach(score =>
+    score.rules.forEach(ruleOutcome => {
+      if (ruleIdToScoreMetadata[ruleOutcome.rule.id] === undefined) {
+        ruleIdToScoreMetadata[ruleOutcome.rule.id] = {
+          ruleName: ruleName(ruleOutcome.rule),
+          totalServicesScore: 0,
+          numApplicableServices: 0,
+        };
+      }
+      if (isApplicableRuleOutcome(ruleOutcome)) {
+        const scorecardRuleMetadata =
+          ruleIdToScoreMetadata[ruleOutcome.rule.id];
+        ruleIdToScoreMetadata[ruleOutcome.rule.id] = {
+          ruleName: ruleName(ruleOutcome.rule),
+          totalServicesScore:
+            scorecardRuleMetadata.totalServicesScore +
+            (ruleOutcome.score ? 1 : 0),
+          numApplicableServices:
+            scorecardRuleMetadata.numApplicableServices + 1,
+        };
+      }
+    }),
+  );
+  return values(ruleIdToScoreMetadata)
+    .sort((a, b) => a.ruleName.localeCompare(b.ruleName))
+    .map(
+      metadata =>
+        metadata.totalServicesScore /
+        Math.max(metadata.numApplicableServices, 1),
+    );
 };
 
 export const getServicesInLevelsFromScores = (
@@ -135,21 +161,6 @@ export const getServicesInLevelsFromScores = (
 ): ScorecardServiceScore[][] => {
   const groupedByLevels = groupReportDataBy(scores, 'ladderLevels');
   return ladderLevels.map(level => groupedByLevels[level] ?? []);
-};
-
-export const getAverageRuleScoresByLevels = (
-  sortedRulesByLevels: string[],
-  scores: ScorecardServiceScore[],
-  serviceCount: number,
-): number[] => {
-  return scores
-    .map(score =>
-      getSortedRulesByLevelsFromScores(sortedRulesByLevels, score).map(
-        rule => rule.score,
-      ),
-    )
-    .reduce((r, a) => a.map((b, i) => (r[i] || 0) + (b ? 1 : 0)), [])
-    .map(score => score / serviceCount);
 };
 
 export const getFormattedScorecardScores = (

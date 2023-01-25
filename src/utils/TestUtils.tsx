@@ -82,6 +82,12 @@ export const renderWrapped = (
     });
   };
 
+  const clickButtonByMatcher = async (label: Matcher) => {
+    return act(async () => {
+      fireEvent.click(await findByLabelText(label));
+    });
+  };
+
   const clickButtonByText = async (label: string) => {
     return act(async () => {
       fireEvent.click(await findByText(label));
@@ -91,6 +97,7 @@ export const renderWrapped = (
   return {
     ...rendered,
     clickButton,
+    clickButtonByMatcher,
     clickButtonByText,
     mouseClick,
     checkForText,

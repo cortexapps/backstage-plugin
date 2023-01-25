@@ -16,27 +16,38 @@
 import React, { useMemo } from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { RuleResultDetails } from './RuleResultDetails';
-import { ruleName, ScorecardServiceScoresRule } from '../../../../api/types';
+import { ruleName, RuleOutcome } from '../../../../api/types';
+import { isApplicableRuleOutcome } from '../../../../utils/ScorecardRules';
 
 interface ScorecardResultDetailsProps {
-  rules: ScorecardServiceScoresRule[];
+  ruleOutcomes: RuleOutcome[];
   hideWeights?: boolean;
 }
 
 export const ScorecardResultDetails = ({
-  rules,
+  ruleOutcomes,
   hideWeights,
 }: ScorecardResultDetailsProps) => {
   const sortedRules = useMemo(
     () =>
-      [...rules].sort((a, b) => {
-        if (a.score === b.score) {
-          return ruleName(a.rule).localeCompare(ruleName(b.rule));
+      [...ruleOutcomes].sort((a, b) => {
+        // Make applicable rule outcomes "smaller" so they'll show up first
+        if (isApplicableRuleOutcome(a) && !isApplicableRuleOutcome(b)) {
+          return -1;
         }
-
-        return a.score - b.score;
+        if (!isApplicableRuleOutcome(a) && isApplicableRuleOutcome(b)) {
+          return 1;
+        }
+        if (isApplicableRuleOutcome(a) && isApplicableRuleOutcome(b)) {
+          if (a.score === b.score) {
+            return ruleName(a.rule).localeCompare(ruleName(b.rule));
+          } else {
+            return a.score - b.score;
+          }
+        }
+        return ruleName(a.rule).localeCompare(ruleName(b.rule));
       }),
-    [rules],
+    [ruleOutcomes],
   );
 
   return (
@@ -49,7 +60,7 @@ export const ScorecardResultDetails = ({
       {sortedRules.map(rule => (
         <RuleResultDetails
           key={`RuleResultDetails-${rule.rule.id}`}
-          rule={rule}
+          ruleOutcome={rule}
           hideWeight={hideWeights}
         />
       ))}

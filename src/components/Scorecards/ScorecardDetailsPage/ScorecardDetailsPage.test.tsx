@@ -19,6 +19,7 @@ import { ScorecardDetailsPage } from './ScorecardDetailsPage';
 import { Fixtures, renderWrapped } from '../../../utils/TestUtils';
 import { CortexApi } from '../../../api/CortexApi';
 import {
+  RuleOutcomeType,
   Scorecard,
   ScorecardLadder,
   ScorecardServiceScore,
@@ -62,6 +63,16 @@ describe('ScorecardDetailsPage', () => {
   const descriptionRule = {
     id: 4,
     expression: 'description != null',
+    weight: 1,
+  };
+  const k8sRule = {
+    id: 5,
+    expression: 'k8s != null',
+    weight: 1,
+  };
+  const customRule = {
+    id: 6,
+    expression: 'custom("my_key") != null',
     weight: 1,
   };
 
@@ -162,7 +173,14 @@ describe('ScorecardDetailsPage', () => {
       _: number,
     ): Promise<Scorecard | undefined> => {
       return Fixtures.scorecard({
-        rules: [gitRule, docsRule, oncallRule, descriptionRule],
+        rules: [
+          gitRule,
+          docsRule,
+          oncallRule,
+          descriptionRule,
+          k8sRule,
+          customRule,
+        ],
       });
     };
     mockCortexApi.getScorecardScores = async (
@@ -177,18 +195,32 @@ describe('ScorecardDetailsPage', () => {
             {
               rule: gitRule,
               score: 1,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: docsRule,
               score: 1,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: oncallRule,
               score: 1,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: descriptionRule,
               score: 1,
+              type: RuleOutcomeType.APPLICABLE,
+            },
+            {
+              rule: k8sRule,
+              requestedDate: '05/05/2000',
+              approvedDate: '05/05/2000',
+              type: RuleOutcomeType.NOT_APPLICABLE,
+            },
+            {
+              rule: customRule,
+              type: RuleOutcomeType.NOT_EVALUATED,
             },
           ],
         }),
@@ -201,18 +233,30 @@ describe('ScorecardDetailsPage', () => {
             {
               rule: gitRule,
               score: 1,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: docsRule,
               score: 1,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: oncallRule,
               score: 1,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: descriptionRule,
               score: 0,
+              type: RuleOutcomeType.APPLICABLE,
+            },
+            {
+              rule: k8sRule,
+              type: RuleOutcomeType.NOT_EVALUATED,
+            },
+            {
+              rule: customRule,
+              type: RuleOutcomeType.NOT_EVALUATED,
             },
           ],
         }),
@@ -225,18 +269,30 @@ describe('ScorecardDetailsPage', () => {
             {
               rule: gitRule,
               score: 1,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: docsRule,
               score: 1,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: oncallRule,
               score: 0,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: descriptionRule,
               score: 0,
+              type: RuleOutcomeType.APPLICABLE,
+            },
+            {
+              rule: k8sRule,
+              type: RuleOutcomeType.NOT_EVALUATED,
+            },
+            {
+              rule: customRule,
+              type: RuleOutcomeType.NOT_EVALUATED,
             },
           ],
         }),
@@ -249,40 +305,65 @@ describe('ScorecardDetailsPage', () => {
             {
               rule: gitRule,
               score: 1,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: docsRule,
               score: 0,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: oncallRule,
               score: 0,
+              type: RuleOutcomeType.APPLICABLE,
             },
             {
               rule: descriptionRule,
               score: 0,
+              type: RuleOutcomeType.APPLICABLE,
+            },
+            {
+              rule: k8sRule,
+              type: RuleOutcomeType.NOT_EVALUATED,
+            },
+            {
+              rule: customRule,
+              type: RuleOutcomeType.NOT_EVALUATED,
             },
           ],
         }),
       ];
     };
-    render(mockCortexApi);
+    const { checkForText, checkNotText, clickButtonByMatcher } =
+      render(mockCortexApi);
 
-    expect(await screen.findByText(/Failing Rule/)).toBeVisible();
-    expect(await screen.queryByText(/No scores found/)).not.toBeInTheDocument();
-    expect((await screen.findAllByText(/63%/))[0]).toBeVisible();
+    await checkForText(/Failing Rule/);
+    await checkNotText(/No scores found/);
+    await checkForText(/63%/, 0); // average score of all 4 services
 
-    fireEvent.click(await screen.findByLabelText(/Filter failing rule by git/));
-    expect(await screen.findByText(/Failing Rule/)).toBeVisible();
-    expect(await screen.queryByText(/63%/)).not.toBeInTheDocument();
-    expect(await screen.findByText(/No scores found/)).toBeVisible();
+    await clickButtonByMatcher(/Filter failing rule by git/);
+    await checkForText(/Failing Rule/);
+    await checkNotText(/63%/);
+    await checkForText(/No scores found/);
 
-    fireEvent.click(
-      await screen.findByLabelText(/Filter failing rule by oncall/),
-    );
-    expect(await screen.findByText(/Failing Rule/)).toBeVisible();
-    expect(await screen.queryByText(/63%/)).not.toBeInTheDocument();
-    expect((await screen.findAllByText(/50%/))[0]).toBeVisible();
+    await clickButtonByMatcher(/Filter failing rule by oncall/);
+    await checkForText(/Failing Rule/);
+    await checkNotText(/63%/);
+    await checkForText(/38%/, 0); // average score of 2 services fulfilling the filter
+    await checkForText(/lorem/);
+    await checkForText(/ipsum/);
+    await checkNotText(/foo/);
+
+    // Clear the filters for failed rule and check exempt rules
+    await clickButtonByMatcher(/Filter failing rule by git/);
+    await clickButtonByMatcher(/Filter failing rule by oncall/);
+    await clickButtonByMatcher(/Filter exempt rule by k8s/);
+    await checkForText(/Exempt Rule/);
+    await checkNotText(/38%/);
+    await checkForText(/100%/, 0); // average score of 1 service fulfilling the filter
+    await checkForText(/foo/);
+    await checkNotText(/lorem/);
+    await checkNotText(/ipsum/);
   });
 
   it('can filter when there are a large number of rules', async () => {
@@ -316,21 +397,19 @@ describe('ScorecardDetailsPage', () => {
         ],
       });
     };
-    // For some reason, checks would never fail if I used the methods returned
-    // by `render()` so I had to use `screen.*` methods directly here
-    render(mockCortexApi);
+    const { checkForText, clickButton } = render(mockCortexApi);
 
-    expect(await screen.findByText(/Failing Rule/)).toBeVisible();
-    fireEvent.click(await screen.findByLabelText(/Filter failing rule/));
+    await checkForText(/Failing Rule/);
+    await clickButton('Filter failing rule');
     const dropdownOption = await screen.findByText(/documentation.count/, {
       selector: 'li',
     });
     await screen.findByText(/custom\("cow"\).length/, { selector: 'li' });
-    act(async () => {
+    await act(async () => {
       fireEvent.click(dropdownOption);
     });
 
-    expect(await screen.findByText(/Failing Rule/)).toBeVisible();
+    await checkForText(/Failing Rule/);
     expect(
       await screen.queryByText(/custom\("cow"\).length/, { selector: 'li' }),
     ).not.toBeInTheDocument();
@@ -344,7 +423,6 @@ describe('ScorecardDetailsPage', () => {
       clickButtonByText,
       checkForText,
       checkNotText,
-      logScreen,
     } = render();
 
     await clickButton('Filter groups by mine');
@@ -353,7 +431,6 @@ describe('ScorecardDetailsPage', () => {
     await checkForText('bar');
 
     await mouseClick('Select and/or for groups');
-    logScreen();
     await clickButtonByText('All Of');
     await checkNotText('foo');
     await checkNotText('bar');

@@ -125,14 +125,7 @@ export interface ServiceScorecardScore {
     description?: string;
   };
   evaluation: {
-    rules: {
-      rule: {
-        failureMessage?: string;
-      } & Rule;
-      score: number;
-      leftResult?: number | string;
-      error?: string;
-    }[];
+    rules: RuleOutcome[];
     ladderLevels: ServiceLadderLevels[];
   };
 }
@@ -143,17 +136,46 @@ export interface ScorecardServiceScore {
   score: number;
   scorePercentage: number;
   totalPossibleScore: number;
-  rules: ScorecardServiceScoresRule[];
+  rules: RuleOutcome[];
   lastUpdated: string;
   tags: string[]; // service groups
   teams: string[]; // owner groups
   ladderLevels: ScorecardScoreLadderResult[];
 }
 
-export interface ScorecardServiceScoresRule {
+export type RuleOutcome =
+  | NotEvaluatedRuleOutcome
+  | ApplicableRuleOutcome
+  | NotApplicableRuleOutcome;
+
+export enum RuleOutcomeType {
+  APPLICABLE = 'APPLICABLE',
+  NOT_APPLICABLE = 'NOT_APPLICABLE',
+  NOT_EVALUATED = 'NOT_EVALUATED',
+}
+
+export interface RuleOutcomeBase {
   rule: Rule;
+  type: RuleOutcomeType;
+}
+
+export interface NotEvaluatedRuleOutcome {
+  rule: Rule;
+  type: RuleOutcomeType.NOT_EVALUATED;
+}
+
+export interface ApplicableRuleOutcome extends RuleOutcomeBase {
   score: number;
+  leftResult?: number | string;
   error?: string;
+  type: RuleOutcomeType.APPLICABLE;
+}
+
+export interface NotApplicableRuleOutcome extends RuleOutcomeBase {
+  endDate?: string;
+  requestedDate: string;
+  approvedDate: string;
+  type: RuleOutcomeType.NOT_APPLICABLE;
 }
 
 export interface ScorecardResult {

@@ -18,6 +18,7 @@ import React from 'react';
 import { Fixtures, renderWrapped } from '../../../utils/TestUtils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { EntityScorecardRules } from './EntityScorecardRules';
+import { RuleOutcomeType } from '../../../api/types';
 
 describe('<EntityScorecardRules />', () => {
   const serviceScorecardScore = Fixtures.serviceScorecardScore({
@@ -40,6 +41,7 @@ describe('<EntityScorecardRules />', () => {
             weight: 1,
           },
           score: 1,
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: {
@@ -48,6 +50,7 @@ describe('<EntityScorecardRules />', () => {
             weight: 2,
           },
           score: 0,
+          type: RuleOutcomeType.APPLICABLE,
         },
         {
           rule: {
@@ -56,6 +59,25 @@ describe('<EntityScorecardRules />', () => {
             weight: 1,
           },
           score: 1,
+          type: RuleOutcomeType.APPLICABLE,
+        },
+        {
+          rule: {
+            id: 4,
+            expression: 'custom("key") != null',
+            weight: 1,
+          },
+          requestedDate: '05/05/2000',
+          approvedDate: '05/05/2000',
+          type: RuleOutcomeType.NOT_APPLICABLE,
+        },
+        {
+          rule: {
+            id: 5,
+            expression: 'k8s != null',
+            weight: 1,
+          },
+          type: RuleOutcomeType.NOT_EVALUATED,
         },
       ],
       ladderLevels: [],
@@ -73,13 +95,19 @@ describe('<EntityScorecardRules />', () => {
     await checkForText('All Rules');
     await checkForText('Failing (1)');
     await checkForText('Passing (2)');
+    await checkForText('Exempt (1)');
+    await checkForText('Not Yet Evaluated (1)');
     await checkForText('oncall != null');
     await checkNotText('git != null');
     await checkNotText('description != null');
+    await checkNotText('custom("key") != null');
+    await checkNotText('k8s != null');
 
     await clickButtonByText('Passing (2)');
     await checkForText('git != null');
     await checkForText('description != null');
     await checkNotText('oncall != null');
+    await checkNotText('custom("key") != null');
+    await checkNotText('k8s != null');
   });
 });

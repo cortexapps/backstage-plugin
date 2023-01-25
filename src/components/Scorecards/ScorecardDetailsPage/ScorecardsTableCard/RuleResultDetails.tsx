@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useState } from 'react';
-import { ruleName, ScorecardServiceScoresRule } from '../../../../api/types';
+import { ruleName, RuleOutcome } from '../../../../api/types';
 import {
   Collapse,
   Grid,
@@ -31,7 +31,12 @@ import { MarkdownContent } from '@backstage/core-components';
 import { MetadataItem } from '../../../MetadataItem';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import { isRuleFailing } from '../../../../utils/ScorecardRules';
+import {
+  isApplicableRuleOutcome,
+  isRuleOutcomeFailing,
+  isRuleOutcomePassing,
+} from '../../../../utils/ScorecardRules';
+import { NotInterested } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   rule: {
@@ -40,20 +45,22 @@ const useStyles = makeStyles({
 });
 
 interface RuleResultDetailsProps {
-  rule: ScorecardServiceScoresRule;
+  ruleOutcome: RuleOutcome;
   hideWeight?: boolean;
 }
 
 export const RuleResultDetails = ({
-  rule,
+  ruleOutcome,
   hideWeight,
 }: RuleResultDetailsProps) => {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
-  const showExpandButton = rule.rule.description || rule.rule.title;
-  const hasTitle = !!rule.rule.title;
-  const isFailing = isRuleFailing(rule);
+  const showExpandButton =
+    ruleOutcome.rule.description || ruleOutcome.rule.title;
+  const hasTitle = !!ruleOutcome.rule.title;
+  const isPassing = isRuleOutcomePassing(ruleOutcome);
+  const isFailing = isRuleOutcomeFailing(ruleOutcome);
 
   return (
     <ListItem alignItems="flex-start">
@@ -67,10 +74,12 @@ export const RuleResultDetails = ({
         )}
       </ListItemAvatar>
       <ListItemAvatar>
-        {!isFailing ? (
+        {isPassing ? (
           <CheckIcon color="primary" />
-        ) : (
+        ) : isFailing ? (
           <ErrorIcon color="error" />
+        ) : (
+          <NotInterested color="primary" />
         )}
       </ListItemAvatar>
       <ListItem>
@@ -83,41 +92,43 @@ export const RuleResultDetails = ({
         >
           <Grid item xs={10}>
             <ListItemText
-              primary={ruleName(rule.rule)}
+              primary={ruleName(ruleOutcome.rule)}
               style={{ wordWrap: 'break-word' }}
             />
             <Collapse in={open} timeout="auto" unmountOnExit>
               <>
-                {rule.rule.description && (
+                {ruleOutcome.rule.description && (
                   <MetadataItem gridSizes={{ xs: 12 }} label="Description">
-                    <MarkdownContent content={rule.rule.description} />
+                    <MarkdownContent content={ruleOutcome.rule.description} />
                   </MetadataItem>
                 )}
                 {hasTitle && (
                   <MetadataItem gridSizes={{ xs: 12 }} label="Expression">
-                    {rule.rule.expression}
+                    {ruleOutcome.rule.expression}
                   </MetadataItem>
                 )}
               </>
             </Collapse>
           </Grid>
-          {rule.error && (
+          {isApplicableRuleOutcome(ruleOutcome) && ruleOutcome.error && (
             <Grid item xs={10}>
               <Typography color="error" style={{ wordWrap: 'break-word' }}>
-                {rule.error}
+                {ruleOutcome.error}
               </Typography>
             </Grid>
           )}
-          {isFailing && rule.rule.failureMessage && (
+          {isFailing && ruleOutcome.rule.failureMessage && (
             <Grid item xs={10}>
               <Typography color="error" style={{ wordWrap: 'break-word' }}>
-                <MarkdownContent content={rule.rule.failureMessage} />
+                <MarkdownContent content={ruleOutcome.rule.failureMessage} />
               </Typography>
             </Grid>
           )}
         </Grid>
       </ListItem>
-      {hideWeight !== true && <ListItemText primary={`${rule.rule.weight}`} />}
+      {hideWeight !== true && (
+        <ListItemText primary={`${ruleOutcome.rule.weight}`} />
+      )}
     </ListItem>
   );
 };

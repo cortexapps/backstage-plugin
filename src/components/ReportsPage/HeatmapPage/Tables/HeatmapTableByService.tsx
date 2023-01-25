@@ -44,11 +44,10 @@ export const HeatmapTableByService = ({
       <TableBody>
         {Object.entries(data).map(([key, values]) => {
           const firstScore = values[0];
-          const serviceCount = values.length;
           const averageScorePercentage = _average(
             values.map(score => score.scorePercentage),
           );
-          const averageRuleScores = getAverageRuleScores(values, serviceCount);
+          const averageRuleScores = getAverageRuleScores(values);
 
           return (
             <TableRow key={`TableRow-${firstScore.componentRef}`}>

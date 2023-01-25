@@ -19,10 +19,32 @@ import { Fixtures, renderWrapped } from '../../utils/TestUtils';
 import { EntityPage } from './EntityPage';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { rootRouteRef } from '../../routes';
+import { RuleOutcomeType } from '../../api/types';
 
 describe('EntityPage', () => {
   const emptyCortexApi: Partial<CortexApi> = {
     getServiceScores: () => Promise.resolve([]),
+  };
+
+  const gitRule = {
+    id: 1,
+    expression: 'git != null',
+    weight: 1,
+  };
+  const oncallRule = {
+    id: 2,
+    expression: 'oncall != null',
+    weight: 2,
+  };
+  const docsRule = {
+    id: 3,
+    expression: 'documentation.count > 0',
+    weight: 1,
+  };
+  const descriptionRule = {
+    id: 4,
+    expression: 'description != null',
+    weight: 1,
   };
   const cortexApi: Partial<CortexApi> = {
     getServiceScores: () =>
@@ -37,20 +59,24 @@ describe('EntityPage', () => {
           evaluation: {
             rules: [
               {
-                rule: {
-                  id: 1,
-                  expression: 'git != null',
-                  weight: 1,
-                },
+                rule: gitRule,
                 score: 1,
+                type: RuleOutcomeType.APPLICABLE,
               },
               {
-                rule: {
-                  id: 2,
-                  expression: 'oncall != null',
-                  weight: 2,
-                },
+                rule: oncallRule,
                 score: 0,
+                type: RuleOutcomeType.APPLICABLE,
+              },
+              {
+                rule: docsRule,
+                requestedDate: '05/05/2000',
+                approvedDate: '05/05/2000',
+                type: RuleOutcomeType.NOT_APPLICABLE,
+              },
+              {
+                rule: descriptionRule,
+                type: RuleOutcomeType.NOT_EVALUATED,
               },
             ],
             ladderLevels: [],
@@ -68,10 +94,11 @@ describe('EntityPage', () => {
               {
                 rule: {
                   id: 1,
-                  expression: 'description != null',
+                  expression: 'custom("key") != null',
                   weight: 1,
                 },
                 score: 1,
+                type: RuleOutcomeType.APPLICABLE,
               },
             ],
             ladderLevels: [],
@@ -105,20 +132,41 @@ describe('EntityPage', () => {
     );
     await checkForText('Test Scorecard 1');
     await checkForText('Test Scorecard 2');
-    await checkForText('oncall != null');
-    await checkNotText('git != null');
-    await checkNotText('description != null');
-
+    // Scorecard 1 failing rules
+    await checkNotText(/git/);
+    await checkForText(/oncall/);
+    await checkNotText(/documentation/);
+    await checkNotText(/description/);
+    await checkNotText(/custom/);
+    // Scorecard 1 passing rules
     await clickButtonByText('Passing (1)');
-    await checkNotText('oncall != null');
-    await checkForText('git != null');
-
+    await checkForText(/git/);
+    await checkNotText(/oncall/);
+    await checkNotText(/documentation/);
+    await checkNotText(/description/);
+    await checkNotText(/custom/);
+    // Scorecard 1 exempt rules
+    await clickButtonByText('Exempt (1)');
+    await checkNotText(/git/);
+    await checkNotText(/oncall/);
+    await checkForText(/documentation/);
+    await checkNotText(/description/);
+    // Scorecard 1 not yet evaluated rules
+    await clickButtonByText('Not Yet Evaluated (1)');
+    await checkNotText(/git/);
+    await checkNotText(/oncall/);
+    await checkNotText(/documentation/);
+    await checkForText(/description/);
+    // Scorecard 2 failing rules
     await clickButtonByText('Test Scorecard 2');
-    await checkNotText('description != null');
-    await checkNotText('git != null');
-    await checkNotText('oncall != null');
-
+    await checkNotText(/git/);
+    await checkNotText(/oncall/);
+    await checkNotText(/documentation/);
+    await checkNotText(/description/);
+    await checkNotText(/custom/);
+    // Scorecard 2 passing rules
     await clickButtonByText('Passing (1)');
-    await checkForText('description != null');
+    await checkNotText(/git/);
+    await checkForText(/custom/);
   });
 });
