@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import {
+  EntitySyncProgress,
   GroupByOption,
   Initiative,
   InitiativeActionItem,
@@ -29,7 +30,10 @@ import {
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef } from '../utils/types';
-import { CustomMapping, TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
+import {
+  CustomMapping,
+  TeamOverrides,
+} from '@cortexapps/backstage-plugin-extensions';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
@@ -76,9 +80,13 @@ export interface CortexApi {
     entityRefs: AnyEntityRef[],
   ): Promise<InitiativeActionItem[]>;
 
-  syncEntities(
+  submitSyncTask(
     entities: Entity[],
     customMappings?: CustomMapping[],
-    teamOverrides?: TeamOverrides
-  ): Promise<void>;
+    teamOverrides?: TeamOverrides,
+  ): Promise<EntitySyncProgress>;
+
+  getSyncTaskProgress(): Promise<EntitySyncProgress | undefined>;
+
+  getLastSyncTime(): Promise<EntitySyncProgress | undefined>;
 }

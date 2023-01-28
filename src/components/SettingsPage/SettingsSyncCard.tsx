@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SyncIcon from '@material-ui/icons/Sync';
 import { CircularProgress, IconButton, Typography } from '@material-ui/core';
-import { InfoCard, Link } from '@backstage/core-components';
+import {
+  InfoCard,
+  LinearGauge,
+  Link,
+  WarningPanel,
+} from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { extensionApiRef } from '../../api/ExtensionApi';
+import PollingProgressBar from '../Common/PollingProgressBar';
+import { useAsync } from 'react-use';
+import { percentify } from '../../utils/NumberUtils';
 
 interface SyncButtonProps {
   syncEntities: () => Promise<void>;
@@ -48,18 +56,81 @@ export const SettingsSyncCard = () => {
   const cortexApi = useApi(cortexApiRef);
   const extensionApi = useApi(extensionApiRef);
 
+  const [syncTaskProgressPercentage, setSyncTaskProgressPercentage] = useState<
+    number | undefined
+  >(undefined);
+
   const syncEntities = async () => {
     const { items: entities } = await catalogApi.getEntities();
     const customMappings = await extensionApi.getCustomMappings?.();
     const groupOverrides = await extensionApi.getTeamOverrides?.(entities);
-    await cortexApi.syncEntities(entities, customMappings, groupOverrides);
+    const progress = await cortexApi.submitSyncTask(
+      entities,
+      customMappings,
+      groupOverrides,
+    );
+    setSyncTaskProgressPercentage(progress.percentage);
   };
 
+  const {
+    value: initialSyncTaskProgress,
+    // loading: syncProgressLoading,
+    error: syncProgressError,
+  } = useAsync(async () => {
+    console.log('sad sad get sync task progress');
+    return await cortexApi.getSyncTaskProgress();
+  }, []);
+
+  const {
+    // value: lastSynced,
+    // loading: lastSyncLoading,
+    error: lastSyncError,
+  } = useAsync(async () => {
+    console.log('sad sad get last sync time');
+    return await cortexApi.getLastSyncTime();
+  }, []);
+
+  useEffect(() => {
+    setSyncTaskProgressPercentage(initialSyncTaskProgress?.percentage);
+  }, [
+    initialSyncTaskProgress,
+    setSyncTaskProgressPercentage,
+    // syncTaskProgressPercentage,
+  ]);
+
+  console.log('sad sad ' + syncTaskProgressPercentage);
   return (
     <InfoCard
-      title="Sync Entities"
+      title="Sync 20"
       action={<SyncButton syncEntities={syncEntities} />}
     >
+      {syncProgressError && (
+        <WarningPanel
+          severity="error"
+          title="Could not load Cortex entity sync progress."
+        >
+          {syncProgressError.message}
+        </WarningPanel>
+      )}
+      {lastSyncError && (
+        <WarningPanel
+          severity="error"
+          title="Could not load date of most recent Cortex entity sync."
+        >
+          {lastSyncError.message}
+        </WarningPanel>
+      )}
+      {syncTaskProgressPercentage !== undefined && (
+        <PollingProgressBar
+          done={false}
+          poll={async () =>
+            setSyncTaskProgressPercentage(
+              (await cortexApi.getSyncTaskProgress())?.percentage,
+            )
+          }
+          value={syncTaskProgressPercentage}
+        />
+      )}
       <Typography>
         Manually sync your Backstage entities with Cortex.
         <br />

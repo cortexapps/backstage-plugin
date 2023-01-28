@@ -15,6 +15,7 @@
  */
 
 import {
+  EntitySyncProgress,
   GroupByOption,
   Initiative,
   InitiativeActionItem,
@@ -31,7 +32,10 @@ import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
-import { CustomMapping, TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
+import {
+  CustomMapping,
+  TeamOverrides,
+} from '@cortexapps/backstage-plugin-extensions';
 import { applyCustomMappings } from '../utils/ComponentUtils';
 import {
   createApiRef,
@@ -67,18 +71,18 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/scorecards`);
   }
 
-  async syncEntities(
+  async submitSyncTask(
     entities: Entity[],
     customMappings?: CustomMapping[],
     teamOverrides?: TeamOverrides,
-  ): Promise<void> {
+  ): Promise<EntitySyncProgress> {
     const withCustomMappings: Entity[] = customMappings
       ? entities.map(entity => applyCustomMappings(entity, customMappings))
       : entities;
 
-    return await this.post(`/api/backstage/v1/entities`, {
+    return await this.post(`/api/backstage/v1/entities/sync`, {
       entities: withCustomMappings,
-      teamOverrides
+      teamOverrides,
     });
   }
 
@@ -233,6 +237,15 @@ export class CortexClient implements CortexApi {
     );
   }
 
+  async getSyncTaskProgress(): Promise<EntitySyncProgress | undefined> {
+    // return { percentage: 0.22 };
+    return await this.get(`/api/backstage/v1/entities/progress`);
+  }
+
+  async getLastSyncTime(): Promise<EntitySyncProgress | undefined> {
+    return await this.get(`/api/backstage/v1/entities/last-sync`);
+  }
+
   private async getBasePath(): Promise<string> {
     const proxyBasePath = await this.discoveryApi.getBaseUrl('proxy');
     return `${proxyBasePath}/cortex`;
@@ -278,7 +291,7 @@ export class CortexClient implements CortexApi {
     return body;
   }
 
-  private async post(path: string, body?: any): Promise<void> {
+  private async post(path: string, body?: any): Promise<any> {
     const basePath = await this.getBasePath();
     const url = `${basePath}${path}`;
 
@@ -289,10 +302,10 @@ export class CortexClient implements CortexApi {
     });
 
     if (response.status !== 200) {
-      throw new Error(
-        `Error communicating with Cortex`,
-      );
+      throw new Error(`Error communicating with Cortex`);
     }
+
+    return response.json();
   }
 
   private async fetchAuthenticated(
