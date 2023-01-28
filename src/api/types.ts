@@ -277,9 +277,9 @@ export interface InitiativeActionItem {
 }
 
 export interface EntitySyncProgress {
-  percentage: number;
+  percentage: number | null;
 }
 
 export interface LastEntitySyncTime {
-  lastSynced: string;
+  lastSynced: string | null;
 }

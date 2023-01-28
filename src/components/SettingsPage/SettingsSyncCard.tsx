@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,14 @@
 import React, { useEffect, useState } from 'react';
 import SyncIcon from '@material-ui/icons/Sync';
 import { CircularProgress, IconButton, Typography } from '@material-ui/core';
-import {
-  InfoCard,
-  LinearGauge,
-  Link,
-  WarningPanel,
-} from '@backstage/core-components';
+import { InfoCard, Link, WarningPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { extensionApiRef } from '../../api/ExtensionApi';
 import PollingProgressBar from '../Common/PollingProgressBar';
 import { useAsync } from 'react-use';
-import { percentify } from '../../utils/NumberUtils';
+import moment from 'moment';
 
 interface SyncButtonProps {
   syncEntities: () => Promise<void>;
@@ -57,8 +52,10 @@ export const SettingsSyncCard = () => {
   const extensionApi = useApi(extensionApiRef);
 
   const [syncTaskProgressPercentage, setSyncTaskProgressPercentage] = useState<
-    number | undefined
-  >(undefined);
+    number | null
+  >(null);
+
+  const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
 
   const syncEntities = async () => {
     const { items: entities } = await catalogApi.getEntities();
@@ -72,36 +69,38 @@ export const SettingsSyncCard = () => {
     setSyncTaskProgressPercentage(progress.percentage);
   };
 
-  const {
-    value: initialSyncTaskProgress,
-    // loading: syncProgressLoading,
-    error: syncProgressError,
-  } = useAsync(async () => {
-    console.log('sad sad get sync task progress');
-    return await cortexApi.getSyncTaskProgress();
-  }, []);
+  const { value: initialSyncTaskProgress, error: syncProgressError } =
+    useAsync(async () => {
+      return await cortexApi.getSyncTaskProgress();
+    }, []);
 
-  const {
-    // value: lastSynced,
-    // loading: lastSyncLoading,
-    error: lastSyncError,
-  } = useAsync(async () => {
-    console.log('sad sad get last sync time');
-    return await cortexApi.getLastSyncTime();
-  }, []);
+  const { value: initialLastSynced, error: lastSyncError } =
+    useAsync(async () => {
+      return await cortexApi.getLastSyncTime();
+    }, []);
 
   useEffect(() => {
-    setSyncTaskProgressPercentage(initialSyncTaskProgress?.percentage);
+    if (
+      syncTaskProgressPercentage === null &&
+      initialSyncTaskProgress !== undefined
+    ) {
+      setSyncTaskProgressPercentage(initialSyncTaskProgress.percentage);
+    }
   }, [
     initialSyncTaskProgress,
     setSyncTaskProgressPercentage,
-    // syncTaskProgressPercentage,
+    syncTaskProgressPercentage,
   ]);
 
-  console.log('sad sad ' + syncTaskProgressPercentage);
+  useEffect(() => {
+    if (lastSyncedTime === null && initialLastSynced !== undefined) {
+      setLastSyncedTime(initialLastSynced.lastSynced);
+    }
+  }, [initialLastSynced, lastSyncedTime, setLastSyncedTime]);
+
   return (
     <InfoCard
-      title="Sync 20"
+      title="Sync Entities"
       action={<SyncButton syncEntities={syncEntities} />}
     >
       {syncProgressError && (
@@ -120,16 +119,29 @@ export const SettingsSyncCard = () => {
           {lastSyncError.message}
         </WarningPanel>
       )}
-      {syncTaskProgressPercentage !== undefined && (
+      {syncTaskProgressPercentage !== null && (
         <PollingProgressBar
           done={false}
-          poll={async () =>
-            setSyncTaskProgressPercentage(
-              (await cortexApi.getSyncTaskProgress())?.percentage,
-            )
-          }
+          poll={async () => {
+            const currentProgress = await cortexApi.getSyncTaskProgress();
+            setSyncTaskProgressPercentage(currentProgress.percentage);
+            if (currentProgress.percentage === null) {
+              setLastSyncedTime((await cortexApi.getLastSyncTime()).lastSynced);
+            }
+          }}
           value={syncTaskProgressPercentage}
         />
+      )}
+      {lastSyncedTime !== null && (
+        <Typography>
+          <i>
+            Last synced on{' '}
+            {moment
+              .utc(lastSyncedTime)
+              .local()
+              .format('MMM Do YYYY, h:mm:ss a')}
+          </i>
+        </Typography>
       )}
       <Typography>
         Manually sync your Backstage entities with Cortex.

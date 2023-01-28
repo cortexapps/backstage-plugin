@@ -20,6 +20,7 @@ import {
   Initiative,
   InitiativeActionItem,
   InitiativeWithScores,
+  LastEntitySyncTime,
   Scorecard,
   ScorecardLadder,
   ScorecardResult,
@@ -237,12 +238,12 @@ export class CortexClient implements CortexApi {
     );
   }
 
-  async getSyncTaskProgress(): Promise<EntitySyncProgress | undefined> {
+  async getSyncTaskProgress(): Promise<EntitySyncProgress> {
     // return { percentage: 0.22 };
     return await this.get(`/api/backstage/v1/entities/progress`);
   }
 
-  async getLastSyncTime(): Promise<EntitySyncProgress | undefined> {
+  async getLastSyncTime(): Promise<LastEntitySyncTime> {
     return await this.get(`/api/backstage/v1/entities/last-sync`);
   }
 

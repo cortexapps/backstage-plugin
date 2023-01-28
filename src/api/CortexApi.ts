@@ -19,6 +19,7 @@ import {
   Initiative,
   InitiativeActionItem,
   InitiativeWithScores,
+  LastEntitySyncTime,
   Scorecard,
   ScorecardLadder,
   ScorecardResult,
@@ -86,7 +87,7 @@ export interface CortexApi {
     teamOverrides?: TeamOverrides,
   ): Promise<EntitySyncProgress>;
 
-  getSyncTaskProgress(): Promise<EntitySyncProgress | undefined>;
+  getSyncTaskProgress(): Promise<EntitySyncProgress>;
 
-  getLastSyncTime(): Promise<EntitySyncProgress | undefined>;
+  getLastSyncTime(): Promise<LastEntitySyncTime>;
 }
