@@ -57,6 +57,7 @@ interface CancelSyncButtonProps {
 
 const CancelSyncButton: React.FC<CancelSyncButtonProps> = ({ cancelSync }) => {
   const [isCanceling, setIsCanceling] = useState(false);
+  
   return (
     <IconButton
       onClick={() => {
