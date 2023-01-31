@@ -15,7 +15,13 @@
  */
 import React, { useEffect, useState } from 'react';
 import SyncIcon from '@material-ui/icons/Sync';
-import { CircularProgress, IconButton, Typography } from '@material-ui/core';
+import CancelIcon from '@material-ui/icons/Cancel';
+import {
+  CircularProgress,
+  Grid,
+  IconButton,
+  Typography,
+} from '@material-ui/core';
 import { InfoCard, Link, WarningPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
@@ -46,6 +52,26 @@ const SyncButton = ({ syncEntities }: SyncButtonProps) => {
   );
 };
 
+interface CancelSyncButtonProps {
+  cancelSync: () => Promise<void>;
+}
+
+const CancelSyncButton = ({ cancelSync }: CancelSyncButtonProps) => {
+  const [isCancelling, setIsCancelling] = useState(false);
+  return (
+    <IconButton
+      onClick={() => {
+        setIsCancelling(true);
+        cancelSync().finally(() => setIsCancelling(false));
+      }}
+      aria-busy={isCancelling}
+      aria-label="Cancel entity sync"
+    >
+      {isCancelling ? <CircularProgress /> : <CancelIcon />}
+    </IconButton>
+  );
+};
+
 export const SettingsSyncCard = () => {
   const catalogApi = useApi(catalogApiRef);
   const cortexApi = useApi(cortexApiRef);
@@ -67,6 +93,10 @@ export const SettingsSyncCard = () => {
       groupOverrides,
     );
     setSyncTaskProgressPercentage(progress.percentage);
+  };
+
+  const cancelSync = async () => {
+    await cortexApi.cancelSync();
   };
 
   const { value: initialSyncTaskProgress, error: syncProgressError } =
@@ -120,19 +150,34 @@ export const SettingsSyncCard = () => {
         </WarningPanel>
       )}
       {syncTaskProgressPercentage !== null && (
-        <PollingProgressBar
-          done={false}
-          poll={async () => {
-            const currentProgress = await cortexApi.getSyncTaskProgress();
-            setSyncTaskProgressPercentage(currentProgress.percentage);
-            if (currentProgress.percentage === null) {
-              setLastSyncedTime((await cortexApi.getLastSyncTime()).lastSynced);
-            }
-          }}
-          value={syncTaskProgressPercentage}
-        />
+        <Grid
+          container
+          alignItems="center"
+          direction={'row'}
+          justifyContent="center"
+          style={{ marginBottom: '2px' }}
+        >
+          <Grid item lg={10} justifyContent="center">
+            <PollingProgressBar
+              done={false}
+              poll={async () => {
+                const currentProgress = await cortexApi.getSyncTaskProgress();
+                setSyncTaskProgressPercentage(currentProgress.percentage);
+                if (currentProgress.percentage === null) {
+                  setLastSyncedTime(
+                    (await cortexApi.getLastSyncTime()).lastSynced,
+                  );
+                }
+              }}
+              value={syncTaskProgressPercentage}
+            />
+          </Grid>
+          <Grid item lg={2} justifyContent="center">
+            <CancelSyncButton cancelSync={cancelSync} />
+          </Grid>
+        </Grid>
       )}
-      {lastSyncedTime !== null && (
+      {lastSyncedTime !== null ? (
         <Typography>
           <i>
             Last synced on{' '}
@@ -141,6 +186,10 @@ export const SettingsSyncCard = () => {
               .local()
               .format('MMM Do YYYY, h:mm:ss a')}
           </i>
+        </Typography>
+      ) : (
+        <Typography>
+          <i>Entities have never been synced before.</i>
         </Typography>
       )}
       <Typography>

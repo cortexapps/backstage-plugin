@@ -90,4 +90,6 @@ export interface CortexApi {
   getSyncTaskProgress(): Promise<EntitySyncProgress>;
 
   getLastSyncTime(): Promise<LastEntitySyncTime>;
+
+  cancelSync(): Promise<void>;
 }

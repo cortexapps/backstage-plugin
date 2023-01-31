@@ -247,6 +247,11 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/entities/last-sync`);
   }
 
+  async cancelSync(): Promise<void> {
+    await this.delete(`/api/backstage/v1/entities/sync`);
+    return;
+  }
+
   private async getBasePath(): Promise<string> {
     const proxyBasePath = await this.discoveryApi.getBaseUrl('proxy');
     return `${proxyBasePath}/cortex`;
@@ -307,6 +312,23 @@ export class CortexClient implements CortexApi {
     }
 
     return response.json();
+  }
+
+  private async delete(path: string, body?: any): Promise<Response> {
+    const basePath = await this.getBasePath();
+    const url = `${basePath}${path}`;
+
+    const response = await this.fetchAuthenticated(url, {
+      method: 'DELETE',
+      body: body && JSON.stringify(body),
+      headers: body && { 'Content-Type': 'application/json' },
+    });
+
+    if (response.status !== 200) {
+      throw new Error(`Error communicating with Cortex`);
+    }
+
+    return response;
   }
 
   private async fetchAuthenticated(
