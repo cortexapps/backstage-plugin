@@ -22,13 +22,12 @@ import {
   IconButton,
   Typography,
 } from '@material-ui/core';
-import { InfoCard, Link, WarningPanel } from '@backstage/core-components';
+import { InfoCard, Link } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { extensionApiRef } from '../../api/ExtensionApi';
 import PollingLinearGauge from '../Common/PollingLinearGauge';
-import { useAsync } from 'react-use';
 import moment from 'moment';
 
 interface SyncButtonProps {
@@ -83,74 +82,55 @@ export const SettingsSyncCard = () => {
 
   const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
 
-  const syncEntities = async () => {
+  const submitEntitySync = useCallback(async () => {
     const { items: entities } = await catalogApi.getEntities();
     const customMappings = await extensionApi.getCustomMappings?.();
     const groupOverrides = await extensionApi.getTeamOverrides?.(entities);
-    const progress = await cortexApi.submitSyncTask(
+    const progress = await cortexApi.submitEntitySync(
       entities,
       customMappings,
       groupOverrides,
     );
     setSyncTaskProgressPercentage(progress.percentage);
-  };
+  }, [catalogApi, cortexApi, extensionApi]);
 
-  const cancelSync = async () => {
-    await cortexApi.cancelSync();
+  const cancelEntitySync = useCallback(async () => {
+    await cortexApi.cancelEntitySync();
     setSyncTaskProgressPercentage(null);
-    const lastSyncedTime = (await cortexApi.getLastSyncTime()).lastSynced;
+    const lastSyncedTime = (await cortexApi.getLastEntitySyncTime()).lastSynced;
     setLastSyncedTime(lastSyncedTime);
-  };
+  }, [cortexApi]);
 
-  const updateSyncProgressAndLastSyncedTime = async () => {
-    const currentProgress = await cortexApi.getSyncTaskProgress();
-    if (
-      syncTaskProgressPercentage !== null &&
-      currentProgress.percentage === null
-    ) {
-      setLastSyncedTime((await cortexApi.getLastSyncTime()).lastSynced);
+  const updateEntitySyncProgress = useCallback(async () => {
+    const currentProgress = await cortexApi.getEntitySyncProgress();
+    if (currentProgress.percentage === null) {
+      setLastSyncedTime((await cortexApi.getLastEntitySyncTime()).lastSynced);
     }
     setSyncTaskProgressPercentage(currentProgress.percentage);
-  };
-
-  const updateSyncProgressAndLastSyncedTimeCallback = useCallback(
-    updateSyncProgressAndLastSyncedTime,
-    [cortexApi, syncTaskProgressPercentage],
-  );
-
-  const { value: initialLastSynced, error: lastSyncError } =
-    useAsync(async () => {
-      return await cortexApi.getLastSyncTime();
-    }, []);
+  }, [cortexApi]);
 
   useEffect(() => {
-    updateSyncProgressAndLastSyncedTimeCallback();
-  }, [updateSyncProgressAndLastSyncedTimeCallback]);
+    updateEntitySyncProgress();
+  }, [updateEntitySyncProgress]);
+
+  const updateLastEntitySyncTime = useCallback(async () => {
+    setLastSyncedTime((await cortexApi.getLastEntitySyncTime()).lastSynced);
+  }, [cortexApi]);
 
   useEffect(() => {
-    if (lastSyncedTime === null && initialLastSynced !== undefined) {
-      setLastSyncedTime(initialLastSynced.lastSynced);
-    }
-  }, [initialLastSynced, lastSyncedTime, setLastSyncedTime]);
+    updateLastEntitySyncTime();
+  }, [updateLastEntitySyncTime]);
 
   return (
     <InfoCard
-      title="Sync Entities 21"
+      title="Sync Entities"
       action={
         <SyncButton
           isSyncing={syncTaskProgressPercentage !== null}
-          submitSyncTask={syncEntities}
+          submitSyncTask={submitEntitySync}
         />
       }
     >
-      {lastSyncError && (
-        <WarningPanel
-          severity="error"
-          title="Could not load date of most recent Cortex entity sync."
-        >
-          {lastSyncError.message}
-        </WarningPanel>
-      )}
       {syncTaskProgressPercentage !== null && (
         <Grid
           container
@@ -162,12 +142,12 @@ export const SettingsSyncCard = () => {
           <Grid item lg={10} data-testid={`PollingLinearGauge-entity-sync`}>
             <PollingLinearGauge
               done={false}
-              poll={updateSyncProgressAndLastSyncedTime}
+              poll={updateEntitySyncProgress}
               value={syncTaskProgressPercentage}
             />
           </Grid>
           <Grid item lg={2}>
-            <CancelSyncButton cancelSync={cancelSync} />
+            <CancelSyncButton cancelSync={cancelEntitySync} />
           </Grid>
         </Grid>
       )}

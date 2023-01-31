@@ -105,8 +105,11 @@ describe('<SettingsPage/>', () => {
   const cortexApi = mock<CortexApi>();
 
   it('should submit entity sync with custom mappings and group overrides', async () => {
-    cortexApi.submitSyncTask.mockResolvedValue({ percentage: null });
-    cortexApi.getSyncTaskProgress.mockResolvedValue({ percentage: null });
+    cortexApi.submitEntitySync.mockResolvedValue({ percentage: null });
+    cortexApi.getEntitySyncProgress.mockResolvedValue({ percentage: null });
+    cortexApi.getLastEntitySyncTime.mockResolvedValue({
+      lastSynced: null,
+    });
     const { clickButton, checkForText, queryByLabelText } = renderWrapped(
       <SettingsPage />,
       cortexApi,
@@ -128,7 +131,7 @@ describe('<SettingsPage/>', () => {
     );
     await checkForText(/Entities have never been synced before/);
     const customMappingsCaptor = captor();
-    expect(cortexApi.submitSyncTask).toHaveBeenLastCalledWith(
+    expect(cortexApi.submitEntitySync).toHaveBeenLastCalledWith(
       [component1, component2],
       customMappingsCaptor,
       { teams, relationships },
@@ -139,7 +142,10 @@ describe('<SettingsPage/>', () => {
   });
 
   it('shows in progress entity sync', async () => {
-    cortexApi.getSyncTaskProgress.mockResolvedValue({ percentage: 0.7 });
+    cortexApi.getEntitySyncProgress.mockResolvedValue({ percentage: 0.7 });
+    cortexApi.getLastEntitySyncTime.mockResolvedValue({
+      lastSynced: null,
+    });
     const { checkForText, getByTestId, queryByLabelText } = renderWrapped(
       <SettingsPage />,
       cortexApi,
@@ -154,8 +160,8 @@ describe('<SettingsPage/>', () => {
   });
 
   it('shows the last sync time', async () => {
-    cortexApi.getSyncTaskProgress.mockResolvedValue({ percentage: null });
-    cortexApi.getLastSyncTime.mockResolvedValue({
+    cortexApi.getEntitySyncProgress.mockResolvedValue({ percentage: null });
+    cortexApi.getLastEntitySyncTime.mockResolvedValue({
       lastSynced: '2000-01-01T00:00:00',
     });
     const { checkForText, queryByLabelText } = renderWrapped(

@@ -81,15 +81,15 @@ export interface CortexApi {
     entityRefs: AnyEntityRef[],
   ): Promise<InitiativeActionItem[]>;
 
-  submitSyncTask(
+  submitEntitySync(
     entities: Entity[],
     customMappings?: CustomMapping[],
     teamOverrides?: TeamOverrides,
   ): Promise<EntitySyncProgress>;
 
-  getSyncTaskProgress(): Promise<EntitySyncProgress>;
+  getEntitySyncProgress(): Promise<EntitySyncProgress>;
 
-  getLastSyncTime(): Promise<LastEntitySyncTime>;
+  getLastEntitySyncTime(): Promise<LastEntitySyncTime>;
 
-  cancelSync(): Promise<void>;
+  cancelEntitySync(): Promise<void>;
 }

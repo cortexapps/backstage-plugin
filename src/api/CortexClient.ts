@@ -72,7 +72,7 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/scorecards`);
   }
 
-  async submitSyncTask(
+  async submitEntitySync(
     entities: Entity[],
     customMappings?: CustomMapping[],
     teamOverrides?: TeamOverrides,
@@ -238,15 +238,15 @@ export class CortexClient implements CortexApi {
     );
   }
 
-  async getSyncTaskProgress(): Promise<EntitySyncProgress> {
+  async getEntitySyncProgress(): Promise<EntitySyncProgress> {
     return await this.get(`/api/backstage/v1/entities/progress`);
   }
 
-  async getLastSyncTime(): Promise<LastEntitySyncTime> {
+  async getLastEntitySyncTime(): Promise<LastEntitySyncTime> {
     return await this.get(`/api/backstage/v1/entities/last-sync`);
   }
 
-  async cancelSync(): Promise<void> {
+  async cancelEntitySync(): Promise<void> {
     await this.delete(`/api/backstage/v1/entities/sync`);
   }
 
