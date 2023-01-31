@@ -239,7 +239,6 @@ export class CortexClient implements CortexApi {
   }
 
   async getSyncTaskProgress(): Promise<EntitySyncProgress> {
-    // return { percentage: 0.22 };
     return await this.get(`/api/backstage/v1/entities/progress`);
   }
 
@@ -249,7 +248,6 @@ export class CortexClient implements CortexApi {
 
   async cancelSync(): Promise<void> {
     await this.delete(`/api/backstage/v1/entities/sync`);
-    return;
   }
 
   private async getBasePath(): Promise<string> {
@@ -314,7 +312,7 @@ export class CortexClient implements CortexApi {
     return response.json();
   }
 
-  private async delete(path: string, body?: any): Promise<Response> {
+  private async delete(path: string, body?: any): Promise<void> {
     const basePath = await this.getBasePath();
     const url = `${basePath}${path}`;
 
@@ -327,8 +325,6 @@ export class CortexClient implements CortexApi {
     if (response.status !== 200) {
       throw new Error(`Error communicating with Cortex`);
     }
-
-    return response;
   }
 
   private async fetchAuthenticated(

@@ -19,7 +19,7 @@ import React, { useState } from 'react';
 import { ExponentialBackoff } from '../../utils/MathUtils';
 import { useInterval } from '../../utils/HookUtils';
 
-interface PollingProgressBarProps {
+interface PollingLinearGaugeProps {
   backoffMultiplier?: number;
   done?: boolean;
   initialDelay?: number;
@@ -28,7 +28,7 @@ interface PollingProgressBarProps {
   value: number;
 }
 
-export const PollingProgressBar: React.FC<PollingProgressBarProps> = ({
+const PollingLinearGauge: React.FC<PollingLinearGaugeProps> = ({
   backoffMultiplier = 1.2,
   done = false,
   initialDelay = 1000,
@@ -58,4 +58,4 @@ export const PollingProgressBar: React.FC<PollingProgressBarProps> = ({
   return <LinearGauge value={value} />;
 };
 
-export default PollingProgressBar;
+export default PollingLinearGauge;

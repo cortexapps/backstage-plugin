@@ -14,38 +14,36 @@
  * limitations under the License.
  */
 
-/**
- * Create new ExponentialBackoff
- * @param initialDelay Starting delay, in milliseconds
- * @param multiplier Multiplier for exponential growth (e.g. 2.0 would yield [1000 -> 2000 -> 4000])
- * @param maxDelay Ceiling for delay, subsequent advances will not increase delay
- * @param maxTries Max tries, after which delay will return null
- * @param numTries Starting point for number of tries
- */
-export type ExponentialBackoffOpts = {
+export type ExponentialBackoffOptions = {
+  /** Starting delay, in milliseconds */
   initialDelay: number;
-  multiplier: number;
   maxDelay?: number;
   maxTries?: number;
+  multiplier: number;
   numTries?: number;
 };
 
 /**
  * Immutable ExponentialBackoff helper
+ *
+ * @param multiplier Multiplier for exponential growth (e.g. 2.0 would yield [1000 -> 2000 -> 4000])
+ * @param maxDelay Ceiling for delay, subsequent advances will not increase delay
+ * @param maxTries Max tries, after which delay will return null
+ * @param numTries Starting point for number of tries
  */
 export class ExponentialBackoff {
-  multiplier;
+  currentDelay;
   maxDelay;
   maxTries;
-  currentDelay;
+  multiplier;
   numTries;
 
-  constructor(opts: ExponentialBackoffOpts) {
+  constructor(opts: ExponentialBackoffOptions) {
     const { initialDelay, multiplier, maxDelay, maxTries, numTries } = opts;
     this.currentDelay = initialDelay;
-    this.multiplier = multiplier;
     this.maxDelay = maxDelay ?? Number.MAX_SAFE_INTEGER;
     this.maxTries = maxTries;
+    this.multiplier = multiplier;
     this.numTries = numTries ?? 0;
   }
 

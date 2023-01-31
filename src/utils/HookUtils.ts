@@ -16,9 +16,9 @@
 
 import { useEffect, useRef } from 'react';
 
-// Use null delay to end timer
 export const useInterval = (
   callback: (...args: any[]) => Promise<void>,
+  /** Use null delay to end timer */
   delay: number | null,
 ) => {
   const savedCallbackRef = useRef<(...args: any[]) => void>();

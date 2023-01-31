@@ -106,6 +106,7 @@ describe('<SettingsPage/>', () => {
 
   it('should submit entity sync with custom mappings and group overrides', async () => {
     cortexApi.submitSyncTask.mockResolvedValue({ percentage: null });
+    cortexApi.getSyncTaskProgress.mockResolvedValue({ percentage: null });
     const { clickButton, checkForText, queryByLabelText } = renderWrapped(
       <SettingsPage />,
       cortexApi,
@@ -139,7 +140,7 @@ describe('<SettingsPage/>', () => {
 
   it('shows in progress entity sync', async () => {
     cortexApi.getSyncTaskProgress.mockResolvedValue({ percentage: 0.7 });
-    const { checkForText, queryByLabelText } = renderWrapped(
+    const { checkForText, getByTestId, queryByLabelText } = renderWrapped(
       <SettingsPage />,
       cortexApi,
       {},
@@ -149,6 +150,7 @@ describe('<SettingsPage/>', () => {
 
     await checkForText(/Entities have never been synced before/);
     expect(await queryByLabelText(/Cancel entity sync/)).toBeVisible();
+    expect(getByTestId('PollingLinearGauge-entity-sync')).toBeVisible();
   });
 
   it('shows the last sync time', async () => {
