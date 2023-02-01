@@ -275,3 +275,11 @@ export interface InitiativeActionItem {
     description?: string;
   };
 }
+
+export interface EntitySyncProgress {
+  percentage: number | null;
+}
+
+export interface LastEntitySyncTime {
+  lastSynced: string | null;
+}
