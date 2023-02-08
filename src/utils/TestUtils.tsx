@@ -21,6 +21,8 @@ import {
   render,
   screen,
 } from '@testing-library/react';
+import { RenderResult } from '@testing-library/react/types';
+import { queries } from '@testing-library/dom';
 import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
 import { cortexApiRef } from '../api';
 import { CortexApi } from '../api/CortexApi';
@@ -33,6 +35,17 @@ import {
 import { Entity, EntityMeta } from '@backstage/catalog-model';
 import { act } from 'react-dom/test-utils';
 
+type RenderWrappedResult =
+  | {
+      clickButton: (label: string) => Promise<void>;
+      clickButtonByMatcher: (matcher: Matcher) => Promise<void>;
+      clickButtonByText: (label: string) => Promise<void>;
+      mouseClick: (label: string) => Promise<void>;
+      checkForText: (matcher: Matcher, index?: number) => Promise<void>;
+      checkNotText: (matcher: Matcher) => Promise<void>;
+      logScreen: () => void;
+    } & RenderResult<typeof queries, HTMLElement, HTMLElement>;
+
 export const renderWrapped = (
   children: React.ReactNode,
   cortexApi?: Partial<CortexApi>,
@@ -40,7 +53,7 @@ export const renderWrapped = (
     [path: string]: RouteRef | ExternalRouteRef;
   },
   ...additionalApis: [any, any][]
-) => {
+): RenderWrappedResult => {
   const cortexRefPair: [any, any][] = cortexApi
     ? [[cortexApiRef, cortexApi]]
     : [];
