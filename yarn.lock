@@ -1239,7 +1239,15 @@
     "@backstage/types" "^1.0.1"
     lodash "^4.17.21"
 
-"@backstage/core-app-api@^1.1.0", "@backstage/core-app-api@^1.2.0":
+"@backstage/config@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@backstage/config/-/config-1.0.6.tgz#551ffe6793aec29f7d7f9e5ba1bb010ba6ed0b00"
+  integrity sha512-ZN3ABydLRZNTtL9FXPpvw678CJ/G2UtGHrX/Cq6Tfd9QJ6/wjMTagTe/KibxGh6lxIG+VGU+BOAqt6mHgMDopA==
+  dependencies:
+    "@backstage/types" "^1.0.2"
+    lodash "^4.17.21"
+
+"@backstage/core-app-api@^1.2.0":
   version "1.2.0"
   resolved "https://registry.npmjs.org/@backstage/core-app-api/-/core-app-api-1.2.0.tgz#60e2dde4ff78aad88ac2f75ddad3b3055f23e234"
   integrity sha512-Wp7HScJs8Qw/6DusKscJ+jfmBC66Uxi2r+h8nPfW3wVsgNKDy0RIue4gVD3RCmUHE8OnYO+dYlZ+b195SdnWnw==
@@ -1253,6 +1261,21 @@
     react-use "^17.2.4"
     zen-observable "^0.8.15"
     zod "^3.11.6"
+
+"@backstage/core-app-api@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@backstage/core-app-api/-/core-app-api-1.4.0.tgz#9546a3bebedfa856f3d058d1f55a5ef8cc0c53a7"
+  integrity sha512-qPicwwUYP3V0dW6/U9ChNaJWdK2AaQYg0bcGrIpJkHCQbEr6TM+TuEyiwub77OmsXp1uXF+4Stxacl5TCWVNFA==
+  dependencies:
+    "@backstage/config" "^1.0.6"
+    "@backstage/core-plugin-api" "^1.3.0"
+    "@backstage/types" "^1.0.2"
+    "@backstage/version-bridge" "^1.0.3"
+    "@types/prop-types" "^15.7.3"
+    prop-types "^15.7.2"
+    react-use "^17.2.4"
+    zen-observable "^0.10.0"
+    zod "~3.18.0"
 
 "@backstage/core-components@^0.11.1":
   version "0.11.2"
@@ -1351,6 +1374,18 @@
     history "^5.0.0"
     prop-types "^15.7.2"
     zen-observable "^0.8.15"
+
+"@backstage/core-plugin-api@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@backstage/core-plugin-api/-/core-plugin-api-1.3.0.tgz#d937fa215d551b85d2d78d209959db1815a17b78"
+  integrity sha512-A7powQ0vVyMU2HWyp+hP0vJWjsaOy6KE4OjrAN6m5bakb90DzCYfcZsZbnbdioTUtBaolFLIiN+iX4UpJdhpkA==
+  dependencies:
+    "@backstage/config" "^1.0.6"
+    "@backstage/types" "^1.0.2"
+    "@backstage/version-bridge" "^1.0.3"
+    history "^5.0.0"
+    prop-types "^15.7.2"
+    zen-observable "^0.10.0"
 
 "@backstage/dev-utils@^1.0.6":
   version "1.0.8"
@@ -1520,10 +1555,20 @@
   resolved "https://registry.npmjs.org/@backstage/types/-/types-1.0.1.tgz#9a64515ca5683d7f4f1c9a36c7ef84cab1af7c09"
   integrity sha512-iSaeCzTczIWQ/Kq1gk9HP3U62jEnCj6O/AfcJv0ahyeGdTjlL9og6lgeL/FClOauBWwFFcqF+a8eehdCfFmfng==
 
+"@backstage/types@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@backstage/types/-/types-1.0.2.tgz#a12cdc7c1ec7e0d99cb2e30903b9dfd97c1050c9"
+  integrity sha512-wE4AAP3je00UlVNV5faIto414aOUNv30CmvNmxgImNKelPRYJsMEicM9slwkrNMyFLqTMITeXJvQvMofUk3Wxg==
+
 "@backstage/version-bridge@^1.0.1", "@backstage/version-bridge@^1.0.2":
   version "1.0.2"
   resolved "https://registry.npmjs.org/@backstage/version-bridge/-/version-bridge-1.0.2.tgz#18cda0fb347ee3f47b1a99a6ceb39856a799f9ba"
   integrity sha512-R4SCYi4JAgFmW8zu4G7lXp+SlkPD9bFHx4Sw7ThovxdWtFaE82sAGkVzvaSEEksfrPn3mj+FKt6Hh9D9N/aKHA==
+
+"@backstage/version-bridge@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@backstage/version-bridge/-/version-bridge-1.0.3.tgz#3ee86ac9a99bf031f6cf16f277c712ec581f14cb"
+  integrity sha512-b+r0LKjciyVgrw/nrEEqY/zxMwT4GzGjoQUY3YgmtNuUeSheVHf2uwq++nsSfy3ZXZwvyTX0uR3c2YDB3q/Sig==
 
 "@bcoe/v8-coverage@^0.2.3":
   version "0.2.3"
@@ -13601,6 +13646,11 @@ yup@^0.32.9:
     property-expr "^2.0.4"
     toposort "^2.0.2"
 
+zen-observable@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.10.0.tgz#ee10eba75272897dbee5f152ab26bb5e0107f0c8"
+  integrity sha512-iI3lT0iojZhKwT5DaFy2Ce42n3yFcLdFyOh01G7H0flMY60P8MJuVFEoJoNwXlmAyQ45GrjL6AcZmmlv8A5rbw==
+
 zen-observable@^0.8.15:
   version "0.8.15"
   resolved "https://registry.npmjs.org/zen-observable/-/zen-observable-0.8.15.tgz#96415c512d8e3ffd920afd3889604e30b9eaac15"
@@ -13610,6 +13660,11 @@ zod@^3.11.6:
   version "3.11.6"
   resolved "https://registry.npmjs.org/zod/-/zod-3.11.6.tgz#e43a5e0c213ae2e02aefe7cb2b1a6fa3d7f1f483"
   integrity sha512-daZ80A81I3/9lIydI44motWe6n59kRBfNzTuS2bfzVh1nAXi667TOTWWtatxyG+fwgNUiagSj/CWZwRRbevJIg==
+
+zod@~3.18.0:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.18.0.tgz#2eed58b3cafb8d9a67aa2fee69279702f584f3bc"
+  integrity sha512-gwTm8RfUCe8l9rDwN5r2A17DkAa8Ez4Yl4yXqc5VqeGaXaJahzYYXbTwvhroZi0SNBqTwh/bKm2N0mpCzuw4bA==
 
 zwitch@^2.0.0:
   version "2.0.2"
