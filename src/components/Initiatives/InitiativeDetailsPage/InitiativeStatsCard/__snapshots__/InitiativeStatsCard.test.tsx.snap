@@ -3,19 +3,19 @@
 exports[`InitiativeStatsCard should handle divide by 0 1`] = `
 <StatsCard
   stats={
-    Array [
-      Object {
+    [
+      {
         "label": "Complete",
         "status": 2,
         "type": "PERCENTAGE",
         "value": 0,
       },
-      Object {
+      {
         "label": "Passing",
         "status": 0,
         "value": 0,
       },
-      Object {
+      {
         "label": "Failing",
         "status": 2,
         "value": 0,
