@@ -25,8 +25,7 @@ import {
   WarningPanel,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { Route } from 'react-router-dom';
-import { Routes } from 'react-router';
+import { Route, Routes } from 'react-router-dom';
 import { InitiativeDetailsPage } from '../InitiativeDetailsPage';
 import { InitiativeCard } from '../InitiativeCard';
 

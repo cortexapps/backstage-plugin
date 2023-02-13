@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { Routes, useLocation } from 'react-router';
+import { Routes, useLocation } from 'react-router-dom';
 import {
   Button,
   ItemCardGrid,

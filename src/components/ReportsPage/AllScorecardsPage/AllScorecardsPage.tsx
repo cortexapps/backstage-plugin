@@ -21,7 +21,7 @@ import { useDropdown } from '../../../utils/hooks';
 import { GroupByOption } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { buildUrl } from '../../../utils/URLUtils';
 
 export const AllScorecardsPage = () => {

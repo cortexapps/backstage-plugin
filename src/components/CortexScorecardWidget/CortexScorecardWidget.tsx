@@ -19,7 +19,7 @@ import { stringifyAnyEntityRef } from '../../utils/types';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { EntityScorecardsCard } from '../EntityPage/EntityScorecardsCard';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
-import { useNavigate, useLocation } from 'react-router';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { hasText } from '../../utils/SearchUtils';
 import { ServiceScorecardScore } from '../../api/types';
 

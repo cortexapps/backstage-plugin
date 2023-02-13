@@ -16,8 +16,7 @@
 import React, { useMemo } from 'react';
 import { Button } from '@material-ui/core';
 import { useAsync } from 'react-use';
-import { Route } from 'react-router-dom';
-import { Routes } from 'react-router';
+import { Route, Routes } from 'react-router-dom';
 
 import {
   Content,
