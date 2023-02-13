@@ -22,7 +22,7 @@ import { ReportsPage } from '../ReportsPage';
 
 export const CortexPage = ({
   title = 'Cortex',
-  subtitle = 'Understand and improve your services.',
+  subtitle = 'Understand and improve your services. Nikhil wuz here',
 }) => {
   return (
     <CortexLayout title={title} subtitle={subtitle}>
