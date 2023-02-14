@@ -23,6 +23,7 @@ import { captor, mock } from 'jest-mock-extended';
 import { ExtensionApi } from '@cortexapps/backstage-plugin-extensions';
 import { extensionApiRef } from '../../api/ExtensionApi';
 import { waitFor } from '@testing-library/react';
+import { ConfigApi, configApiRef } from '@backstage/core-plugin-api';
 
 describe('<SettingsPage/>', () => {
   const component1 = Fixtures.entity({
@@ -73,6 +74,16 @@ describe('<SettingsPage/>', () => {
     { parentTeamTag: team1.teamTag, childTeamTag: team2.teamTag },
   ];
 
+  const configApi: (syncWithGzip?: boolean) => Partial<ConfigApi> =
+    syncWithGzip => ({
+      getOptionalBoolean(key) {
+        if (key === 'cortex.syncWithGzip') {
+          return syncWithGzip ?? false;
+        }
+        return undefined;
+      },
+    });
+
   const catalogApi: Partial<CatalogApi> = {
     async getEntities(_) {
       return {
@@ -115,6 +126,7 @@ describe('<SettingsPage/>', () => {
       cortexApi,
       {},
       [catalogApiRef, catalogApi],
+      [configApiRef, configApi(undefined)],
       [extensionApiRef, extensionApi],
     );
 
@@ -133,6 +145,41 @@ describe('<SettingsPage/>', () => {
     const customMappingsCaptor = captor();
     expect(cortexApi.submitEntitySync).toHaveBeenLastCalledWith(
       [component1, component2],
+      false,
+      customMappingsCaptor,
+      { teams, relationships },
+    );
+
+    expect(customMappingsCaptor.value).toHaveLength(1);
+    expect(customMappingsCaptor.value[0]()).toBe(extension);
+  });
+
+  it('should submit entity sync with gzip', async () => {
+    cortexApi.submitEntitySync.mockResolvedValue({ percentage: null });
+    cortexApi.getEntitySyncProgress.mockResolvedValue({ percentage: null });
+    cortexApi.getLastEntitySyncTime.mockResolvedValue({
+      lastSynced: null,
+    });
+    const { clickButton, queryByLabelText } = renderWrapped(
+      <SettingsPage />,
+      cortexApi,
+      {},
+      [catalogApiRef, catalogApi],
+      [configApiRef, configApi(true)],
+      [extensionApiRef, extensionApi],
+    );
+
+    await clickButton('Sync Entities');
+    await waitFor(() =>
+      expect(queryByLabelText('Sync Entities')).toHaveAttribute(
+        'aria-busy',
+        'false',
+      ),
+    );
+    const customMappingsCaptor = captor();
+    expect(cortexApi.submitEntitySync).toHaveBeenLastCalledWith(
+      [component1, component2],
+      true,
       customMappingsCaptor,
       { teams, relationships },
     );
