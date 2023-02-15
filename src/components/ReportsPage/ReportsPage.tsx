@@ -22,7 +22,6 @@ import {
   ItemCardHeader,
 } from '@backstage/core-components';
 import { Card, CardActions, CardContent, CardMedia } from '@material-ui/core';
-// import { ItemCardHeader } from '../ItemCardHeader';
 import { HeatmapPage } from './HeatmapPage';
 import { ProgressPage } from './ProgressPage';
 import { AllScorecardsPage } from './AllScorecardsPage/AllScorecardsPage';

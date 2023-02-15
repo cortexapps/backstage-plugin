@@ -41,3 +41,23 @@ export function maybePluralize(
 ): string {
   return `${count} ${maybePluralizeOnlyNoun(count, singularNoun, suffix)}`;
 }
+
+export const joinWithSpecialLastJoin = (
+    strings: string[],
+    {
+      joiner = ', ',
+      lastJoiner,
+      lastJoinerWhenTwoItems = lastJoiner,
+    }: {
+      joiner?: string;
+      lastJoiner: string;
+      lastJoinerWhenTwoItems?: string;
+    }
+) => {
+  if (strings.length === 1) {
+    return strings[0];
+  } else if (strings.length === 2) {
+    return strings.join(lastJoinerWhenTwoItems);
+  }
+  return strings.slice(0, -1).join(joiner) + lastJoiner + strings.slice(-1);
+};
