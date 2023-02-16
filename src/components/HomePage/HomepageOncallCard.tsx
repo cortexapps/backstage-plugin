@@ -65,7 +65,7 @@ export const HomepageOncallCard = () => {
     } = useAsync(async () => {
         const profileInfo = await identityApi.getProfileInfo()
         if (profileInfo.email) {
-            return await cortexApi.getUserOncallByEmail("eyal@cortex.io");
+            return await cortexApi.getUserOncallByEmail(profileInfo.email);
         } else {
             throw Error('No user email found')
         }

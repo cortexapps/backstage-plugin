@@ -56,7 +56,7 @@ export const HomePageInsights = () => {
     } = useAsync(async () => {
         const profileInfo = await identityApi.getProfileInfo()
         if (profileInfo.email) {
-            return await cortexApi.getInsightsByEmail("eyal@cortex.io");
+            return await cortexApi.getInsightsByEmail(profileInfo.email);
         } else {
             throw Error('No user email found')
         }

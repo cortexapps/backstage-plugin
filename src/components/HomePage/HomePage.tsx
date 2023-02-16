@@ -18,21 +18,33 @@ import {Content, ContentHeader, ItemCardGrid} from '@backstage/core-components';
 import moment from "moment";
 import {HomepageOncallCard} from "./HomepageOncallCard";
 import {HomePageInsights} from "./HomePageInsights";
+import {identityApiRef, useApi} from "@backstage/core-plugin-api";
+import {useAsync} from "react-use";
 
 export const HomePage = () => {
+    const identityApi = useApi(identityApiRef);
+
     const currTime = useMemo(() => moment(), []);
 
+    const name = useAsync(async () => {
+        const profileInfo = await identityApi.getProfileInfo()
+        return profileInfo.displayName
+    })
+    console.log(name)
+
     const helloMessage = useMemo(() => {
+        const nameSuffix = name.loading ? '' : `, ${name.value}`;
+
         const currHour = currTime.hour();
 
         if (currHour < 12) {
-            return `☀️ Good morning`;
+            return `☀️ Good morning${nameSuffix}`;
         } else if (currHour < 18) {
-            return `☀️ Good afternoon`;
+            return `☀️ Good afternoon${nameSuffix}`;
         } else {
-            return `🌅 Good evening`;
+            return `🌅 Good evening${nameSuffix}`;
         }
-    }, [currTime]);
+    }, [currTime, name]);
 
     return (
         <Content>
