@@ -46,7 +46,7 @@ import {
   IdentityApi,
 } from '@backstage/core-plugin-api';
 import { gzipSync } from 'zlib';
-import {GetUserInsightsResponse, HomepageEntityResponse} from "./types/UserInsightsTypes";
+import {GetUserInsightsResponse, HomepageEntityResponse} from "./userInsightTypes";
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
