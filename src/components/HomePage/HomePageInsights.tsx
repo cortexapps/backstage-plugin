@@ -107,9 +107,9 @@ export const HomePageInsights = () => {
                 <HomePageInsightCard
                   key={`InsightCard-${idx}`}
                   insight={insight}
-                  scorecards={scorecards}
-                  initiatives={initiatives}
-                  entities={entities?.entities}
+                  scorecards={scorecards || []}
+                  initiatives={initiatives || []}
+                  entities={entities?.entities || []}
                 />
                 )
             })}

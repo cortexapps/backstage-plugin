@@ -16,7 +16,7 @@
 import React from 'react';
 import {
     ActionItemUserInsight,
-    FailingRuleUserInsight,
+    FailingRuleUserInsight, HomepageEntity, UserInsight,
     UserInsightType
 } from "../../api/types/UserInsightsTypes";
 import {InfoCard, Link} from "@backstage/core-components";
@@ -29,8 +29,16 @@ import {initiativeRouteRef} from "../../routes";
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import {ScorecardRefLink} from "../ScorecardRefLink";
 import {useHomepageInsightsLinkStyles, useHomepageInsightsStyles} from "../../styles/styles";
+import {Initiative, Scorecard} from "../../api/types";
 
-export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities }) => {
+interface HomePageInsightCardProps {
+    insight: UserInsight,
+    scorecards: Scorecard[],
+    initiatives: Initiative[],
+    entities: HomepageEntity[]
+}
+
+export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities }: HomePageInsightCardProps) => {
     const initiativeRef = useRouteRef(initiativeRouteRef);
     const classes = useHomepageInsightsStyles();
     const linkClasses = useHomepageInsightsLinkStyles();
@@ -40,13 +48,13 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
             const actionItemInsight = insight as ActionItemUserInsight;
             const entity = entities?.find((currEntity) => currEntity.id === actionItemInsight.entityId);
             const initiative = initiatives?.find(
-                (currInitiative) => currInitiative.id === actionItemInsight.initiativeId
+                (currInitiative) => currInitiative.id.toString() === actionItemInsight.initiativeId
             );
 
             const entityRef = {
                 kind: 'Component',
                 namespace: 'default',
-                name: entity.name,
+                name: entity?.name || ''
             };
 
             return (
@@ -70,7 +78,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
                                 for the{' '}
                                 <Link
                                   to={initiativeRef({
-                                    id: initiative.id
+                                    id: initiative.id.toString()
                                   })}
                                   className={linkClasses.root}
                                 >
@@ -88,7 +96,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
             const entity = entities?.find(
                 (currEntity) => currEntity.id === failingRuleInsight.entityId
             );
-            const scorecard = scorecards.find((scorecard) => scorecard.id === failingRuleInsight.scorecardId);
+            const scorecard = scorecards.find((scorecard) => scorecard.id.toString() === failingRuleInsight.scorecardId);
 
             const contentSuffix = failingRuleInsight.nextLadderLevel
                 ? ` to reach ${failingRuleInsight.nextLadderLevel}`
@@ -97,7 +105,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
             const entityRef = {
                 kind: 'Component',
                 namespace: 'default',
-                name: entity.name,
+                name: entity?.name || '',
             };
 
             return (
