@@ -28,9 +28,12 @@ import {useRouteRef} from "@backstage/core-plugin-api";
 import {initiativeRouteRef} from "../../routes";
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import {ScorecardRefLink} from "../ScorecardRefLink";
+import {useHomepageInsightsLinkStyles, useHomepageInsightsStyles} from "../../styles/styles";
 
 export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities }) => {
     const initiativeRef = useRouteRef(initiativeRouteRef);
+    const classes = useHomepageInsightsStyles();
+    const linkClasses = useHomepageInsightsLinkStyles();
 
     switch (insight.type) {
         case UserInsightType.ACTION_ITEM: {
@@ -47,7 +50,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
             };
 
             return (
-                <InfoCard title="Insight">
+                <InfoCard title="Insight" className={classes.root}>
                     <Typography>
                         You have {maybePluralize(actionItemInsight.ruleIds.length, 'action item')} due by{' '}
                         {moment(actionItemInsight.targetDate).local().format('MMM Do')}
@@ -55,7 +58,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
                                 <>
                                     {' '}
                                     for{' '}
-                                    <EntityRefLink entityRef={entityRef}>
+                                    <EntityRefLink entityRef={entityRef} className={linkClasses.root}>
                                         {entity.name}
                                     </EntityRefLink>
                                 </>
@@ -69,6 +72,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
                                   to={initiativeRef({
                                     id: initiative.id
                                   })}
+                                  className={linkClasses.root}
                                 >
                                     {initiative.name}
                                 </Link>{' '}
@@ -97,7 +101,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
             };
 
             return (
-                <InfoCard title="Insight">
+                <InfoCard title="Insight" className={classes.root}>
                     <Typography>
                         {maybePluralize(failingRuleInsight.ruleIds.length, 'rule')} left
                         <>
@@ -105,7 +109,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
                                 <>
                                     {' '}
                                     for{' '}
-                                    <EntityRefLink entityRef={entityRef}>
+                                    <EntityRefLink entityRef={entityRef} className={linkClasses.root}>
                                         {entity.name}
                                     </EntityRefLink>
                                 </>
@@ -116,7 +120,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
                             <>
                                 {' '}
                                 in{' '}
-                                <ScorecardRefLink scorecardId={scorecard.id}>
+                                <ScorecardRefLink scorecardId={scorecard.id} className={linkClasses.root}>
                                     {scorecard.name}
                                 </ScorecardRefLink>
                             </>
@@ -127,7 +131,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
         }
         case UserInsightType.NO_ENTITIES_OWNED: {
             return (
-                <InfoCard title="Insight">
+                <InfoCard title="Insight" className={classes.root}>
                     <Typography>
                         Looks like you own no entities. Try creating one or add yourself
                         as an owner to an existing one.
@@ -137,7 +141,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
         }
         case UserInsightType.NO_FAILING_RULES: {
             return (
-                <InfoCard title="Insight">
+                <InfoCard title="Insight" className={classes.root}>
                     <Typography>
                         Great work! You don't have any more Scorecard rules left; all your services are crushing it! 🎉
                     </Typography>
@@ -146,7 +150,7 @@ export const HomePageInsightCard = ({ insight, scorecards, initiatives, entities
         }
         case UserInsightType.NO_SCORECARDS: {
             return (
-                <InfoCard title="Insight">
+                <InfoCard title="Insight" className={classes.root}>
                     <Typography>
                         Looks like you have no scorecards - create one here!
                     </Typography>

@@ -44,6 +44,26 @@ const cortexStyles = (theme: Theme) =>
     scoreGauge: {},
   });
 
+const homePageOnCallStyles = createStyles({
+  root: {
+    backgroundColor: '#e9fdeb',
+    color: 'black'
+  },
+})
+
+const homePageInsightsStyles = createStyles({
+  root: {
+    backgroundColor: '#fff3c8',
+    color: 'black'
+  }
+})
+
+const homePageInsightsLinkStyles = createStyles({
+  root: {
+    color: '#005dca'
+  }
+})
+
 const detailCardStyles = createStyles({
   root: {
     display: 'flex',
@@ -82,5 +102,10 @@ export const fallbackPalette = {
   },
 };
 
+
+
 export const useCortexStyles = makeStyles(cortexStyles);
 export const useDetailCardStyles = makeStyles(detailCardStyles);
+export const useHomepageOncallStyles = makeStyles(homePageOnCallStyles);
+export const useHomepageInsightsStyles = makeStyles(homePageInsightsStyles);
+export const useHomepageInsightsLinkStyles = makeStyles(homePageInsightsLinkStyles);

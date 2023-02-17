@@ -30,7 +30,6 @@ export const HomePage = () => {
         const profileInfo = await identityApi.getProfileInfo()
         return profileInfo.displayName
     })
-    console.log(name)
 
     const helloMessage = useMemo(() => {
         const nameSuffix = name.loading ? '' : `, ${name.value}`;

@@ -23,11 +23,13 @@ import moment from "moment";
 import {Oncall} from "../../api/types";
 import {Typography} from "@material-ui/core";
 import {getDisplayTimeUntilNextOncall, getOncallSchedulesDisplayName} from "./HomePageUtils";
+import {useHomepageOncallStyles} from "../../styles/styles";
 
-export const getDisplayForCurrentOncalls = (oncalls: Oncall[]) => {
+export const getDisplayForCurrentOncalls = (oncalls: Oncall[], classes: any) => {
     return (
     <InfoCard
       title="On-Call"
+      className={classes.root}
     >
         <Typography>
             You're currently on call for {getOncallSchedulesDisplayName(oncalls)}
@@ -55,6 +57,8 @@ const getDisplayForNextOncalls = (oncalls: Oncall[]) => {
 };
 
 export const HomepageOncallCard = () => {
+    const classes = useHomepageOncallStyles();
+
     const cortexApi = useApi(cortexApiRef)
     const identityApi = useApi(identityApiRef);
 
@@ -101,7 +105,7 @@ export const HomepageOncallCard = () => {
 
     if (!firstOncall?.startDate || moment(firstOncall!.startDate).isBefore(now)) {
         return (
-            getDisplayForCurrentOncalls(currentOncalls ?? [])
+            getDisplayForCurrentOncalls(currentOncalls ?? [], classes)
         )
     }
 
