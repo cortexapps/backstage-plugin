@@ -36,7 +36,7 @@ import {
   CustomMapping,
   TeamOverrides,
 } from '@cortexapps/backstage-plugin-extensions';
-import {GetUserInsightsResponse, HomepageEntityResponse} from "./types/UserInsightsTypes";
+import {GetUserInsightsResponse, HomepageEntityResponse} from "./userInsightTypes";
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;

@@ -18,7 +18,7 @@ import {WarningPanel, Progress} from "@backstage/core-components";
 import {identityApiRef, useApi} from "@backstage/core-plugin-api";
 import {cortexApiRef} from "../../api";
 import {useAsync} from "react-use";
-import {ActionItemUserInsight, UserInsightType} from "../../api/types/UserInsightsTypes";
+import {ActionItemUserInsight, UserInsightType} from "../../api/userInsightTypes";
 import moment from "moment";
 import {Moment} from "moment/moment";
 import {HomePageInsightCard} from "./HomePageInsightCard"

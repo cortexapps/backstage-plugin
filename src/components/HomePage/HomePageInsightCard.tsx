@@ -18,7 +18,7 @@ import {
     ActionItemUserInsight,
     FailingRuleUserInsight, HomepageEntity, UserInsight,
     UserInsightType
-} from "../../api/types/UserInsightsTypes";
+} from "../../api/userInsightTypes";
 import {InfoCard, Link} from "@backstage/core-components";
 import {Typography} from "@material-ui/core";
 import {maybePluralize} from "../../utils/strings";
