@@ -22,5 +22,11 @@ export interface Config {
      * @visibility frontend
      */
     frontendBaseUrl?: string;
+    /**
+     * The 'syncWithGzip' attribute. If true, the Cortex Backstage entity sync will use gzip.
+     * If not provided, the Cortex Backstage entity sync will not use gzip.
+     * @visibility frontend
+     */
+    syncWithGzip?: boolean;
   };
 }

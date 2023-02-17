@@ -5,8 +5,8 @@ exports[`ScorecardResultDetails check order of applicable scorecard service rule
   <RuleResultDetails
     key="RuleResultDetails-5"
     ruleOutcome={
-      Object {
-        "rule": Object {
+      {
+        "rule": {
           "expression": "k8s != null",
           "id": 5,
           "weight": 1,
@@ -19,8 +19,8 @@ exports[`ScorecardResultDetails check order of applicable scorecard service rule
   <RuleResultDetails
     key="RuleResultDetails-2"
     ruleOutcome={
-      Object {
-        "rule": Object {
+      {
+        "rule": {
           "expression": "oncall != null",
           "id": 2,
           "title": "abc oncall",
@@ -34,8 +34,8 @@ exports[`ScorecardResultDetails check order of applicable scorecard service rule
   <RuleResultDetails
     key="RuleResultDetails-4"
     ruleOutcome={
-      Object {
-        "rule": Object {
+      {
+        "rule": {
           "expression": "description != null",
           "id": 4,
           "weight": 1,
@@ -48,8 +48,8 @@ exports[`ScorecardResultDetails check order of applicable scorecard service rule
   <RuleResultDetails
     key="RuleResultDetails-1"
     ruleOutcome={
-      Object {
-        "rule": Object {
+      {
+        "rule": {
           "expression": "git != null",
           "id": 1,
           "weight": 1,
@@ -62,9 +62,9 @@ exports[`ScorecardResultDetails check order of applicable scorecard service rule
   <RuleResultDetails
     key="RuleResultDetails-6"
     ruleOutcome={
-      Object {
-        "rule": Object {
-          "expression": "custom(\\"my_key\\") != null",
+      {
+        "rule": {
+          "expression": "custom("my_key") != null",
           "id": 6,
           "weight": 1,
         },
@@ -75,10 +75,10 @@ exports[`ScorecardResultDetails check order of applicable scorecard service rule
   <RuleResultDetails
     key="RuleResultDetails-3"
     ruleOutcome={
-      Object {
+      {
         "approvedDate": "05/05/2000",
         "requestedDate": "05/05/2000",
-        "rule": Object {
+        "rule": {
           "expression": "documentation.count > 0",
           "id": 3,
           "weight": 1,
