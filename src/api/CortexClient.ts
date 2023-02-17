@@ -32,6 +32,7 @@ import {
 } from './types';
 import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
+import { Buffer } from 'buffer';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
 import {
@@ -44,6 +45,7 @@ import {
   DiscoveryApi,
   IdentityApi,
 } from '@backstage/core-plugin-api';
+import { gzipSync } from 'zlib';
 import {GetUserInsightsResponse, HomepageEntityResponse} from "./types/UserInsightsTypes";
 
 export const cortexApiRef = createApiRef<CortexApi>({
@@ -76,6 +78,7 @@ export class CortexClient implements CortexApi {
 
   async submitEntitySync(
     entities: Entity[],
+    gzipContents: boolean,
     customMappings?: CustomMapping[],
     teamOverrides?: TeamOverrides,
   ): Promise<EntitySyncProgress> {
@@ -83,10 +86,17 @@ export class CortexClient implements CortexApi {
       ? entities.map(entity => applyCustomMappings(entity, customMappings))
       : entities;
 
-    return await this.post(`/api/backstage/v1/entities/sync`, {
-      entities: withCustomMappings,
-      teamOverrides,
-    });
+    if (gzipContents) {
+      return await this.postWithGzipBody(`/api/backstage/v1/entities/sync`, {
+        entities: withCustomMappings,
+        teamOverrides,
+      });
+    } else {
+      return await this.post(`/api/backstage/v1/entities/sync`, {
+        entities: withCustomMappings,
+        teamOverrides,
+      });
+    }
   }
 
   async getServiceScores(
@@ -317,6 +327,29 @@ export class CortexClient implements CortexApi {
       method: 'POST',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (response.status !== 200) {
+      throw new Error(`Error communicating with Cortex`);
+    }
+
+    return response.json();
+  }
+
+  private async postWithGzipBody(path: string, body?: any): Promise<any> {
+    const basePath = await this.getBasePath();
+    const url = `${basePath}${path}`;
+
+    const input = Buffer.from(JSON.stringify(body), 'utf-8');
+    const compressed = gzipSync(input);
+
+    const response = await this.fetchAuthenticated(url, {
+      method: 'POST',
+      body: compressed,
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Encoding': 'gzip',
+      },
     });
 
     if (response.status !== 200) {

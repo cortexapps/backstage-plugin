@@ -23,7 +23,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { InfoCard, Link } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { extensionApiRef } from '../../api/ExtensionApi';
@@ -57,7 +57,7 @@ interface CancelSyncButtonProps {
 
 const CancelSyncButton: React.FC<CancelSyncButtonProps> = ({ cancelSync }) => {
   const [isCanceling, setIsCanceling] = useState(false);
-  
+
   return (
     <IconButton
       onClick={() => {
@@ -74,6 +74,7 @@ const CancelSyncButton: React.FC<CancelSyncButtonProps> = ({ cancelSync }) => {
 
 export const SettingsSyncCard = () => {
   const catalogApi = useApi(catalogApiRef);
+  const config = useApi(configApiRef);
   const cortexApi = useApi(cortexApiRef);
   const extensionApi = useApi(extensionApiRef);
 
@@ -85,15 +86,18 @@ export const SettingsSyncCard = () => {
 
   const submitEntitySync = useCallback(async () => {
     const { items: entities } = await catalogApi.getEntities();
+    const shouldGzipBody =
+      config.getOptionalBoolean('cortex.syncWithGzip') ?? false;
     const customMappings = await extensionApi.getCustomMappings?.();
     const groupOverrides = await extensionApi.getTeamOverrides?.(entities);
     const progress = await cortexApi.submitEntitySync(
       entities,
+      shouldGzipBody,
       customMappings,
       groupOverrides,
     );
     setSyncTaskProgressPercentage(progress.percentage);
-  }, [catalogApi, cortexApi, extensionApi]);
+  }, [catalogApi, config, cortexApi, extensionApi]);
 
   const cancelEntitySync = useCallback(async () => {
     await cortexApi.cancelEntitySync();

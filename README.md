@@ -124,6 +124,23 @@ cortex:
   frontendBaseUrl: ${CORTEX_FRONTEND_HOST_URL}
 ```
 
+11. (Optional) When performing manual entity sync in the settings page, you can choose to use gzip to compress the entities by updating `app-config.yaml` with the parameter `syncWithGzip`. You must also update the Backstage HTTP proxy to allow the `Content-Encoding` header. 
+
+```yaml
+cortex:
+   syncWithGzip: true
+```
+
+```yaml
+proxy:
+  '/cortex':
+    target: ${CORTEX_BACKEND_HOST_URL}
+    headers:
+      Authorization: ${CORTEX_TOKEN}
+    allowedHeaders:
+      - Content-Encoding
+```
+
 
 ## Advanced
 

@@ -85,6 +85,7 @@ export interface CortexApi {
 
   submitEntitySync(
     entities: Entity[],
+    shouldGzipBody: boolean,
     customMappings?: CustomMapping[],
     teamOverrides?: TeamOverrides,
   ): Promise<EntitySyncProgress>;
