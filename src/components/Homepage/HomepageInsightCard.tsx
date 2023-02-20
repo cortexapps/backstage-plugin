@@ -36,7 +36,7 @@ import {
 } from '../../styles/styles';
 import { Initiative, Scorecard } from '../../api/types';
 
-interface HomePageInsightCardProps {
+interface HomepageInsightCardProps {
   insight: UserInsight;
   scorecards: Scorecard[];
   initiatives: Initiative[];
@@ -48,7 +48,7 @@ export const HomepageInsightCard = ({
   scorecards,
   initiatives,
   entities,
-}: HomePageInsightCardProps) => {
+}: HomepageInsightCardProps) => {
   const initiativeRef = useRouteRef(initiativeRouteRef);
   const classes = useHomepageInsightsStyles();
   const linkClasses = useHomepageInsightsLinkStyles();
