@@ -21,8 +21,7 @@ import {
   UserInsight,
   UserInsightType,
 } from '../../api/userInsightTypes';
-import { InfoCard, Link } from '@backstage/core-components';
-import { Typography } from '@material-ui/core';
+import { Link } from '@backstage/core-components';
 import { maybePluralize } from '../../utils/strings';
 import moment from 'moment';
 import { isNil } from 'lodash';
@@ -30,10 +29,8 @@ import { useRouteRef } from '@backstage/core-plugin-api';
 import { initiativeRouteRef } from '../../routes';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { ScorecardRefLink } from '../ScorecardRefLink';
-import {
-  useHomepageInsightsLinkStyles,
-  useHomepageInsightsStyles,
-} from '../../styles/styles';
+import { useHomepageInsightsLinkStyles } from '../../styles/styles';
+import InsightCard from './InsightCard';
 import { Initiative, Scorecard } from '../../api/types';
 
 interface HomepageInsightCardProps {
@@ -50,7 +47,6 @@ export const HomepageInsightCard = ({
   entities,
 }: HomepageInsightCardProps) => {
   const initiativeRef = useRouteRef(initiativeRouteRef);
-  const classes = useHomepageInsightsStyles();
   const linkClasses = useHomepageInsightsLinkStyles();
 
   switch (insight.type) {
@@ -70,41 +66,35 @@ export const HomepageInsightCard = ({
       };
 
       return (
-        <InfoCard title="Insight" className={classes.root}>
-          <Typography>
-            You have{' '}
-            {maybePluralize(actionItemInsight.ruleIds.length, 'action item')}{' '}
-            due by{' '}
-            {moment(actionItemInsight.targetDate).local().format('MMM Do')}
-            {!isNil(entity) && (
-              <>
-                {' '}
-                for{' '}
-                <EntityRefLink
-                  entityRef={entityRef}
-                  className={linkClasses.root}
-                >
-                  {entity.name}
-                </EntityRefLink>
-              </>
-            )}{' '}
-            {!isNil(initiative) && (
-              <>
-                {' '}
-                for the{' '}
-                <Link
-                  to={initiativeRef({
-                    id: initiative.id.toString(),
-                  })}
-                  className={linkClasses.root}
-                >
-                  {initiative.name}
-                </Link>{' '}
-                Initiative
-              </>
-            )}
-          </Typography>
-        </InfoCard>
+        <InsightCard>
+          You have{' '}
+          {maybePluralize(actionItemInsight.ruleIds.length, 'action item')} due
+          by {moment(actionItemInsight.targetDate).local().format('MMM Do')}
+          {!isNil(entity) && (
+            <>
+              {' '}
+              for{' '}
+              <EntityRefLink entityRef={entityRef} className={linkClasses.root}>
+                {entity.name}
+              </EntityRefLink>
+            </>
+          )}{' '}
+          {!isNil(initiative) && (
+            <>
+              {' '}
+              for the{' '}
+              <Link
+                to={initiativeRef({
+                  id: initiative.id.toString(),
+                })}
+                className={linkClasses.root}
+              >
+                {initiative.name}
+              </Link>{' '}
+              Initiative
+            </>
+          )}
+        </InsightCard>
       );
     }
     case UserInsightType.FAILING_RULE: {
@@ -128,65 +118,54 @@ export const HomepageInsightCard = ({
       console.log(entity);
       console.log(scorecard);
       return (
-        <InfoCard title="Insight" className={classes.root}>
-          <Typography>
-            {maybePluralize(failingRuleInsight.ruleIds.length, 'rule')} left
-            {!isNil(entity) && (
-              <>
-                {' '}
-                for{' '}
-                <EntityRefLink
-                  entityRef={entityRef}
-                  className={linkClasses.root}
-                >
-                  {entity.name}
-                </EntityRefLink>
-              </>
-            )}
-            {contentSuffix}
-            {!isNil(scorecard) && (
-              <>
-                {' '}
-                in{' '}
-                <ScorecardRefLink
-                  scorecardId={scorecard.id}
-                  className={linkClasses.root}
-                >
-                  {scorecard.name}
-                </ScorecardRefLink>
-              </>
-            )}
-          </Typography>
-        </InfoCard>
+        <InsightCard>
+          {maybePluralize(failingRuleInsight.ruleIds.length, 'rule')} left
+          {!isNil(entity) && (
+            <>
+              {' '}
+              for{' '}
+              <EntityRefLink entityRef={entityRef} className={linkClasses.root}>
+                {entity.name}
+              </EntityRefLink>
+            </>
+          )}
+          {contentSuffix}
+          {!isNil(scorecard) && (
+            <>
+              {' '}
+              in{' '}
+              <ScorecardRefLink
+                scorecardId={scorecard.id}
+                className={linkClasses.root}
+              >
+                {scorecard.name}
+              </ScorecardRefLink>
+            </>
+          )}
+        </InsightCard>
       );
     }
     case UserInsightType.NO_ENTITIES_OWNED: {
       return (
-        <InfoCard title="Insight" className={classes.root}>
-          <Typography>
-            Looks like you own no entities. Try creating one or add yourself as
-            an owner to an existing one.
-          </Typography>
-        </InfoCard>
+        <InsightCard>
+          Looks like you own no entities. Try creating one or add yourself as an
+          owner to an existing one.
+        </InsightCard>
       );
     }
     case UserInsightType.NO_FAILING_RULES: {
       return (
-        <InfoCard title="Insight" className={classes.root}>
-          <Typography>
-            Great work! You don't have any more Scorecard rules left; all your
-            services are crushing it! 🎉
-          </Typography>
-        </InfoCard>
+        <InsightCard>
+          Great work! You don't have any more Scorecard rules left; all your
+          services are crushing it! 🎉
+        </InsightCard>
       );
     }
     case UserInsightType.NO_SCORECARDS: {
       return (
-        <InfoCard title="Insight" className={classes.root}>
-          <Typography>
-            Looks like you have no scorecards - create one here!
-          </Typography>
-        </InfoCard>
+        <InsightCard>
+          Looks like you have no scorecards - create one here!
+        </InsightCard>
       );
     }
     default: {
