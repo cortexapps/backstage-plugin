@@ -43,16 +43,16 @@ export function maybePluralize(
 }
 
 export const joinWithSpecialLastJoin = (
-    strings: string[],
-    {
-      joiner = ', ',
-      lastJoiner,
-      lastJoinerWhenTwoItems = lastJoiner,
-    }: {
-      joiner?: string;
-      lastJoiner: string;
-      lastJoinerWhenTwoItems?: string;
-    }
+  strings: string[],
+  {
+    joiner = ', ',
+    lastJoiner,
+    lastJoinerWhenTwoItems = lastJoiner,
+  }: {
+    joiner?: string;
+    lastJoiner: string;
+    lastJoinerWhenTwoItems?: string;
+  },
 ) => {
   if (strings.length === 1) {
     return strings[0];

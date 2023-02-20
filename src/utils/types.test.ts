@@ -14,23 +14,34 @@
  * limitations under the License.
  */
 
-import { humanizeAnyEntityRef } from "./types";
-import { defaultComponentRefContext } from "./ComponentUtils";
+import { humanizeAnyEntityRef } from './types';
+import { defaultComponentRefContext } from './ComponentUtils';
 
 describe('humanizeEntityRef', () => {
   it('should handle different kind and namespace', () => {
-    expect(humanizeAnyEntityRef('Group:other-namespace/foo')).toBe('group:other-namespace/foo')
+    expect(humanizeAnyEntityRef('Group:other-namespace/foo')).toBe(
+      'group:other-namespace/foo',
+    );
   });
 
   it('should handle default kind only', () => {
-    expect(humanizeAnyEntityRef('Component:other-namespace/foo', defaultComponentRefContext)).toBe('other-namespace/foo')
+    expect(
+      humanizeAnyEntityRef(
+        'Component:other-namespace/foo',
+        defaultComponentRefContext,
+      ),
+    ).toBe('other-namespace/foo');
   });
 
   it('should handle default namespace only', () => {
-    expect(humanizeAnyEntityRef('Group:default/foo', defaultComponentRefContext)).toBe('group:foo')
+    expect(
+      humanizeAnyEntityRef('Group:default/foo', defaultComponentRefContext),
+    ).toBe('group:foo');
   });
 
   it('should handle both default kind and namespace', () => {
-    expect(humanizeAnyEntityRef('Component:default/foo', defaultComponentRefContext)).toBe('foo')
+    expect(
+      humanizeAnyEntityRef('Component:default/foo', defaultComponentRefContext),
+    ).toBe('foo');
   });
 });

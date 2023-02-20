@@ -46,7 +46,10 @@ import {
   IdentityApi,
 } from '@backstage/core-plugin-api';
 import { gzipSync } from 'zlib';
-import {GetUserInsightsResponse, HomepageEntityResponse} from "./userInsightTypes";
+import {
+  GetUserInsightsResponse,
+  HomepageEntityResponse,
+} from './userInsightTypes';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -263,15 +266,15 @@ export class CortexClient implements CortexApi {
   }
 
   async getUserOncallByEmail(email: string): Promise<OncallsResponse> {
-    return await this.get(`/api/backstage/v1/homepage/oncall?email=${email}`)
+    return this.get(`/api/backstage/v1/homepage/oncall?email=${email}`);
   }
 
   async getInsightsByEmail(email: string): Promise<GetUserInsightsResponse> {
-    return await this.get(`/api/backstage/v1/homepage/insights?email=${email}`)
+    return this.get(`/api/backstage/v1/homepage/insights?email=${email}`);
   }
 
   async getCatalogEntities(): Promise<HomepageEntityResponse> {
-    return await this.get(`/api/backstage/v1/homepage/catalog`);
+    return this.get(`/api/backstage/v1/homepage/catalog`);
   }
 
   private async getBasePath(): Promise<string> {

@@ -21,7 +21,7 @@ import { Link } from '@backstage/core-components';
 interface ScorecardRefLinkProps {
   scorecardId: number;
   children?: React.ReactNode;
-  className?: any
+  className?: string;
 }
 
 export const ScorecardRefLink = ({
@@ -31,5 +31,9 @@ export const ScorecardRefLink = ({
 }: ScorecardRefLinkProps) => {
   const scorecardRef = useRouteRef(scorecardRouteRef);
 
-  return <Link to={scorecardRef({ id: `${scorecardId}` })} className={className}>{children}</Link>;
+  return (
+    <Link to={scorecardRef({ id: `${scorecardId}` })} className={className}>
+      {children}
+    </Link>
+  );
 };

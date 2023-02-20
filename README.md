@@ -79,7 +79,7 @@ import { EntityCortexContent } from '@cortexapps/backstage-plugin';
 
 <EntityLayout.Route path="/cortex" title="Cortex">
   <EntityCortexContent />
-</EntityLayout.Route>
+</EntityLayout.Route>;
 ```
 
 6. Add a new sidebar item in [Root.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/Root/Root.tsx)
@@ -87,7 +87,7 @@ import { EntityCortexContent } from '@cortexapps/backstage-plugin';
 ```tsx
 import { CortexIcon } from '@cortexapps/backstage-plugin';
 
-<SidebarItem icon={CortexIcon} to="cortex" text="Cortex" />
+<SidebarItem icon={CortexIcon} to="cortex" text="Cortex" />;
 ```
 
 7. (Optional) Import `CortexScorecardWidget` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new component widget for Cortex that shows scorecards for that component:
@@ -97,7 +97,7 @@ import { CortexScorecardWidget } from '@cortexapps/backstage-plugin';
 
 <Grid item md={4} xs={12}>
   <CortexScorecardWidget />
-</Grid>
+</Grid>;
 ```
 
 8. (Optional) Import `CortexGroupActionItemsWidget` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new group widget for Cortex that shows initiative action items for components owned by that group:
@@ -106,14 +106,15 @@ import { CortexScorecardWidget } from '@cortexapps/backstage-plugin';
 import { CortexGroupActionItemsWidget } from '@cortexapps/backstage-plugin';
 
 <Grid item md={4} xs={12}>
-   <CortexGroupActionItemsWidget />
-</Grid>
+  <CortexGroupActionItemsWidget />
+</Grid>;
 ```
 
 9. (Optional) Import `SystemCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
+
 ```tsx
 <EntityLayout.Route path="/cortex" title="Cortex">
-<SystemCortexContent />
+  <SystemCortexContent />
 </EntityLayout.Route>
 ```
 
@@ -124,11 +125,11 @@ cortex:
   frontendBaseUrl: ${CORTEX_FRONTEND_HOST_URL}
 ```
 
-11. (Optional) When performing manual entity sync in the settings page, you can choose to use gzip to compress the entities by updating `app-config.yaml` with the parameter `syncWithGzip`. You must also update the Backstage HTTP proxy to allow the `Content-Encoding` header. 
+11. (Optional) When performing manual entity sync in the settings page, you can choose to use gzip to compress the entities by updating `app-config.yaml` with the parameter `syncWithGzip`. You must also update the Backstage HTTP proxy to allow the `Content-Encoding` header.
 
 ```yaml
 cortex:
-   syncWithGzip: true
+  syncWithGzip: true
 ```
 
 ```yaml
@@ -141,7 +142,6 @@ proxy:
       - Content-Encoding
 ```
 
-
 ## Advanced
 
 You can configure the Cortex plugin to customize its layout. (And soon the ability to provide custom mappings to Cortex YAMLs.)
@@ -150,8 +150,13 @@ To do this, instead of importing `cortexPlugin`, `CortexPage`, and `EntityCortex
 ### **`cortex.ts`**
 
 ```tsx
-import { CustomMapping, EntityFilterGroup, extendableCortexPlugin, ExtensionApi } from '@cortexapps/backstage-plugin';
-import { Entity } from '@backstage/catalog-model'
+import {
+  CustomMapping,
+  EntityFilterGroup,
+  extendableCortexPlugin,
+  ExtensionApi,
+} from '@cortexapps/backstage-plugin';
+import { Entity } from '@backstage/catalog-model';
 
 class ExtensionApiImpl implements ExtensionApi {
   async getAdditionalFilters(): Promise<EntityFilterGroup[]> {
@@ -170,17 +175,20 @@ class ExtensionApiImpl implements ExtensionApi {
     return [
       (entity: Entity) => {
         if (!componentEntityV1alpha1Validator.check(entity)) {
-          return {}
+          return {};
         }
 
-        const component = entity as ComponentEntityV1alpha1
-        const system = component.spec.system
-        const serviceGroup = system ? `system:${system}` : undefined
+        const component = entity as ComponentEntityV1alpha1;
+        const system = component.spec.system;
+        const serviceGroup = system ? `system:${system}` : undefined;
 
         return {
-          'x-cortex-service-groups': [...(component.metadata.tags ?? []), ...(serviceGroup ?? [])],
-        }
-      }
+          'x-cortex-service-groups': [
+            ...(component.metadata.tags ?? []),
+            ...(serviceGroup ?? []),
+          ],
+        };
+      },
     ];
   }
 }

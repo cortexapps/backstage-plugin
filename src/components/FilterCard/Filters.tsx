@@ -44,9 +44,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export interface FilterValue {
-  display: string,
-  value: string,
-  id: string,
+  display: string;
+  value: string;
+  id: string;
 }
 
 export interface FilterDefinition<T> {
@@ -149,7 +149,9 @@ export const Filters = <T extends {}>({
                   onChange={() => toggleFilter(id)}
                   color="primary"
                   inputProps={{
-                    "aria-label": `Filter ${name.toLowerCase()} by ${filters[id].display}`
+                    'aria-label': `Filter ${name.toLowerCase()} by ${
+                      filters[id].display
+                    }`,
                   }}
                 />
               </Grid>

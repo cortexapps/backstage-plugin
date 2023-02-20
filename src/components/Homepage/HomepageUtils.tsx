@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import moment from "moment/moment";
-import {Oncall} from "../../api/types";
-import {joinWithSpecialLastJoin, maybePluralize} from "../../utils/strings";
-
+import moment from 'moment/moment';
+import { Oncall } from '../../api/types';
+import { joinWithSpecialLastJoin, maybePluralize } from '../../utils/strings';
 
 export const getDisplayTimeUntilNextOncall = (oncallStartDate: string) => {
-    const now = moment.now();
+  const now = moment.now();
 
-    const hoursUntilOncall = moment(oncallStartDate).diff(now, 'hours');
-    const daysUntilOncall = moment(oncallStartDate).diff(now, 'days');
+  const hoursUntilOncall = moment(oncallStartDate).diff(now, 'hours');
+  const daysUntilOncall = moment(oncallStartDate).diff(now, 'days');
 
-    return hoursUntilOncall < 18
-        ? `${hoursUntilOncall} hours`
-        : `${maybePluralize(daysUntilOncall, 'day')}`;
+  return hoursUntilOncall < 18
+    ? `${hoursUntilOncall} hours`
+    : `${maybePluralize(daysUntilOncall, 'day')}`;
 };
 
 export const getOncallSchedulesDisplayName = (oncalls: Oncall[]) => {
-    const oncallNames = oncalls?.map((oncall) => oncall.name) ?? [];
-    return oncallNames.length === 1
-        ? oncallNames[0]
-        : joinWithSpecialLastJoin(oncallNames, {
-            joiner: ', ',
-            lastJoiner: ', and ',
-            lastJoinerWhenTwoItems: ' and ',
-        });
+  const oncallNames = oncalls?.map(oncall => oncall.name) ?? [];
+  return oncallNames.length === 1
+    ? oncallNames[0]
+    : joinWithSpecialLastJoin(oncallNames, {
+        joiner: ', ',
+        lastJoiner: ', and ',
+        lastJoinerWhenTwoItems: ' and ',
+      });
 };

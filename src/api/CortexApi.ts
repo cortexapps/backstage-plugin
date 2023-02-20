@@ -36,7 +36,10 @@ import {
   CustomMapping,
   TeamOverrides,
 } from '@cortexapps/backstage-plugin-extensions';
-import {GetUserInsightsResponse, HomepageEntityResponse} from "./userInsightTypes";
+import {
+  GetUserInsightsResponse,
+  HomepageEntityResponse,
+} from './userInsightTypes';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
@@ -96,7 +99,7 @@ export interface CortexApi {
 
   cancelEntitySync(): Promise<void>;
 
-  getUserOncallByEmail(email: string): Promise<OncallsResponse>
+  getUserOncallByEmail(email: string): Promise<OncallsResponse>;
 
   getInsightsByEmail(email: string): Promise<GetUserInsightsResponse>;
 

@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 // @ts-ignore
-import { CompoundEntityRef, Entity, parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
+import {
+  CompoundEntityRef,
+  Entity,
+  parseEntityRef,
+  stringifyEntityRef,
+} from '@backstage/catalog-model';
 import { defaultComponentRefContext, EntityRefContext } from './ComponentUtils';
 
 export const identity = <T>(t: T) => t;
@@ -60,24 +65,23 @@ export function stringifyAnyEntityRef(
   );
 }
 
-
 export function humanizeAnyEntityRef(
   entityRef: AnyEntityRef,
   entityRefContext: EntityRefContext = defaultComponentRefContext,
 ): string {
-  let minifiedRef = stringifyAnyEntityRef(entityRef, entityRefContext)
+  let minifiedRef = stringifyAnyEntityRef(entityRef, entityRefContext);
 
   if (entityRefContext.defaultKind !== undefined) {
     const kind = entityRefContext.defaultKind.toLowerCase();
-    minifiedRef = minifiedRef.replace(`${kind}:`, '')
+    minifiedRef = minifiedRef.replace(`${kind}:`, '');
   }
 
   if (entityRefContext.defaultNamespace !== undefined) {
     const namespace = entityRefContext.defaultNamespace.toLowerCase();
-    minifiedRef = minifiedRef.replace(`${namespace}/`, '')
+    minifiedRef = minifiedRef.replace(`${namespace}/`, '');
   }
 
-  return minifiedRef
+  return minifiedRef;
 }
 
 export function entityEquals(
@@ -96,4 +100,8 @@ export type PartialEntityName = {
   name: string;
 };
 
-export type AnyEntityRef = string | PartialEntityName | CompoundEntityRef | Entity;
+export type AnyEntityRef =
+  | string
+  | PartialEntityName
+  | CompoundEntityRef
+  | Entity;

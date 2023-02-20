@@ -63,7 +63,11 @@ export const CortexScorecardWidget = ({
   includeFilters,
   excludeFilters,
 }: CortexScorecardWidgetProps) => {
-  const { entity, loading: entityLoading, error: entityError } = useAsyncEntity();
+  const {
+    entity,
+    loading: entityLoading,
+    error: entityError,
+  } = useAsyncEntity();
   const location = useLocation();
   const navigate = useNavigate();
 

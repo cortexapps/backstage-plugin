@@ -17,6 +17,6 @@ import '@testing-library/jest-dom';
 import 'cross-fetch/polyfill';
 import 'jest-canvas-mock';
 import Adapter from 'enzyme-adapter-react-16';
-import { configure } from "enzyme";
+import { configure } from 'enzyme';
 
 configure({ adapter: new Adapter() });

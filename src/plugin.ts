@@ -194,11 +194,11 @@ export const SystemCortexContent = cortexPlugin.provide(
 );
 
 export const CortexHomePage = cortexPlugin.provide(
-    createComponentExtension({
-        name: 'CortexHomePage',
-        component: {
-            lazy: () =>
-                import('./components/HomePage/HomePage').then(m => m.HomePage),
-        }
-    })
-)
+  createComponentExtension({
+    name: 'CortexHomePage',
+    component: {
+      lazy: () =>
+        import('./components/Homepage/Homepage').then(m => m.Homepage),
+    },
+  }),
+);

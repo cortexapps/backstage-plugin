@@ -52,7 +52,6 @@ const InitiativesPageBody = () => {
     );
   }
 
-
   if (!initiatives?.length) {
     return (
       <EmptyState
