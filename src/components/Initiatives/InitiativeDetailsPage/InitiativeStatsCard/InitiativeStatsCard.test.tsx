@@ -15,7 +15,10 @@
  */
 import { shallow } from 'enzyme';
 import React from 'react';
-import { InitiativeStatsCard, InitiativeStatsCardProps } from "./InitiativeStatsCard";
+import {
+  InitiativeStatsCard,
+  InitiativeStatsCardProps,
+} from './InitiativeStatsCard';
 
 describe('InitiativeStatsCard', () => {
   const getInitiativeStatsCard = (props: InitiativeStatsCardProps) =>
@@ -25,7 +28,7 @@ describe('InitiativeStatsCard', () => {
     const card = getInitiativeStatsCard({
       scores: [],
       actionItems: [],
-      filter: () => () => true
+      filter: () => () => true,
     });
 
     expect(card).toMatchSnapshot();

@@ -28,7 +28,7 @@ import { stringifyAnyEntityRef } from '../../utils/types';
 import { useCortexApi } from '../../utils/hooks';
 import { EntityScorecardDetails } from './EntityScorecardDetails';
 import { ScorecardServiceRefLink } from '../ScorecardServiceRefLink';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { ServiceScorecardScore } from '../../api/types';
 
 export const EntityPage = () => {

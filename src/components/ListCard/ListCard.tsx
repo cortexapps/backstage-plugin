@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { Card, CardActions, CardContent, CardMedia, makeStyles } from '@material-ui/core';
+import {
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  makeStyles,
+} from '@material-ui/core';
 import {
   Button,
   ItemCardHeader,
@@ -67,11 +73,14 @@ export const ListCard = ({
       {description && (
         <CardContent>
           <MarkdownContent content={descriptionToShow ?? ''} />
-          {
-            truncateToCharacters && description.length > truncateToCharacters && (
-              <button className={classes.linkButton} onClick={() => setIsExpanded(!isExpanded)}>{isExpanded ? 'Less' : 'More'}</button>
-            )
-          }
+          {truncateToCharacters && description.length > truncateToCharacters && (
+            <button
+              className={classes.linkButton}
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              {isExpanded ? 'Less' : 'More'}
+            </button>
+          )}
         </CardContent>
       )}
       <CardActions>

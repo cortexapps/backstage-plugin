@@ -20,6 +20,7 @@ import {
   InitiativeActionItem,
   InitiativeWithScores,
   LastEntitySyncTime,
+  OncallsResponse,
   Scorecard,
   ScorecardLadder,
   ScorecardResult,
@@ -35,6 +36,10 @@ import {
   CustomMapping,
   TeamOverrides,
 } from '@cortexapps/backstage-plugin-extensions';
+import {
+  GetUserInsightsResponse,
+  HomepageEntityResponse,
+} from './userInsightTypes';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
@@ -93,4 +98,10 @@ export interface CortexApi {
   getLastEntitySyncTime(): Promise<LastEntitySyncTime>;
 
   cancelEntitySync(): Promise<void>;
+
+  getUserOncallByEmail(email: string): Promise<OncallsResponse>;
+
+  getInsightsByEmail(email: string): Promise<GetUserInsightsResponse>;
+
+  getCatalogEntities(): Promise<HomepageEntityResponse>;
 }

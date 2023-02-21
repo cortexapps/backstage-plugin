@@ -24,6 +24,7 @@ export {
   EntityCortexContent,
   SystemCortexContent,
   extendableCortexPlugin,
+  CortexHomepage,
 } from './plugin';
 export { extensionApiRef } from './api/ExtensionApi';
 export type { CortexScorecardWidgetProps } from './components/CortexScorecardWidget/CortexScorecardWidget';

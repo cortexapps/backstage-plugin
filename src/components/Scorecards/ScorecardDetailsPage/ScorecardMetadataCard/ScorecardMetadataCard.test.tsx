@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Fixtures, renderWrapped } from "../../../../utils/TestUtils";
-import { ScorecardMetadataCard } from "./ScorecardMetadataCard";
+import { Fixtures, renderWrapped } from '../../../../utils/TestUtils';
+import { ScorecardMetadataCard } from './ScorecardMetadataCard';
 
 describe('ScorecardMetadataCard', () => {
-
   it('should render metadata', async () => {
     const scorecard = Fixtures.scorecard({
       creator: { name: 'Bob Jones', email: 'bobjones@cortex.io' },
       description: 'My Description',
       tags: [{ id: '1', tag: 'tag1' }],
       excludedTags: [{ id: '2', tag: 'tag2' }],
-    })
-    const { findByText } = renderWrapped(<ScorecardMetadataCard scorecard={scorecard} scores={[]}/>);
+    });
+    const { findByText } = renderWrapped(
+      <ScorecardMetadataCard scorecard={scorecard} scores={[]} />,
+    );
 
     expect(await findByText('Bob Jones')).toBeVisible();
     expect(await findByText('My Description')).toBeVisible();
@@ -34,4 +35,3 @@ describe('ScorecardMetadataCard', () => {
     expect(await findByText('tag2')).toBeVisible();
   });
 });
-

@@ -65,8 +65,12 @@ describe('ScorecardsPage', () => {
 
   it('should render empty state if no scorecards', async () => {
     const emptyGetScorecards = () => Promise.resolve([]);
-    const { findByText } = renderWrapped(<ScorecardsPage />, { getScorecards: emptyGetScorecards });
+    const { findByText } = renderWrapped(<ScorecardsPage />, {
+      getScorecards: emptyGetScorecards,
+    });
     expect(await findByText(/No scorecards to display/)).toBeVisible();
-    expect(await findByText(/You haven't added any scorecards yet/)).toBeVisible();
+    expect(
+      await findByText(/You haven't added any scorecards yet/),
+    ).toBeVisible();
   });
 });
