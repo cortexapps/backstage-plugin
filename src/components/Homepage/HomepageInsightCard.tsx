@@ -115,8 +115,7 @@ export const HomepageInsightCard = ({
         namespace: 'default',
         name: entity?.name || '',
       };
-      console.log(entity);
-      console.log(scorecard);
+
       return (
         <InsightCard>
           {maybePluralize(failingRuleInsight.ruleIds.length, 'rule')} left
@@ -164,7 +163,7 @@ export const HomepageInsightCard = ({
     case UserInsightType.NO_SCORECARDS: {
       return (
         <InsightCard>
-          Looks like you have no scorecards - create one here!
+          Looks like you have no scorecards - create one!
         </InsightCard>
       );
     }

@@ -38,7 +38,6 @@ export interface FailingRuleUserInsight extends BaseUserInsight {
   nextLadderLevel?: string;
   ruleIds: string[];
   scorecardId: number;
-  // TODO (dev-homepage): do we want to show next % if you complete rule(s) for percentage based insight
 }
 
 export interface NoEntitiesOwnedUserInsight extends BaseUserInsight {}

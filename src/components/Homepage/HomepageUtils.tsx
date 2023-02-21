@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import moment from 'moment/moment';
+import moment from 'moment';
 import { Oncall } from '../../api/types';
 import { joinWithSpecialLastJoin, maybePluralize } from '../../utils/strings';
 
