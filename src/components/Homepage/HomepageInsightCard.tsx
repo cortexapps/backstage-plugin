@@ -34,10 +34,10 @@ import InsightCard from './InsightCard';
 import { Initiative, Scorecard } from '../../api/types';
 
 interface HomepageInsightCardProps {
+  entities: HomepageEntity[];
+  initiatives: Initiative[];
   insight: UserInsight;
   scorecards: Scorecard[];
-  initiatives: Initiative[];
-  entities: HomepageEntity[];
 }
 
 export const HomepageInsightCard = ({
