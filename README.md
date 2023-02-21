@@ -142,6 +142,28 @@ proxy:
       - Content-Encoding
 ```
 
+12. (Optional) Customize Backstage homepage as the Cortex homepage:
+
+![homepage](./docs/homepage.png?raw=true)
+
+- Import `CortexHomepage` and update [App.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/App.tsx):
+
+```tsx
+import { CortexHomepage } from '@cortexapps/backstage-plugin';
+
+<Route path="/" element={<HomepageCompositionRoot />}>
+  <CortexHomepage />
+</Route>;
+```
+
+- Update sidebar items in [Root.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/Root/Root.tsx):
+
+```tsx
+<SidebarItem icon={HomeIcon} to="/" text="Home" />
+```
+
+See [Backstage Homepage documentation](https://backstage.io/docs/getting-started/homepage) for further details.
+
 ## Advanced
 
 You can configure the Cortex plugin to customize its layout. (And soon the ability to provide custom mappings to Cortex YAMLs.)
