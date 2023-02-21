@@ -39,10 +39,10 @@ export const ScorecardsServiceNextRules = ({
     error: nextStepsError,
   } = useCortexApi(
     async cortexApi => {
-        return await cortexApi.getServiceNextSteps(
-          stringifyAnyEntityRef(entityRef),
-          scorecardId,
-        )
+      return await cortexApi.getServiceNextSteps(
+        stringifyAnyEntityRef(entityRef),
+        scorecardId,
+      );
     },
     [entityRef],
   );

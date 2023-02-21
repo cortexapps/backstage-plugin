@@ -20,7 +20,7 @@ import { EntityScorecardRules } from '../EntityScorecardRules';
 import { useCortexApi } from '../../../utils/hooks';
 import { Progress } from '@backstage/core-components';
 import { ScorecardsServiceNextRules } from '../../Scorecards/ScorecardsServicePage/ScorecardsServiceNextRules';
-import { AnyEntityRef } from "../../../utils/types";
+import { AnyEntityRef } from '../../../utils/types';
 
 interface EntityScorecardDetailsProps {
   entityRef: AnyEntityRef;
@@ -50,7 +50,10 @@ export const EntityScorecardDetails = ({
       {ladder === undefined ? (
         <EntityScorecardOverview score={score} />
       ) : (
-        <ScorecardsServiceNextRules scorecardId={scorecardId} entityRef={entityRef}/>
+        <ScorecardsServiceNextRules
+          scorecardId={scorecardId}
+          entityRef={entityRef}
+        />
       )}
       <EntityScorecardRules score={score} />
     </>

@@ -1,9 +1,7 @@
 {
   "extends": "@backstage/cli/config/tsconfig.json",
   "include": ["src", "dev"],
-  "files": [
-    "custom.d.ts"
-  ],
+  "files": ["custom.d.ts"],
   "compilerOptions": {
     "outDir": "dist-types",
     "incremental": false,

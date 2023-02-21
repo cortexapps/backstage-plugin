@@ -22,7 +22,7 @@ import { useDropdown } from '../../../utils/hooks';
 import { GroupByOption, HeaderType } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { buildUrl } from '../../../utils/URLUtils';
 import { HeaderTypeDropdown } from '../Common/HeaderTypeDropdown';
 import { isUndefined } from 'lodash';

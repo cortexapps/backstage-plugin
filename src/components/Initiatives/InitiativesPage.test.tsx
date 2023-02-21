@@ -27,65 +27,70 @@ type AnyFunction = (args?: [] | [any]) => any;
 type ApiOverrides = Record<string, AnyFunction>;
 
 describe('Initiatives Page', () => {
-    const creator = { name: 'David Developer', email: 'david.developer@cortex.io' };
-    const mockScorecard: Scorecard = {
-        creator,
-        description: 'Some description',
-        excludedTags: [],
-        id: 1,
-        name: 'Scorecard 1',
-        rules: [],
-        tags: [],
-    };
-    const getCortexApi = (overrides?: ApiOverrides): Partial<CortexApi> => ({
-        getInitiatives: () =>
-          Promise.resolve([
-            {
-              componentRefs: [],
-              creator,
-              description: 'Some description',
-              emphasizedLevels: [],
-              emphasizedRules: [],
-              filterQuery: undefined,
-              id: 1,
-              name: 'My Initiative',
-              rules: [],
-              scorecard: mockScorecard,
-              tags: [],
-              targetData: [],
-              targetDate: '2025-01-01T08:00:00',
-            },
-          ]),
-        getScorecards: () => Promise.resolve([
-            mockScorecard,
-        ]),
-        ...overrides,
-      });
-    
-      const renderWrapped = (children: React.ReactNode, overrides?: ApiOverrides) =>
-        render(
-          wrapInTestApp(
-            <TestApiProvider apis={[[cortexApiRef, getCortexApi(overrides)]]}>
-              {children}
-            </TestApiProvider>,
-            {
-              mountedRoutes: {
-                '/': rootRouteRef as any,
-              },
-            },
-          ),
-        );
-    
-      it('should render', async () => {
-        const { findByText } = renderWrapped(<InitiativesPage />);
-        expect(await findByText(/Initiatives/)).toBeVisible();
-        expect(await findByText(/Some description/)).toBeVisible();
-      });
-    
-      it('should render empty state if no initiatives', async () => {
-        const emptyGetInitiatives = () => Promise.resolve([]);
-        const { findByText } = renderWrapped(<InitiativesPage />, { getInitiatives: emptyGetInitiatives });
-        expect(await findByText(/No initiatives to display/)).toBeVisible();
-        expect(await findByText(/You haven't added any initiatives yet/)).toBeVisible();
-      });
+  const creator = {
+    name: 'David Developer',
+    email: 'david.developer@cortex.io',
+  };
+  const mockScorecard: Scorecard = {
+    creator,
+    description: 'Some description',
+    excludedTags: [],
+    id: 1,
+    name: 'Scorecard 1',
+    rules: [],
+    tags: [],
+  };
+  const getCortexApi = (overrides?: ApiOverrides): Partial<CortexApi> => ({
+    getInitiatives: () =>
+      Promise.resolve([
+        {
+          componentRefs: [],
+          creator,
+          description: 'Some description',
+          emphasizedLevels: [],
+          emphasizedRules: [],
+          filterQuery: undefined,
+          id: 1,
+          name: 'My Initiative',
+          rules: [],
+          scorecard: mockScorecard,
+          tags: [],
+          targetData: [],
+          targetDate: '2025-01-01T08:00:00',
+        },
+      ]),
+    getScorecards: () => Promise.resolve([mockScorecard]),
+    ...overrides,
+  });
+
+  const renderWrapped = (children: React.ReactNode, overrides?: ApiOverrides) =>
+    render(
+      wrapInTestApp(
+        <TestApiProvider apis={[[cortexApiRef, getCortexApi(overrides)]]}>
+          {children}
+        </TestApiProvider>,
+        {
+          mountedRoutes: {
+            '/': rootRouteRef as any,
+          },
+        },
+      ),
+    );
+
+  it('should render', async () => {
+    const { findByText } = renderWrapped(<InitiativesPage />);
+    expect(await findByText(/Initiatives/)).toBeVisible();
+    expect(await findByText(/Some description/)).toBeVisible();
+  });
+
+  it('should render empty state if no initiatives', async () => {
+    const emptyGetInitiatives = () => Promise.resolve([]);
+    const { findByText } = renderWrapped(<InitiativesPage />, {
+      getInitiatives: emptyGetInitiatives,
+    });
+    expect(await findByText(/No initiatives to display/)).toBeVisible();
+    expect(
+      await findByText(/You haven't added any initiatives yet/),
+    ).toBeVisible();
+  });
 });

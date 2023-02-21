@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 import React from 'react';
-import { useRouteRef } from '@backstage/core-plugin-api';
-import { scorecardRouteRef } from '../../routes';
-import { Link } from '@backstage/core-components';
+import { InfoCard } from '@backstage/core-components';
+import { Typography } from '@material-ui/core';
+import { useHomepageInsightsStyles } from '../../styles/styles';
 
-interface ScorecardRefLinkProps {
-  scorecardId: number;
-  children?: React.ReactNode;
-  className?: string;
+interface InsightCardProps {
+  children: React.ReactNode;
 }
 
-export const ScorecardRefLink = ({
-  scorecardId,
-  children,
-  className,
-}: ScorecardRefLinkProps) => {
-  const scorecardRef = useRouteRef(scorecardRouteRef);
+const InsightCard: React.FC<InsightCardProps> = ({ children }) => {
+  const classes = useHomepageInsightsStyles();
 
   return (
-    <Link to={scorecardRef({ id: `${scorecardId}` })} className={className}>
-      {children}
-    </Link>
+    <InfoCard title="Insight" className={classes.root}>
+      <Typography>{children}</Typography>
+    </InfoCard>
   );
 };
+
+export default InsightCard;

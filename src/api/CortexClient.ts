@@ -21,6 +21,7 @@ import {
   InitiativeActionItem,
   InitiativeWithScores,
   LastEntitySyncTime,
+  OncallsResponse,
   Scorecard,
   ScorecardLadder,
   ScorecardResult,
@@ -45,6 +46,10 @@ import {
   IdentityApi,
 } from '@backstage/core-plugin-api';
 import { gzipSync } from 'zlib';
+import {
+  GetUserInsightsResponse,
+  HomepageEntityResponse,
+} from './userInsightTypes';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -258,6 +263,18 @@ export class CortexClient implements CortexApi {
 
   async cancelEntitySync(): Promise<void> {
     await this.delete(`/api/backstage/v1/entities/sync`);
+  }
+
+  async getUserOncallByEmail(email: string): Promise<OncallsResponse> {
+    return this.get(`/api/backstage/v1/homepage/oncall?email=${email}`);
+  }
+
+  async getInsightsByEmail(email: string): Promise<GetUserInsightsResponse> {
+    return this.get(`/api/backstage/v1/homepage/insights?email=${email}`);
+  }
+
+  async getCatalogEntities(): Promise<HomepageEntityResponse> {
+    return this.get(`/api/backstage/v1/homepage/catalog`);
   }
 
   private async getBasePath(): Promise<string> {

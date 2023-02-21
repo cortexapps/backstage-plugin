@@ -280,3 +280,23 @@ export interface EntitySyncProgress {
 export interface LastEntitySyncTime {
   lastSynced: string | null;
 }
+
+export enum OncallProvider {
+  PagerDuty = 'PAGERDUTY',
+  Opsgenie = 'OPSGENIE',
+  Victorops = 'VICTOROPS',
+}
+
+export interface Oncall {
+  endDate: string | null;
+  lastUpdated: string;
+  level: number;
+  name: string;
+  source: OncallProvider;
+  startDate: string | null;
+  url: string;
+}
+
+export interface OncallsResponse {
+  oncalls: Oncall[];
+}
