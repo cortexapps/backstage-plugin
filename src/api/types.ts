@@ -71,10 +71,7 @@ export interface ScorecardLevel {
 }
 
 export interface ScorecardLadder {
-  id: string;
   scorecardId: string;
-  name: string;
-  description?: string;
   levels: ScorecardLevel[];
 }
 
