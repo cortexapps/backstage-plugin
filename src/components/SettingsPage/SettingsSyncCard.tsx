@@ -29,6 +29,7 @@ import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { extensionApiRef } from '../../api/ExtensionApi';
 import PollingLinearGauge from '../Common/PollingLinearGauge';
 import moment from 'moment';
+import { useDetailCardStyles } from "../../styles/styles";
 
 interface SyncButtonProps {
   isSyncing: boolean;
@@ -84,6 +85,8 @@ export const SettingsSyncCard = () => {
 
   const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
 
+  const classes = useDetailCardStyles();
+
   const submitEntitySync = useCallback(async () => {
     const { items: entities } = await catalogApi.getEntities();
     const shouldGzipBody =
@@ -128,6 +131,7 @@ export const SettingsSyncCard = () => {
 
   return (
     <InfoCard
+      className={classes.root}
       title="Sync Entities"
       action={
         <SyncButton

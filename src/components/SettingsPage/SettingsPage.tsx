@@ -17,14 +17,25 @@ import { Grid } from '@material-ui/core';
 import React from 'react';
 import { Content, ContentHeader } from '@backstage/core-components';
 import { SettingsSyncCard } from './SettingsSyncCard';
+import { ExtensionApiCard } from "./ExtensionApiCard";
+import { useApi } from "@backstage/core-plugin-api";
+import { extensionApiRef } from "../../api/ExtensionApi";
 
 export const SettingsPage = () => {
+
+  const extensionApi = useApi(extensionApiRef);
+  const customMappingsEnabled = extensionApi.getCustomMappings !== undefined
+  const groupOverridesEnabled = extensionApi.getTeamOverrides !== undefined
+
   return (
     <Content>
       <ContentHeader title="Settings" />
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <SettingsSyncCard />
+          { (customMappingsEnabled || groupOverridesEnabled) && (
+            <ExtensionApiCard/>
+          )}
         </Grid>
       </Grid>
     </Content>

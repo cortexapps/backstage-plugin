@@ -13,6 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ExtensionApi, } from '@cortexapps/backstage-plugin-extensions';
-
-export class NoopExtensionClient implements ExtensionApi {}
+export { ExtensionApiDebugger } from './ExtensionApiDebugger';
