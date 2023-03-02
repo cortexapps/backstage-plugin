@@ -39,13 +39,15 @@ export const cortexScorecardPageURL = ({
   scorecardId,
   cortexURL,
 }: CortexScorecardPageURLProperties) => {
-  return `${cortexURL}/admin/scorecards/${scorecardId}`
+  return `${cortexURL}/admin/scorecards/${scorecardId}`;
 };
-
 
 export const cortexScorecardServicePageURL = ({
   scorecardId,
   serviceId,
   cortexURL,
 }: CortexScorecardServicePageURLProperties) =>
-  `${cortexScorecardPageURL({ scorecardId: scorecardId, cortexURL: cortexURL })}?service=${serviceId}`;
+  `${cortexScorecardPageURL({
+    scorecardId: scorecardId,
+    cortexURL: cortexURL,
+  })}?service=${serviceId}`;

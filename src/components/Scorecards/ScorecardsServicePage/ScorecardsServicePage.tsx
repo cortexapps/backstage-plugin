@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 import React, { useEffect, useState } from 'react';
-import {
-  useApi,
-  useRouteRefParams,
-} from '@backstage/core-plugin-api';
+import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import {
   Content,
   InfoCard,
@@ -38,7 +35,7 @@ import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
 import { RuleOutcome } from '../../../api/types';
 import { cortexScorecardServicePageURL } from '../../../utils/URLUtils';
-import {useCortexFrontendURL} from "../../../utils/hooks";
+import { useCortexFrontendURL } from '../../../utils/hooks';
 
 const useStyles = makeStyles({
   progress: {

@@ -15,7 +15,7 @@
  */
 import React, { useMemo } from 'react';
 import { Button, Typography } from '@material-ui/core';
-import {useCortexFrontendURL, useDropdown} from '../../../utils/hooks';
+import { useCortexFrontendURL, useDropdown } from '../../../utils/hooks';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
@@ -116,7 +116,10 @@ export const ScorecardsServiceProgress = ({
           <Button
             variant="contained"
             color="primary"
-            href={cortexScorecardPageURL({ scorecardId: scorecardId, cortexURL: cortexURL })}
+            href={cortexScorecardPageURL({
+              scorecardId: scorecardId,
+              cortexURL: cortexURL,
+            })}
           >
             Go to Cortex
           </Button>
