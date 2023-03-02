@@ -6,6 +6,6 @@
     "outDir": "dist-types",
     "incremental": false,
     "sourceMap": true,
-    "jsx": "react"
+    "jsx": "react",
   }
 }
