@@ -92,7 +92,7 @@ export const ScorecardsServiceProgress = ({
     });
   }, [historicalScores]);
 
-  const cortexURL = useCortexFrontendURL();
+  const cortexBaseUrl = useCortexFrontendURL();
 
   if (loading) {
     return <Progress />;
@@ -118,7 +118,7 @@ export const ScorecardsServiceProgress = ({
             color="primary"
             href={cortexScorecardPageURL({
               scorecardId: scorecardId,
-              cortexURL: cortexURL,
+              cortexURL: cortexBaseUrl,
             })}
           >
             Go to Cortex

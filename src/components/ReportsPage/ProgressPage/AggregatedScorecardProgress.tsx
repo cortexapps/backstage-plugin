@@ -90,7 +90,7 @@ export const AggregatedScorecardProgress = ({
     setFilterOptions(unfilteredData.map(d => d.id));
   }, [setFilterOptions, unfilteredData]);
 
-  const cortexURL = useCortexFrontendURL();
+  const cortexBaseUrl = useCortexFrontendURL();
 
   if (loading) {
     return <Progress />;
@@ -116,7 +116,7 @@ export const AggregatedScorecardProgress = ({
             color="primary"
             href={cortexScorecardPageURL({
               scorecardId: scorecardId,
-              cortexURL: cortexURL,
+              cortexURL: cortexBaseUrl,
             })}
           >
             Go to Cortex
