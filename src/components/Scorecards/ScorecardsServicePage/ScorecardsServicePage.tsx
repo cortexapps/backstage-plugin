@@ -34,7 +34,7 @@ import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
 import { RuleOutcome } from '../../../api/types';
-import { cortexScorecardServicePageURL } from '../../../utils/URLUtils';
+import { cortexScorecardServicePageUrl } from '../../../utils/URLUtils';
 import { useCortexFrontendURL } from '../../../utils/hooks';
 
 const useStyles = makeStyles({
@@ -113,10 +113,10 @@ export const ScorecardsServicePage = () => {
         </Box>
         <Box alignSelf="center">
           <Link
-            to={cortexScorecardServicePageURL({
+            to={cortexScorecardServicePageUrl({
               scorecardId,
               serviceId: score.serviceId,
-              cortexURL: cortexBaseUrl,
+              cortexUrl: cortexBaseUrl,
             })}
             target="_blank"
           >

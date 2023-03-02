@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 import {
-  cortexScorecardPageURL,
-  cortexScorecardServicePageURL,
+  cortexScorecardPageUrl,
+  cortexScorecardServicePageUrl,
 } from './URLUtils';
 
 describe('URLUtils', () => {
   describe('cortexScorecardPageURL', () => {
     it('should use the provided url', () => {
       expect(
-        cortexScorecardPageURL({
+        cortexScorecardPageUrl({
           scorecardId: '1',
-          cortexURL: 'https://test.domain',
+          cortexUrl: 'https://test.domain',
         }),
       ).toEqual('https://test.domain/admin/scorecards/1');
     });
@@ -33,10 +33,10 @@ describe('URLUtils', () => {
   describe('cortexScorecardServicePageURL', () => {
     it('should use custom domain url', () => {
       expect(
-        cortexScorecardServicePageURL({
+        cortexScorecardServicePageUrl({
           scorecardId: '1',
           serviceId: '1',
-          cortexURL: 'https://test.domain',
+          cortexUrl: 'https://test.domain',
         }),
       ).toEqual('https://test.domain/admin/scorecards/1?service=1');
     });

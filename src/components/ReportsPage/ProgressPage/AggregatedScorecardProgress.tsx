@@ -23,7 +23,7 @@ import Box from '@material-ui/core/Box';
 import moment from 'moment';
 import { mapByString } from '../../../utils/collections';
 import { GroupByOption } from '../../../api/types';
-import { cortexScorecardPageURL } from '../../../utils/URLUtils';
+import { cortexScorecardPageUrl } from '../../../utils/URLUtils';
 
 interface AggregatedScorecardProgressProps {
   scorecardId: number;
@@ -114,9 +114,9 @@ export const AggregatedScorecardProgress = ({
           <Button
             variant="contained"
             color="primary"
-            href={cortexScorecardPageURL({
+            href={cortexScorecardPageUrl({
               scorecardId: scorecardId,
-              cortexURL: cortexBaseUrl,
+              cortexUrl: cortexBaseUrl,
             })}
           >
             Go to Cortex

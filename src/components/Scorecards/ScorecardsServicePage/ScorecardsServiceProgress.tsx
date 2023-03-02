@@ -28,7 +28,7 @@ import { Point } from '@nivo/line';
 import { getLookbackRange, Lookback } from '../../../utils/lookback';
 import { RuleOutcome, RuleOutcomeType, RuleResult } from '../../../api/types';
 import { LookbackDropdown } from '../../ReportsPage/Common/LookbackDropdown';
-import { cortexScorecardPageURL } from '../../../utils/URLUtils';
+import { cortexScorecardPageUrl } from '../../../utils/URLUtils';
 
 interface ScorecardsServiceProgressProps {
   scorecardId: string;
@@ -116,9 +116,9 @@ export const ScorecardsServiceProgress = ({
           <Button
             variant="contained"
             color="primary"
-            href={cortexScorecardPageURL({
+            href={cortexScorecardPageUrl({
               scorecardId: scorecardId,
-              cortexURL: cortexBaseUrl,
+              cortexUrl: cortexBaseUrl,
             })}
           >
             Go to Cortex
