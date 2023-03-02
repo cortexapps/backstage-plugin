@@ -18,12 +18,12 @@ import { StringifiableRecord, stringifyUrl } from 'query-string';
 interface CortexScorecardServicePageURLProperties {
   scorecardId: string | number;
   serviceId: string | number;
-  cortexURL?: string;
+  cortexURL: string;
 }
 
 interface CortexScorecardPageURLProperties {
   scorecardId: string | number;
-  cortexURL?: string;
+  cortexURL: string;
 }
 
 export const buildUrl = (
@@ -35,17 +35,17 @@ export const buildUrl = (
     query: queryParamsObj,
   })}`;
 
-const defaultCortexURL = 'https://app.getcortexapp.com';
-
 export const cortexScorecardPageURL = ({
   scorecardId,
-  cortexURL = defaultCortexURL,
-}: CortexScorecardPageURLProperties) =>
-  `${cortexURL}/admin/scorecards/${scorecardId}`;
+  cortexURL,
+}: CortexScorecardPageURLProperties) => {
+  return `${cortexURL}/admin/scorecards/${scorecardId}`
+};
+
 
 export const cortexScorecardServicePageURL = ({
   scorecardId,
   serviceId,
   cortexURL,
 }: CortexScorecardServicePageURLProperties) =>
-  `${cortexScorecardPageURL({ scorecardId, cortexURL })}?service=${serviceId}`;
+  `${cortexScorecardPageURL({ scorecardId: scorecardId, cortexURL: cortexURL })}?service=${serviceId}`;

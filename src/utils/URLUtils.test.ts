@@ -20,12 +20,6 @@ import {
 
 describe('URLUtils', () => {
   describe('cortexScorecardPageURL', () => {
-    it('should use default cortex url', () => {
-      expect(cortexScorecardPageURL({ scorecardId: '1' })).toEqual(
-        'https://app.getcortexapp.com/admin/scorecards/1',
-      );
-    });
-
     it('should use the provided url', () => {
       expect(
         cortexScorecardPageURL({
@@ -37,12 +31,6 @@ describe('URLUtils', () => {
   });
 
   describe('cortexScorecardServicePageURL', () => {
-    it('should use default url', () => {
-      expect(
-        cortexScorecardServicePageURL({ scorecardId: '1', serviceId: '1' }),
-      ).toEqual('https://app.getcortexapp.com/admin/scorecards/1?service=1');
-    });
-
     it('should use custom domain url', () => {
       expect(
         cortexScorecardServicePageURL({

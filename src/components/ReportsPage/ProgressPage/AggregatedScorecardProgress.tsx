@@ -15,7 +15,7 @@
  */
 import React, { useEffect, useMemo } from 'react';
 import { getLookbackRange, Lookback } from '../../../utils/lookback';
-import { useCortexApi } from '../../../utils/hooks';
+import {useCortexApi, useCortexFrontendURL} from '../../../utils/hooks';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { Button, Typography } from '@material-ui/core';
 import { Timeseries } from '../../Timeseries';
@@ -23,6 +23,7 @@ import Box from '@material-ui/core/Box';
 import moment from 'moment';
 import { mapByString } from '../../../utils/collections';
 import { GroupByOption } from '../../../api/types';
+import {cortexScorecardPageURL} from "../../../utils/URLUtils";
 
 interface AggregatedScorecardProgressProps {
   scorecardId: number;
@@ -89,6 +90,8 @@ export const AggregatedScorecardProgress = ({
     setFilterOptions(unfilteredData.map(d => d.id));
   }, [setFilterOptions, unfilteredData]);
 
+  const cortexURL = useCortexFrontendURL();
+
   if (loading) {
     return <Progress />;
   }
@@ -111,7 +114,7 @@ export const AggregatedScorecardProgress = ({
           <Button
             variant="contained"
             color="primary"
-            href={`https://app.getcortexapp.com/admin/scorecards/${scorecardId}`}
+            href={cortexScorecardPageURL({ scorecardId: scorecardId, cortexURL: cortexURL })}
           >
             Go to Cortex
           </Button>

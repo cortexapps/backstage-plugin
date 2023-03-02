@@ -15,7 +15,6 @@
  */
 import React, { useEffect, useState } from 'react';
 import {
-  configApiRef,
   useApi,
   useRouteRefParams,
 } from '@backstage/core-plugin-api';
@@ -39,6 +38,7 @@ import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
 import { RuleOutcome } from '../../../api/types';
 import { cortexScorecardServicePageURL } from '../../../utils/URLUtils';
+import {useCortexFrontendURL} from "../../../utils/hooks";
 
 const useStyles = makeStyles({
   progress: {
@@ -48,7 +48,6 @@ const useStyles = makeStyles({
 
 export const ScorecardsServicePage = () => {
   const cortexApi = useApi(cortexApiRef);
-  const config = useApi(configApiRef);
 
   const { scorecardId, kind, namespace, name } = useRouteRefParams(
     scorecardServiceDetailsRouteRef,
@@ -60,7 +59,7 @@ export const ScorecardsServicePage = () => {
 
   const [selectedRules, setSelectedRules] = useState<RuleOutcome[]>([]);
 
-  const cortexBaseUrl = config.getOptionalString('cortex.frontendBaseUrl');
+  const cortexBaseUrl = useCortexFrontendURL();
 
   const { value, loading, error } = useAsync(async () => {
     const allScores = await cortexApi.getScorecardScores(+scorecardId);
