@@ -5,6 +5,7 @@
   "compilerOptions": {
     "outDir": "dist-types",
     "incremental": false,
-    "sourceMap": true
+    "sourceMap": true,
+    "jsx": "react"
   }
 }
