@@ -15,7 +15,7 @@
  */
 import React, { useMemo } from 'react';
 import { Button, Typography } from '@material-ui/core';
-import { useCortexFrontendURL, useDropdown } from '../../../utils/hooks';
+import { useCortexFrontendUrl, useDropdown } from '../../../utils/hooks';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
@@ -92,7 +92,7 @@ export const ScorecardsServiceProgress = ({
     });
   }, [historicalScores]);
 
-  const cortexBaseUrl = useCortexFrontendURL();
+  const cortexBaseUrl = useCortexFrontendUrl();
 
   if (loading) {
     return <Progress />;

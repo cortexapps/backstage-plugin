@@ -317,7 +317,7 @@ export function useFilters<T>(
   return { loading, error, filterGroups };
 }
 
-export function useCortexFrontendURL(): string {
+export function useCortexFrontendUrl(): string {
   const config = useApi(configApiRef);
   return (
     config.getOptionalString('cortex.frontendBaseUrl') ??

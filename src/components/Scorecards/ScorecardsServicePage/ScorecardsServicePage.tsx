@@ -35,7 +35,7 @@ import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
 import { RuleOutcome } from '../../../api/types';
 import { cortexScorecardServicePageUrl } from '../../../utils/URLUtils';
-import { useCortexFrontendURL } from '../../../utils/hooks';
+import { useCortexFrontendUrl } from '../../../utils/hooks';
 
 const useStyles = makeStyles({
   progress: {
@@ -56,7 +56,7 @@ export const ScorecardsServicePage = () => {
 
   const [selectedRules, setSelectedRules] = useState<RuleOutcome[]>([]);
 
-  const cortexBaseUrl = useCortexFrontendURL();
+  const cortexBaseUrl = useCortexFrontendUrl();
 
   const { value, loading, error } = useAsync(async () => {
     const allScores = await cortexApi.getScorecardScores(+scorecardId);

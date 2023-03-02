@@ -15,7 +15,7 @@
  */
 import React, { useEffect, useMemo } from 'react';
 import { getLookbackRange, Lookback } from '../../../utils/lookback';
-import { useCortexApi, useCortexFrontendURL } from '../../../utils/hooks';
+import { useCortexApi, useCortexFrontendUrl } from '../../../utils/hooks';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { Button, Typography } from '@material-ui/core';
 import { Timeseries } from '../../Timeseries';
@@ -90,7 +90,7 @@ export const AggregatedScorecardProgress = ({
     setFilterOptions(unfilteredData.map(d => d.id));
   }, [setFilterOptions, unfilteredData]);
 
-  const cortexBaseUrl = useCortexFrontendURL();
+  const cortexBaseUrl = useCortexFrontendUrl();
 
   if (loading) {
     return <Progress />;
