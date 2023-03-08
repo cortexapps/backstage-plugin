@@ -266,11 +266,11 @@ export class CortexClient implements CortexApi {
   }
 
   async getUserOncallByEmail(email: string): Promise<OncallsResponse> {
-    return this.get(`/api/backstage/v1/homepage/oncall?email=${email}`);
+    return this.get(`/api/backstage/v1/homepage/oncall`);
   }
 
   async getInsightsByEmail(email: string): Promise<GetUserInsightsResponse> {
-    return this.get(`/api/backstage/v1/homepage/insights?email=${email}`);
+    return this.get(`/api/backstage/v1/homepage/insights`);
   }
 
   async getCatalogEntities(): Promise<HomepageEntityResponse> {
@@ -332,6 +332,10 @@ export class CortexClient implements CortexApi {
       headers: { 'Content-Type': 'application/json' },
     });
 
+    if (response.status === 403) {
+      throw new ForbiddenError('Forbidden');
+    }
+
     if (response.status !== 200) {
       throw new Error(`Error communicating with Cortex`);
     }
@@ -381,18 +385,27 @@ export class CortexClient implements CortexApi {
     input: RequestInfo,
     init?: RequestInit,
   ): Promise<Response> {
-    let token: string | undefined = undefined;
+    let token: string | undefined;
+    let email: string | undefined;
+    let displayName: string | undefined;
     if (this.identityApi !== undefined) {
       ({ token } = await this.identityApi.getCredentials());
+      const profileInfo = await this.identityApi.getProfileInfo();
+      email = profileInfo.email;
+      displayName = profileInfo.displayName;
     }
+
+    const headers = {
+      ...init?.headers,
+      Authorization: `Bearer ${token}`,
+      'x-cortex-email': email ? 'jon@cortex.io' : '',
+      'x-cortex-name': displayName ? displayName : '',
+    };
 
     if (token !== undefined) {
       return fetch(input, {
         ...init,
-        headers: {
-          ...init?.headers,
-          Authorization: `Bearer ${token}`,
-        },
+        headers: headers,
       });
     } else {
       return fetch(input, init);
