@@ -267,11 +267,11 @@ export class CortexClient implements CortexApi {
   }
 
   async getUserOncallByEmail(): Promise<OncallsResponse> {
-    return this.get(`/api/backstage/v1/homepage/oncall`);
+    return this.get(`/api/backstage/v2/homepage/oncall`);
   }
 
   async getInsightsByEmail(): Promise<GetUserInsightsResponse> {
-    return this.get(`/api/backstage/v1/homepage/insights`);
+    return this.get(`/api/backstage/v2/homepage/insights`);
   }
 
   async getCatalogEntities(): Promise<HomepageEntityResponse> {
