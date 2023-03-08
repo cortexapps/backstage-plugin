@@ -15,7 +15,7 @@
  */
 import React, { useMemo } from 'react';
 import { Button, Typography } from '@material-ui/core';
-import { useDropdown } from '../../../utils/hooks';
+import { useCortexFrontendUrl, useDropdown } from '../../../utils/hooks';
 import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
@@ -28,7 +28,7 @@ import { Point } from '@nivo/line';
 import { getLookbackRange, Lookback } from '../../../utils/lookback';
 import { RuleOutcome, RuleOutcomeType, RuleResult } from '../../../api/types';
 import { LookbackDropdown } from '../../ReportsPage/Common/LookbackDropdown';
-import { cortexScorecardPageURL } from '../../../utils/URLUtils';
+import { cortexScorecardPageUrl } from '../../../utils/URLUtils';
 
 interface ScorecardsServiceProgressProps {
   scorecardId: string;
@@ -92,6 +92,8 @@ export const ScorecardsServiceProgress = ({
     });
   }, [historicalScores]);
 
+  const cortexBaseUrl = useCortexFrontendUrl();
+
   if (loading) {
     return <Progress />;
   }
@@ -114,7 +116,10 @@ export const ScorecardsServiceProgress = ({
           <Button
             variant="contained"
             color="primary"
-            href={cortexScorecardPageURL({ scorecardId })}
+            href={cortexScorecardPageUrl({
+              scorecardId: scorecardId,
+              cortexUrl: cortexBaseUrl,
+            })}
           >
             Go to Cortex
           </Button>
