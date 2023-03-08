@@ -70,6 +70,7 @@ import { CortexPage } from '@cortexapps/backstage-plugin';
   target: ${CORTEX_BACKEND_HOST_URL}
   headers:
     Authorization: Bearer ${CORTEX_TOKEN}
+  allowedHeaders: ['x-cortex-email', 'x-cortex-name']
 ```
 
 5.Import `EntityCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
@@ -163,6 +164,8 @@ import { CortexHomepage } from '@cortexapps/backstage-plugin';
 ```
 
 See [Backstage Homepage documentation](https://backstage.io/docs/getting-started/homepage) for further details.
+
+Note: we rely on [Backstage's Identity API](https://backstage.io/docs/reference/core-plugin-api.identityapi/), specifically the `email` returned by `getProfileInfo()` for user-scoped requests.
 
 ## Advanced
 
