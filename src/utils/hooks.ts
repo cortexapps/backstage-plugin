@@ -21,7 +21,7 @@ import {
   stringifyAnyEntityRef,
 } from './types';
 import { useAsync } from 'react-use';
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   catalogApiRef,
   humanizeEntityRef,
@@ -315,4 +315,12 @@ export function useFilters<T>(
   }, [allFilterGroups, components, groupPropertyLookup, entityRef]);
 
   return { loading, error, filterGroups };
+}
+
+export function useCortexFrontendUrl(): string {
+  const config = useApi(configApiRef);
+  return (
+    config.getOptionalString('cortex.frontendBaseUrl') ??
+    'https://app.getcortexapp.com'
+  );
 }
