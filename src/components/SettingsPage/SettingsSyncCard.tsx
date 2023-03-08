@@ -29,6 +29,7 @@ import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { extensionApiRef } from '../../api/ExtensionApi';
 import PollingLinearGauge from '../Common/PollingLinearGauge';
 import moment from 'moment';
+import ForbiddenError from '../../api/Exceptions';
 
 interface SyncButtonProps {
   isSyncing: boolean;
@@ -99,8 +100,12 @@ export const SettingsSyncCard = () => {
         groupOverrides,
       );
       setSyncTaskProgressPercentage(progress.percentage);
-    } catch (error: ForbiddenError) {
-      setForbiddenError(true);
+    } catch (error: any) {
+      if (error instanceof ForbiddenError) {
+        setForbiddenError(true);
+      } else {
+        throw error;
+      }
     }
   }, [catalogApi, config, cortexApi, extensionApi]);
 

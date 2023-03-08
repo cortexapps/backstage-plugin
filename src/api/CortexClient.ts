@@ -40,6 +40,7 @@ import {
   TeamOverrides,
 } from '@cortexapps/backstage-plugin-extensions';
 import { applyCustomMappings } from '../utils/ComponentUtils';
+import ForbiddenError from './Exceptions';
 import {
   createApiRef,
   DiscoveryApi,
@@ -265,11 +266,11 @@ export class CortexClient implements CortexApi {
     await this.delete(`/api/backstage/v1/entities/sync`);
   }
 
-  async getUserOncallByEmail(email: string): Promise<OncallsResponse> {
+  async getUserOncallByEmail(): Promise<OncallsResponse> {
     return this.get(`/api/backstage/v1/homepage/oncall`);
   }
 
-  async getInsightsByEmail(email: string): Promise<GetUserInsightsResponse> {
+  async getInsightsByEmail(): Promise<GetUserInsightsResponse> {
     return this.get(`/api/backstage/v1/homepage/insights`);
   }
 

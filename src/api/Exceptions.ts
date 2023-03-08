@@ -4,3 +4,5 @@ class ForbiddenError extends Error {
     this.name = 'ForbiddenError';
   }
 }
+
+export default ForbiddenError;
