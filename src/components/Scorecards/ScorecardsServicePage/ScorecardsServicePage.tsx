@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 import React, { useEffect, useState } from 'react';
-import {
-  configApiRef,
-  useApi,
-  useRouteRefParams,
-} from '@backstage/core-plugin-api';
+import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import {
   Content,
   InfoCard,
@@ -38,7 +34,8 @@ import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
 import { RuleOutcome } from '../../../api/types';
-import { cortexScorecardServicePageURL } from '../../../utils/URLUtils';
+import { cortexScorecardServicePageUrl } from '../../../utils/URLUtils';
+import { useCortexFrontendUrl } from '../../../utils/hooks';
 
 const useStyles = makeStyles({
   progress: {
@@ -48,7 +45,6 @@ const useStyles = makeStyles({
 
 export const ScorecardsServicePage = () => {
   const cortexApi = useApi(cortexApiRef);
-  const config = useApi(configApiRef);
 
   const { scorecardId, kind, namespace, name } = useRouteRefParams(
     scorecardServiceDetailsRouteRef,
@@ -60,7 +56,7 @@ export const ScorecardsServicePage = () => {
 
   const [selectedRules, setSelectedRules] = useState<RuleOutcome[]>([]);
 
-  const cortexBaseUrl = config.getOptionalString('cortex.frontendBaseUrl');
+  const cortexBaseUrl = useCortexFrontendUrl();
 
   const { value, loading, error } = useAsync(async () => {
     const allScores = await cortexApi.getScorecardScores(+scorecardId);
@@ -117,10 +113,10 @@ export const ScorecardsServicePage = () => {
         </Box>
         <Box alignSelf="center">
           <Link
-            to={cortexScorecardServicePageURL({
+            to={cortexScorecardServicePageUrl({
               scorecardId,
               serviceId: score.serviceId,
-              cortexURL: cortexBaseUrl,
+              cortexUrl: cortexBaseUrl,
             })}
             target="_blank"
           >
