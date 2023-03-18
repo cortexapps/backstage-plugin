@@ -22,14 +22,13 @@ import {
   IconButton,
   Typography,
 } from '@material-ui/core';
-import { InfoCard, Link, WarningPanel } from '@backstage/core-components';
+import { InfoCard, Link } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { extensionApiRef } from '../../api/ExtensionApi';
 import PollingLinearGauge from '../Common/PollingLinearGauge';
 import moment from 'moment';
-import ForbiddenError from '../../api/Exceptions';
 
 interface SyncButtonProps {
   isSyncing: boolean;
@@ -84,7 +83,6 @@ export const SettingsSyncCard = () => {
   >(null);
 
   const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
-  const [forbiddenError, setForbiddenError] = useState<boolean>(false);
 
   const submitEntitySync = useCallback(async () => {
     const { items: entities } = await catalogApi.getEntities();
@@ -92,21 +90,13 @@ export const SettingsSyncCard = () => {
       config.getOptionalBoolean('cortex.syncWithGzip') ?? false;
     const customMappings = await extensionApi.getCustomMappings?.();
     const groupOverrides = await extensionApi.getTeamOverrides?.(entities);
-    try {
-      const progress = await cortexApi.submitEntitySync(
-        entities,
-        shouldGzipBody,
-        customMappings,
-        groupOverrides,
-      );
-      setSyncTaskProgressPercentage(progress.percentage);
-    } catch (error: any) {
-      if (error instanceof ForbiddenError) {
-        setForbiddenError(true);
-      } else {
-        throw error;
-      }
-    }
+    const progress = await cortexApi.submitEntitySync(
+      entities,
+      shouldGzipBody,
+      customMappings,
+      groupOverrides,
+    );
+    setSyncTaskProgressPercentage(progress.percentage);
   }, [catalogApi, config, cortexApi, extensionApi]);
 
   const cancelEntitySync = useCallback(async () => {
@@ -135,18 +125,6 @@ export const SettingsSyncCard = () => {
   useEffect(() => {
     updateLastEntitySyncTime();
   }, [updateLastEntitySyncTime]);
-
-  if (forbiddenError) {
-    return (
-      <WarningPanel
-        severity="error"
-        title="Cortex user permissions not sufficient to sync entities."
-      >
-        You do not have permissions to perform this action. Please contact your
-        Cortex admin.
-      </WarningPanel>
-    );
-  }
 
   return (
     <InfoCard

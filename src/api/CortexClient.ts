@@ -29,6 +29,7 @@ import {
   ScorecardServiceScore,
   ScoresByIdentifier,
   ServiceScorecardScore,
+  UserPermissionsResponse,
 } from './types';
 import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
@@ -40,7 +41,6 @@ import {
   TeamOverrides,
 } from '@cortexapps/backstage-plugin-extensions';
 import { applyCustomMappings } from '../utils/ComponentUtils';
-import ForbiddenError from './Exceptions';
 import {
   createApiRef,
   DiscoveryApi,
@@ -278,6 +278,10 @@ export class CortexClient implements CortexApi {
     return this.get(`/api/backstage/v1/homepage/catalog`);
   }
 
+  async getUserPermissions(): Promise<UserPermissionsResponse> {
+    return this.get(`/api/backstage/v2/permissions`);
+  }
+
   private async getBasePath(): Promise<string> {
     const proxyBasePath = await this.discoveryApi.getBaseUrl('proxy');
     return `${proxyBasePath}/cortex`;
@@ -332,10 +336,6 @@ export class CortexClient implements CortexApi {
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
     });
-
-    if (response.status === 403) {
-      throw new ForbiddenError('Forbidden');
-    }
 
     if (response.status !== 200) {
       throw new Error(`Error communicating with Cortex`);
@@ -399,8 +399,8 @@ export class CortexClient implements CortexApi {
     const headers = {
       ...init?.headers,
       Authorization: `Bearer ${token}`,
-      'x-cortex-email': email ? email : '',
-      'x-cortex-name': displayName ? displayName : '',
+      'x-cortex-email': email ?? '',
+      'x-cortex-name': displayName ?? '',
     };
 
     if (token !== undefined) {

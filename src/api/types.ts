@@ -300,3 +300,11 @@ export interface Oncall {
 export interface OncallsResponse {
   oncalls: Oncall[];
 }
+
+export interface UserPermissionsResponse {
+  permissions: string[];
+}
+
+export enum Permission {
+  EDIT_SETTINGS = 'EDIT_SETTINGS',
+}

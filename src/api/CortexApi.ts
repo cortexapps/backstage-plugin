@@ -28,6 +28,7 @@ import {
   ScorecardServiceScore,
   ScoresByIdentifier,
   ServiceScorecardScore,
+  UserPermissionsResponse,
 } from './types';
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
@@ -104,4 +105,6 @@ export interface CortexApi {
   getInsightsByEmail(): Promise<GetUserInsightsResponse>;
 
   getCatalogEntities(): Promise<HomepageEntityResponse>;
+
+  getUserPermissions(): Promise<UserPermissionsResponse>;
 }
