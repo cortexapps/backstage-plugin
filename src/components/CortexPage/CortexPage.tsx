@@ -56,7 +56,7 @@ export const CortexPage = ({
         <InitiativesPage />
       </CortexLayout.Route>
       {/*
-      Show the settings page if there is an error (will occur when email header authorization does not work, which is a valid use case)
+      Show the settings page if there is an error (will occur when email header authorization returns an error, which is a valid use case)
       or if the user has the EDIT_SETTINGS permission
        */}
       {(!isUndefined(error) ||

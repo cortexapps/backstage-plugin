@@ -34,6 +34,8 @@ performing in their Scorecards.
 To start using the Backstage plugin and see a demo, please [sign up here](https://www.getcortexapp.com/demo) and we will
 reach out with more info!
 
+For information on how to migrate between major versions, see the [migration guide](https://github.com/cortexapps/backstage-plugin/blob/master/MIGRATION.md).
+
 ## Setup and Integration
 
 1. In the [packages/app](https://github.com/backstage/backstage/blob/master/packages/app/) directory of your backstage
