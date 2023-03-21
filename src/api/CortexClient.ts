@@ -390,8 +390,11 @@ export class CortexClient implements CortexApi {
     let email: string | undefined;
     let displayName: string | undefined;
     if (this.identityApi !== undefined) {
-      ({ token } = await this.identityApi.getCredentials());
-      const profileInfo = await this.identityApi.getProfileInfo();
+      const [credentials, profileInfo] = await Promise.all([
+        this.identityApi.getCredentials(),
+        this.identityApi.getProfileInfo(),
+      ]);
+      token = credentials.token;
       email = profileInfo.email;
       displayName = profileInfo.displayName;
     }
