@@ -77,8 +77,6 @@ export const GroupOverridesDebugger = () => {
     return extensionApi.getTeamOverrides?.(entities);
   })
 
-  console.log(loading, error, teamOverrides);
-
   if (loading) {
     return <Progress />;
   }
@@ -103,8 +101,8 @@ export const GroupOverridesDebugger = () => {
 
   return (
     <DependencyGraph
-      edges={[...groupEdges, ...userEdges]}
-      nodes={[...groupNodes, ...userNodes]}
+      edges={graph.edges}
+      nodes={graph.nodes}
     />
   )
 }
