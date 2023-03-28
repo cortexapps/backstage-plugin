@@ -1,38 +1,36 @@
 # Cortex Scorecard Plugin for Backstage
 
-![scorecards](./docs/screen1.png?raw=true)
+[Cortex](https://www.cortex.io/) makes it easy for engineering organizations to gain 
+visibility into their services and deliver high quality software.
 
-[Cortex](https://www.getcortexapp.com/) is a tool for engineering teams to understand
-and improve their services.
+We’ve released our Scorecards product as a Backstage plugin. [Scorecards](https://www.cortex.io/products/scorecard) 
+allow your team to define standards like production readiness and development quality, 
+and enforce them without building scripts and maintaining spreadsheets.
+- **One-click integration with third-party tools**: Scorecards fetch data automatically from your integrations without manual work, letting you easily enforce standards across all your tools.
+- **The flexibility to meet your organization’s needs**: Our robust APIs make it easy to use data from custom sources in your Scorecards. Cortex Query Language (CQL) enables you to create complex rules that can compare data across multiple sources or write expressive logical statements.
+- **Enable leaders to make informed decisions**: Historical data and organizational summaries give leadership deep visibility into progress, bottlenecks, and areas of risk.
+- **Drive organizational progress with ease using Initiatives**: Within any Scorecard, assign owners and due dates to drive any best-practice, platform migration, and audit need.
 
-We’ve released our Scorecards product as a Backstage plugin.
-[Scorecards](https://www.getcortexapp.com/products/scorecard) let you write
-customizable rules to track and enforce service quality across the entire engineering org. Engineers can set reliability
-standards across teams and types of services, by tracking the health of deploys, SLOs, on-call, vulnerabilities,
-package versions, and more – all through direct integrations with tools like Datadog or Sonarqube. Service owners
-receive points for passing the rules defined and see their service scores stack ranked with all other services in the
-scorecard, turning service quality into a game.
+The plugin automatically ingests your Backstage components, and then lets you easily define 
+standards and governance using our Scorecard editor. Scores are then piped back into Backstage 
+through our plugin, so you can see the results directly in your Backstage service catalog. 
+Developers never need to leave your Backstage portal to understand their action items and 
+how to improve the quality of their services.
 
-Scorecards help keep teams accountable to best SRE / security / infra practices and are
-especially powerful during migrations or tracking production readiness. The rules found
-in a scorecard are powered through CQL (Cortex Query Language), a powerful DSL that
-hooks into your 3rd party tooling and lets you define reliability as code. CQL lets
-you write rules like "if the service is a production service, then there must be
-an on-call rotation and greater than 85% test coverage."
-
-Our plugin will automatically ingest all of your Backstage services and let you grade
-the quality of them in the Cortex product. We sync scores with Backstage, and you’ll be
-able to see the scores for each service in the catalog.
+Scorecards are extremely flexible, letting you track and enforce anything custom, including:
+- Security standards
+- Production readiness
+- Service maturity
+- Platform and package migrations
+- [DORA metrics](https://www.cortex.io/post/building-a-dora-metrics-scorecard)
 
 ![plugin1](./docs/screen2.png?raw=true)
 ![plugin2](./docs/screen3.png?raw=true)
 
-Cortex can even message service owners with weekly reports over Slack or email, showing changes in the
-quality of the service. We also generate reports showing how different teams are
-performing in their Scorecards.
+Cortex creates personalized action items for service owners. These can be found in the Backstage UI, 
+or received through notifications via slack and email.
 
-To start using the Backstage plugin and see a demo, please [sign up here](https://www.getcortexapp.com/demo) and we will
-reach out with more info!
+To start using the Backstage plugin and see a demo, please [book a demo](https://www.cortex.io/demo)!
 
 ## Setup and Integration
 
