@@ -141,8 +141,10 @@ export const AggregatedScorecardProgress = ({
               <Typography>{point.point.serieId}</Typography>
             )}
             <Typography>
-              {moment.utc(point.point.data.x).fromNow()}: &nbsp;
-              {point.point.data.y}%
+              <>
+                {moment.utc(point.point.data.x).fromNow()}: &nbsp;
+                {point.point.data.y}%
+              </>
             </Typography>
           </Box>
         );
