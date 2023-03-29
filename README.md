@@ -9,9 +9,9 @@ and enforce them without building scripts and maintaining spreadsheets.
 - **One-click integration with third-party tools**: Scorecards fetch data automatically from your integrations without manual work, letting you easily enforce standards across all your tools.
 - **The flexibility to meet your organization’s needs**: Our robust APIs make it easy to use data from custom sources in your Scorecards. Cortex Query Language (CQL) enables you to create complex rules that can compare data across multiple sources or write expressive logical statements.
 - **Enable leaders to make informed decisions**: Historical data and organizational summaries give leadership deep visibility into progress, bottlenecks, and areas of risk.
-- **Drive organizational progress with ease using Initiatives**: Within any Scorecard, assign owners and due dates to drive any best-practice, platform migration, and audit need.
+- **Drive organizational progress with ease using Initiatives**: Within any Scorecard, assign owners and due dates to drive any best-practice, platform migration, and audit needs.
 
-The plugin automatically ingests your Backstage components, and then lets you easily define 
+The plugin automatically ingests your Backstage components and then lets you easily define 
 standards and governance using our Scorecard editor. Scores are then piped back into Backstage 
 through our plugin, so you can see the results directly in your Backstage service catalog. 
 Developers never need to leave your Backstage portal to understand their action items and 
@@ -27,8 +27,8 @@ Scorecards are extremely flexible, letting you track and enforce anything custom
 ![plugin1](./docs/screen2.png?raw=true)
 ![plugin2](./docs/screen3.png?raw=true)
 
-Cortex creates personalized action items for service owners. These can be found in the Backstage UI, 
-or received through notifications via slack and email.
+Cortex creates personalized action items for service owners. These can be found in the Backstage UI 
+or received through notifications via Slack and email.
 
 To start using the Backstage plugin and see a demo, please [book a demo](https://www.cortex.io/demo)!
 
