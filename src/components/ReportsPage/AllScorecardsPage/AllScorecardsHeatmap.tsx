@@ -54,7 +54,7 @@ export const AllScorecardsHeatmap = ({
 
   if (error || serviceScores === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
+      <WarningPanel severity="error" title="Could not load Scorecards.">
         {error?.message}
       </WarningPanel>
     );

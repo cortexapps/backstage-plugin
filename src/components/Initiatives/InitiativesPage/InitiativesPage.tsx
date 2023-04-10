@@ -46,7 +46,7 @@ const InitiativesPageBody = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not load initiatives.">
+      <WarningPanel severity="error" title="Could not load Initiatives.">
         {error.message}
       </WarningPanel>
     );
@@ -91,7 +91,7 @@ export const InitiativesPage = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not load initiatives.">
+      <WarningPanel severity="error" title="Could not load Initiatives.">
         {error.message}
       </WarningPanel>
     );

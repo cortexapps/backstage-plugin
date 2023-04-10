@@ -115,7 +115,7 @@ export const CortexScorecardWidget = ({
 
   if (scoresError || scoresToDisplay === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
+      <WarningPanel severity="error" title="Could not load Scorecards.">
         {scoresError?.message}
       </WarningPanel>
     );

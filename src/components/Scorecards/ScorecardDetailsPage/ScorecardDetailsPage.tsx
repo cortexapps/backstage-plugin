@@ -48,7 +48,7 @@ export const ScorecardDetailsPage = () => {
 
   if (error || scorecard === undefined || scores === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecard.">
+      <WarningPanel severity="error" title="Could not load Scorecard.">
         {error?.message ?? ''}
       </WarningPanel>
     );
