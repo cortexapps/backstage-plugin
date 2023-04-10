@@ -81,7 +81,7 @@ export const HeatmapPage = () => {
         </Grid>
         <Grid item lg={12}>
           {isUndefined(selectedScorecardId) ? (
-            <EmptyState title="Select a scorecard" missing="data" />
+            <EmptyState title="Select a Scorecard" missing="data" />
           ) : (
             <SingleScorecardHeatmap
               scorecardId={selectedScorecardId}

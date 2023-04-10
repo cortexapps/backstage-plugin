@@ -58,7 +58,7 @@ export const ScorecardSelector = ({
 
   if (error || scorecards === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
+      <WarningPanel severity="error" title="Could not load Scorecards.">
         {error?.message}
       </WarningPanel>
     );

@@ -60,7 +60,7 @@ const ScorecardsPageBody = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
+      <WarningPanel severity="error" title="Could not load Scorecards.">
         {error.message}
       </WarningPanel>
     );
@@ -111,7 +111,7 @@ export const ScorecardsPage = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
+      <WarningPanel severity="error" title="Could not load Scorecards.">
         {error.message}
       </WarningPanel>
     );

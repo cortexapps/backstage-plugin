@@ -54,9 +54,9 @@ describe('HeatmapPage', () => {
     );
 
   it('should render', async () => {
-    const { findByText } = renderWrapped(<HeatmapPage />);
+    const { findByText, queryAllByText } = renderWrapped(<HeatmapPage />);
 
     expect(await findByText(/Bird's Eye/)).toBeVisible();
-    expect(await findByText(/Select a Scorecard/)).toBeVisible();
+    expect(await queryAllByText(/Select a Scorecard/)).toHaveLength(2);
   });
 });

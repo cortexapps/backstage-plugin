@@ -62,7 +62,7 @@ export const InitiativeDetailsPage = () => {
 
   if (error || initiative === undefined || actionItems === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load initiative.">
+      <WarningPanel severity="error" title="Could not load Initiative.">
         {error?.message ?? ''}
       </WarningPanel>
     );

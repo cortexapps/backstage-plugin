@@ -66,7 +66,7 @@ export const ProgressPage = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecard">
+      <WarningPanel severity="error" title="Could not load Scorecard.">
         {error.message}
       </WarningPanel>
     );
@@ -122,7 +122,7 @@ export const ProgressPage = () => {
         </Grid>
         <Grid item lg={12}>
           {selectedScorecardId === undefined ? (
-            <EmptyState title="Select a scorecard" missing="data" />
+            <EmptyState title="Select a Scorecard" missing="data" />
           ) : (
             <AggregatedScorecardProgress
               scorecardId={selectedScorecardId}

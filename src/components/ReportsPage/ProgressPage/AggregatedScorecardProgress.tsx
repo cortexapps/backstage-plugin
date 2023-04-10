@@ -98,7 +98,7 @@ export const AggregatedScorecardProgress = ({
 
   if (error || data === undefined || historicalScores === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scores.">
+      <WarningPanel severity="error" title="Could not load Scorecard scores.">
         {error?.message ?? ''}
       </WarningPanel>
     );
@@ -109,7 +109,7 @@ export const AggregatedScorecardProgress = ({
       <EmptyState
         missing="data"
         title="Scorecard has not been evaluated yet."
-        description="Wait until next scorecard evaluation, or manually trigger from within Cortex."
+        description="Wait until next Scorecard evaluation, or manually trigger from within Cortex."
         action={
           <Button
             variant="contained"
