@@ -109,7 +109,7 @@ export const AggregatedScorecardProgress = ({
       <EmptyState
         missing="data"
         title="Scorecard has not been evaluated yet."
-        description="Wait until next scorecard evaluation, or manually trigger from within Cortex."
+        description="Wait until next Scorecard evaluation, or manually trigger from within Cortex."
         action={
           <Button
             variant="contained"

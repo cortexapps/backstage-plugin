@@ -75,7 +75,7 @@ export const ScorecardMetadataCard = ({
         )}
         <MetadataItem
           gridSizes={{ xs: 12 }}
-          label={`Filtered by ${filteredByQuery ? 'Query' : 'Service Groups'}`}
+          label={`Filtered by ${filteredByQuery ? 'query' : 'groups'}`}
         >
           {filteredByQuery ? (
             <>{scorecard.filterQuery}</>

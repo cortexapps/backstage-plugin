@@ -47,10 +47,10 @@ export const InitiativeMetadataCard = ({
 
   const filtersLabel = `Filtered ${
     filteredByBoth
-      ? 'by Services & Service Groups'
+      ? 'by services & groups'
       : filteredByServices
-      ? `to ${initiative.componentRefs.length} Services`
-      : 'by Service Groups'
+      ? `to ${initiative.componentRefs.length} services`
+      : 'by groups'
   }`;
 
   return (
@@ -107,7 +107,7 @@ export const InitiativeMetadataCard = ({
           {(filteredByServiceGroups || !filteredByServices) && (
             <MetadataItem
               gridSizes={{ xs: 12 }}
-              label={filteredByBoth ? 'Service Groups' : 'Applies to'}
+              label={filteredByBoth ? 'Groups' : 'Applies to'}
             >
               {initiative.tags.map(s => (
                 <Chip
