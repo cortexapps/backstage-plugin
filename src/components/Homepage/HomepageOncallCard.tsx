@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { useApi, identityApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { useAsync } from 'react-use';
 import {
@@ -36,19 +36,13 @@ export const HomepageOncallCard = () => {
   const classes = useHomepageOncallStyles();
 
   const cortexApi = useApi(cortexApiRef);
-  const identityApi = useApi(identityApiRef);
 
   const {
     value: oncall,
     loading,
     error,
   } = useAsync(async () => {
-    const profileInfo = await identityApi.getProfileInfo();
-    if (profileInfo.email) {
-      return await cortexApi.getUserOncallByEmail(profileInfo.email);
-    } else {
-      throw Error('No user email found');
-    }
+    return await cortexApi.getUserOncallByEmail();
   }, []);
 
   if (loading) {

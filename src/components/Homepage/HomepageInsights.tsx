@@ -15,7 +15,7 @@
  */
 import React, { useMemo } from 'react';
 import { WarningPanel, Progress } from '@backstage/core-components';
-import { identityApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { useAsync } from 'react-use';
 import {
@@ -34,7 +34,6 @@ export function isSameOrAfterToday(input: Moment): boolean {
 
 export const HomepageInsights = () => {
   const cortexApi = useApi(cortexApiRef);
-  const identityApi = useApi(identityApiRef);
 
   const {
     value: scorecards,
@@ -57,12 +56,7 @@ export const HomepageInsights = () => {
     loading: loadingInsights,
     error: errorInsights,
   } = useAsync(async () => {
-    const profileInfo = await identityApi.getProfileInfo();
-    if (profileInfo.email) {
-      return await cortexApi.getInsightsByEmail(profileInfo.email);
-    } else {
-      throw Error('No user email found');
-    }
+    return await cortexApi.getInsightsByEmail();
   }, []);
 
   const {

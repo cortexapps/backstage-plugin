@@ -29,6 +29,7 @@ import {
   ScorecardServiceScore,
   ScoresByIdentifier,
   ServiceScorecardScore,
+  UserPermissionsResponse,
 } from './types';
 import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
@@ -265,16 +266,20 @@ export class CortexClient implements CortexApi {
     await this.delete(`/api/backstage/v1/entities/sync`);
   }
 
-  async getUserOncallByEmail(email: string): Promise<OncallsResponse> {
-    return this.get(`/api/backstage/v1/homepage/oncall?email=${email}`);
+  async getUserOncallByEmail(): Promise<OncallsResponse> {
+    return this.get(`/api/backstage/v2/homepage/oncall`);
   }
 
-  async getInsightsByEmail(email: string): Promise<GetUserInsightsResponse> {
-    return this.get(`/api/backstage/v1/homepage/insights?email=${email}`);
+  async getInsightsByEmail(): Promise<GetUserInsightsResponse> {
+    return this.get(`/api/backstage/v2/homepage/insights`);
   }
 
   async getCatalogEntities(): Promise<HomepageEntityResponse> {
     return this.get(`/api/backstage/v1/homepage/catalog`);
+  }
+
+  async getUserPermissions(): Promise<UserPermissionsResponse> {
+    return this.get(`/api/backstage/v2/permissions`);
   }
 
   private async getBasePath(): Promise<string> {
@@ -381,18 +386,30 @@ export class CortexClient implements CortexApi {
     input: RequestInfo,
     init?: RequestInit,
   ): Promise<Response> {
-    let token: string | undefined = undefined;
+    let token: string | undefined;
+    let email: string | undefined;
+    let displayName: string | undefined;
     if (this.identityApi !== undefined) {
-      ({ token } = await this.identityApi.getCredentials());
+      const [credentials, profileInfo] = await Promise.all([
+        this.identityApi.getCredentials(),
+        this.identityApi.getProfileInfo(),
+      ]);
+      token = credentials.token;
+      email = profileInfo.email;
+      displayName = profileInfo.displayName;
     }
+
+    const headers = {
+      ...init?.headers,
+      Authorization: `Bearer ${token}`,
+      'x-cortex-email': email ?? '',
+      'x-cortex-name': displayName ?? '',
+    };
 
     if (token !== undefined) {
       return fetch(input, {
         ...init,
-        headers: {
-          ...init?.headers,
-          Authorization: `Bearer ${token}`,
-        },
+        headers: headers,
       });
     } else {
       return fetch(input, init);
