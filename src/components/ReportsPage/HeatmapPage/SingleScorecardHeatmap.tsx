@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../../utils/hooks';
 import { GroupByOption, HeaderType } from '../../../api/types';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
-import {isNil, keyBy} from "lodash";
-import {StringIndexable} from "./HeatmapUtils";
-import {HomepageEntity} from "../../../api/userInsightTypes";
+import { isNil, keyBy } from 'lodash';
+import { StringIndexable } from './HeatmapUtils';
+import { HomepageEntity } from '../../../api/userInsightTypes';
 
 interface SingleScorecardHeatmapProps {
   scorecardId: number;
@@ -50,8 +50,11 @@ export const SingleScorecardHeatmap = ({
   );
 
   const entitiesByTag: StringIndexable<HomepageEntity> = useMemo(
-    () => !isNil(entities) && !isNil(entities.entities) ? keyBy(Object.values(entities.entities), (entity) => entity.codeTag) : {},
-    [entities]
+    () =>
+      !isNil(entities) && !isNil(entities.entities)
+        ? keyBy(Object.values(entities.entities), entity => entity.codeTag)
+        : {},
+    [entities],
   );
 
   if (loadingScores || loadingLadders || loadingEntities) {

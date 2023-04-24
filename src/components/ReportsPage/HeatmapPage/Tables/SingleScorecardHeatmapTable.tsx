@@ -23,7 +23,8 @@ import { HeatmapTableByService } from './HeatmapTableByService';
 import { LevelsDrivenTable } from './LevelsDrivenTable';
 import {
   getScorecardServiceScoresByGroupByOption,
-  getSortedRuleNames, StringIndexable,
+  getSortedRuleNames,
+  StringIndexable,
 } from '../HeatmapUtils';
 import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
 
@@ -33,7 +34,7 @@ import {
   ScorecardLadder,
   ScorecardServiceScore,
 } from '../../../../api/types';
-import {HomepageEntity} from "../../../../api/userInsightTypes";
+import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 interface SingleScorecardHeatmapTableProps {
   entitiesByTag: StringIndexable<HomepageEntity>;
@@ -73,14 +74,25 @@ export const SingleScorecardHeatmapTable = ({
       );
     } else {
       return (
-        <LevelsDrivenTable data={data} entititesByTag={entitiesByTag} groupBy={groupBy} levels={headers} />
+        <LevelsDrivenTable
+          data={data}
+          entititesByTag={entitiesByTag}
+          groupBy={groupBy}
+          levels={headers}
+        />
       );
     }
   }
 
   switch (groupBy) {
     case GroupByOption.SERVICE:
-      return <HeatmapTableByService data={data} entitiesByTag={entitiesByTag} rules={headers} />;
+      return (
+        <HeatmapTableByService
+          data={data}
+          entitiesByTag={entitiesByTag}
+          rules={headers}
+        />
+      );
     case GroupByOption.SERVICE_GROUP:
       return (
         <HeatmapTableByGroup

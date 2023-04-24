@@ -27,8 +27,8 @@ import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
-import {StringIndexable} from "../../../ReportsPage/HeatmapPage/HeatmapUtils";
-import {HomepageEntity} from "../../../../api/userInsightTypes";
+import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 interface ScorecardsTableProps {
   entitiesByTag: StringIndexable<HomepageEntity>;

@@ -28,8 +28,8 @@ import { ScorecardsTableCard } from './ScorecardsTableCard';
 import { Predicate } from '../../../utils/types';
 import { ScorecardLaddersCard } from './ScorecardLaddersCard';
 import { ScorecardStatsCard } from './ScorecardStatsCard';
-import {StringIndexable} from "../../ReportsPage/HeatmapPage/HeatmapUtils";
-import {HomepageEntity} from "../../../api/userInsightTypes";
+import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { HomepageEntity } from '../../../api/userInsightTypes';
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 

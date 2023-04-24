@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import { scorecardRouteRef } from '../../../routes';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { ScorecardDetails } from './ScorecardDetails';
-import {StringIndexable} from "../../ReportsPage/HeatmapPage/HeatmapUtils";
-import {HomepageEntity} from "../../../api/userInsightTypes";
-import {isNil, keyBy} from "lodash";
+import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { HomepageEntity } from '../../../api/userInsightTypes';
+import { isNil, keyBy } from 'lodash';
 
 export const ScorecardDetailsPage = () => {
   const { id: scorecardId } = useRouteRefParams(scorecardRouteRef);
@@ -48,8 +48,11 @@ export const ScorecardDetailsPage = () => {
   };
 
   const entitiesByTag: StringIndexable<HomepageEntity> = useMemo(
-    () => !isNil(entities) && !isNil(entities.entities) ? keyBy(Object.values(entities.entities), (entity) => entity.codeTag) : {},
-    [entities]
+    () =>
+      !isNil(entities) && !isNil(entities.entities)
+        ? keyBy(Object.values(entities.entities), entity => entity.codeTag)
+        : {},
+    [entities],
   );
 
   if (loading) {
@@ -68,6 +71,11 @@ export const ScorecardDetailsPage = () => {
   const ladder = ladders?.[0];
 
   return (
-    <ScorecardDetails entitiesByTag={entitiesByTag} ladder={ladder} scorecard={scorecard} scores={scores} />
+    <ScorecardDetails
+      entitiesByTag={entitiesByTag}
+      ladder={ladder}
+      scorecard={scorecard}
+      scores={scores}
+    />
   );
 };

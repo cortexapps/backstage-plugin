@@ -33,7 +33,7 @@ import {
 } from '../HeatmapUtils';
 
 import { GroupByOption, ScorecardServiceScore } from '../../../../api/types';
-import {HomepageEntity} from "../../../../api/userInsightTypes";
+import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 interface LevelsDrivenTableProps {
   data: StringIndexable<ScorecardServiceScore[]>;

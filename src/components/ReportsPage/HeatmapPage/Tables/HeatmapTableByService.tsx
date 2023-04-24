@@ -26,7 +26,7 @@ import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
 import { mean as _average } from 'lodash';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
-import {HomepageEntity} from "../../../../api/userInsightTypes";
+import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 interface HeatmapTableByServiceProps {
   data: StringIndexable<ScorecardServiceScore[]>;
