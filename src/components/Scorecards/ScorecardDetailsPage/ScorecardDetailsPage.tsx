@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import { scorecardRouteRef } from '../../../routes';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { ScorecardDetails } from './ScorecardDetails';
-import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
-import { HomepageEntity } from '../../../api/userInsightTypes';
-import { isNil, keyBy } from 'lodash';
+import { useEntitiesByTag } from '../../../utils/hooks';
 
 export const ScorecardDetailsPage = () => {
   const { id: scorecardId } = useRouteRefParams(scorecardRouteRef);
@@ -30,32 +28,24 @@ export const ScorecardDetailsPage = () => {
   const cortexApi = useApi(cortexApiRef);
 
   const { value, loading, error } = useAsync(async () => {
-    const [entities, ladders, scorecard, scores] = await Promise.all([
-      cortexApi.getCatalogEntities(),
+    const [ladders, scorecard, scores] = await Promise.all([
       cortexApi.getScorecardLadders(+scorecardId),
       cortexApi.getScorecard(+scorecardId),
       cortexApi.getScorecardScores(+scorecardId),
     ]);
 
-    return { entities, ladders, scorecard, scores };
+    return { ladders, scorecard, scores };
   }, []);
 
-  const { entities, ladders, scorecard, scores } = value ?? {
-    entities: {},
+  const { ladders, scorecard, scores } = value ?? {
     ladders: [],
     scorecard: undefined,
     scores: undefined,
   };
 
-  const entitiesByTag: StringIndexable<HomepageEntity> = useMemo(
-    () =>
-      !isNil(entities) && !isNil(entities.entities)
-        ? keyBy(Object.values(entities.entities), entity => entity.codeTag)
-        : {},
-    [entities],
-  );
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
-  if (loading) {
+  if (loading || loadingEntities) {
     return <Progress />;
   }
 

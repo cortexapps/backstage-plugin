@@ -15,12 +15,9 @@
  */
 import React, { useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
-import { useCortexApi } from '../../../utils/hooks';
+import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
 import { GroupByOption } from '../../../api/types';
 import { AllScorecardsHeatmapTable } from '../HeatmapPage/Tables/AllScorecardHeatmapTable';
-import { StringIndexable } from '../HeatmapPage/HeatmapUtils';
-import { HomepageEntity } from '../../../api/userInsightTypes';
-import { isNil, keyBy } from 'lodash';
 
 interface AllScorecardsHeatmapProps {
   groupBy: GroupByOption;
@@ -51,18 +48,7 @@ export const AllScorecardsHeatmap = ({
     );
   }, [scorecards]);
 
-  const { value: entities, loading: loadingEntities } = useCortexApi(
-    api => api.getCatalogEntities(),
-    [],
-  );
-
-  const entitiesByTag: StringIndexable<HomepageEntity> = useMemo(
-    () =>
-      !isNil(entities) && !isNil(entities.entities)
-        ? keyBy(Object.values(entities.entities), entity => entity.codeTag)
-        : {},
-    [entities],
-  );
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
   if (loading || loadingEntities) {
     return <Progress />;
