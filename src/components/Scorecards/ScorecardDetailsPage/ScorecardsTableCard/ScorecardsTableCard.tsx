@@ -27,8 +27,11 @@ import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
+import {StringIndexable} from "../../../ReportsPage/HeatmapPage/HeatmapUtils";
+import {HomepageEntity} from "../../../../api/userInsightTypes";
 
 interface ScorecardsTableProps {
+  entitiesByTag: StringIndexable<HomepageEntity>;
   scorecardId: number;
   scores: ScorecardServiceScore[];
 }
@@ -75,6 +78,7 @@ const columns: TableColumn[] = [
 ];
 
 export const ScorecardsTableCard = ({
+  entitiesByTag,
   scorecardId,
   scores,
 }: ScorecardsTableProps) => {
@@ -100,7 +104,7 @@ export const ScorecardsTableCard = ({
               scorecardId={scorecardId}
               componentRef={score.componentRef}
             >
-              {serviceName}
+              {entitiesByTag[score.componentRef]?.name ?? serviceName}
             </ScorecardServiceRefLink>
           ),
           scorePercentage: score.scorePercentage,

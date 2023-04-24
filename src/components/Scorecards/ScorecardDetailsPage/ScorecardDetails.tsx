@@ -28,18 +28,22 @@ import { ScorecardsTableCard } from './ScorecardsTableCard';
 import { Predicate } from '../../../utils/types';
 import { ScorecardLaddersCard } from './ScorecardLaddersCard';
 import { ScorecardStatsCard } from './ScorecardStatsCard';
+import {StringIndexable} from "../../ReportsPage/HeatmapPage/HeatmapUtils";
+import {HomepageEntity} from "../../../api/userInsightTypes";
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 
 interface ScorecardDetailsProps {
-  scorecard: Scorecard;
+  entitiesByTag: StringIndexable<HomepageEntity>;
   ladder: ScorecardLadder | undefined;
+  scorecard: Scorecard;
   scores: ScorecardServiceScore[];
 }
 
 export const ScorecardDetails = ({
-  scorecard,
+  entitiesByTag,
   ladder,
+  scorecard,
   scores,
 }: ScorecardDetailsProps) => {
   // Have to store lambda of lambda for React to not eagerly invoke
@@ -67,6 +71,7 @@ export const ScorecardDetails = ({
         <Grid item lg={8} xs={12}>
           <ScorecardStatsCard scores={filteredScores} />
           <ScorecardsTableCard
+            entitiesByTag={entitiesByTag}
             scorecardId={scorecard.id}
             scores={filteredScores}
           />

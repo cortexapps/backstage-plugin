@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, {useMemo} from 'react';
 import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import { scorecardRouteRef } from '../../../routes';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { ScorecardDetails } from './ScorecardDetails';
+import {StringIndexable} from "../../ReportsPage/HeatmapPage/HeatmapUtils";
+import {HomepageEntity} from "../../../api/userInsightTypes";
+import {isNil, keyBy} from "lodash";
 
 export const ScorecardDetailsPage = () => {
   const { id: scorecardId } = useRouteRefParams(scorecardRouteRef);
@@ -27,24 +30,31 @@ export const ScorecardDetailsPage = () => {
   const cortexApi = useApi(cortexApiRef);
 
   const { value, loading, error } = useAsync(async () => {
-    const [scorecard, ladders, scores] = await Promise.all([
-      cortexApi.getScorecard(+scorecardId),
+    const [entities, ladders, scorecard, scores] = await Promise.all([
+      cortexApi.getCatalogEntities(),
       cortexApi.getScorecardLadders(+scorecardId),
+      cortexApi.getScorecard(+scorecardId),
       cortexApi.getScorecardScores(+scorecardId),
     ]);
 
-    return { scorecard, ladders, scores };
+    return { entities, ladders, scorecard, scores };
   }, []);
+
+  const { entities, ladders, scorecard, scores } = value ?? {
+    entities: {},
+    ladders: [],
+    scorecard: undefined,
+    scores: undefined,
+  };
+
+  const entitiesByTag: StringIndexable<HomepageEntity> = useMemo(
+    () => !isNil(entities) && !isNil(entities.entities) ? keyBy(Object.values(entities.entities), (entity) => entity.codeTag) : {},
+    [entities]
+  );
 
   if (loading) {
     return <Progress />;
   }
-
-  const { scorecard, ladders, scores } = value ?? {
-    scorecard: undefined,
-    ladders: [],
-    scores: undefined,
-  };
 
   if (error || scorecard === undefined || scores === undefined) {
     return (
@@ -58,6 +68,6 @@ export const ScorecardDetailsPage = () => {
   const ladder = ladders?.[0];
 
   return (
-    <ScorecardDetails scorecard={scorecard} ladder={ladder} scores={scores} />
+    <ScorecardDetails entitiesByTag={entitiesByTag} ladder={ladder} scorecard={scorecard} scores={scores} />
   );
 };
