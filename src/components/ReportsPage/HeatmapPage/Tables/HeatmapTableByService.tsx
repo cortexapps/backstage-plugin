@@ -26,15 +26,18 @@ import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
 import { mean as _average } from 'lodash';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
+import {HomepageEntity} from "../../../../api/userInsightTypes";
 
 interface HeatmapTableByServiceProps {
-  rules: string[];
   data: StringIndexable<ScorecardServiceScore[]>;
+  entitiesByTag: StringIndexable<HomepageEntity>;
+  rules: string[];
 }
 
 export const HeatmapTableByService = ({
-  rules,
   data,
+  entitiesByTag,
+  rules,
 }: HeatmapTableByServiceProps) => {
   const headers = ['Service Details', 'Score', ...rules];
 
@@ -57,6 +60,7 @@ export const HeatmapTableByService = ({
                     firstScore.componentRef,
                     defaultComponentRefContext,
                   )}
+                  title={entitiesByTag[firstScore.componentRef]?.name}
                 />
               </TableCell>
               <HeatmapCell score={averageScorePercentage} />

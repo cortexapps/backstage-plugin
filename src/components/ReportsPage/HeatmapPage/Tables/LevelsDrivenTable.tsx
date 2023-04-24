@@ -33,17 +33,20 @@ import {
 } from '../HeatmapUtils';
 
 import { GroupByOption, ScorecardServiceScore } from '../../../../api/types';
+import {HomepageEntity} from "../../../../api/userInsightTypes";
 
 interface LevelsDrivenTableProps {
-  levels: string[];
-  groupBy: GroupByOption;
   data: StringIndexable<ScorecardServiceScore[]>;
+  entititesByTag: StringIndexable<HomepageEntity>;
+  groupBy: GroupByOption;
+  levels: string[];
 }
 
 export const LevelsDrivenTable = ({
-  levels,
-  groupBy,
   data,
+  entititesByTag,
+  groupBy,
+  levels,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.SERVICE;
   const headers = [
@@ -76,6 +79,7 @@ export const LevelsDrivenTable = ({
                       firstScore.componentRef,
                       defaultComponentRefContext,
                     )}
+                    title={entititesByTag[firstScore.componentRef]?.name}
                   />
                 </TableCell>
               )}

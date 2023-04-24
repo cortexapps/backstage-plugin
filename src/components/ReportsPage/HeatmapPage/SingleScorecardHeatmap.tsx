@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, {useMemo} from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../../utils/hooks';
 import { GroupByOption, HeaderType } from '../../../api/types';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
+import {isNil, keyBy} from "lodash";
+import {StringIndexable} from "./HeatmapUtils";
+import {HomepageEntity} from "../../../api/userInsightTypes";
 
 interface SingleScorecardHeatmapProps {
   scorecardId: number;
@@ -41,7 +44,17 @@ export const SingleScorecardHeatmap = ({
     [scorecardId],
   );
 
-  if (loadingScores || loadingLadders) {
+  const { value: entities, loading: loadingEntities } = useCortexApi(
+    api => api.getCatalogEntities(),
+    [],
+  );
+
+  const entitiesByTag: StringIndexable<HomepageEntity> = useMemo(
+    () => !isNil(entities) && !isNil(entities.entities) ? keyBy(Object.values(entities.entities), (entity) => entity.codeTag) : {},
+    [entities]
+  );
+
+  if (loadingScores || loadingLadders || loadingEntities) {
     return <Progress />;
   }
 
@@ -64,10 +77,11 @@ export const SingleScorecardHeatmap = ({
 
   return (
     <SingleScorecardHeatmapTable
+      entitiesByTag={entitiesByTag}
       groupBy={groupBy}
       headerType={headerType}
-      scores={scores}
       ladder={ladders?.[0]}
+      scores={scores}
     />
   );
 };
