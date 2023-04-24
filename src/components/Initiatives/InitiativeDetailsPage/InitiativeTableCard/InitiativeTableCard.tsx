@@ -19,17 +19,21 @@ import { useDetailCardStyles } from '../../../../styles/styles';
 import { EmptyState, InfoCard } from '@backstage/core-components';
 import { FailingComponentsTable } from './FailingComponentsTable';
 import { PassingComponentsTable } from './PassingComponentsTable';
+import {StringIndexable} from "../../../ReportsPage/HeatmapPage/HeatmapUtils";
+import {HomepageEntity} from "../../../../api/userInsightTypes";
 
 interface InitiativeTableProps {
-  componentRefs: string[];
-  numRules: number;
   actionItems: InitiativeActionItem[];
+  componentRefs: string[];
+  entitiesByTag: StringIndexable<HomepageEntity>;
+  numRules: number;
 }
 
 export const InitiativeTableCard = ({
-  componentRefs,
-  numRules,
   actionItems,
+  componentRefs,
+  entitiesByTag,
+  numRules,
 }: InitiativeTableProps) => {
   const classes = useDetailCardStyles();
 
@@ -55,9 +59,10 @@ export const InitiativeTableCard = ({
     <>
       <FailingComponentsTable
         actionItems={filteredActionItems}
+        entitiesByTag={entitiesByTag}
         numRules={numRules}
       />
-      <PassingComponentsTable componentRefs={passing} numRules={numRules} />
+      <PassingComponentsTable componentRefs={passing} entitiesByTag={entitiesByTag} numRules={numRules} />
     </>
   );
 };

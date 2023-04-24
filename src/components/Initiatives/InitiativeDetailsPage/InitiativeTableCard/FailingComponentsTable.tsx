@@ -29,6 +29,8 @@ import { FailingComponentsTableRow } from './FailingComponentsTableRow';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { Box } from '@material-ui/core';
+import {StringIndexable} from "../../../ReportsPage/HeatmapPage/HeatmapUtils";
+import {HomepageEntity} from "../../../../api/userInsightTypes";
 
 const columns: TableColumn[] = [
   {
@@ -37,12 +39,14 @@ const columns: TableColumn[] = [
       componentRef?: string;
       numRules?: number;
       actionItems?: InitiativeActionItem[];
+      title?: string;
     }) => {
       return (
         <FailingComponentsTableRow
           componentRef={data.componentRef ?? ''}
           actionItems={data.actionItems ?? []}
           numRules={data.numRules ?? 0}
+          title={data.title}
         />
       );
     },
@@ -57,12 +61,14 @@ const columns: TableColumn[] = [
 interface FailingComponentsTableProps {
   actionItems: InitiativeActionItem[];
   defaultPageSize?: number;
+  entitiesByTag: StringIndexable<HomepageEntity>;
   numRules: number;
 }
 
 export const FailingComponentsTable = ({
   actionItems,
   defaultPageSize = 15,
+  entitiesByTag,
   numRules,
 }: FailingComponentsTableProps) => {
   const classes = useDetailCardStyles();
@@ -75,7 +81,7 @@ export const FailingComponentsTable = ({
   const data = useMemo(() => {
     return Object.keys(failingComponents)
       .map(componentRef => {
-        const serviceName = humanizeAnyEntityRef(
+        const serviceName =  humanizeAnyEntityRef(
           componentRef,
           defaultComponentRefContext,
         );
@@ -84,6 +90,7 @@ export const FailingComponentsTable = ({
           componentRef,
           numRules,
           serviceName,
+          title: entitiesByTag[componentRef]?.name,
         };
       })
       .sort((left, right) => left.actionItems.length - right.actionItems.length)

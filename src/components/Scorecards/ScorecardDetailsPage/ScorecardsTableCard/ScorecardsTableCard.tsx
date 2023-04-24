@@ -88,7 +88,7 @@ export const ScorecardsTableCard = ({
     return scores
       .map(score => {
         const currentLevel = score.ladderLevels?.[0]?.currentLevel;
-        const serviceName = humanizeAnyEntityRef(
+        const serviceName = entitiesByTag[score.componentRef]?.name ?? humanizeAnyEntityRef(
           score.componentRef,
           defaultComponentRefContext,
         );
@@ -104,7 +104,7 @@ export const ScorecardsTableCard = ({
               scorecardId={scorecardId}
               componentRef={score.componentRef}
             >
-              {entitiesByTag[score.componentRef]?.name ?? serviceName}
+              {serviceName}
             </ScorecardServiceRefLink>
           ),
           scorePercentage: score.scorePercentage,

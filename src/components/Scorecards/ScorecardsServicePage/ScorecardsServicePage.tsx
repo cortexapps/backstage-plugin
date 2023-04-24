@@ -35,7 +35,7 @@ import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
 import { RuleOutcome } from '../../../api/types';
 import { cortexScorecardServicePageUrl } from '../../../utils/URLUtils';
-import { useCortexFrontendUrl } from '../../../utils/hooks';
+import {useCortexFrontendUrl, useEntitiesByTag} from '../../../utils/hooks';
 
 const useStyles = makeStyles({
   progress: {
@@ -49,6 +49,8 @@ export const ScorecardsServicePage = () => {
   const { scorecardId, kind, namespace, name } = useRouteRefParams(
     scorecardServiceDetailsRouteRef,
   );
+
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
   const entityRef = { kind, namespace, name };
 
@@ -75,7 +77,7 @@ export const ScorecardsServicePage = () => {
     setSelectedRules(score?.rules ?? []);
   }, [score]);
 
-  if (loading) {
+  if (loading || loadingEntities) {
     return <Progress />;
   }
 
@@ -108,7 +110,7 @@ export const ScorecardsServicePage = () => {
         </Box>
         <Box alignSelf="center" flex="1">
           <Typography variant="h4" component="h2">
-            <DefaultEntityRefLink entityRef={entityRef} />
+            <DefaultEntityRefLink entityRef={entityRef} title={entitiesByTag[entityRef.name]?.name} />
           </Typography>
         </Box>
         <Box alignSelf="center">
