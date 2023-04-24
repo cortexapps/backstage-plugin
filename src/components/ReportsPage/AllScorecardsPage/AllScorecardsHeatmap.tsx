@@ -15,7 +15,7 @@
  */
 import React, { useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
-import { useCortexApi } from '../../../utils/hooks';
+import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
 import { GroupByOption } from '../../../api/types';
 import { AllScorecardsHeatmapTable } from '../HeatmapPage/Tables/AllScorecardHeatmapTable';
 
@@ -48,7 +48,9 @@ export const AllScorecardsHeatmap = ({
     );
   }, [scorecards]);
 
-  if (loading) {
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
+
+  if (loading || loadingEntities) {
     return <Progress />;
   }
 
@@ -74,6 +76,7 @@ export const AllScorecardsHeatmap = ({
 
   return (
     <AllScorecardsHeatmapTable
+      entitiesByTag={entitiesByTag}
       groupBy={groupBy}
       scorecardNames={scorecardNames}
       serviceScores={serviceScores}

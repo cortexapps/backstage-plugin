@@ -26,15 +26,17 @@ import { ScorecardResultDetails } from '../../../Scorecards/ScorecardDetailsPage
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 interface FailingComponentsTableRowProps {
-  componentRef: string;
   actionItems: InitiativeActionItem[];
+  componentRef: string;
   numRules: number;
+  title?: string;
 }
 
 export const FailingComponentsTableRow = ({
-  componentRef,
   actionItems,
+  componentRef,
   numRules,
+  title,
 }: FailingComponentsTableRowProps) => {
   const [isOpen, setOpen] = useState(false);
   const entityName = parseEntityRef(componentRef, defaultComponentRefContext);
@@ -58,7 +60,7 @@ export const FailingComponentsTableRow = ({
         </Box>
 
         <Box paddingLeft={2}>
-          <DefaultEntityRefLink entityRef={entityName} />
+          <DefaultEntityRefLink entityRef={entityName} title={title} />
         </Box>
       </Box>
 

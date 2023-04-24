@@ -27,8 +27,11 @@ import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
+import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 interface ScorecardsTableProps {
+  entitiesByTag: StringIndexable<HomepageEntity>;
   scorecardId: number;
   scores: ScorecardServiceScore[];
 }
@@ -75,6 +78,7 @@ const columns: TableColumn[] = [
 ];
 
 export const ScorecardsTableCard = ({
+  entitiesByTag,
   scorecardId,
   scores,
 }: ScorecardsTableProps) => {
@@ -84,10 +88,9 @@ export const ScorecardsTableCard = ({
     return scores
       .map(score => {
         const currentLevel = score.ladderLevels?.[0]?.currentLevel;
-        const serviceName = humanizeAnyEntityRef(
-          score.componentRef,
-          defaultComponentRefContext,
-        );
+        const serviceName =
+          entitiesByTag[score.componentRef]?.name ??
+          humanizeAnyEntityRef(score.componentRef, defaultComponentRefContext);
         return {
           level: currentLevel ? (
             <ScorecardLadderLevelBadge
@@ -108,7 +111,7 @@ export const ScorecardsTableCard = ({
         };
       })
       .sort((left, right) => right.scorePercentage - left.scorePercentage);
-  }, [scorecardId, scores]);
+  }, [entitiesByTag, scorecardId, scores]);
 
   const showPagination = scores.length > PAGE_SIZE;
 
