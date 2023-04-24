@@ -29,8 +29,8 @@ import { FailingComponentsTableRow } from './FailingComponentsTableRow';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { Box } from '@material-ui/core';
-import {StringIndexable} from "../../../ReportsPage/HeatmapPage/HeatmapUtils";
-import {HomepageEntity} from "../../../../api/userInsightTypes";
+import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 const columns: TableColumn[] = [
   {
@@ -81,7 +81,7 @@ export const FailingComponentsTable = ({
   const data = useMemo(() => {
     return Object.keys(failingComponents)
       .map(componentRef => {
-        const serviceName =  humanizeAnyEntityRef(
+        const serviceName = humanizeAnyEntityRef(
           componentRef,
           defaultComponentRefContext,
         );
@@ -95,7 +95,7 @@ export const FailingComponentsTable = ({
       })
       .sort((left, right) => left.actionItems.length - right.actionItems.length)
       .sort((left, right) => left.serviceName.localeCompare(right.serviceName));
-  }, [failingComponents, numRules]);
+  }, [entitiesByTag, failingComponents, numRules]);
 
   const showPagination = useMemo(() => {
     return Object.keys(failingComponents).length > defaultPageSize;

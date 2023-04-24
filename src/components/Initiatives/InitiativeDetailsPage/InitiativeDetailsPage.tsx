@@ -30,7 +30,7 @@ import { InitiativeTableCard } from './InitiativeTableCard';
 import { InitiativeFilterCard } from './InitiativeFilterCard';
 import { Predicate } from '../../../utils/types';
 import { InitiativeStatsCard } from './InitiativeStatsCard';
-import {useEntitiesByTag} from "../../../utils/hooks";
+import { useEntitiesByTag } from '../../../utils/hooks';
 
 export const InitiativeDetailsPage = () => {
   const { id: initiativeId } = useRouteRefParams(initiativeRouteRef);

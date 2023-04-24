@@ -88,10 +88,9 @@ export const ScorecardsTableCard = ({
     return scores
       .map(score => {
         const currentLevel = score.ladderLevels?.[0]?.currentLevel;
-        const serviceName = entitiesByTag[score.componentRef]?.name ?? humanizeAnyEntityRef(
-          score.componentRef,
-          defaultComponentRefContext,
-        );
+        const serviceName =
+          entitiesByTag[score.componentRef]?.name ??
+          humanizeAnyEntityRef(score.componentRef, defaultComponentRefContext);
         return {
           level: currentLevel ? (
             <ScorecardLadderLevelBadge

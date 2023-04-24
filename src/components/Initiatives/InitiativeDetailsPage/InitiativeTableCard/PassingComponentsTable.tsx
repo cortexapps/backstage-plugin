@@ -31,8 +31,8 @@ import { Gauge } from '../../../Gauge';
 import { DefaultEntityRefLink } from '../../../DefaultEntityLink';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
-import {HomepageEntity} from "../../../../api/userInsightTypes";
-import {StringIndexable} from "../../../ReportsPage/HeatmapPage/HeatmapUtils";
+import { HomepageEntity } from '../../../../api/userInsightTypes';
+import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 
 const columns: TableColumn[] = [
   {
@@ -110,7 +110,7 @@ export const PassingComponentsTable = ({
         };
       })
       .sort((left, right) => left.serviceName.localeCompare(right.serviceName));
-  }, [componentRefs, numRules]);
+  }, [componentRefs, entitiesByTag, numRules]);
 
   const showPagination = useMemo(
     () => componentRefs.length > defaultPageSize,
