@@ -112,7 +112,7 @@ export const ScorecardsTableCard = ({
         };
       })
       .sort((left, right) => right.scorePercentage - left.scorePercentage);
-  }, [scorecardId, scores]);
+  }, [entitiesByTag, scorecardId, scores]);
 
   const showPagination = scores.length > PAGE_SIZE;
 
