@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,9 @@ import { hasText } from '../../../utils/SearchUtils';
 import SearchIcon from '@material-ui/icons/Search';
 import { isEmpty, isNil } from 'lodash';
 
-const hasTags = (tags: ServiceGroup[], query: string) => {
-  return !isEmpty(tags)
-    ? tags.some(tag => tag.tag.toLowerCase().includes(query.toLowerCase()))
+const hasTags = (groups: ServiceGroup[], query: string) => {
+  return !isEmpty(groups)
+    ? groups.some(tag => tag.tag.toLowerCase().includes(query.toLowerCase()))
     : false;
 };
 
