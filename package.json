@@ -25,6 +25,7 @@
     "test": "backstage-cli package test",
     "diff": "backstage-cli plugin:diff",
     "prepack": "backstage-cli package prepack",
+    "prepare": "husky install",
     "postpack": "backstage-cli package postpack",
     "clean": "backstage-cli package clean",
     "dev": "yarn watch",
@@ -100,11 +101,6 @@
     "react-router-dom": "6.0.0-beta.0"
   },
   "prettier": "@spotify/prettier-config",
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "src/*.{js,jsx,ts,tsx}": [
       "eslint --fix",
