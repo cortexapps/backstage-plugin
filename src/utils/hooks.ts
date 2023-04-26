@@ -58,15 +58,12 @@ export function useDropdown<T>(
 ): [T | undefined, (event: React.ChangeEvent<{ value: unknown }>) => void] {
   const [value, setValue] = useState<T | undefined>(initialValue);
 
-  console.log({ value, deps });
-
   useEffect(() => {
     setValue(initialValue);
   }, deps);
 
   const onChange = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
-      console.log("Target value:", event.target.value);
       setValue(
         event.target.value === ''
           ? undefined
