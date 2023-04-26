@@ -25,6 +25,7 @@
     "test": "backstage-cli package test",
     "diff": "backstage-cli plugin:diff",
     "prepack": "backstage-cli package prepack",
+    "prepare": "husky install",
     "postpack": "backstage-cli package postpack",
     "clean": "backstage-cli package clean",
     "dev": "yarn watch",
