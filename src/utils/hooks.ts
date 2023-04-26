@@ -60,7 +60,8 @@ export function useDropdown<T>(
 
   useEffect(() => {
     setValue(initialValue);
-  }, deps);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValue, ...deps]);
 
   const onChange = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
