@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { InfoCard } from '@backstage/core-components';
+import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
 import {
   FormControl,
   Grid,
@@ -29,10 +29,10 @@ import { EntityScorecardsCardRow } from './EntityScorecardsCardRow';
 import { BackstageTheme } from '@backstage/theme';
 import { ServiceScorecardScore } from '../../api/types';
 import { SortDropdown } from '../Common/SortDropdown';
-import { useDropdown, useInput } from '../../utils/hooks';
+import { useDropdown, useInput, usePartialScorecardCompareFn } from '../../utils/hooks';
 import SearchIcon from '@material-ui/icons/Search';
 import { searchItems } from '../../utils/SearchUtils';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, isUndefined } from "lodash";
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   table: {
@@ -45,11 +45,11 @@ const useStyles = makeStyles<BackstageTheme>(theme => ({
   },
 }));
 
-export interface SortMethods<T> {
+interface SortMethods<T> {
   [title: string]: (a: T, b: T) => number;
 }
 
-const scorecardScoresSortMethods: SortMethods<ServiceScorecardScore> = {
+const defaultSortMethods: SortMethods<ServiceScorecardScore> = {
   'Name ↑': (a: ServiceScorecardScore, b: ServiceScorecardScore) =>
     a.scorecard.name.localeCompare(b.scorecard.name),
   'Name ↓': (a: ServiceScorecardScore, b: ServiceScorecardScore) =>
@@ -75,8 +75,36 @@ export const EntityScorecardsCard = ({
 }: EntityScorecardsCardProps) => {
   const classes = useStyles();
 
-  const [sortBy, setSortBy] = useDropdown('Name ↑');
   const [searchQuery, setSearchQuery] = useInput();
+
+  const {
+    compareFn: scorecardCompareFn,
+    loading: loadingScorecardCompareFn,
+    error: scorecardComapreFnError
+  } = usePartialScorecardCompareFn();
+
+  const customScoresSortMethods: SortMethods<ServiceScorecardScore> = useMemo(() => {
+    if (isUndefined(scorecardCompareFn)) {
+      return {} as SortMethods<ServiceScorecardScore>;
+    }
+
+    return {
+      'Custom ↑': (a: ServiceScorecardScore, b: ServiceScorecardScore) => scorecardCompareFn(a.scorecard, b.scorecard),
+      'Custom ↓': (a: ServiceScorecardScore, b: ServiceScorecardScore) => -1 * scorecardCompareFn(a.scorecard, b.scorecard),
+    };
+  }, [scorecardCompareFn]);
+
+  const scorecardScoresSortMethods: SortMethods<ServiceScorecardScore> = useMemo(() => {
+    return {
+      ...customScoresSortMethods,
+      ...defaultSortMethods
+    };
+  }, [customScoresSortMethods]);
+
+  const [sortBy, setSortBy] = useDropdown(
+    isEmpty(customScoresSortMethods) ? 'Name ↑' : 'Custom ↑',
+    [isEmpty(customScoresSortMethods)]
+  );
 
   const scoresToDisplay = useMemo(() => {
     const scoresToDisplay = searchItems(
@@ -90,7 +118,19 @@ export const EntityScorecardsCard = ({
     }
 
     return scoresToDisplay;
-  }, [sortBy, searchQuery, scores]);
+  }, [scores, searchQuery, sortBy, scorecardScoresSortMethods]);
+
+  if (loadingScorecardCompareFn) {
+    return <Progress />;
+  }
+
+  if (scorecardComapreFnError) {
+    return (
+      <WarningPanel severity="error" title="Could not load Scorecards.">
+        {scorecardComapreFnError.message}
+      </WarningPanel>
+    );
+  }
 
   return (
     <InfoCard title={title}>

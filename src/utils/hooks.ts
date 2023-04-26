@@ -13,31 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useMemo, useState } from 'react';
-import {
-  AnyEntityRef,
-  entityEquals,
-  Predicate,
-  stringifyAnyEntityRef,
-} from './types';
+import React, { DependencyList, useCallback, useEffect, useMemo, useState } from 'react';
+import { AnyEntityRef, entityEquals, nullsToUndefined, Predicate, stringifyAnyEntityRef, } from './types';
 import { useAsync } from 'react-use';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import {
-  catalogApiRef,
-  humanizeEntityRef,
-  getEntityRelations,
-} from '@backstage/plugin-catalog-react';
+import { catalogApiRef, getEntityRelations, humanizeEntityRef, } from '@backstage/plugin-catalog-react';
 import { groupByString, mapByString, mapValues } from './collections';
-import {
-  Entity,
-  parseEntityRef,
-  RELATION_OWNED_BY,
-  RELATION_PART_OF,
-} from '@backstage/catalog-model';
-import {
-  defaultGroupRefContext,
-  defaultSystemRefContext,
-} from './ComponentUtils';
+import { Entity, parseEntityRef, RELATION_OWNED_BY, RELATION_PART_OF, } from '@backstage/catalog-model';
+import { defaultGroupRefContext, defaultSystemRefContext, } from './ComponentUtils';
 import { cortexApiRef } from '../api';
 import { CortexApi } from '../api/CortexApi';
 import { EntityFilterGroup } from '../filters';
@@ -45,7 +28,8 @@ import { FilterDefinition } from '../components/FilterCard/Filters';
 import { extensionApiRef } from '../api/ExtensionApi';
 import { StringIndexable } from '../components/ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../api/userInsightTypes';
-import { isNil, keyBy } from 'lodash';
+import { isNil, isUndefined, keyBy } from 'lodash';
+import { Scorecard } from "../api/types";
 
 export function useInput(
   initialValue: string | undefined = undefined,
@@ -70,10 +54,19 @@ export function useInput(
 
 export function useDropdown<T>(
   initialValue: T | undefined,
+  deps: DependencyList = [],
 ): [T | undefined, (event: React.ChangeEvent<{ value: unknown }>) => void] {
   const [value, setValue] = useState<T | undefined>(initialValue);
+
+  console.log({ value, deps });
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, deps);
+
   const onChange = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
+      console.log("Target value:", event.target.value);
       setValue(
         event.target.value === ''
           ? undefined
@@ -326,6 +319,67 @@ export function useCortexFrontendUrl(): string {
     config.getOptionalString('cortex.frontendBaseUrl') ??
     'https://app.getcortexapp.com'
   );
+}
+
+export function useUiExtensions() {
+  const extensionApi = useApi(extensionApiRef);
+  const { value: uiExtensions, ...rest } = useAsync(async () => {
+    return isUndefined(extensionApi.getUiExtensions) ? undefined : await extensionApi.getUiExtensions();
+  }, []);
+
+  return {
+    uiExtensions,
+    ...rest,
+  }
+}
+
+const defaultCompareFn = (a: Scorecard, b: Scorecard) => a.name.localeCompare(b.name);
+export function useScorecardCompareFn() {
+  const { uiExtensions, ...rest } = useUiExtensions();
+  let customCompareFn = uiExtensions?.scorecards?.sortOrder?.compareFn;
+  /**
+   * Runtime types for scorecards return nulls instead of undefined recursively.
+   * So before passing to our user-supplied compareFn that assumes that they are undefined,
+   * we must recursively convert nulls -> undefined.
+   */
+  let sanitizedCompareFn = isUndefined(customCompareFn) ? undefined : (a: Scorecard, b: Scorecard) => {
+    return customCompareFn!(nullsToUndefined(a), nullsToUndefined(b))
+  }
+
+  return { ...rest, compareFn: sanitizedCompareFn ?? defaultCompareFn };
+}
+
+export function usePartialScorecardCompareFn() {
+  const { uiExtensions, loading: loadingUiExtensions, error: uiExtensionsError } = useUiExtensions();
+  const { value: scorecardsById, loading: loadingScorecards, error: scorecardsError } = useCortexApi(async (api) =>
+    keyBy(await api.getScorecards(), scorecard => scorecard.id)
+  )
+
+  let scorecardCompareFn = uiExtensions?.scorecards?.sortOrder?.compareFn;
+
+  type PartialScorecard = {
+    id: number;
+  };
+
+  let compareFn: ((a: PartialScorecard, b: PartialScorecard) => number) | undefined = undefined;
+
+  if (!isUndefined(scorecardCompareFn) && !isUndefined(scorecardsById)) {
+    /**
+     * Runtime types for scorecards return nulls instead of undefined recursively.
+     * So before passing to our user-supplied compareFn that assumes that they are undefined,
+     * we must recursively convert nulls -> undefined.
+     */
+    compareFn = (a: PartialScorecard, b: PartialScorecard) => scorecardCompareFn!(
+      nullsToUndefined(scorecardsById[a.id]),
+      nullsToUndefined(scorecardsById[b.id])
+    )
+  }
+
+  return {
+    loading: loadingUiExtensions || loadingScorecards,
+    error: uiExtensionsError ?? scorecardsError,
+    compareFn,
+  };
 }
 
 export function useEntitiesByTag(): {
