@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
-import { useCortexApi } from '../../../utils/hooks';
+import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
 import { GroupByOption, HeaderType } from '../../../api/types';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
 
@@ -40,8 +40,9 @@ export const SingleScorecardHeatmap = ({
     api => api.getScorecardLadders(scorecardId),
     [scorecardId],
   );
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
-  if (loadingScores || loadingLadders) {
+  if (loadingScores || loadingLadders || loadingEntities) {
     return <Progress />;
   }
 
@@ -64,10 +65,11 @@ export const SingleScorecardHeatmap = ({
 
   return (
     <SingleScorecardHeatmapTable
+      entitiesByTag={entitiesByTag}
       groupBy={groupBy}
       headerType={headerType}
-      scores={scores}
       ladder={ladders?.[0]}
+      scores={scores}
     />
   );
 };

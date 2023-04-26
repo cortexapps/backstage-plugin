@@ -43,6 +43,9 @@ import { CortexApi } from '../api/CortexApi';
 import { EntityFilterGroup } from '../filters';
 import { FilterDefinition } from '../components/FilterCard/Filters';
 import { extensionApiRef } from '../api/ExtensionApi';
+import { StringIndexable } from '../components/ReportsPage/HeatmapPage/HeatmapUtils';
+import { HomepageEntity } from '../api/userInsightTypes';
+import { isNil, keyBy } from 'lodash';
 
 export function useInput(
   initialValue: string | undefined = undefined,
@@ -323,4 +326,24 @@ export function useCortexFrontendUrl(): string {
     config.getOptionalString('cortex.frontendBaseUrl') ??
     'https://app.getcortexapp.com'
   );
+}
+
+export function useEntitiesByTag(): {
+  entitiesByTag: StringIndexable<HomepageEntity>;
+  loading: boolean;
+} {
+  const { value: entities, loading } = useCortexApi(
+    api => api.getCatalogEntities(),
+    [],
+  );
+
+  const entitiesByTag: StringIndexable<HomepageEntity> = useMemo(
+    () =>
+      !isNil(entities) && !isNil(entities.entities)
+        ? keyBy(Object.values(entities.entities), entity => entity.codeTag)
+        : {},
+    [entities],
+  );
+
+  return { entitiesByTag, loading };
 }

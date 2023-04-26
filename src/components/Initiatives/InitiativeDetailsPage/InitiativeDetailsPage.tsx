@@ -30,6 +30,7 @@ import { InitiativeTableCard } from './InitiativeTableCard';
 import { InitiativeFilterCard } from './InitiativeFilterCard';
 import { Predicate } from '../../../utils/types';
 import { InitiativeStatsCard } from './InitiativeStatsCard';
+import { useEntitiesByTag } from '../../../utils/hooks';
 
 export const InitiativeDetailsPage = () => {
   const { id: initiativeId } = useRouteRefParams(initiativeRouteRef);
@@ -48,6 +49,8 @@ export const InitiativeDetailsPage = () => {
     ]);
   }, []);
 
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
+
   const [initiative, actionItems] = value ?? [undefined, undefined];
 
   const filteredComponentRefs = useMemo(() => {
@@ -56,7 +59,7 @@ export const InitiativeDetailsPage = () => {
     );
   }, [initiative, filter]);
 
-  if (loading) {
+  if (loading || loadingEntities) {
     return <Progress />;
   }
 
@@ -87,9 +90,10 @@ export const InitiativeDetailsPage = () => {
             filter={filter}
           />
           <InitiativeTableCard
-            componentRefs={filteredComponentRefs}
-            numRules={initiative.emphasizedRules.length}
             actionItems={actionItems}
+            componentRefs={filteredComponentRefs}
+            entitiesByTag={entitiesByTag}
+            numRules={initiative.emphasizedRules.length}
           />
         </Grid>
       </Grid>

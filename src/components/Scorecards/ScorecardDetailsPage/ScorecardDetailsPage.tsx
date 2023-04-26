@@ -20,6 +20,7 @@ import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { ScorecardDetails } from './ScorecardDetails';
+import { useEntitiesByTag } from '../../../utils/hooks';
 
 export const ScorecardDetailsPage = () => {
   const { id: scorecardId } = useRouteRefParams(scorecardRouteRef);
@@ -27,24 +28,26 @@ export const ScorecardDetailsPage = () => {
   const cortexApi = useApi(cortexApiRef);
 
   const { value, loading, error } = useAsync(async () => {
-    const [scorecard, ladders, scores] = await Promise.all([
-      cortexApi.getScorecard(+scorecardId),
+    const [ladders, scorecard, scores] = await Promise.all([
       cortexApi.getScorecardLadders(+scorecardId),
+      cortexApi.getScorecard(+scorecardId),
       cortexApi.getScorecardScores(+scorecardId),
     ]);
 
-    return { scorecard, ladders, scores };
+    return { ladders, scorecard, scores };
   }, []);
 
-  if (loading) {
-    return <Progress />;
-  }
-
-  const { scorecard, ladders, scores } = value ?? {
-    scorecard: undefined,
+  const { ladders, scorecard, scores } = value ?? {
     ladders: [],
+    scorecard: undefined,
     scores: undefined,
   };
+
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
+
+  if (loading || loadingEntities) {
+    return <Progress />;
+  }
 
   if (error || scorecard === undefined || scores === undefined) {
     return (
@@ -58,6 +61,11 @@ export const ScorecardDetailsPage = () => {
   const ladder = ladders?.[0];
 
   return (
-    <ScorecardDetails scorecard={scorecard} ladder={ladder} scores={scores} />
+    <ScorecardDetails
+      entitiesByTag={entitiesByTag}
+      ladder={ladder}
+      scorecard={scorecard}
+      scores={scores}
+    />
   );
 };

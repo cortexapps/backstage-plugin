@@ -21,19 +21,22 @@ import { parseEntityRef } from '@backstage/catalog-model';
 
 import { HeatmapTableHeader } from './HeatmapTableHeader';
 import { HeatmapCell } from '../HeatmapCell';
-import { getFormattedScorecardScores } from '../HeatmapUtils';
+import { getFormattedScorecardScores, StringIndexable } from '../HeatmapUtils';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { filterNotUndefined } from '../../../../utils/collections';
 
 import { GroupByOption, ScoresByIdentifier } from '../../../../api/types';
+import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 interface AllScorecardsHeatmapTableProps {
+  entitiesByTag: StringIndexable<HomepageEntity>;
   groupBy: GroupByOption;
   scorecardNames: string[];
   serviceScores: ScoresByIdentifier[];
 }
 
 export const AllScorecardsHeatmapTable = ({
+  entitiesByTag,
   groupBy,
   scorecardNames,
   serviceScores,
@@ -78,6 +81,7 @@ export const AllScorecardsHeatmapTable = ({
                       groupScore.identifier!!,
                       defaultComponentRefContext,
                     )}
+                    title={entitiesByTag[groupScore.identifier!!]?.name}
                   />
                 )}
               </TableCell>
