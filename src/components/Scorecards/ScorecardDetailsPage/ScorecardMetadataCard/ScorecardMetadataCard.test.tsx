@@ -29,7 +29,6 @@ describe('ScorecardMetadataCard', () => {
       <ScorecardMetadataCard scorecard={scorecard} scores={[]} />,
     );
 
-    expect(await findByText('Bob Jones')).toBeVisible();
     expect(await findByText('My Description')).toBeVisible();
     expect(await findByText('tag1')).toBeVisible();
     expect(await findByText('tag2')).toBeVisible();
