@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Card,
   CardActions,
@@ -52,12 +52,14 @@ export const ListCard = ({
   truncateToCharacters,
   url,
 }: ListCardProps) => {
-  const [isExpanded, setIsExpanded] = React.useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const classes = useStyles();
+
   const descriptionToShow = useMemo(() => {
     if (!description) {
       return '';
     }
+
     if (truncateToCharacters && !isExpanded) {
       return description.substring(0, truncateToCharacters) + '...';
     }
@@ -70,19 +72,21 @@ export const ListCard = ({
       <CardMedia>
         <ItemCardHeader title={name} />
       </CardMedia>
-      {description && (
-        <CardContent>
-          <MarkdownContent content={descriptionToShow ?? ''} />
-          {truncateToCharacters && description.length > truncateToCharacters && (
-            <button
-              className={classes.linkButton}
-              onClick={() => setIsExpanded(!isExpanded)}
-            >
-              {isExpanded ? 'Less' : 'More'}
-            </button>
-          )}
-        </CardContent>
-      )}
+      <CardContent>
+        {description && (
+          <>
+            <MarkdownContent content={descriptionToShow ?? ''} />
+            {truncateToCharacters && description.length > truncateToCharacters && (
+              <button
+                className={classes.linkButton}
+                onClick={() => setIsExpanded(!isExpanded)}
+              >
+                {isExpanded ? 'Less' : 'More'}
+              </button>
+            )}
+          </>
+        )}
+      </CardContent>
       <CardActions>
         <Button to={url} color="primary">
           Details

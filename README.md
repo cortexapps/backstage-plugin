@@ -73,7 +73,7 @@ import { CortexPage } from '@cortexapps/backstage-plugin';
   allowedHeaders: ['x-cortex-email', 'x-cortex-name']
 ```
 
-5.Import `EntityCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
+5. Import `EntityCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
 
 ```tsx
 import { EntityCortexContent } from '@cortexapps/backstage-plugin';
@@ -126,7 +126,14 @@ cortex:
   frontendBaseUrl: ${CORTEX_FRONTEND_HOST_URL}
 ```
 
-11. (Optional) When performing manual entity sync in the settings page, you can choose to use gzip to compress the entities by updating `app-config.yaml` with the parameter `syncWithGzip`. You must also update the Backstage HTTP proxy to allow the `Content-Encoding` header.
+11. (Optional) Update `app-config.yaml` to hide the Settings page from all users, including admins.
+
+```yaml
+cortex:
+   hideSettings: true
+```
+
+12. (Optional) When performing manual entity sync in the Settings page, you can choose to use gzip to compress the entities by updating `app-config.yaml` with the parameter `syncWithGzip`. You must also update the Backstage HTTP proxy to allow the `Content-Encoding` header.
 
 ```yaml
 cortex:
@@ -143,7 +150,7 @@ proxy:
       - Content-Encoding
 ```
 
-12. (Optional) Customize Backstage homepage as the Cortex homepage:
+13. (Optional) Customize Backstage homepage as the Cortex homepage:
 
 ![homepage](./docs/homepage.png?raw=true)
 

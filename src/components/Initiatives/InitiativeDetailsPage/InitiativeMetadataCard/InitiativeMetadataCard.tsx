@@ -73,11 +73,6 @@ export const InitiativeMetadataCard = ({
             href={scorecardRef({ id: `${initiative.scorecard.id}` })}
           />
         </MetadataItem>
-        {initiative.creator && (
-          <MetadataItem gridSizes={{ xs: 12 }} label="Owner">
-            {initiative.creator.name}
-          </MetadataItem>
-        )}
         {initiative.emphasizedLevels.length !== 0 && (
           <MetadataItem gridSizes={{ xs: 12 }} label="Prioritized Ladder Level">
             {initiative.emphasizedLevels.map(level => (

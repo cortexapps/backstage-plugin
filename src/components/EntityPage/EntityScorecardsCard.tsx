@@ -17,11 +17,13 @@ import React, { useMemo } from 'react';
 import { InfoCard } from '@backstage/core-components';
 import {
   FormControl,
+  Grid,
   InputAdornment,
   makeStyles,
   Table,
   TableBody,
   TextField,
+  Typography,
 } from '@material-ui/core';
 import { EntityScorecardsCardRow } from './EntityScorecardsCardRow';
 import { BackstageTheme } from '@backstage/theme';
@@ -30,6 +32,7 @@ import { SortDropdown } from '../Common/SortDropdown';
 import { useDropdown, useInput } from '../../utils/hooks';
 import SearchIcon from '@material-ui/icons/Search';
 import { searchItems } from '../../utils/SearchUtils';
+import { isEmpty, isNil } from 'lodash';
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   table: {
@@ -90,45 +93,57 @@ export const EntityScorecardsCard = ({
   }, [sortBy, searchQuery, scores]);
 
   return (
-    <InfoCard
-      title={title}
-      action={
-        <SortDropdown
-          selected={sortBy}
-          items={Object.keys(scorecardScoresSortMethods)}
-          select={setSortBy}
-        />
-      }
-      subheader={
-        <FormControl fullWidth>
-          <TextField
-            variant="standard"
-            label="Search"
-            value={searchQuery}
-            onChange={setSearchQuery}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </FormControl>
-      }
-    >
-      <Table className={classes.table}>
-        <TableBody>
-          {scoresToDisplay.map(score => (
-            <EntityScorecardsCardRow
-              key={`EntityScorecardsCardRow-${score.scorecard.id}`}
-              score={score}
-              onSelect={() => onSelect(score.scorecard.id)}
-              selected={selectedScorecardId === score.scorecard.id}
+    <InfoCard title={title}>
+      <Grid container direction="column">
+        <Grid
+          container
+          direction="row"
+          lg={12}
+          style={{ marginBottom: '20px' }}
+        >
+          <Grid item>
+            <FormControl fullWidth>
+              <TextField
+                variant="standard"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={setSearchQuery}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item>
+            <SortDropdown
+              selected={sortBy}
+              items={Object.keys(scorecardScoresSortMethods)}
+              select={setSortBy}
             />
-          ))}
-        </TableBody>
-      </Table>
+          </Grid>
+        </Grid>
+        <Table className={classes.table}>
+          <TableBody>
+            {isEmpty(scoresToDisplay) && !isNil(searchQuery) && (
+              <Typography variant="subtitle1">
+                No Scorecards matching search query
+              </Typography>
+            )}
+            {scoresToDisplay.map(score => (
+              <EntityScorecardsCardRow
+                key={`EntityScorecardsCardRow-${score.scorecard.id}`}
+                score={score}
+                onSelect={() => onSelect(score.scorecard.id)}
+                selected={selectedScorecardId === score.scorecard.id}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </Grid>
     </InfoCard>
   );
 };

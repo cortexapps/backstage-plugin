@@ -52,11 +52,6 @@ export const ScorecardMetadataCard = ({
             <MarkdownContent content={scorecard.description} />
           </MetadataItem>
         )}
-        {scorecard.creator && (
-          <MetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Owner">
-            {scorecard.creator.name}
-          </MetadataItem>
-        )}
         {lastUpdated && (
           <MetadataItem
             gridSizes={{ xs: 12, sm: 6, lg: 4 }}
