@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import {
-  Button,
-  FormControl,
-  Grid,
-  InputAdornment,
-  TextField,
-} from '@material-ui/core';
+import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
-
 import {
   Content,
   ContentHeader,
@@ -32,53 +25,51 @@ import {
   WarningPanel,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-
-import { cortexApiRef } from '../../../api';
-import { ScorecardCard } from '../ScorecardCard';
-
-import { Scorecard, ServiceGroup } from '../../../api/types';
-import { useInput } from '../../../utils/hooks';
-import { hasText } from '../../../utils/SearchUtils';
+import { InitiativeCard } from '../InitiativeCard';
+import {
+  FormControl,
+  Grid,
+  InputAdornment,
+  TextField,
+} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { isEmpty, isNil } from 'lodash';
+import { useInput } from '../../../utils/hooks';
+import { hasText } from '../../../utils/SearchUtils';
+import { Initiative } from '../../../api/types';
+import { hasTags } from '../../Scorecards/ScorecardsPage/ScorecardList';
 
-export const hasTags = (groups: ServiceGroup[], query: string) => {
-  return !isEmpty(groups)
-    ? groups.some(tag => tag.tag.toLowerCase().includes(query.toLowerCase()))
-    : false;
-};
-
-export const ScorecardList = () => {
+export const InitiativesList = () => {
   const cortexApi = useApi(cortexApiRef);
   const [searchQuery, setSearchQuery] = useInput();
 
   const {
-    value: scorecards = [],
+    value: initiatives = [],
     loading,
     error,
   } = useAsync(async () => {
-    return await cortexApi.getScorecards();
+    return await cortexApi.getInitiatives();
   }, []);
 
-  const scorecardsToDisplay = useMemo(() => {
-    const scorecardsToDisplay = scorecards.filter(scorecard => {
+  const initiativesToDisplay = useMemo(() => {
+    const initiativesToDisplay = initiatives.filter(initiative => {
       if (isNil(searchQuery) || isEmpty(searchQuery)) {
         return true;
       }
 
       return (
-        hasText(scorecard, 'name', searchQuery) ||
-        hasText(scorecard, 'description', searchQuery) ||
-        hasText(scorecard, 'filterQuery', searchQuery) ||
-        hasTags(scorecard.tags, searchQuery) ||
-        hasTags(scorecard.excludedTags, searchQuery)
+        hasText(initiative, 'name', searchQuery) ||
+        hasText(initiative, 'description', searchQuery) ||
+        hasText(initiative, 'scorecard.name', searchQuery) ||
+        hasText(initiative, 'scorecard.description', searchQuery) ||
+        hasTags(initiative.tags, searchQuery)
       );
     });
 
-    return scorecardsToDisplay?.sort((a: Scorecard, b: Scorecard) =>
+    return initiativesToDisplay?.sort((a: Initiative, b: Initiative) =>
       a.name.localeCompare(b.name),
     );
-  }, [scorecards, searchQuery]);
+  }, [initiatives, searchQuery]);
 
   if (loading) {
     return <Progress />;
@@ -86,34 +77,25 @@ export const ScorecardList = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not load Scorecards.">
+      <WarningPanel severity="error" title="Could not load Initiatives.">
         {error.message}
       </WarningPanel>
     );
   }
 
-  if (!scorecards?.length) {
+  if (!initiatives?.length) {
     return (
       <EmptyState
         missing="info"
-        title="No scorecards to display"
-        description="You haven't added any scorecards yet."
-        action={
-          <Button
-            variant="contained"
-            color="primary"
-            href="https://backstage.io/docs/features/software-catalog/descriptor-format#kind-domain"
-          >
-            Read more
-          </Button>
-        }
+        title="No initiatives to display"
+        description="You haven't added any initiatives yet."
       />
     );
   }
 
   return (
     <Content>
-      <ContentHeader title="Scorecards" />
+      <ContentHeader title="Initiatives" />
       <Grid container direction="column">
         <Grid item lg={12} style={{ marginBottom: '20px' }}>
           <FormControl fullWidth>
@@ -133,15 +115,18 @@ export const ScorecardList = () => {
           </FormControl>
         </Grid>
         <Grid item lg={12}>
-          {isEmpty(scorecardsToDisplay) && !isNil(searchQuery) && (
+          {isEmpty(initiativesToDisplay) && !isNil(searchQuery) && (
             <EmptyState
-              title="No Scorecards matching search query"
+              title="No Initiatives matching search query"
               missing="data"
             />
           )}
           <ItemCardGrid>
-            {scorecardsToDisplay.map(scorecard => (
-              <ScorecardCard key={scorecard.id} scorecard={scorecard} />
+            {initiativesToDisplay.map(initiative => (
+              <InitiativeCard
+                key={`InitiativeCard-${initiative.id}`}
+                initiative={initiative}
+              />
             ))}
           </ItemCardGrid>
         </Grid>
