@@ -84,7 +84,7 @@ export const EntityScorecardsCard = ({
   const {
     compareFn: scorecardCompareFn,
     loading: loadingScorecardCompareFn,
-    error: scorecardComapreFnError,
+    error: scorecardCompareFnError,
   } = usePartialScorecardCompareFn();
 
   const customScoresSortMethods: SortMethods<ServiceScorecardScore> =
@@ -132,10 +132,10 @@ export const EntityScorecardsCard = ({
     return <Progress />;
   }
 
-  if (scorecardComapreFnError) {
+  if (scorecardCompareFnError) {
     return (
       <WarningPanel severity="error" title="Could not load Scorecards.">
-        {scorecardComapreFnError.message}
+        {scorecardCompareFnError.message}
       </WarningPanel>
     );
   }
