@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {cortexPlugin} from './plugin';
+import {cortexPlugin } from './plugin';
 import { createComponentExtension } from '@backstage/core-plugin-api';
 
 export const ScorecardsPage = cortexPlugin.provide(
