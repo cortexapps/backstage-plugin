@@ -21,7 +21,7 @@ import {
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import { defaultComponentRefContext, EntityRefContext } from './ComponentUtils';
-import {isObject} from "lodash";
+import { isObject } from 'lodash';
 
 export const identity = <T>(t: T) => t;
 
@@ -107,7 +107,6 @@ export type AnyEntityRef =
   | CompoundEntityRef
   | Entity;
 
-
 /**
  * Magic courtesy of: https://stackoverflow.com/a/69058437
  * TODO: The Cortex API returns nulls where our type system returns undefined,
@@ -117,14 +116,16 @@ export type AnyEntityRef =
 type RecursivelyReplaceNullWithUndefined<T> = T extends null
   ? undefined
   : T extends Date
-    ? T
-    : {
+  ? T
+  : {
       [K in keyof T]: T[K] extends (infer U)[]
         ? RecursivelyReplaceNullWithUndefined<U>[]
         : RecursivelyReplaceNullWithUndefined<T[K]>;
     };
 
-export function nullsToUndefined<T>(obj: T): RecursivelyReplaceNullWithUndefined<T> {
+export function nullsToUndefined<T>(
+  obj: T,
+): RecursivelyReplaceNullWithUndefined<T> {
   if (obj === null) {
     return undefined as any;
   }

@@ -13,14 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { DependencyList, useCallback, useEffect, useMemo, useState } from 'react';
-import { AnyEntityRef, entityEquals, nullsToUndefined, Predicate, stringifyAnyEntityRef, } from './types';
+import React, {
+  DependencyList,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import {
+  AnyEntityRef,
+  entityEquals,
+  nullsToUndefined,
+  Predicate,
+  stringifyAnyEntityRef,
+} from './types';
 import { useAsync } from 'react-use';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { catalogApiRef, getEntityRelations, humanizeEntityRef, } from '@backstage/plugin-catalog-react';
+import {
+  catalogApiRef,
+  getEntityRelations,
+  humanizeEntityRef,
+} from '@backstage/plugin-catalog-react';
 import { groupByString, mapByString, mapValues } from './collections';
-import { Entity, parseEntityRef, RELATION_OWNED_BY, RELATION_PART_OF, } from '@backstage/catalog-model';
-import { defaultGroupRefContext, defaultSystemRefContext, } from './ComponentUtils';
+import {
+  Entity,
+  parseEntityRef,
+  RELATION_OWNED_BY,
+  RELATION_PART_OF,
+} from '@backstage/catalog-model';
+import {
+  defaultGroupRefContext,
+  defaultSystemRefContext,
+} from './ComponentUtils';
 import { cortexApiRef } from '../api';
 import { CortexApi } from '../api/CortexApi';
 import { EntityFilterGroup } from '../filters';
@@ -29,7 +53,7 @@ import { extensionApiRef } from '../api/ExtensionApi';
 import { StringIndexable } from '../components/ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../api/userInsightTypes';
 import { isNil, isUndefined, keyBy } from 'lodash';
-import { Scorecard } from "../api/types";
+import { Scorecard } from '../api/types';
 
 export function useInput(
   initialValue: string | undefined = undefined,
@@ -322,16 +346,19 @@ export function useCortexFrontendUrl(): string {
 export function useUiExtensions() {
   const extensionApi = useApi(extensionApiRef);
   const { value: uiExtensions, ...rest } = useAsync(async () => {
-    return isUndefined(extensionApi.getUiExtensions) ? undefined : await extensionApi.getUiExtensions();
+    return isUndefined(extensionApi.getUiExtensions)
+      ? undefined
+      : await extensionApi.getUiExtensions();
   }, []);
 
   return {
     uiExtensions,
     ...rest,
-  }
+  };
 }
 
-const defaultCompareFn = (a: Scorecard, b: Scorecard) => a.name.localeCompare(b.name);
+const defaultCompareFn = (a: Scorecard, b: Scorecard) =>
+  a.name.localeCompare(b.name);
 export function useScorecardCompareFn() {
   const { uiExtensions, ...rest } = useUiExtensions();
   let customCompareFn = uiExtensions?.scorecards?.sortOrder?.compareFn;
@@ -340,18 +367,28 @@ export function useScorecardCompareFn() {
    * So before passing to our user-supplied compareFn that assumes that they are undefined,
    * we must recursively convert nulls -> undefined.
    */
-  let sanitizedCompareFn = isUndefined(customCompareFn) ? undefined : (a: Scorecard, b: Scorecard) => {
-    return customCompareFn!(nullsToUndefined(a), nullsToUndefined(b))
-  }
+  let sanitizedCompareFn = isUndefined(customCompareFn)
+    ? undefined
+    : (a: Scorecard, b: Scorecard) => {
+        return customCompareFn!(nullsToUndefined(a), nullsToUndefined(b));
+      };
 
   return { ...rest, compareFn: sanitizedCompareFn ?? defaultCompareFn };
 }
 
 export function usePartialScorecardCompareFn() {
-  const { uiExtensions, loading: loadingUiExtensions, error: uiExtensionsError } = useUiExtensions();
-  const { value: scorecardsById, loading: loadingScorecards, error: scorecardsError } = useCortexApi(async (api) =>
-    keyBy(await api.getScorecards(), scorecard => scorecard.id)
-  )
+  const {
+    uiExtensions,
+    loading: loadingUiExtensions,
+    error: uiExtensionsError,
+  } = useUiExtensions();
+  const {
+    value: scorecardsById,
+    loading: loadingScorecards,
+    error: scorecardsError,
+  } = useCortexApi(async api =>
+    keyBy(await api.getScorecards(), scorecard => scorecard.id),
+  );
 
   let scorecardCompareFn = uiExtensions?.scorecards?.sortOrder?.compareFn;
 
@@ -359,7 +396,9 @@ export function usePartialScorecardCompareFn() {
     id: number;
   };
 
-  let compareFn: ((a: PartialScorecard, b: PartialScorecard) => number) | undefined = undefined;
+  let compareFn:
+    | ((a: PartialScorecard, b: PartialScorecard) => number)
+    | undefined = undefined;
 
   if (!isUndefined(scorecardCompareFn) && !isUndefined(scorecardsById)) {
     /**
@@ -367,10 +406,11 @@ export function usePartialScorecardCompareFn() {
      * So before passing to our user-supplied compareFn that assumes that they are undefined,
      * we must recursively convert nulls -> undefined.
      */
-    compareFn = (a: PartialScorecard, b: PartialScorecard) => scorecardCompareFn!(
-      nullsToUndefined(scorecardsById[a.id]),
-      nullsToUndefined(scorecardsById[b.id])
-    )
+    compareFn = (a: PartialScorecard, b: PartialScorecard) =>
+      scorecardCompareFn!(
+        nullsToUndefined(scorecardsById[a.id]),
+        nullsToUndefined(scorecardsById[b.id]),
+      );
   }
 
   return {

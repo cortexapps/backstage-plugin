@@ -14,10 +14,23 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { Button, FormControl, Grid, InputAdornment, TextField, } from '@material-ui/core';
+import {
+  Button,
+  FormControl,
+  Grid,
+  InputAdornment,
+  TextField,
+} from '@material-ui/core';
 import { useAsync } from 'react-use';
 
-import { Content, ContentHeader, EmptyState, ItemCardGrid, Progress, WarningPanel, } from '@backstage/core-components';
+import {
+  Content,
+  ContentHeader,
+  EmptyState,
+  ItemCardGrid,
+  Progress,
+  WarningPanel,
+} from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 
 import { cortexApiRef } from '../../../api';
@@ -47,7 +60,11 @@ export const ScorecardList = () => {
     return await cortexApi.getScorecards();
   }, []);
 
-  const { compareFn, loading: loadingCompareFn, error: compareFnError } = useScorecardCompareFn();
+  const {
+    compareFn,
+    loading: loadingCompareFn,
+    error: compareFnError,
+  } = useScorecardCompareFn();
 
   const scorecardsToDisplay = useMemo(() => {
     const scorecardsToDisplay = scorecards?.filter(scorecard => {
@@ -67,7 +84,11 @@ export const ScorecardList = () => {
     return scorecardsToDisplay?.sort(compareFn);
   }, [scorecards, searchQuery, compareFn]);
 
-  if (loadingScorecards || loadingCompareFn || isUndefined(scorecardsToDisplay)) {
+  if (
+    loadingScorecards ||
+    loadingCompareFn ||
+    isUndefined(scorecardsToDisplay)
+  ) {
     return <Progress />;
   }
 

@@ -29,10 +29,14 @@ import { EntityScorecardsCardRow } from './EntityScorecardsCardRow';
 import { BackstageTheme } from '@backstage/theme';
 import { ServiceScorecardScore } from '../../api/types';
 import { SortDropdown } from '../Common/SortDropdown';
-import { useDropdown, useInput, usePartialScorecardCompareFn } from '../../utils/hooks';
+import {
+  useDropdown,
+  useInput,
+  usePartialScorecardCompareFn,
+} from '../../utils/hooks';
 import SearchIcon from '@material-ui/icons/Search';
 import { searchItems } from '../../utils/SearchUtils';
-import { isEmpty, isNil, isUndefined } from "lodash";
+import { isEmpty, isNil, isUndefined } from 'lodash';
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   table: {
@@ -80,30 +84,34 @@ export const EntityScorecardsCard = ({
   const {
     compareFn: scorecardCompareFn,
     loading: loadingScorecardCompareFn,
-    error: scorecardComapreFnError
+    error: scorecardComapreFnError,
   } = usePartialScorecardCompareFn();
 
-  const customScoresSortMethods: SortMethods<ServiceScorecardScore> = useMemo(() => {
-    if (isUndefined(scorecardCompareFn)) {
-      return {} as SortMethods<ServiceScorecardScore>;
-    }
+  const customScoresSortMethods: SortMethods<ServiceScorecardScore> =
+    useMemo(() => {
+      if (isUndefined(scorecardCompareFn)) {
+        return {} as SortMethods<ServiceScorecardScore>;
+      }
 
-    return {
-      'Custom ↑': (a: ServiceScorecardScore, b: ServiceScorecardScore) => scorecardCompareFn(a.scorecard, b.scorecard),
-      'Custom ↓': (a: ServiceScorecardScore, b: ServiceScorecardScore) => -1 * scorecardCompareFn(a.scorecard, b.scorecard),
-    };
-  }, [scorecardCompareFn]);
+      return {
+        'Custom ↑': (a: ServiceScorecardScore, b: ServiceScorecardScore) =>
+          scorecardCompareFn(a.scorecard, b.scorecard),
+        'Custom ↓': (a: ServiceScorecardScore, b: ServiceScorecardScore) =>
+          -1 * scorecardCompareFn(a.scorecard, b.scorecard),
+      };
+    }, [scorecardCompareFn]);
 
-  const scorecardScoresSortMethods: SortMethods<ServiceScorecardScore> = useMemo(() => {
-    return {
-      ...customScoresSortMethods,
-      ...defaultSortMethods
-    };
-  }, [customScoresSortMethods]);
+  const scorecardScoresSortMethods: SortMethods<ServiceScorecardScore> =
+    useMemo(() => {
+      return {
+        ...customScoresSortMethods,
+        ...defaultSortMethods,
+      };
+    }, [customScoresSortMethods]);
 
   const [sortBy, setSortBy] = useDropdown(
     isEmpty(customScoresSortMethods) ? 'Name ↑' : 'Custom ↑',
-    [isEmpty(customScoresSortMethods)]
+    [isEmpty(customScoresSortMethods)],
   );
 
   const scoresToDisplay = useMemo(() => {

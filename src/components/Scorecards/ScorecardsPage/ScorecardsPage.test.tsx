@@ -16,11 +16,14 @@
 import { CortexApi } from '../../../api/CortexApi';
 import React from 'react';
 import { ScorecardsPage } from './ScorecardsPage';
-import { Fixtures, renderWrapped } from "../../../utils/TestUtils";
-import { extensionApiRef } from "../../../api/ExtensionApi";
-import { rootRouteRef } from "../../../routes";
-import { Scorecard } from "../../../api/types";
-import { ExtensionApi, UiExtensions } from "@cortexapps/backstage-plugin-extensions";
+import { Fixtures, renderWrapped } from '../../../utils/TestUtils';
+import { extensionApiRef } from '../../../api/ExtensionApi';
+import { rootRouteRef } from '../../../routes';
+import { Scorecard } from '../../../api/types';
+import {
+  ExtensionApi,
+  UiExtensions,
+} from '@cortexapps/backstage-plugin-extensions';
 
 type AnyFunction = (args?: [] | [any]) => any;
 type ApiOverrides = Record<string, AnyFunction>;
@@ -44,13 +47,12 @@ describe('ScorecardsPage', () => {
     ...overrides,
   });
 
-
   it('should render', async () => {
     const { findByText } = renderWrapped(
       <ScorecardsPage />,
       getCortexApi(),
       { '/': rootRouteRef as any },
-      [extensionApiRef, {}]
+      [extensionApiRef, {}],
     );
     expect(await findByText(/My Scorecard/)).toBeVisible();
     expect(await findByText(/Some description/)).toBeVisible();
@@ -62,7 +64,7 @@ describe('ScorecardsPage', () => {
       <ScorecardsPage />,
       getCortexApi({ getScorecards: emptyGetScorecards }),
       { '/': rootRouteRef as any },
-      [extensionApiRef, {}]
+      [extensionApiRef, {}],
     );
     expect(await findByText(/No scorecards to display/)).toBeVisible();
     expect(
@@ -76,9 +78,9 @@ describe('ScorecardsPage', () => {
         return Promise.resolve([
           Fixtures.scorecard({ id: 1, name: 'Test Scorecard 1' }),
           Fixtures.scorecard({ id: 2, name: 'Test Scorecard 2' }),
-        ])
-      }
-    }
+        ]);
+      },
+    };
 
     const extensionApi: ExtensionApi = {
       getUiExtensions(): Promise<UiExtensions> {
@@ -87,24 +89,26 @@ describe('ScorecardsPage', () => {
             sortOrder: {
               // Reverse aphabetically, which is opposite of default sort order
               compareFn: (a, b) => -1 * a.name.localeCompare(b.name),
-            }
-          }
-        })
-      }
-    }
+            },
+          },
+        });
+      },
+    };
 
     const { findByText } = renderWrapped(
       <ScorecardsPage />,
       cortexApi,
       { '/': rootRouteRef as any },
-      [extensionApiRef, extensionApi]
+      [extensionApiRef, extensionApi],
     );
 
     const scorecard1 = await findByText('Test Scorecard 1');
-    const scorecard2 = await findByText('Test Scorecard 2')
-    expect(scorecard1).toBeVisible()
-    expect(scorecard2).toBeVisible()
+    const scorecard2 = await findByText('Test Scorecard 2');
+    expect(scorecard1).toBeVisible();
+    expect(scorecard2).toBeVisible();
 
-    expect(scorecard2.compareDocumentPosition(scorecard1)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+    expect(scorecard2.compareDocumentPosition(scorecard1)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
   });
 });

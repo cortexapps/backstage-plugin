@@ -15,7 +15,13 @@
  */
 import React, { useMemo } from 'react';
 import { Table, TableBody } from '@material-ui/core';
-import { Content, EmptyState, InfoCard, Progress, WarningPanel } from '@backstage/core-components';
+import {
+  Content,
+  EmptyState,
+  InfoCard,
+  Progress,
+  WarningPanel,
+} from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 
@@ -25,7 +31,7 @@ import { useDetailCardStyles } from '../../styles/styles';
 import { SystemPageRow } from './SystemPageRow';
 
 import { GroupByOption } from '../../api/types';
-import { isUndefined } from "lodash";
+import { isUndefined } from 'lodash';
 
 export const SystemPage = () => {
   const classes = useDetailCardStyles();
@@ -82,17 +88,20 @@ export const SystemPage = () => {
   const {
     compareFn: scorecardCompareFn,
     loading: loadingScorecardCompareFn,
-    error: scorecardComapreFnError
+    error: scorecardComapreFnError,
   } = usePartialScorecardCompareFn();
 
   const sortedScorecardData = useMemo(() => {
-    return scorecardData?.sort(isUndefined(scorecardCompareFn) ? undefined : (a, b) =>
-      scorecardCompareFn(
-        { id: a.score.scorecardId },
-        { id: b.score.scorecardId },
-      )
-    )
-  }, [scorecardData, scorecardCompareFn])
+    return scorecardData?.sort(
+      isUndefined(scorecardCompareFn)
+        ? undefined
+        : (a, b) =>
+            scorecardCompareFn(
+              { id: a.score.scorecardId },
+              { id: b.score.scorecardId },
+            ),
+    );
+  }, [scorecardData, scorecardCompareFn]);
 
   if (loadingScorecardCompareFn) {
     return <Progress />;

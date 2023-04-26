@@ -22,8 +22,8 @@ import { cortexApiRef } from '../../api';
 import { rootRouteRef } from '../../routes';
 import { CortexScorecardWidget } from './CortexScorecardWidget';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { extensionApiRef } from "../../api/ExtensionApi";
-import { Scorecard } from "../../api/types";
+import { extensionApiRef } from '../../api/ExtensionApi';
+import { Scorecard } from '../../api/types';
 
 describe('<CortexScorecardWidget />', () => {
   const entity = {
@@ -86,18 +86,23 @@ describe('<CortexScorecardWidget />', () => {
           scorecard: { id: 5, name: 'Migration', description: '' },
           evaluation: { rules: [], ladderLevels: [] },
         },
-      ])
+      ]);
     },
 
     getScorecards(): Promise<Scorecard[]> {
       return Promise.resolve([]);
-    }
+    },
   };
 
   const renderWrapped = (children: React.ReactNode) =>
     render(
       wrapInTestApp(
-        <TestApiProvider apis={[[cortexApiRef, cortexApi], [extensionApiRef, {}]]}>
+        <TestApiProvider
+          apis={[
+            [cortexApiRef, cortexApi],
+            [extensionApiRef, {}],
+          ]}
+        >
           <EntityProvider entity={entity}>{children}</EntityProvider>
         </TestApiProvider>,
         {

@@ -20,9 +20,12 @@ import { EntityPage } from './EntityPage';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { rootRouteRef } from '../../routes';
 import { RuleOutcomeType, Scorecard } from '../../api/types';
-import { ExtensionApi, UiExtensions } from "@cortexapps/backstage-plugin-extensions";
-import { isEmpty, isUndefined } from "lodash";
-import { extensionApiRef } from "../../api/ExtensionApi";
+import {
+  ExtensionApi,
+  UiExtensions,
+} from '@cortexapps/backstage-plugin-extensions';
+import { isEmpty, isUndefined } from 'lodash';
+import { extensionApiRef } from '../../api/ExtensionApi';
 
 describe('EntityPage', () => {
   const emptyCortexApi: Partial<CortexApi> = {
@@ -107,7 +110,7 @@ describe('EntityPage', () => {
             ladderLevels: [],
           },
         },
-      ])
+      ]);
     },
 
     getScorecards(): Promise<Scorecard[]> {
@@ -125,9 +128,9 @@ describe('EntityPage', () => {
           tags: [],
           excludedTags: [],
           filterQuery: undefined,
-        })
-      ])
-    }
+        }),
+      ]);
+    },
   };
 
   const entity = Fixtures.entity();
@@ -139,7 +142,7 @@ describe('EntityPage', () => {
       </EntityProvider>,
       emptyCortexApi,
       undefined,
-      [extensionApiRef, {}]
+      [extensionApiRef, {}],
     );
     await checkForText('No Scorecards to display');
     await checkForText("You haven't added any Scorecards yet.");
@@ -154,7 +157,7 @@ describe('EntityPage', () => {
       {
         '/': rootRouteRef,
       },
-      [extensionApiRef, {}]
+      [extensionApiRef, {}],
     );
     await checkForText('Test Scorecard 1');
     await checkForText('Test Scorecard 2');
@@ -200,25 +203,28 @@ describe('EntityPage', () => {
     const extensionApi: ExtensionApi = {
       // Order "global" scorecards without any filters before scorecards with active entity filters
       getUiExtensions(): Promise<UiExtensions> {
-        const isGlobal = (scorecard: Scorecard) => isEmpty(scorecard.excludedTags) && isEmpty(scorecard.tags) && isUndefined(scorecard.filterQuery)
+        const isGlobal = (scorecard: Scorecard) =>
+          isEmpty(scorecard.excludedTags) &&
+          isEmpty(scorecard.tags) &&
+          isUndefined(scorecard.filterQuery);
         return Promise.resolve({
           scorecards: {
             sortOrder: {
               compareFn(a, b) {
                 if (isGlobal(a) && isGlobal(b)) {
-                  return a.name.localeCompare(b.name)
+                  return a.name.localeCompare(b.name);
                 } else if (!isGlobal(a) && !isGlobal(b)) {
-                  return a.name.localeCompare(b.name)
+                  return a.name.localeCompare(b.name);
                 } else if (isGlobal(a)) {
-                  return -1
+                  return -1;
                 }
-                return 1
-              }
-            }
-          }
-        })
-      }
-    }
+                return 1;
+              },
+            },
+          },
+        });
+      },
+    };
 
     const { checkForText, findByText } = renderWrapped(
       <EntityProvider entity={entity}>
@@ -233,11 +239,13 @@ describe('EntityPage', () => {
 
     // Scorecard 2 should be first because it has no entity filters
     const scorecard1 = await findByText('Test Scorecard 1');
-    const scorecard2 = await findByText('Test Scorecard 2')
-    expect(scorecard1).toBeVisible()
-    expect(scorecard2).toBeVisible()
+    const scorecard2 = await findByText('Test Scorecard 2');
+    expect(scorecard1).toBeVisible();
+    expect(scorecard2).toBeVisible();
 
-    expect(scorecard2.compareDocumentPosition(scorecard1)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
-    await checkForText('Custom ↑')
+    expect(scorecard2.compareDocumentPosition(scorecard1)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    await checkForText('Custom ↑');
   });
 });
