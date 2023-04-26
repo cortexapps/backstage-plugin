@@ -88,7 +88,7 @@ export const SystemPage = () => {
   const {
     compareFn: scorecardCompareFn,
     loading: loadingScorecardCompareFn,
-    error: scorecardComapreFnError,
+    error: scorecardCompareFnError,
   } = usePartialScorecardCompareFn();
 
   const sortedScorecardData = useMemo(() => {
@@ -107,10 +107,10 @@ export const SystemPage = () => {
     return <Progress />;
   }
 
-  if (scorecardComapreFnError) {
+  if (scorecardCompareFnError) {
     return (
       <WarningPanel severity="error" title="Could not load Scorecards.">
-        {scorecardComapreFnError.message}
+        {scorecardCompareFnError.message}
       </WarningPanel>
     );
   }
