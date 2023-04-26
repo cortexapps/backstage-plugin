@@ -22,7 +22,7 @@ import { InitiativesPage } from '../Initiatives/InitiativesPage';
 import { ReportsPage } from '../ReportsPage';
 import { useAsync } from 'react-use';
 import { Progress } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { Permission } from '../../api/types';
 
@@ -31,6 +31,7 @@ export const CortexPage = ({
   subtitle = 'Understand and improve your services.',
 }) => {
   const cortexApi = useApi(cortexApiRef);
+  const config = useApi(configApiRef);
 
   const {
     value: permissions,
@@ -39,6 +40,11 @@ export const CortexPage = ({
   } = useAsync(async () => {
     return await cortexApi.getUserPermissions();
   }, []);
+
+  const hideSettings =
+    config.getOptionalBoolean('cortex.hideSettings') ?? false;
+  const canEditSettings =
+    permissions && permissions?.permissions.includes(Permission.EDIT_SETTINGS);
 
   if (loadingPermissions) {
     return <Progress />;
@@ -59,9 +65,7 @@ export const CortexPage = ({
       Show the settings page if there is an error (will occur when email header authorization returns an error, which is a valid use case)
       or if the user has the EDIT_SETTINGS permission
        */}
-      {(!isUndefined(error) ||
-        (permissions &&
-          permissions?.permissions.includes(Permission.EDIT_SETTINGS))) && (
+      {!hideSettings && (!isUndefined(error) || canEditSettings) && (
         <CortexLayout.Route path="settings" title="Settings">
           <SettingsPage />
         </CortexLayout.Route>
