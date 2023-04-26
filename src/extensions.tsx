@@ -19,8 +19,7 @@ import { createComponentExtension } from '@backstage/core-plugin-api';
 export const ScorecardsPage = cortexPlugin.provide(
   createComponentExtension({
     name: 'ScorecardsPage',
-    component: {
-      lazy: () =>
+    component: { lazy: () =>
         import('./components/Scorecards/ScorecardsPage').then(
           m => m.ScorecardsPage,
         ),
