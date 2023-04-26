@@ -33,7 +33,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, isUndefined } from 'lodash';
 import { useInput } from '../../../utils/hooks';
 import { hasText } from '../../../utils/SearchUtils';
 import { Initiative } from '../../../api/types';
@@ -44,7 +44,7 @@ export const InitiativesList = () => {
   const [searchQuery, setSearchQuery] = useInput();
 
   const {
-    value: initiatives = [],
+    value: initiatives,
     loading,
     error,
   } = useAsync(async () => {
@@ -52,7 +52,7 @@ export const InitiativesList = () => {
   }, []);
 
   const initiativesToDisplay = useMemo(() => {
-    const initiativesToDisplay = initiatives.filter(initiative => {
+    const initiativesToDisplay = initiatives?.filter(initiative => {
       if (isNil(searchQuery) || isEmpty(searchQuery)) {
         return true;
       }
@@ -71,7 +71,7 @@ export const InitiativesList = () => {
     );
   }, [initiatives, searchQuery]);
 
-  if (loading) {
+  if (loading || isUndefined(initiativesToDisplay)) {
     return <Progress />;
   }
 
