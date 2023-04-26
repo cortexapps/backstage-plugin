@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { humanizeAnyEntityRef } from './types';
+import { humanizeAnyEntityRef, nullsToUndefined } from './types';
 import { defaultComponentRefContext } from './ComponentUtils';
 
 describe('humanizeEntityRef', () => {
@@ -43,5 +43,18 @@ describe('humanizeEntityRef', () => {
     expect(
       humanizeAnyEntityRef('Component:default/foo', defaultComponentRefContext),
     ).toBe('foo');
+  });
+});
+
+describe('nullsToUndefined', () => {
+  it.each([
+    [{ a: null }, { a: undefined }],
+    [
+      { a: null, b: null },
+      { a: undefined, b: undefined },
+    ],
+    [{ a: { b: { c: null } } }, { a: { b: { c: undefined } } }],
+  ])('should deeply convert nulls to undefined', (input, expected) => {
+    expect(nullsToUndefined(input)).toEqual(expected);
   });
 });

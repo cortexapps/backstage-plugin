@@ -112,6 +112,7 @@ export const renderWrapped = (
     clickButton,
     clickButtonByMatcher,
     clickButtonByText,
+    findByText,
     mouseClick,
     checkForText,
     checkNotText,

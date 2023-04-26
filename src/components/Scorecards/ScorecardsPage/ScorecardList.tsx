@@ -36,11 +36,11 @@ import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { ScorecardCard } from '../ScorecardCard';
 
-import { Scorecard, ServiceGroup } from '../../../api/types';
-import { useInput } from '../../../utils/hooks';
+import { ServiceGroup } from '../../../api/types';
+import { useInput, useScorecardCompareFn } from '../../../utils/hooks';
 import { hasText } from '../../../utils/SearchUtils';
 import SearchIcon from '@material-ui/icons/Search';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, isUndefined } from 'lodash';
 
 export const hasTags = (groups: ServiceGroup[], query: string) => {
   return !isEmpty(groups)
@@ -53,15 +53,21 @@ export const ScorecardList = () => {
   const [searchQuery, setSearchQuery] = useInput();
 
   const {
-    value: scorecards = [],
-    loading,
-    error,
+    value: scorecards,
+    loading: loadingScorecards,
+    error: scorecardsError,
   } = useAsync(async () => {
     return await cortexApi.getScorecards();
   }, []);
 
+  const {
+    compareFn,
+    loading: loadingCompareFn,
+    error: compareFnError,
+  } = useScorecardCompareFn();
+
   const scorecardsToDisplay = useMemo(() => {
-    const scorecardsToDisplay = scorecards.filter(scorecard => {
+    const scorecardsToDisplay = scorecards?.filter(scorecard => {
       if (isNil(searchQuery) || isEmpty(searchQuery)) {
         return true;
       }
@@ -75,19 +81,21 @@ export const ScorecardList = () => {
       );
     });
 
-    return scorecardsToDisplay?.sort((a: Scorecard, b: Scorecard) =>
-      a.name.localeCompare(b.name),
-    );
-  }, [scorecards, searchQuery]);
+    return scorecardsToDisplay?.sort(compareFn);
+  }, [scorecards, searchQuery, compareFn]);
 
-  if (loading) {
+  if (
+    loadingScorecards ||
+    loadingCompareFn ||
+    isUndefined(scorecardsToDisplay)
+  ) {
     return <Progress />;
   }
 
-  if (error) {
+  if (scorecardsError || compareFnError) {
     return (
       <WarningPanel severity="error" title="Could not load Scorecards.">
-        {error.message}
+        {scorecardsError?.message ?? compareFnError?.message}
       </WarningPanel>
     );
   }

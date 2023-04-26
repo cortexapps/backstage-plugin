@@ -15,16 +15,23 @@
  */
 import React, { useMemo } from 'react';
 import { Table, TableBody } from '@material-ui/core';
-import { Content, EmptyState, InfoCard } from '@backstage/core-components';
+import {
+  Content,
+  EmptyState,
+  InfoCard,
+  Progress,
+  WarningPanel,
+} from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 
-import { useCortexApi } from '../../utils/hooks';
+import { useCortexApi, usePartialScorecardCompareFn } from '../../utils/hooks';
 import { defaultSystemRefContext } from '../../utils/ComponentUtils';
 import { useDetailCardStyles } from '../../styles/styles';
 import { SystemPageRow } from './SystemPageRow';
 
 import { GroupByOption } from '../../api/types';
+import { isUndefined } from 'lodash';
 
 export const SystemPage = () => {
   const classes = useDetailCardStyles();
@@ -66,7 +73,7 @@ export const SystemPage = () => {
     [mySystemScores],
   );
 
-  const data = useMemo(
+  const scorecardData = useMemo(
     () =>
       mySystemScores?.scores.map((score, index) => ({
         score,
@@ -78,15 +85,45 @@ export const SystemPage = () => {
     [mySystemScores, myComponents, scorecardScores],
   );
 
+  const {
+    compareFn: scorecardCompareFn,
+    loading: loadingScorecardCompareFn,
+    error: scorecardCompareFnError,
+  } = usePartialScorecardCompareFn();
+
+  const sortedScorecardData = useMemo(() => {
+    return scorecardData?.sort(
+      isUndefined(scorecardCompareFn)
+        ? undefined
+        : (a, b) =>
+            scorecardCompareFn(
+              { id: a.score.scorecardId },
+              { id: b.score.scorecardId },
+            ),
+    );
+  }, [scorecardData, scorecardCompareFn]);
+
+  if (loadingScorecardCompareFn) {
+    return <Progress />;
+  }
+
+  if (scorecardCompareFnError) {
+    return (
+      <WarningPanel severity="error" title="Could not load Scorecards.">
+        {scorecardCompareFnError.message}
+      </WarningPanel>
+    );
+  }
+
   return (
     <Content>
       <InfoCard title="System Scorecards" className={classes.root}>
-        {data?.length === 0 ? (
+        {sortedScorecardData?.length === 0 ? (
           <EmptyState missing="data" title="No scorecards found." />
         ) : (
           <Table>
             <TableBody>
-              {data?.map(_ => (
+              {sortedScorecardData?.map(_ => (
                 <SystemPageRow
                   key={`SystemPageRow-${_.score.scorecardId}`}
                   score={_.score}
