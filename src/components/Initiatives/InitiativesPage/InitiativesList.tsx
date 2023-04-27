@@ -34,10 +34,21 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { isEmpty, isNil, isUndefined } from 'lodash';
-import { useInput } from '../../../utils/hooks';
+import { useDropdown, useInput } from '../../../utils/hooks';
 import { hasText } from '../../../utils/SearchUtils';
 import { Initiative } from '../../../api/types';
 import { hasTags } from '../../Scorecards/ScorecardsPage/ScorecardList';
+import { SortDropdown, SortMethods } from '../../Common/SortDropdown';
+import moment from 'moment';
+
+const defaultSortMethods: SortMethods<Initiative> = {
+  'Name ↑': (a: Initiative, b: Initiative) => a.name.localeCompare(b.name),
+  'Name ↓': (a: Initiative, b: Initiative) => b.name.localeCompare(a.name),
+  'Due date ↑': (a: Initiative, b: Initiative) =>
+    moment(a.targetDate).diff(b.targetDate),
+  'Due date ↓': (a: Initiative, b: Initiative) =>
+    moment(b.targetDate).diff(a.targetDate),
+};
 
 export const InitiativesList = () => {
   const cortexApi = useApi(cortexApiRef);
@@ -50,6 +61,8 @@ export const InitiativesList = () => {
   } = useAsync(async () => {
     return await cortexApi.getInitiatives();
   }, []);
+
+  const [sortBy, setSortBy] = useDropdown('Name ↑');
 
   const initiativesToDisplay = useMemo(() => {
     const initiativesToDisplay = initiatives?.filter(initiative => {
@@ -66,10 +79,12 @@ export const InitiativesList = () => {
       );
     });
 
-    return initiativesToDisplay?.sort((a: Initiative, b: Initiative) =>
-      a.name.localeCompare(b.name),
-    );
-  }, [initiatives, searchQuery]);
+    if (sortBy) {
+      initiativesToDisplay?.sort(defaultSortMethods[sortBy]);
+    }
+
+    return initiativesToDisplay;
+  }, [initiatives, searchQuery, sortBy]);
 
   if (loading || isUndefined(initiativesToDisplay)) {
     return <Progress />;
@@ -97,22 +112,36 @@ export const InitiativesList = () => {
     <Content>
       <ContentHeader title="Initiatives" />
       <Grid container direction="column">
-        <Grid item lg={12} style={{ marginBottom: '20px' }}>
-          <FormControl fullWidth>
-            <TextField
-              variant="standard"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={setSearchQuery}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
+        <Grid
+          container
+          direction="row"
+          lg={12}
+          style={{ marginBottom: '20px' }}
+        >
+          <Grid item lg={10}>
+            <FormControl fullWidth>
+              <TextField
+                variant="standard"
+                placeholder="Search by name, description, or filters"
+                value={searchQuery}
+                onChange={setSearchQuery}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item lg={2}>
+            <SortDropdown
+              selected={sortBy}
+              items={Object.keys(defaultSortMethods)}
+              select={setSortBy}
             />
-          </FormControl>
+          </Grid>
         </Grid>
         <Grid item lg={12}>
           {isEmpty(initiativesToDisplay) && !isNil(searchQuery) && (

@@ -28,7 +28,7 @@ import {
 import { EntityScorecardsCardRow } from './EntityScorecardsCardRow';
 import { BackstageTheme } from '@backstage/theme';
 import { ServiceScorecardScore } from '../../api/types';
-import { SortDropdown } from '../Common/SortDropdown';
+import { SortDropdown, SortMethods } from '../Common/SortDropdown';
 import {
   useDropdown,
   useInput,
@@ -36,7 +36,7 @@ import {
 } from '../../utils/hooks';
 import SearchIcon from '@material-ui/icons/Search';
 import { searchItems } from '../../utils/SearchUtils';
-import { isEmpty, isNil, isUndefined } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   table: {
@@ -48,10 +48,6 @@ const useStyles = makeStyles<BackstageTheme>(theme => ({
     },
   },
 }));
-
-interface SortMethods<T> {
-  [title: string]: (a: T, b: T) => number;
-}
 
 const defaultSortMethods: SortMethods<ServiceScorecardScore> = {
   'Name ↑': (a: ServiceScorecardScore, b: ServiceScorecardScore) =>
@@ -89,7 +85,7 @@ export const EntityScorecardsCard = ({
 
   const customScoresSortMethods: SortMethods<ServiceScorecardScore> =
     useMemo(() => {
-      if (isUndefined(scorecardCompareFn)) {
+      if (isNil(scorecardCompareFn)) {
         return {} as SortMethods<ServiceScorecardScore>;
       }
 
@@ -149,11 +145,11 @@ export const EntityScorecardsCard = ({
           lg={12}
           style={{ marginBottom: '20px' }}
         >
-          <Grid item>
+          <Grid item lg={9}>
             <FormControl fullWidth>
               <TextField
                 variant="standard"
-                placeholder="Search"
+                placeholder="Search by name, description, or filters"
                 value={searchQuery}
                 onChange={setSearchQuery}
                 InputProps={{
@@ -166,7 +162,7 @@ export const EntityScorecardsCard = ({
               />
             </FormControl>
           </Grid>
-          <Grid item>
+          <Grid item lg={3}>
             <SortDropdown
               selected={sortBy}
               items={Object.keys(scorecardScoresSortMethods)}
