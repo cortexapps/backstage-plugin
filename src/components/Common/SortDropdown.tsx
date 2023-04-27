@@ -16,6 +16,10 @@
 import React from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 
+export interface SortMethods<T> {
+  [title: string]: (a: T, b: T) => number;
+}
+
 interface SortDropdownProps {
   label?: string;
   selected: string | undefined;

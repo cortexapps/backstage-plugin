@@ -36,11 +36,21 @@ import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { ScorecardCard } from '../ScorecardCard';
 
-import { ServiceGroup } from '../../../api/types';
-import { useInput, useScorecardCompareFn } from '../../../utils/hooks';
+import { Scorecard, ServiceGroup } from '../../../api/types';
+import {
+  useDropdown,
+  useInput,
+  useScorecardCompareFn,
+} from '../../../utils/hooks';
 import { hasText } from '../../../utils/SearchUtils';
 import SearchIcon from '@material-ui/icons/Search';
 import { isEmpty, isNil, isUndefined } from 'lodash';
+import { SortDropdown, SortMethods } from '../../Common/SortDropdown';
+
+const defaultSortMethods: SortMethods<Scorecard> = {
+  'Name ↑': (a: Scorecard, b: Scorecard) => a.name.localeCompare(b.name),
+  'Name ↓': (a: Scorecard, b: Scorecard) => b.name.localeCompare(a.name),
+};
 
 export const hasTags = (groups: ServiceGroup[], query: string) => {
   return !isEmpty(groups)
@@ -61,10 +71,33 @@ export const ScorecardList = () => {
   }, []);
 
   const {
-    compareFn,
-    loading: loadingCompareFn,
-    error: compareFnError,
+    compareFn: scorecardCompareFn,
+    loading: loadingScorecardCompareFn,
+    error: scorecardCompareFnError,
   } = useScorecardCompareFn();
+
+  const customScoresSortMethods: SortMethods<Scorecard> = useMemo(() => {
+    if (isNil(scorecardCompareFn)) {
+      return {} as SortMethods<Scorecard>;
+    }
+
+    return {
+      'Custom ↑': (a: Scorecard, b: Scorecard) => scorecardCompareFn(a, b),
+      'Custom ↓': (a: Scorecard, b: Scorecard) => -1 * scorecardCompareFn(a, b),
+    };
+  }, [scorecardCompareFn]);
+
+  const scorecardScoresSortMethods: SortMethods<Scorecard> = useMemo(() => {
+    return {
+      ...customScoresSortMethods,
+      ...defaultSortMethods,
+    };
+  }, [customScoresSortMethods]);
+
+  const [sortBy, setSortBy] = useDropdown(
+    isEmpty(customScoresSortMethods) ? 'Name ↑' : 'Custom ↑',
+    [isEmpty(customScoresSortMethods)],
+  );
 
   const scorecardsToDisplay = useMemo(() => {
     const scorecardsToDisplay = scorecards?.filter(scorecard => {
@@ -81,21 +114,25 @@ export const ScorecardList = () => {
       );
     });
 
-    return scorecardsToDisplay?.sort(compareFn);
-  }, [scorecards, searchQuery, compareFn]);
+    if (sortBy) {
+      scorecardsToDisplay?.sort(scorecardScoresSortMethods[sortBy]);
+    }
+
+    return scorecardsToDisplay;
+  }, [scorecards, scorecardScoresSortMethods, searchQuery, sortBy]);
 
   if (
     loadingScorecards ||
-    loadingCompareFn ||
+    loadingScorecardCompareFn ||
     isUndefined(scorecardsToDisplay)
   ) {
     return <Progress />;
   }
 
-  if (scorecardsError || compareFnError) {
+  if (scorecardsError || scorecardCompareFnError) {
     return (
       <WarningPanel severity="error" title="Could not load Scorecards.">
-        {scorecardsError?.message ?? compareFnError?.message}
+        {scorecardsError?.message ?? scorecardCompareFnError?.message}
       </WarningPanel>
     );
   }
@@ -123,22 +160,36 @@ export const ScorecardList = () => {
     <Content>
       <ContentHeader title="Scorecards" />
       <Grid container direction="column">
-        <Grid item lg={12} style={{ marginBottom: '20px' }}>
-          <FormControl fullWidth>
-            <TextField
-              variant="standard"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={setSearchQuery}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
+        <Grid
+          container
+          direction="row"
+          lg={12}
+          style={{ marginBottom: '20px' }}
+        >
+          <Grid item lg={10}>
+            <FormControl fullWidth>
+              <TextField
+                variant="standard"
+                placeholder="Search by name, description, or filters"
+                value={searchQuery}
+                onChange={setSearchQuery}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item lg={2}>
+            <SortDropdown
+              selected={sortBy}
+              items={Object.keys(scorecardScoresSortMethods)}
+              select={setSortBy}
             />
-          </FormControl>
+          </Grid>
         </Grid>
         <Grid item lg={12}>
           {isEmpty(scorecardsToDisplay) && !isNil(searchQuery) && (

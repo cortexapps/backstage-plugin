@@ -20,6 +20,7 @@ import {
   CardContent,
   CardMedia,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import {
   Button,
@@ -40,6 +41,7 @@ const useStyles = makeStyles<BackstageTheme>(styles => ({
 }));
 
 interface ListCardProps {
+  additionalContent?: string;
   description?: string;
   name: string;
   truncateToCharacters?: number;
@@ -47,6 +49,7 @@ interface ListCardProps {
 }
 
 export const ListCard = ({
+  additionalContent,
   description,
   name,
   truncateToCharacters,
@@ -85,6 +88,9 @@ export const ListCard = ({
               </button>
             )}
           </>
+        )}
+        {additionalContent && (
+          <Typography variant="body2">{additionalContent}</Typography>
         )}
       </CardContent>
       <CardActions>
