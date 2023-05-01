@@ -19,6 +19,7 @@ import {
   Initiative,
   InitiativeActionItem,
   InitiativeWithScores,
+  JobsResponse,
   LastEntitySyncTime,
   OncallsResponse,
   Scorecard,
@@ -107,4 +108,6 @@ export interface CortexApi {
   getCatalogEntities(): Promise<HomepageEntityResponse>;
 
   getUserPermissions(): Promise<UserPermissionsResponse>;
+
+  getSyncJobs(): Promise<JobsResponse>;
 }
