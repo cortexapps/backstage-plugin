@@ -105,7 +105,7 @@ export const SyncJobsTable = () => {
       <Table
         title="Sync Job Statuses"
         columns={columns}
-        options={{ paging: false, search: false }}
+        options={{ search: false }}
         data={rows}
       />
     </>
