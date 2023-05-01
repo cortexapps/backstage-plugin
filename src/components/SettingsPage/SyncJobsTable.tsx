@@ -27,6 +27,7 @@ import {
 import moment from 'moment';
 import Grid from '@material-ui/core/Grid';
 import { Tooltip } from '@material-ui/core';
+import { isNil } from "lodash";
 
 interface SyncJobRow {
   status: JobStatus;
@@ -53,13 +54,13 @@ const formatStatus = (status: JobStatus) => {
     case JobStatus.Done:
       return 'Done';
     case JobStatus.Cancelled:
-      return 'Cancelled';
+      return 'Canceled';
     case JobStatus.TimedOut:
-      return 'Timed Out';
+      return 'Timed out';
     case JobStatus.Failure:
       return 'Failure';
     case JobStatus.InProgress:
-      return 'In Progress';
+      return 'In progress';
   }
 };
 
@@ -110,7 +111,7 @@ export const SyncJobsTable = () => {
     });
   }, [jobsResponse]);
 
-  if (loading || rows === undefined) {
+  if (loading || isNil(rows)) {
     return <Progress />;
   }
 
@@ -123,13 +124,11 @@ export const SyncJobsTable = () => {
   }
 
   return (
-    <>
-      <Table
-        title="Sync Job Statuses"
-        columns={columns}
-        options={{ search: false }}
-        data={rows}
-      />
-    </>
+    <Table
+      title="Sync Job Statuses"
+      columns={columns}
+      options={{ search: false }}
+      data={rows}
+    />
   );
 };
