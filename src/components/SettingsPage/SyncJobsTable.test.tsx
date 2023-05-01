@@ -15,10 +15,10 @@
  */
 import { CortexApi } from '../../api/CortexApi';
 import React from 'react';
-import { JobsResponse, JobStatus } from "../../api/types";
-import moment from "moment";
-import { renderWrapped } from "../../utils/TestUtils";
-import { SyncJobsTable } from "./SyncJobsTable";
+import { JobsResponse, JobStatus } from '../../api/types';
+import moment from 'moment';
+import { renderWrapped } from '../../utils/TestUtils';
+import { SyncJobsTable } from './SyncJobsTable';
 
 describe('SyncJobsTable', () => {
   it('should render timestamps correctly', () => {
@@ -26,19 +26,24 @@ describe('SyncJobsTable', () => {
       getSyncJobs(): Promise<JobsResponse> {
         return Promise.resolve({
           jobs: [
-            { id: 'backstage-sync-12345', status: JobStatus.Done, dateCreated: moment.utc().toISOString() },
-            { id: 'backstage-sync-abcd', status: JobStatus.TimedOut, dateCreated: moment.utc().subtract(1, 'days').toISOString() }
-          ]
-        })
-      }
-    }
+            {
+              id: 'backstage-sync-12345',
+              status: JobStatus.Done,
+              dateCreated: moment.utc().toISOString(),
+            },
+            {
+              id: 'backstage-sync-abcd',
+              status: JobStatus.TimedOut,
+              dateCreated: moment.utc().subtract(1, 'days').toISOString(),
+            },
+          ],
+        });
+      },
+    };
 
-    const { checkForText } = renderWrapped(
-      <SyncJobsTable />,
-      cortexApi,
-    );
+    const { checkForText } = renderWrapped(<SyncJobsTable />, cortexApi);
 
     checkForText('a few seconds ago');
     checkForText('a day ago');
-  })
+  });
 });

@@ -17,7 +17,7 @@ import { Grid } from '@material-ui/core';
 import React from 'react';
 import { Content, ContentHeader } from '@backstage/core-components';
 import { SyncCard } from './SyncCard';
-import { SyncJobsTable } from "./SyncJobsTable";
+import { SyncJobsTable } from './SyncJobsTable';
 
 export const SettingsPage = () => {
   return (

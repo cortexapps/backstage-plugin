@@ -34,8 +34,14 @@ import {
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef } from '../utils/types';
-import { CustomMapping, TeamOverrides, } from '@cortexapps/backstage-plugin-extensions';
-import { GetUserInsightsResponse, HomepageEntityResponse, } from './userInsightTypes';
+import {
+  CustomMapping,
+  TeamOverrides,
+} from '@cortexapps/backstage-plugin-extensions';
+import {
+  GetUserInsightsResponse,
+  HomepageEntityResponse,
+} from './userInsightTypes';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;

@@ -37,11 +37,21 @@ import { Entity } from '@backstage/catalog-model';
 import { Buffer } from 'buffer';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
-import { CustomMapping, TeamOverrides, } from '@cortexapps/backstage-plugin-extensions';
+import {
+  CustomMapping,
+  TeamOverrides,
+} from '@cortexapps/backstage-plugin-extensions';
 import { applyCustomMappings } from '../utils/ComponentUtils';
-import { createApiRef, DiscoveryApi, IdentityApi, } from '@backstage/core-plugin-api';
+import {
+  createApiRef,
+  DiscoveryApi,
+  IdentityApi,
+} from '@backstage/core-plugin-api';
 import { gzipSync } from 'zlib';
-import { GetUserInsightsResponse, HomepageEntityResponse, } from './userInsightTypes';
+import {
+  GetUserInsightsResponse,
+  HomepageEntityResponse,
+} from './userInsightTypes';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',

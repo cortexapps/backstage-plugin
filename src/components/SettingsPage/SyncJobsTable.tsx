@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { Progress, Table, TableColumn, WarningPanel } from '@backstage/core-components';
-import { useCortexApi } from "../../utils/hooks";
-import { JobStatus } from "../../api/types";
+import { Progress, Table, TableColumn, WarningPanel, } from '@backstage/core-components';
+import { useCortexApi } from '../../utils/hooks';
+import { JobStatus } from '../../api/types';
 import {
   AccessTimeOutlined,
   CancelOutlined,
   CheckCircleOutline,
   SmsFailedOutlined,
-  TimelapseOutlined
-} from "@material-ui/icons";
-import moment from "moment";
-import Grid from "@material-ui/core/Grid";
-import { TextField, Tooltip } from "@material-ui/core";
+  TimelapseOutlined,
+} from '@material-ui/icons';
+import moment from 'moment';
+import Grid from '@material-ui/core/Grid';
+import { Tooltip } from '@material-ui/core';
 
 interface SyncJobRow {
   status: JobStatus;
@@ -35,29 +35,39 @@ interface SyncJobRow {
 
 const statusLogo = (status: JobStatus) => {
   switch (status) {
-    case JobStatus.Done: return <CheckCircleOutline color="primary"/>
-    case JobStatus.Cancelled: return <CancelOutlined color="error"/>
-    case JobStatus.TimedOut: return <AccessTimeOutlined color="error"/>
-    case JobStatus.Failure: return <SmsFailedOutlined color="error"/>
-    case JobStatus.InProgress: return <TimelapseOutlined color="action"/>
+    case JobStatus.Done:
+      return <CheckCircleOutline color="primary" />;
+    case JobStatus.Cancelled:
+      return <CancelOutlined color="error" />;
+    case JobStatus.TimedOut:
+      return <AccessTimeOutlined color="error" />;
+    case JobStatus.Failure:
+      return <SmsFailedOutlined color="error" />;
+    case JobStatus.InProgress:
+      return <TimelapseOutlined color="action" />;
   }
-}
+};
 
 const formatStatus = (status: JobStatus) => {
   switch (status) {
-    case JobStatus.Done: return "Done"
-    case JobStatus.Cancelled: return "Cancelled"
-    case JobStatus.TimedOut: return "Timed Out"
-    case JobStatus.Failure: return "Failure"
-    case JobStatus.InProgress: return "In Progress"
+    case JobStatus.Done:
+      return 'Done';
+    case JobStatus.Cancelled:
+      return 'Cancelled';
+    case JobStatus.TimedOut:
+      return 'Timed Out';
+    case JobStatus.Failure:
+      return 'Failure';
+    case JobStatus.InProgress:
+      return 'In Progress';
   }
-}
+};
 
 const columns: TableColumn<SyncJobRow>[] = [
   {
     title: 'Status',
     field: 'status',
-    render: ({ status }) =>
+    render: ({ status }) => (
       <Grid container alignItems="center" direction="row">
         <Grid item xs={1}>
           {statusLogo(status)}
@@ -66,29 +76,38 @@ const columns: TableColumn<SyncJobRow>[] = [
           {formatStatus(status)}
         </Grid>
       </Grid>
-
+    ),
   },
   {
     title: 'Timestamp',
     field: 'timestamp',
-    render: ({ timestamp }) =>
-      <Tooltip title={moment.utc(timestamp).local().format('dddd, MM/DD/YYYY, HH:mm:ss')}>
+    render: ({ timestamp }) => (
+      <Tooltip
+        title={moment
+          .utc(timestamp)
+          .local()
+          .format('dddd, MM/DD/YYYY, HH:mm:ss')}
+      >
         <span>{moment.utc(timestamp).fromNow()}</span>
       </Tooltip>
+    ),
   },
-]
+];
 
 export const SyncJobsTable = () => {
-
-  const { value: jobsResponse, loading, error } = useCortexApi(api => api.getSyncJobs())
+  const {
+    value: jobsResponse,
+    loading,
+    error,
+  } = useCortexApi(api => api.getSyncJobs());
 
   const rows: SyncJobRow[] | undefined = useMemo(() => {
-    return jobsResponse?.jobs?.map((job) => {
+    return jobsResponse?.jobs?.map(job => {
       return {
         status: job.status,
         timestamp: job.dateCreated,
-      }
-    })
+      };
+    });
   }, [jobsResponse]);
 
   if (loading || rows === undefined) {
@@ -103,7 +122,6 @@ export const SyncJobsTable = () => {
     );
   }
 
-
   return (
     <>
       <Table
@@ -113,6 +131,5 @@ export const SyncJobsTable = () => {
         data={rows}
       />
     </>
-
   );
 };

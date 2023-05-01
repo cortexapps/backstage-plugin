@@ -314,7 +314,7 @@ export interface JobsResponse {
 }
 
 export interface Job {
-  status: JobStatus,
+  status: JobStatus;
   dateCreated: string;
 }
 
