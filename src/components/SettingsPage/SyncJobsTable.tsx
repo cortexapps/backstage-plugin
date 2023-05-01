@@ -125,7 +125,7 @@ export const SyncJobsTable = () => {
 
   return (
     <Table
-      title="Sync Job Statuses"
+      title="Sync job statuses"
       columns={columns}
       options={{ search: false }}
       data={rows}

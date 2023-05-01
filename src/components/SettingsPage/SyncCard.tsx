@@ -128,7 +128,7 @@ export const SyncCard = () => {
 
   return (
     <InfoCard
-      title="Sync Entities"
+      title="Sync entities"
       action={
         <SyncButton
           isSyncing={syncTaskProgressPercentage !== null}
