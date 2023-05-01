@@ -92,6 +92,7 @@ const columns: TableColumn<SyncJobRow>[] = [
         <span>{moment.utc(timestamp).fromNow()}</span>
       </Tooltip>
     ),
+    defaultSort: 'desc',
   },
 ];
 
