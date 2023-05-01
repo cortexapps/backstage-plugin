@@ -20,6 +20,8 @@ import {
   Initiative,
   InitiativeActionItem,
   InitiativeWithScores,
+  JobsResponse,
+  JobStatus,
   LastEntitySyncTime,
   OncallsResponse,
   Scorecard,
@@ -36,21 +38,12 @@ import { Entity } from '@backstage/catalog-model';
 import { Buffer } from 'buffer';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
-import {
-  CustomMapping,
-  TeamOverrides,
-} from '@cortexapps/backstage-plugin-extensions';
+import { CustomMapping, TeamOverrides, } from '@cortexapps/backstage-plugin-extensions';
 import { applyCustomMappings } from '../utils/ComponentUtils';
-import {
-  createApiRef,
-  DiscoveryApi,
-  IdentityApi,
-} from '@backstage/core-plugin-api';
+import { createApiRef, DiscoveryApi, IdentityApi, } from '@backstage/core-plugin-api';
 import { gzipSync } from 'zlib';
-import {
-  GetUserInsightsResponse,
-  HomepageEntityResponse,
-} from './userInsightTypes';
+import { GetUserInsightsResponse, HomepageEntityResponse, } from './userInsightTypes';
+import moment from "moment";
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -280,6 +273,10 @@ export class CortexClient implements CortexApi {
 
   async getUserPermissions(): Promise<UserPermissionsResponse> {
     return this.get(`/api/backstage/v2/permissions`);
+  }
+
+  async getSyncJobs(): Promise<JobsResponse> {
+    return this.get(`/api/backstage/v2/jobs`);
   }
 
   private async getBasePath(): Promise<string> {

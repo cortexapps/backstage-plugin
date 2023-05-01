@@ -72,7 +72,7 @@ const CancelSyncButton: React.FC<CancelSyncButtonProps> = ({ cancelSync }) => {
   );
 };
 
-export const SettingsSyncCard = () => {
+export const SyncCard = () => {
   const catalogApi = useApi(catalogApiRef);
   const config = useApi(configApiRef);
   const cortexApi = useApi(cortexApiRef);

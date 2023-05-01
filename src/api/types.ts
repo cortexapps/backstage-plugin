@@ -308,3 +308,20 @@ export interface UserPermissionsResponse {
 export enum Permission {
   EDIT_SETTINGS = 'EDIT_SETTINGS',
 }
+
+export interface JobsResponse {
+  jobs: Job[];
+}
+
+export interface Job {
+  status: JobStatus,
+  dateCreated: string;
+}
+
+export enum JobStatus {
+  InProgress = 'IN_PROGRESS',
+  Done = 'DONE',
+  Cancelled = 'CANCELLED',
+  Failure = 'FAILURE',
+  TimedOut = 'TIMED_OUT',
+}
