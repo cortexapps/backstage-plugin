@@ -21,7 +21,6 @@ import {
   InitiativeActionItem,
   InitiativeWithScores,
   JobsResponse,
-  JobStatus,
   LastEntitySyncTime,
   OncallsResponse,
   Scorecard,
@@ -43,7 +42,6 @@ import { applyCustomMappings } from '../utils/ComponentUtils';
 import { createApiRef, DiscoveryApi, IdentityApi, } from '@backstage/core-plugin-api';
 import { gzipSync } from 'zlib';
 import { GetUserInsightsResponse, HomepageEntityResponse, } from './userInsightTypes';
-import moment from "moment";
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',

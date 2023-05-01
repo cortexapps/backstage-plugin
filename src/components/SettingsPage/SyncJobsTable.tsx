@@ -26,6 +26,7 @@ import {
 } from "@material-ui/icons";
 import moment from "moment";
 import Grid from "@material-ui/core/Grid";
+import { TextField, Tooltip } from "@material-ui/core";
 
 interface SyncJobRow {
   status: JobStatus;
@@ -70,7 +71,10 @@ const columns: TableColumn<SyncJobRow>[] = [
   {
     title: 'Timestamp',
     field: 'timestamp',
-    render: ({ timestamp }) => moment.utc(timestamp).fromNow()
+    render: ({ timestamp }) =>
+      <Tooltip title={moment.utc(timestamp).local().format('dddd, MM/DD/YYYY, HH:mm:ss')}>
+        <span>{moment.utc(timestamp).fromNow()}</span>
+      </Tooltip>
   },
 ]
 
