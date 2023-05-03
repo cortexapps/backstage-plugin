@@ -20,6 +20,7 @@ import {
   Initiative,
   InitiativeActionItem,
   InitiativeWithScores,
+  JobsResponse,
   LastEntitySyncTime,
   OncallsResponse,
   Scorecard,
@@ -280,6 +281,10 @@ export class CortexClient implements CortexApi {
 
   async getUserPermissions(): Promise<UserPermissionsResponse> {
     return this.get(`/api/backstage/v2/permissions`);
+  }
+
+  async getSyncJobs(): Promise<JobsResponse> {
+    return this.get(`/api/backstage/v2/jobs`);
   }
 
   private async getBasePath(): Promise<string> {

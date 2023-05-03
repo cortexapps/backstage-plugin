@@ -16,7 +16,8 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
 import { Content, ContentHeader } from '@backstage/core-components';
-import { SettingsSyncCard } from './SettingsSyncCard';
+import { SyncCard } from './SyncCard';
+import { SyncJobsTable } from './SyncJobsTable';
 
 export const SettingsPage = () => {
   return (
@@ -24,7 +25,10 @@ export const SettingsPage = () => {
       <ContentHeader title="Settings" />
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
-          <SettingsSyncCard />
+          <SyncCard />
+        </Grid>
+        <Grid item lg={8}>
+          <SyncJobsTable />
         </Grid>
       </Grid>
     </Content>
