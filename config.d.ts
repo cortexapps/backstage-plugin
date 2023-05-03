@@ -27,7 +27,7 @@ export interface Config {
      * The 'hideSettings' attribute. If true, settings tab + sync button will be hidden from all users, including admins.
      * @visibility frontend
      */
-    hideSettings?: string;
+    hideSettings?: boolean;
 
     /**
      * The 'syncWithGzip' attribute. If true, the Cortex Backstage entity sync will use gzip.
