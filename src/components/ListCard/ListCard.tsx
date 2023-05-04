@@ -19,8 +19,8 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  Chip,
   makeStyles,
-  Typography,
 } from '@material-ui/core';
 import {
   Button,
@@ -41,7 +41,8 @@ const useStyles = makeStyles<BackstageTheme>(styles => ({
 }));
 
 interface ListCardProps {
-  additionalContent?: string;
+  backgroundColor?: string;
+  badges?: string[];
   description?: string;
   name: string;
   truncateToCharacters?: number;
@@ -49,7 +50,8 @@ interface ListCardProps {
 }
 
 export const ListCard = ({
-  additionalContent,
+  backgroundColor,
+  badges,
   description,
   name,
   truncateToCharacters,
@@ -72,7 +74,7 @@ export const ListCard = ({
 
   return (
     <Card>
-      <CardMedia>
+      <CardMedia color={backgroundColor}>
         <ItemCardHeader title={name} />
       </CardMedia>
       <CardContent>
@@ -89,9 +91,9 @@ export const ListCard = ({
             )}
           </>
         )}
-        {additionalContent && (
-          <Typography variant="body2">{additionalContent}</Typography>
-        )}
+        {badges?.map(badge => (
+          <Chip key={`${name}-badge-${badge}`} size="small" label={badge} />
+        ))}
       </CardContent>
       <CardActions>
         <Button to={url} color="primary">

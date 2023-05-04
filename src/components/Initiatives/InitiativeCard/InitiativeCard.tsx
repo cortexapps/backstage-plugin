@@ -31,9 +31,11 @@ export const InitiativeCard = ({ initiative }: InitiativeCardProps) => {
     <ListCard
       name={initiative.name}
       description={initiative.description}
-      additionalContent={`Due ${moment(initiative.targetDate)
-        .local()
-        .format('dddd, MMMM Do YYYY')}`}
+      badges={[
+        `Due ${moment(initiative.targetDate)
+          .local()
+          .format('dddd, MMMM Do YYYY')}`,
+      ]}
       url={initiativeRef({ id: `${initiative.id}` })}
     />
   );

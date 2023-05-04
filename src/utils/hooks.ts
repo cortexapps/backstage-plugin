@@ -52,7 +52,7 @@ import { FilterDefinition } from '../components/FilterCard/Filters';
 import { extensionApiRef } from '../api/ExtensionApi';
 import { StringIndexable } from '../components/ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../api/userInsightTypes';
-import { isNil, isUndefined, keyBy } from 'lodash';
+import { isNil, keyBy } from 'lodash';
 import { Scorecard } from '../api/types';
 
 export function useInput(
@@ -346,7 +346,7 @@ export function useCortexFrontendUrl(): string {
 export function useUiExtensions() {
   const extensionApi = useApi(extensionApiRef);
   const { value: uiExtensions, ...rest } = useAsync(async () => {
-    return isUndefined(extensionApi.getUiExtensions)
+    return isNil(extensionApi.getUiExtensions)
       ? undefined
       : await extensionApi.getUiExtensions();
   }, []);
@@ -359,15 +359,16 @@ export function useUiExtensions() {
 
 const defaultCompareFn = (a: Scorecard, b: Scorecard) =>
   a.name.localeCompare(b.name);
+
 export function useScorecardCompareFn() {
   const { uiExtensions, ...rest } = useUiExtensions();
-  let customCompareFn = uiExtensions?.scorecards?.sortOrder?.compareFn;
+  const customCompareFn = uiExtensions?.scorecards?.sortOrder?.compareFn;
   /**
    * Runtime types for scorecards return nulls instead of undefined recursively.
    * So before passing to our user-supplied compareFn that assumes that they are undefined,
    * we must recursively convert nulls -> undefined.
    */
-  let sanitizedCompareFn = isUndefined(customCompareFn)
+  const sanitizedCompareFn = isNil(customCompareFn)
     ? undefined
     : (a: Scorecard, b: Scorecard) => {
         return customCompareFn!(nullsToUndefined(a), nullsToUndefined(b));
@@ -390,28 +391,25 @@ export function usePartialScorecardCompareFn() {
     keyBy(await api.getScorecards(), scorecard => scorecard.id),
   );
 
-  let scorecardCompareFn = uiExtensions?.scorecards?.sortOrder?.compareFn;
+  const scorecardCompareFn = uiExtensions?.scorecards?.sortOrder?.compareFn;
 
   type PartialScorecard = {
     id: number;
   };
 
-  let compareFn:
-    | ((a: PartialScorecard, b: PartialScorecard) => number)
-    | undefined = undefined;
-
-  if (!isUndefined(scorecardCompareFn) && !isUndefined(scorecardsById)) {
-    /**
-     * Runtime types for scorecards return nulls instead of undefined recursively.
-     * So before passing to our user-supplied compareFn that assumes that they are undefined,
-     * we must recursively convert nulls -> undefined.
-     */
-    compareFn = (a: PartialScorecard, b: PartialScorecard) =>
-      scorecardCompareFn!(
-        nullsToUndefined(scorecardsById[a.id]),
-        nullsToUndefined(scorecardsById[b.id]),
-      );
-  }
+  /**
+   * Runtime types for scorecards return nulls instead of undefined recursively.
+   * So before passing to our user-supplied compareFn that assumes that they are undefined,
+   * we must recursively convert nulls -> undefined.
+   */
+  const compareFn =
+    !isNil(scorecardCompareFn) && !isNil(scorecardsById)
+      ? (a: PartialScorecard, b: PartialScorecard) =>
+          scorecardCompareFn!(
+            nullsToUndefined(scorecardsById[a.id]),
+            nullsToUndefined(scorecardsById[b.id]),
+          )
+      : undefined;
 
   return {
     loading: loadingUiExtensions || loadingScorecards,
