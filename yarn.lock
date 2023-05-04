@@ -1503,10 +1503,8 @@
   resolved "https://registry.npmjs.org/@changesets/types/-/types-4.1.0.tgz#fb8f7ca2324fd54954824e864f9a61a82cb78fe0"
   integrity sha512-LDQvVDv5Kb50ny2s25Fhm3d9QSZimsoUGBsUioj6MC3qbMUCuC8GPIvk/M6IvXx3lYhAs0lwWUQLb+VIEUCECw==
 
-"@cortexapps/backstage-plugin-extensions@0.0.17":
+"@cortexapps/backstage-plugin-extensions@file:.yalc/@cortexapps/backstage-plugin-extensions":
   version "0.0.17"
-  resolved "https://registry.npmjs.org/@cortexapps/backstage-plugin-extensions/-/backstage-plugin-extensions-0.0.17.tgz#25cb88cbd130528e407ff845585e828f92a231f4"
-  integrity sha512-iJwJeM1z6IwB3aPg3a4T51P4kt0RfAGW+VlRh7qzSmt35Q57Uz72/nHH2R2koU73VwIEvlWHpil653WlmRp41A==
   dependencies:
     "@backstage/catalog-model" "^1.2.1"
 
