@@ -41,7 +41,6 @@ const useStyles = makeStyles<BackstageTheme>(styles => ({
 }));
 
 interface ListCardProps {
-  backgroundColor?: string;
   badges?: string[];
   description?: string;
   name: string;
@@ -50,7 +49,6 @@ interface ListCardProps {
 }
 
 export const ListCard = ({
-  backgroundColor,
   badges,
   description,
   name,
@@ -74,7 +72,7 @@ export const ListCard = ({
 
   return (
     <Card>
-      <CardMedia color={backgroundColor}>
+      <CardMedia>
         <ItemCardHeader title={name} />
       </CardMedia>
       <CardContent>

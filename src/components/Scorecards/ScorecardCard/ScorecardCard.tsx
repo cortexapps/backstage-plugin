@@ -32,7 +32,6 @@ export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
 
   return (
     <ListCard
-      backgroundColor={customCardDisplayOptions?.getColorFn?.(scorecard)}
       badges={customCardDisplayOptions?.getBadgesFn?.(scorecard)}
       description={scorecard.description}
       name={scorecard.name}
