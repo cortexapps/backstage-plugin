@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import React, { useEffect, useState } from 'react';
-import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
+import {
+  useApi,
+  useRouteRef,
+  useRouteRefParams,
+} from '@backstage/core-plugin-api';
 import {
   Content,
   InfoCard,
@@ -25,7 +29,10 @@ import {
 import { Grid, makeStyles, Typography } from '@material-ui/core';
 import { useAsync } from 'react-use';
 import { cortexApiRef } from '../../../api';
-import { scorecardServiceDetailsRouteRef } from '../../../routes';
+import {
+  scorecardRouteRef,
+  scorecardServiceDetailsRouteRef,
+} from '../../../routes';
 import { Gauge } from '../../Gauge';
 import Box from '@material-ui/core/Box';
 import { DefaultEntityRefLink } from '../../DefaultEntityLink';
@@ -36,6 +43,7 @@ import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
 import { RuleOutcome } from '../../../api/types';
 import { cortexScorecardServicePageUrl } from '../../../utils/URLUtils';
 import { useCortexFrontendUrl, useEntitiesByTag } from '../../../utils/hooks';
+import { KeyboardArrowLeft } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   progress: {
@@ -49,6 +57,7 @@ export const ScorecardsServicePage = () => {
   const { scorecardId, kind, namespace, name } = useRouteRefParams(
     scorecardServiceDetailsRouteRef,
   );
+  const scorecardRef = useRouteRef(scorecardRouteRef);
 
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
@@ -94,6 +103,19 @@ export const ScorecardsServicePage = () => {
 
   return (
     <Content>
+      <Box display="flex" flexDirection="row" style={{ marginBottom: '20px' }}>
+        <Link to={scorecardRef({ id: `${scorecardId}` })}>
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="flex-start"
+            alignItems="center"
+          >
+            <KeyboardArrowLeft />
+            <b>Back to Scorecard</b>
+          </Box>
+        </Link>
+      </Box>
       <Box
         display="flex"
         flexDirection="row"
