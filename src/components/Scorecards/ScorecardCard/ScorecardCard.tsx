@@ -18,6 +18,7 @@ import { Scorecard } from '../../../api/types';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { scorecardRouteRef } from '../../../routes';
 import { ListCard } from '../../ListCard';
+import { useUiExtensions } from '../../../utils/hooks';
 
 type ScorecardCardProps = {
   scorecard: Scorecard;
@@ -26,8 +27,12 @@ type ScorecardCardProps = {
 export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
   const scorecardRef = useRouteRef(scorecardRouteRef);
 
+  const { uiExtensions } = useUiExtensions();
+  const customCardDisplayOptions = uiExtensions?.scorecards?.cardDisplayOptions;
+
   return (
     <ListCard
+      badges={customCardDisplayOptions?.getBadgesFn?.(scorecard)}
       description={scorecard.description}
       name={scorecard.name}
       truncateToCharacters={200}
