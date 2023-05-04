@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { isUndefined } from 'lodash';
+import { isNil } from 'lodash';
 import { CortexLayout } from '../CortexLayout';
 import { ScorecardsPage } from '../../extensions';
 import { SettingsPage } from '../SettingsPage';
@@ -72,12 +72,12 @@ export const CortexPage = ({
       Show the settings page if there is an error (will occur when email header authorization returns an error, which is a valid use case)
       or if the user has the EDIT_SETTINGS permission
        */}
-      {!hideSettings && (!isUndefined(permissionsError) || canEditSettings) && (
+      {!hideSettings && (!isNil(permissionsError) || canEditSettings) && (
         <CortexLayout.Route path="settings" title="Settings">
           <SettingsPage />
         </CortexLayout.Route>
       )}
-      {!isUndefined(helpPage) && (
+      {!isNil(helpPage) && (
         <CortexLayout.Route path="help" title="Help">
           <HelpPage helpPage={helpPage} />
         </CortexLayout.Route>
