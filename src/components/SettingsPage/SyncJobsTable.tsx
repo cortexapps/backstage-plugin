@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { Progress, Table, TableColumn, WarningPanel, } from '@backstage/core-components';
+import {
+  Progress,
+  Table,
+  TableColumn,
+  WarningPanel,
+} from '@backstage/core-components';
 import { useCortexApi } from '../../utils/hooks';
 import { JobStatus } from '../../api/types';
 import {
@@ -27,7 +32,7 @@ import {
 import moment from 'moment';
 import Grid from '@material-ui/core/Grid';
 import { Tooltip } from '@material-ui/core';
-import { isNil } from "lodash";
+import { isNil } from 'lodash';
 
 interface SyncJobRow {
   status: JobStatus;

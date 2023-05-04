@@ -14,39 +14,40 @@
  * limitations under the License.
  */
 import React from 'react';
-import { ExtensionApi, UiExtensions } from "@cortexapps/backstage-plugin-extensions";
-import { renderWrapped } from "../../utils/TestUtils";
-import { rootRouteRef } from "../../routes";
-import { extensionApiRef } from "../../api/ExtensionApi";
-import { CortexPage } from "./CortexPage";
-import { CortexApi } from "../../api/CortexApi";
-import { UserPermissionsResponse } from "../../api/types";
-import { ConfigApi, configApiRef } from "@backstage/core-plugin-api";
-
+import {
+  ExtensionApi,
+  UiExtensions,
+} from '@cortexapps/backstage-plugin-extensions';
+import { renderWrapped } from '../../utils/TestUtils';
+import { rootRouteRef } from '../../routes';
+import { extensionApiRef } from '../../api/ExtensionApi';
+import { CortexPage } from './CortexPage';
+import { CortexApi } from '../../api/CortexApi';
+import { UserPermissionsResponse } from '../../api/types';
+import { ConfigApi, configApiRef } from '@backstage/core-plugin-api';
 
 describe('<CortexPage/>', () => {
-
   const cortexApi: Partial<CortexApi> = {
     getUserPermissions(): Promise<UserPermissionsResponse> {
       return Promise.resolve({
         permissions: [],
-      })
-    }
-  }
+      });
+    },
+  };
 
   const configApi: Partial<ConfigApi> = {
     getOptionalBoolean: (_: string) => {
       return undefined;
-    }
-  }
+    },
+  };
 
   it('should render help tab if help page is defined in extensions', () => {
     const extensionApi: ExtensionApi = {
       getUiExtensions(): Promise<UiExtensions> {
         return Promise.resolve({
           helpPage: {
-            links: []
-          }
+            links: [],
+          },
         });
       },
     };
@@ -55,11 +56,12 @@ describe('<CortexPage/>', () => {
       <CortexPage />,
       cortexApi,
       { '/': rootRouteRef as any },
-      [extensionApiRef, extensionApi], [configApiRef, configApi],
+      [extensionApiRef, extensionApi],
+      [configApiRef, configApi],
     );
 
     expect(findByText('/Help/')).toBeVisible();
-  })
+  });
 
   it('should not render help tab if help page is not defined in extensions', () => {
     const extensionApi: ExtensionApi = {};
@@ -68,9 +70,10 @@ describe('<CortexPage/>', () => {
       <CortexPage />,
       cortexApi,
       { '/': rootRouteRef as any },
-      [extensionApiRef, extensionApi], [configApiRef, configApi],
+      [extensionApiRef, extensionApi],
+      [configApiRef, configApi],
     );
 
     expect(findByText('/Help/')).not.toBeVisible();
-  })
+  });
 });

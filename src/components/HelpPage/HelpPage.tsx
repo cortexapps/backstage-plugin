@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import React from 'react';
-import { HelpPageDisplayOptions } from "@cortexapps/backstage-plugin-extensions";
-import { isUndefined } from "lodash";
-import { HelpLinksContent } from "./HelpLinksContent";
+import { HelpPageDisplayOptions } from '@cortexapps/backstage-plugin-extensions';
+import { isUndefined } from 'lodash';
+import { HelpLinksContent } from './HelpLinksContent';
 
 export interface HelpPageProps {
   helpPage: HelpPageDisplayOptions;
@@ -25,9 +25,9 @@ export interface HelpPageProps {
 export const HelpPage = ({ helpPage }: HelpPageProps) => {
   return (
     <>
-      { !isUndefined(helpPage.links) && (
+      {!isUndefined(helpPage.links) && (
         <HelpLinksContent links={helpPage.links} />
-      ) }
+      )}
     </>
   );
 };

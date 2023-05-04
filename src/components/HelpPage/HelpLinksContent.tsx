@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { HelpPageLink } from "@cortexapps/backstage-plugin-extensions";
-import { Content, ContentHeader, EmptyState, ItemCardGrid } from "@backstage/core-components";
-import React from "react";
-import { isEmpty } from "lodash";
-import { ListCard } from "../ListCard";
+import { HelpPageLink } from '@cortexapps/backstage-plugin-extensions';
+import {
+  Content,
+  ContentHeader,
+  EmptyState,
+  ItemCardGrid,
+} from '@backstage/core-components';
+import React from 'react';
+import { isEmpty } from 'lodash';
+import { ListCard } from '../ListCard';
 
 export interface HelpLinksContentProps {
   links: HelpPageLink[];
@@ -27,22 +32,17 @@ export const HelpLinksContent = ({ links }: HelpLinksContentProps) => {
   return (
     <Content>
       <ContentHeader title="Links" />
-        {isEmpty(links) && (
-          <EmptyState
-            title="No links found"
-            missing="data"
+      {isEmpty(links) && <EmptyState title="No links found" missing="data" />}
+      <ItemCardGrid>
+        {links.map((link, index) => (
+          <ListCard
+            key={index}
+            name={link.name}
+            description={link.description}
+            url={link.url}
           />
-        )}
-        <ItemCardGrid>
-          {links.map((link, index) => (
-            <ListCard
-              key={index}
-              name={link.name}
-              description={link.description}
-              url={link.url}
-            />
-          ))}
-        </ItemCardGrid>
+        ))}
+      </ItemCardGrid>
     </Content>
   );
-}
+};

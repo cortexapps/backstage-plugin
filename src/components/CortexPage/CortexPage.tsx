@@ -25,8 +25,8 @@ import { Progress } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { Permission } from '../../api/types';
-import { extensionApiRef } from "../../api/ExtensionApi";
-import { HelpPage } from "../HelpPage";
+import { extensionApiRef } from '../../api/ExtensionApi';
+import { HelpPage } from '../HelpPage';
 
 export const CortexPage = ({
   title = 'Cortex',
@@ -44,11 +44,8 @@ export const CortexPage = ({
     return await cortexApi.getUserPermissions();
   }, []);
 
-  const {
-    value: helpPage,
-    loading: loadingHelpPage,
-  } = useAsync(async () => {
-    return (await extensionApi.getUiExtensions?.() ?? undefined)?.helpPage;
+  const { value: helpPage, loading: loadingHelpPage } = useAsync(async () => {
+    return ((await extensionApi.getUiExtensions?.()) ?? undefined)?.helpPage;
   }, []);
 
   const hideSettings =
@@ -82,7 +79,7 @@ export const CortexPage = ({
       )}
       {!isUndefined(helpPage) && (
         <CortexLayout.Route path="help" title="Help">
-          <HelpPage helpPage={helpPage}/>
+          <HelpPage helpPage={helpPage} />
         </CortexLayout.Route>
       )}
     </CortexLayout>
