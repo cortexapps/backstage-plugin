@@ -21,7 +21,13 @@ import {
 } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import React, { useState } from 'react';
-import { Collapse, Grid, IconButton, Typography } from '@material-ui/core';
+import {
+  Chip,
+  Collapse,
+  Grid,
+  IconButton,
+  Typography,
+} from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import { MetadataItem } from '../../../MetadataItem';
@@ -41,14 +47,14 @@ export const ScorecardRuleRow = ({ rule }: ScorecardRuleRowProps) => {
 
   return (
     <React.Fragment>
-      <Grid item lg={1}>
-        {showExpandButton && (
+      {showExpandButton && (
+        <Grid item xs={1}>
           <IconButton size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
           </IconButton>
-        )}
-      </Grid>
-      <Grid item lg={9}>
+        </Grid>
+      )}
+      <Grid item xs={4}>
         <Typography variant="subtitle1" className={classes.rule}>
           {ruleName(rule)}
         </Typography>
@@ -67,8 +73,37 @@ export const ScorecardRuleRow = ({ rule }: ScorecardRuleRowProps) => {
           </>
         </Collapse>
       </Grid>
-      <Grid item lg={2}>
-        {hasWeight && <b>{rule.weight}</b>}
+      <Grid item xs={4}>
+        {hasWeight && (
+          <Typography className={classes.rule}>{rule.weight}</Typography>
+        )}
+      </Grid>
+      <Grid item xs={4}>
+        {rule.filter?.query && (
+          <Typography className={classes.rule}>{rule.filter.query}</Typography>
+        )}
+        {rule.filter?.includedTags && rule.filter?.includedTags.length !== 0 && (
+          <MetadataItem gridSizes={{ xs: 12 }} label="Applies to">
+            {rule.filter?.includedTags.map(s => (
+              <Chip
+                key={`Scorecard-Filter-IncludedServiceGroup-${s}`}
+                size="small"
+                label={s}
+              />
+            ))}
+          </MetadataItem>
+        )}
+        {rule.filter?.excludedTags && rule.filter?.excludedTags.length !== 0 && (
+          <MetadataItem gridSizes={{ xs: 12 }} label="Does not apply to">
+            {rule.filter.excludedTags.map(s => (
+              <Chip
+                key={`Scorecard-Filter-ExcludedServiceGroup-${s}`}
+                size="small"
+                label={s}
+              />
+            ))}
+          </MetadataItem>
+        )}
       </Grid>
     </React.Fragment>
   );

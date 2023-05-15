@@ -42,6 +42,13 @@ export interface Rule extends RuleName {
   failureMessage?: string;
   dateCreated?: string;
   weight: number;
+  filter?: RuleFilter;
+}
+
+export interface RuleFilter {
+  query?: string;
+  includedTags?: string[];
+  excludedTags?: string[];
 }
 
 export function ruleName(rule: RuleName): string {
@@ -59,6 +66,7 @@ export interface ScorecardLevelRule {
   expression: string;
   title?: string;
   description?: string;
+  filter?: RuleFilter;
 }
 
 export interface ScorecardLevel {
@@ -247,6 +255,7 @@ export interface InitiativeRule {
   expression: string;
   title: string;
   description?: string;
+  filter?: RuleFilter;
 }
 
 export interface InitiativeLevel {
