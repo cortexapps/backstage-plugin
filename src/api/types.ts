@@ -178,8 +178,8 @@ export interface ApplicableRuleOutcome extends RuleOutcomeBase {
 
 export interface NotApplicableRuleOutcome extends RuleOutcomeBase {
   endDate?: string;
-  requestedDate: string;
-  approvedDate: string;
+  requestedDate?: string;
+  approvedDate?: string;
   type: RuleOutcomeType.NOT_APPLICABLE;
 }
 
