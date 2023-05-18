@@ -32,16 +32,7 @@ export const ScorecardRulesCard = ({ scorecard }: ScorecardRulesCardProps) => {
 
   return (
     <InfoCard title="Rules" className={classes.root}>
-      <Grid container spacing={2}>
-        <Grid item xs={4}>
-          <b>Rule</b>
-        </Grid>
-        <Grid item xs={4}>
-          <b>Weight</b>
-        </Grid>
-        <Grid item xs={4}>
-          <b>Filter</b>
-        </Grid>
+      <Grid container>
         {sortedRules.map(rule => (
           <ScorecardRuleRow key={`ScorecardRuleRow-${rule.id}`} rule={rule} />
         ))}
