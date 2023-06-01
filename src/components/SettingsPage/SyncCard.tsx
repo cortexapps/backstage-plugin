@@ -72,7 +72,7 @@ const CancelSyncButton: React.FC<CancelSyncButtonProps> = ({ cancelSync }) => {
   );
 };
 
-export const SettingsSyncCard = () => {
+export const SyncCard = () => {
   const catalogApi = useApi(catalogApiRef);
   const config = useApi(configApiRef);
   const cortexApi = useApi(cortexApiRef);
@@ -128,7 +128,7 @@ export const SettingsSyncCard = () => {
 
   return (
     <InfoCard
-      title="Sync Entities"
+      title="Sync entities"
       action={
         <SyncButton
           isSyncing={syncTaskProgressPercentage !== null}

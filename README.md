@@ -1,23 +1,25 @@
 # Cortex Scorecard Plugin for Backstage
 
-[Cortex](https://www.cortex.io/) makes it easy for engineering organizations to gain 
+[Cortex](https://www.cortex.io/) makes it easy for engineering organizations to gain
 visibility into their services and deliver high quality software.
 
-We’ve released our Scorecards product as a Backstage plugin. [Scorecards](https://www.cortex.io/products/scorecard) 
-allow your team to define standards like production readiness and development quality, 
+We’ve released our Scorecards product as a Backstage plugin. [Scorecards](https://www.cortex.io/products/scorecard)
+allow your team to define standards like production readiness and development quality,
 and enforce them without building scripts and maintaining spreadsheets.
+
 - **One-click integration with third-party tools**: Scorecards fetch data automatically from your integrations without manual work, letting you easily enforce standards across all your tools.
 - **The flexibility to meet your organization’s needs**: Our robust APIs make it easy to use data from custom sources in your Scorecards. Cortex Query Language (CQL) enables you to create complex rules that can compare data across multiple sources or write expressive logical statements.
 - **Enable leaders to make informed decisions**: Historical data and organizational summaries give leadership deep visibility into progress, bottlenecks, and areas of risk.
 - **Drive organizational progress with ease using Initiatives**: Within any Scorecard, assign owners and due dates to drive any best-practice, platform migration, and audit needs.
 
-The plugin automatically ingests your Backstage components and then lets you easily define 
-standards and governance using our Scorecard editor. Scores are then piped back into Backstage 
-through our plugin, so you can see the results directly in your Backstage service catalog. 
-Developers never need to leave your Backstage portal to understand their action items and 
+The plugin automatically ingests your Backstage components and then lets you easily define
+standards and governance using our Scorecard editor. Scores are then piped back into Backstage
+through our plugin, so you can see the results directly in your Backstage service catalog.
+Developers never need to leave your Backstage portal to understand their action items and
 how to improve the quality of their services.
 
 Scorecards are extremely flexible, letting you track and enforce anything custom, including:
+
 - Security standards
 - Production readiness
 - Service maturity
@@ -27,7 +29,7 @@ Scorecards are extremely flexible, letting you track and enforce anything custom
 ![plugin1](./docs/screen2.png?raw=true)
 ![plugin2](./docs/screen3.png?raw=true)
 
-Cortex creates personalized action items for service owners. These can be found in the Backstage UI 
+Cortex creates personalized action items for service owners. These can be found in the Backstage UI
 or received through notifications via Slack and email.
 
 To start using the Backstage plugin and see a demo, please [book a demo](https://www.cortex.io/demo)!
@@ -73,7 +75,7 @@ import { CortexPage } from '@cortexapps/backstage-plugin';
   allowedHeaders: ['x-cortex-email', 'x-cortex-name']
 ```
 
-5.Import `EntityCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
+5. Import `EntityCortexContent` and update [EntityPage.tsx](https://github.com/backstage/backstage/blob/master/packages/app/src/components/catalog/EntityPage.tsx) to add a new catalog tab for Cortex:
 
 ```tsx
 import { EntityCortexContent } from '@cortexapps/backstage-plugin';
@@ -126,7 +128,14 @@ cortex:
   frontendBaseUrl: ${CORTEX_FRONTEND_HOST_URL}
 ```
 
-11. (Optional) When performing manual entity sync in the settings page, you can choose to use gzip to compress the entities by updating `app-config.yaml` with the parameter `syncWithGzip`. You must also update the Backstage HTTP proxy to allow the `Content-Encoding` header.
+11. (Optional) Update `app-config.yaml` to hide the Settings page from all users, including admins.
+
+```yaml
+cortex:
+  hideSettings: true
+```
+
+12. (Optional) When performing manual entity sync in the Settings page, you can choose to use gzip to compress the entities by updating `app-config.yaml` with the parameter `syncWithGzip`. You must also update the Backstage HTTP proxy to allow the `Content-Encoding` header.
 
 ```yaml
 cortex:
@@ -143,7 +152,7 @@ proxy:
       - Content-Encoding
 ```
 
-12. (Optional) Customize Backstage homepage as the Cortex homepage:
+13. (Optional) Customize Backstage homepage as the Cortex homepage:
 
 ![homepage](./docs/homepage.png?raw=true)
 

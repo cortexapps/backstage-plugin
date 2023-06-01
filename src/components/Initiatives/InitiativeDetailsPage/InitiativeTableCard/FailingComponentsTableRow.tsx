@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,17 @@ import { ScorecardResultDetails } from '../../../Scorecards/ScorecardDetailsPage
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 interface FailingComponentsTableRowProps {
-  componentRef: string;
   actionItems: InitiativeActionItem[];
+  componentRef: string;
   numRules: number;
+  title?: string;
 }
 
 export const FailingComponentsTableRow = ({
-  componentRef,
   actionItems,
+  componentRef,
   numRules,
+  title,
 }: FailingComponentsTableRowProps) => {
   const [isOpen, setOpen] = useState(false);
   const entityName = parseEntityRef(componentRef, defaultComponentRefContext);
@@ -58,7 +60,7 @@ export const FailingComponentsTableRow = ({
         </Box>
 
         <Box paddingLeft={2}>
-          <DefaultEntityRefLink entityRef={entityName} />
+          <DefaultEntityRefLink entityRef={entityName} title={title} />
         </Box>
       </Box>
 

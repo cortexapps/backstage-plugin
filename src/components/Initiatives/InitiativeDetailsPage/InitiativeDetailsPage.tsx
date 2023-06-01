@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import { InitiativeTableCard } from './InitiativeTableCard';
 import { InitiativeFilterCard } from './InitiativeFilterCard';
 import { Predicate } from '../../../utils/types';
 import { InitiativeStatsCard } from './InitiativeStatsCard';
+import { useEntitiesByTag } from '../../../utils/hooks';
 
 export const InitiativeDetailsPage = () => {
   const { id: initiativeId } = useRouteRefParams(initiativeRouteRef);
@@ -48,6 +49,8 @@ export const InitiativeDetailsPage = () => {
     ]);
   }, []);
 
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
+
   const [initiative, actionItems] = value ?? [undefined, undefined];
 
   const filteredComponentRefs = useMemo(() => {
@@ -56,13 +59,13 @@ export const InitiativeDetailsPage = () => {
     );
   }, [initiative, filter]);
 
-  if (loading) {
+  if (loading || loadingEntities) {
     return <Progress />;
   }
 
   if (error || initiative === undefined || actionItems === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load initiative.">
+      <WarningPanel severity="error" title="Could not load Initiative.">
         {error?.message ?? ''}
       </WarningPanel>
     );
@@ -87,9 +90,10 @@ export const InitiativeDetailsPage = () => {
             filter={filter}
           />
           <InitiativeTableCard
-            componentRefs={filteredComponentRefs}
-            numRules={initiative.emphasizedRules.length}
             actionItems={actionItems}
+            componentRefs={filteredComponentRefs}
+            entitiesByTag={entitiesByTag}
+            numRules={initiative.emphasizedRules.length}
           />
         </Grid>
       </Grid>

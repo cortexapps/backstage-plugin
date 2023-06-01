@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,11 +52,6 @@ export const ScorecardMetadataCard = ({
             <MarkdownContent content={scorecard.description} />
           </MetadataItem>
         )}
-        {scorecard.creator && (
-          <MetadataItem gridSizes={{ xs: 12, sm: 6, lg: 4 }} label="Owner">
-            {scorecard.creator.name}
-          </MetadataItem>
-        )}
         {lastUpdated && (
           <MetadataItem
             gridSizes={{ xs: 12, sm: 6, lg: 4 }}
@@ -75,7 +70,7 @@ export const ScorecardMetadataCard = ({
         )}
         <MetadataItem
           gridSizes={{ xs: 12 }}
-          label={`Filtered by ${filteredByQuery ? 'Query' : 'Service Groups'}`}
+          label={`Filtered by ${filteredByQuery ? 'query' : 'groups'}`}
         >
           {filteredByQuery ? (
             <>{scorecard.filterQuery}</>

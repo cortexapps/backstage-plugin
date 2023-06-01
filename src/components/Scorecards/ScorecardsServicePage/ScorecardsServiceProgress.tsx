@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ export const ScorecardsServiceProgress = ({
 
   if (error || data === undefined || historicalScores === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scores.">
+      <WarningPanel severity="error" title="Could not load Scorecard scores.">
         {error?.message ?? ''}
       </WarningPanel>
     );
@@ -111,7 +111,7 @@ export const ScorecardsServiceProgress = ({
       <EmptyState
         missing="data"
         title="Scorecard has not been evaluated yet."
-        description="Wait until next scorecard evaluation, or manually trigger from within Cortex."
+        description="Wait until next Scorecard evaluation, or manually trigger from within Cortex."
         action={
           <Button
             variant="contained"

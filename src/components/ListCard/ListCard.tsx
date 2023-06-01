@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Card,
   CardActions,
   CardContent,
   CardMedia,
+  Chip,
   makeStyles,
 } from '@material-ui/core';
 import {
@@ -40,6 +41,7 @@ const useStyles = makeStyles<BackstageTheme>(styles => ({
 }));
 
 interface ListCardProps {
+  badges?: string[];
   description?: string;
   name: string;
   truncateToCharacters?: number;
@@ -47,17 +49,20 @@ interface ListCardProps {
 }
 
 export const ListCard = ({
+  badges,
   description,
   name,
   truncateToCharacters,
   url,
 }: ListCardProps) => {
-  const [isExpanded, setIsExpanded] = React.useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const classes = useStyles();
+
   const descriptionToShow = useMemo(() => {
     if (!description) {
       return '';
     }
+
     if (truncateToCharacters && !isExpanded) {
       return description.substring(0, truncateToCharacters) + '...';
     }
@@ -70,19 +75,24 @@ export const ListCard = ({
       <CardMedia>
         <ItemCardHeader title={name} />
       </CardMedia>
-      {description && (
-        <CardContent>
-          <MarkdownContent content={descriptionToShow ?? ''} />
-          {truncateToCharacters && description.length > truncateToCharacters && (
-            <button
-              className={classes.linkButton}
-              onClick={() => setIsExpanded(!isExpanded)}
-            >
-              {isExpanded ? 'Less' : 'More'}
-            </button>
-          )}
-        </CardContent>
-      )}
+      <CardContent>
+        {description && (
+          <>
+            <MarkdownContent content={descriptionToShow ?? ''} />
+            {truncateToCharacters && description.length > truncateToCharacters && (
+              <button
+                className={classes.linkButton}
+                onClick={() => setIsExpanded(!isExpanded)}
+              >
+                {isExpanded ? 'Less' : 'More'}
+              </button>
+            )}
+          </>
+        )}
+        {badges?.map(badge => (
+          <Chip key={`${name}-badge-${badge}`} size="small" label={badge} />
+        ))}
+      </CardContent>
       <CardActions>
         <Button to={url} color="primary">
           Details

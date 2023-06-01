@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,13 @@ import {
 } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import React, { useState } from 'react';
-import { Collapse, Grid, IconButton, Typography } from '@material-ui/core';
+import {
+  Chip,
+  Collapse,
+  Grid,
+  IconButton,
+  Typography,
+} from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import { MetadataItem } from '../../../MetadataItem';
@@ -35,7 +41,7 @@ export const ScorecardRuleRow = ({ rule }: ScorecardRuleRowProps) => {
   const classes = useDetailCardStyles();
 
   const [open, setOpen] = useState(false);
-  const showExpandButton = rule.description || rule.title;
+  const showExpandButton = rule.description || rule.title || rule.filter;
   const hasTitle = !!rule.title;
   const hasWeight = 'weight' in rule;
 
@@ -64,6 +70,35 @@ export const ScorecardRuleRow = ({ rule }: ScorecardRuleRowProps) => {
                 {rule.expression}
               </MetadataItem>
             )}
+            {rule.filter?.query && (
+              <MetadataItem gridSizes={{ xs: 12 }} label="Filter">
+                {rule.filter.query}
+              </MetadataItem>
+            )}
+            {rule.filter?.includedTags &&
+              rule.filter?.includedTags.length !== 0 && (
+                <MetadataItem gridSizes={{ xs: 12 }} label="Applies to">
+                  {rule.filter?.includedTags.map(s => (
+                    <Chip
+                      key={`Scorecard-Filter-IncludedServiceGroup-${s}`}
+                      size="small"
+                      label={s}
+                    />
+                  ))}
+                </MetadataItem>
+              )}
+            {rule.filter?.excludedTags &&
+              rule.filter?.excludedTags.length !== 0 && (
+                <MetadataItem gridSizes={{ xs: 12 }} label="Does not apply to">
+                  {rule.filter.excludedTags.map(s => (
+                    <Chip
+                      key={`Scorecard-Filter-ExcludedServiceGroup-${s}`}
+                      size="small"
+                      label={s}
+                    />
+                  ))}
+                </MetadataItem>
+              )}
           </>
         </Collapse>
       </Grid>

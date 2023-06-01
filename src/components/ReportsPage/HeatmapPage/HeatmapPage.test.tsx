@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,9 +54,9 @@ describe('HeatmapPage', () => {
     );
 
   it('should render', async () => {
-    const { findByText } = renderWrapped(<HeatmapPage />);
+    const { findByText, queryAllByText } = renderWrapped(<HeatmapPage />);
 
     expect(await findByText(/Bird's Eye/)).toBeVisible();
-    expect(await findByText(/Select a Scorecard/)).toBeVisible();
+    expect(await queryAllByText(/Select a Scorecard/)).toHaveLength(2);
   });
 });

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import {
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import { defaultComponentRefContext, EntityRefContext } from './ComponentUtils';
+import { isObject } from 'lodash';
 
 export const identity = <T>(t: T) => t;
 
@@ -105,3 +106,34 @@ export type AnyEntityRef =
   | PartialEntityName
   | CompoundEntityRef
   | Entity;
+
+/**
+ * Magic courtesy of: https://stackoverflow.com/a/69058437
+ * TODO: The Cortex API returns nulls where our type system returns undefined,
+ *       we need to fix the types everywhere inside this package from undefined -> null.
+ *       This is a temporary workaround for user-facing types, like Scorecard.
+ */
+type RecursivelyReplaceNullWithUndefined<T> = T extends null
+  ? undefined
+  : T extends Date
+  ? T
+  : {
+      [K in keyof T]: T[K] extends (infer U)[]
+        ? RecursivelyReplaceNullWithUndefined<U>[]
+        : RecursivelyReplaceNullWithUndefined<T[K]>;
+    };
+
+export function nullsToUndefined<T>(
+  obj: T,
+): RecursivelyReplaceNullWithUndefined<T> {
+  if (obj === null) {
+    return undefined as any;
+  }
+
+  if (isObject(obj)) {
+    for (let key in obj) {
+      obj[key] = nullsToUndefined(obj[key]) as any;
+    }
+  }
+  return obj as any;
+}

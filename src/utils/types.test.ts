@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { humanizeAnyEntityRef } from './types';
+import { humanizeAnyEntityRef, nullsToUndefined } from './types';
 import { defaultComponentRefContext } from './ComponentUtils';
 
 describe('humanizeEntityRef', () => {
@@ -43,5 +43,18 @@ describe('humanizeEntityRef', () => {
     expect(
       humanizeAnyEntityRef('Component:default/foo', defaultComponentRefContext),
     ).toBe('foo');
+  });
+});
+
+describe('nullsToUndefined', () => {
+  it.each([
+    [{ a: null }, { a: undefined }],
+    [
+      { a: null, b: null },
+      { a: undefined, b: undefined },
+    ],
+    [{ a: { b: { c: null } } }, { a: { b: { c: undefined } } }],
+  ])('should deeply convert nulls to undefined', (input, expected) => {
+    expect(nullsToUndefined(input)).toEqual(expected);
   });
 });

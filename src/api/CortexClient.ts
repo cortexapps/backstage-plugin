@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import {
   Initiative,
   InitiativeActionItem,
   InitiativeWithScores,
+  JobsResponse,
   LastEntitySyncTime,
   OncallsResponse,
   Scorecard,
@@ -280,6 +281,10 @@ export class CortexClient implements CortexApi {
 
   async getUserPermissions(): Promise<UserPermissionsResponse> {
     return this.get(`/api/backstage/v2/permissions`);
+  }
+
+  async getSyncJobs(): Promise<JobsResponse> {
+    return this.get(`/api/backstage/v2/jobs`);
   }
 
   private async getBasePath(): Promise<string> {

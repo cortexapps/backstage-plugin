@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,86 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Button } from '@material-ui/core';
 import { useAsync } from 'react-use';
 import { Route, Routes } from 'react-router-dom';
 
-import {
-  Content,
-  ContentHeader,
-  EmptyState,
-  ItemCardGrid,
-  Progress,
-  WarningPanel,
-} from '@backstage/core-components';
+import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 
 import { cortexApiRef } from '../../../api';
-import { ScorecardCard } from '../ScorecardCard';
 import { ScorecardDetailsPage } from '../ScorecardDetailsPage';
 import { ScorecardsServicePage } from '../ScorecardsServicePage';
 
-import { Scorecard } from '../../../api/types';
-
-const ScorecardsPageBody = () => {
-  const cortexApi = useApi(cortexApiRef);
-
-  const {
-    value: scorecards,
-    loading,
-    error,
-  } = useAsync(async () => {
-    return await cortexApi.getScorecards();
-  }, []);
-
-  const sortedScorecards = useMemo(
-    () =>
-      scorecards?.sort((a: Scorecard, b: Scorecard) =>
-        a.name.localeCompare(b.name),
-      ),
-    [scorecards],
-  );
-
-  if (loading) {
-    return <Progress />;
-  }
-
-  if (error) {
-    return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
-        {error.message}
-      </WarningPanel>
-    );
-  }
-
-  if (!sortedScorecards?.length) {
-    return (
-      <EmptyState
-        missing="info"
-        title="No scorecards to display"
-        description="You haven't added any scorecards yet."
-        action={
-          <Button
-            variant="contained"
-            color="primary"
-            href="https://backstage.io/docs/features/software-catalog/descriptor-format#kind-domain"
-          >
-            Read more
-          </Button>
-        }
-      />
-    );
-  }
-
-  return (
-    <ItemCardGrid>
-      {sortedScorecards.map(scorecard => (
-        <ScorecardCard key={scorecard.id} scorecard={scorecard} />
-      ))}
-    </ItemCardGrid>
-  );
-};
+import { ScorecardList } from './ScorecardList';
 
 export const ScorecardsPage = () => {
   const cortexApi = useApi(cortexApiRef);
@@ -111,7 +44,7 @@ export const ScorecardsPage = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
+      <WarningPanel severity="error" title="Could not load Scorecards.">
         {error.message}
       </WarningPanel>
     );
@@ -143,15 +76,7 @@ export const ScorecardsPage = () => {
         element={<ScorecardsServicePage />}
       />
       <Route path="/:id" element={<ScorecardDetailsPage />} />
-      <Route
-        path="/"
-        element={
-          <Content>
-            <ContentHeader title="Scorecards" />
-            <ScorecardsPageBody />
-          </Content>
-        }
-      />
+      <Route path="/" element={<ScorecardList />} />
     </Routes>
   );
 };

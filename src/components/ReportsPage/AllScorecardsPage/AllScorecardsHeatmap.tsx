@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 import React, { useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
-import { useCortexApi } from '../../../utils/hooks';
+import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
 import { GroupByOption } from '../../../api/types';
 import { AllScorecardsHeatmapTable } from '../HeatmapPage/Tables/AllScorecardHeatmapTable';
 
@@ -48,13 +48,15 @@ export const AllScorecardsHeatmap = ({
     );
   }, [scorecards]);
 
-  if (loading) {
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
+
+  if (loading || loadingEntities) {
     return <Progress />;
   }
 
   if (error || serviceScores === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
+      <WarningPanel severity="error" title="Could not load Scorecards.">
         {error?.message}
       </WarningPanel>
     );
@@ -74,6 +76,7 @@ export const AllScorecardsHeatmap = ({
 
   return (
     <AllScorecardsHeatmapTable
+      entitiesByTag={entitiesByTag}
       groupBy={groupBy}
       scorecardNames={scorecardNames}
       serviceScores={serviceScores}

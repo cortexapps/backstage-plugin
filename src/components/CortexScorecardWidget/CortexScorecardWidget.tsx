@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,7 +115,7 @@ export const CortexScorecardWidget = ({
 
   if (scoresError || scoresToDisplay === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scorecards.">
+      <WarningPanel severity="error" title="Could not load Scorecards.">
         {scoresError?.message}
       </WarningPanel>
     );

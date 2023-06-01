@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  DependencyList,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   AnyEntityRef,
   entityEquals,
+  nullsToUndefined,
   Predicate,
   stringifyAnyEntityRef,
 } from './types';
@@ -24,8 +31,8 @@ import { useAsync } from 'react-use';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   catalogApiRef,
-  humanizeEntityRef,
   getEntityRelations,
+  humanizeEntityRef,
 } from '@backstage/plugin-catalog-react';
 import { groupByString, mapByString, mapValues } from './collections';
 import {
@@ -43,6 +50,10 @@ import { CortexApi } from '../api/CortexApi';
 import { EntityFilterGroup } from '../filters';
 import { FilterDefinition } from '../components/FilterCard/Filters';
 import { extensionApiRef } from '../api/ExtensionApi';
+import { StringIndexable } from '../components/ReportsPage/HeatmapPage/HeatmapUtils';
+import { HomepageEntity } from '../api/userInsightTypes';
+import { isNil, keyBy } from 'lodash';
+import { Scorecard } from '../api/types';
 
 export function useInput(
   initialValue: string | undefined = undefined,
@@ -67,8 +78,15 @@ export function useInput(
 
 export function useDropdown<T>(
   initialValue: T | undefined,
+  deps: DependencyList = [],
 ): [T | undefined, (event: React.ChangeEvent<{ value: unknown }>) => void] {
   const [value, setValue] = useState<T | undefined>(initialValue);
+
+  useEffect(() => {
+    setValue(initialValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValue, ...deps]);
+
   const onChange = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
       setValue(
@@ -323,4 +341,99 @@ export function useCortexFrontendUrl(): string {
     config.getOptionalString('cortex.frontendBaseUrl') ??
     'https://app.getcortexapp.com'
   );
+}
+
+export function useUiExtensions() {
+  const extensionApi = useApi(extensionApiRef);
+  const { value: uiExtensions, ...rest } = useAsync(async () => {
+    return isNil(extensionApi.getUiExtensions)
+      ? undefined
+      : await extensionApi.getUiExtensions();
+  }, []);
+
+  return {
+    uiExtensions,
+    ...rest,
+  };
+}
+
+const defaultCompareFn = (a: Scorecard, b: Scorecard) =>
+  a.name.localeCompare(b.name);
+
+export function useScorecardCompareFn() {
+  const { uiExtensions, ...rest } = useUiExtensions();
+  const customCompareFn = uiExtensions?.scorecards?.sortOrder?.compareFn;
+  /**
+   * Runtime types for scorecards return nulls instead of undefined recursively.
+   * So before passing to our user-supplied compareFn that assumes that they are undefined,
+   * we must recursively convert nulls -> undefined.
+   */
+  const sanitizedCompareFn = isNil(customCompareFn)
+    ? undefined
+    : (a: Scorecard, b: Scorecard) => {
+        return customCompareFn!(nullsToUndefined(a), nullsToUndefined(b));
+      };
+
+  return { ...rest, compareFn: sanitizedCompareFn ?? defaultCompareFn };
+}
+
+export function usePartialScorecardCompareFn() {
+  const {
+    uiExtensions,
+    loading: loadingUiExtensions,
+    error: uiExtensionsError,
+  } = useUiExtensions();
+  const {
+    value: scorecardsById,
+    loading: loadingScorecards,
+    error: scorecardsError,
+  } = useCortexApi(async api =>
+    keyBy(await api.getScorecards(), scorecard => scorecard.id),
+  );
+
+  const scorecardCompareFn = uiExtensions?.scorecards?.sortOrder?.compareFn;
+
+  type PartialScorecard = {
+    id: number;
+  };
+
+  /**
+   * Runtime types for scorecards return nulls instead of undefined recursively.
+   * So before passing to our user-supplied compareFn that assumes that they are undefined,
+   * we must recursively convert nulls -> undefined.
+   */
+  const compareFn =
+    !isNil(scorecardCompareFn) && !isNil(scorecardsById)
+      ? (a: PartialScorecard, b: PartialScorecard) =>
+          scorecardCompareFn!(
+            nullsToUndefined(scorecardsById[a.id]),
+            nullsToUndefined(scorecardsById[b.id]),
+          )
+      : undefined;
+
+  return {
+    loading: loadingUiExtensions || loadingScorecards,
+    error: uiExtensionsError ?? scorecardsError,
+    compareFn,
+  };
+}
+
+export function useEntitiesByTag(): {
+  entitiesByTag: StringIndexable<HomepageEntity>;
+  loading: boolean;
+} {
+  const { value: entities, loading } = useCortexApi(
+    api => api.getCatalogEntities(),
+    [],
+  );
+
+  const entitiesByTag: StringIndexable<HomepageEntity> = useMemo(
+    () =>
+      !isNil(entities) && !isNil(entities.entities)
+        ? keyBy(Object.values(entities.entities), entity => entity.codeTag)
+        : {},
+    [entities],
+  );
+
+  return { entitiesByTag, loading };
 }
