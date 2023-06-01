@@ -132,7 +132,7 @@ cortex:
 
 ```yaml
 cortex:
-   hideSettings: true
+  hideSettings: true
 ```
 
 12. (Optional) When performing manual entity sync in the Settings page, you can choose to use gzip to compress the entities by updating `app-config.yaml` with the parameter `syncWithGzip`. You must also update the Backstage HTTP proxy to allow the `Content-Encoding` header.
