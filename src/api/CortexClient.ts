@@ -401,7 +401,7 @@ export class CortexClient implements CortexApi {
 
     const headers = {
       ...init?.headers,
-      Authorization: `Bearer ${token.replace(/^[Bb]earer\s+/, '').trim()}`,
+      Authorization: `Bearer ${(token ?? '').replace(/^[Bb]earer\s+/, '').trim()}`,
       'x-cortex-email': email ?? '',
       'x-cortex-name': displayName ?? '',
     };
