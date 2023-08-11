@@ -135,9 +135,10 @@ export const CortexScorecardWidget = ({
     <EntityScorecardsCard
       title={'Cortex Scorecards'}
       scores={scoresToDisplay}
-      onSelect={scorecardId =>
-        navigate(`${location.pathname}/cortex?scorecardId=${scorecardId}`)
-      }
+      onSelect={scorecardId => {
+        const target = location.pathname.endsWith('/') ? 'cortex' : '/cortex';
+        navigate(`${location.pathname}${target}?scorecardId=${scorecardId}`);
+      }}
     />
   );
 };
