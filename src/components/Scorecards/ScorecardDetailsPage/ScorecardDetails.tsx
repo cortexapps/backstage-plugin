@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 import { Content, ContentHeader } from '@backstage/core-components';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Scorecard,
   ScorecardLadder,
   ScorecardServiceScore,
 } from '../../../api/types';
-import { Grid } from '@material-ui/core';
+import { Button, CardActions, Grid } from '@material-ui/core';
 import { ScorecardMetadataCard } from './ScorecardMetadataCard';
 import { ScorecardRulesCard } from './ScorecardRulesCard';
 import { ScorecardFilterCard } from './ScorecardFilterCard';
 import { ScorecardsTableCard } from './ScorecardsTableCard';
-import { Predicate } from '../../../utils/types';
+import { humanizeAnyEntityRef, Predicate } from '../../../utils/types';
 import { ScorecardLaddersCard } from './ScorecardLaddersCard';
 import { ScorecardStatsCard } from './ScorecardStatsCard';
 import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopy';
+import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
+import { percentify } from '../../../utils/NumberUtils';
+import { toCSV } from '../../../utils/collections';
+import { copyText } from '../../../utils/WindowUtils';
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 
@@ -55,9 +60,43 @@ export const ScorecardDetails = ({
     return scores.filter(filter);
   }, [scores, filter]);
 
+  const copyCSV = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+
+      const getName = (score: ScorecardServiceScore): string => {
+        return (
+          entitiesByTag[score.componentRef]?.name ??
+          humanizeAnyEntityRef(score.componentRef, defaultComponentRefContext)
+        );
+      };
+
+      const getCSV = () => {
+        const rows = filteredScores.map(score => [
+          `${getName(score)} (${score.tags.toString()})`,
+          percentify(score.scorePercentage).toString(),
+        ]);
+
+        rows.unshift(['Service', 'Score']);
+
+        return toCSV(rows);
+      };
+
+      return copyText(getCSV(), undefined, 'Successfully copied text');
+    },
+    [entitiesByTag, filteredScores],
+  );
+
   return (
     <Content>
-      <ContentHeader title={scorecard.name} />
+      <ContentHeader title={scorecard.name}>
+        <CardActions>
+          <Button onClick={copyCSV}>
+            <FileCopyOutlinedIcon />
+            &nbsp;Copy Scores
+          </Button>
+        </CardActions>
+      </ContentHeader>
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <ScorecardMetadataCard scorecard={scorecard} scores={scores} />
