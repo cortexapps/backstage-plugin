@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 import { Button } from '@material-ui/core';
 
 interface CopyButtonProps {
-  label: string;
   textToCopy: string | (() => string);
+  children: ReactNode;
+  'aria-label'?: string;
 }
 
 export const CopyButton: React.FC<CopyButtonProps> = ({
-  label,
   textToCopy,
+  children,
+  'aria-label': ariaLabel,
 }) => {
   const onShareLink = useCallback(async () => {
     const text = typeof textToCopy === 'function' ? textToCopy() : textToCopy;
@@ -34,10 +36,10 @@ export const CopyButton: React.FC<CopyButtonProps> = ({
     <Button
       variant="contained"
       color="primary"
-      aria-label={label}
+      aria-label={ariaLabel}
       onClick={onShareLink}
     >
-      {label}
+      {children}
     </Button>
   );
 };

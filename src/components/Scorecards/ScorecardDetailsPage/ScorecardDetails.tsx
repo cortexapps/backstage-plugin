@@ -20,7 +20,7 @@ import {
   ScorecardLadder,
   ScorecardServiceScore,
 } from '../../../api/types';
-import { Button, CardActions, Grid } from '@material-ui/core';
+import { CardActions, Grid } from '@material-ui/core';
 import { ScorecardMetadataCard } from './ScorecardMetadataCard';
 import { ScorecardRulesCard } from './ScorecardRulesCard';
 import { ScorecardFilterCard } from './ScorecardFilterCard';
@@ -34,7 +34,7 @@ import FileCopyOutlinedIcon from '@material-ui/icons/FileCopy';
 import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
 import { percentify } from '../../../utils/NumberUtils';
 import { toCSV } from '../../../utils/collections';
-import { copyText } from '../../../utils/WindowUtils';
+import { CopyButton } from '../../Common/CopyButton';
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 
@@ -60,41 +60,32 @@ export const ScorecardDetails = ({
     return scores.filter(filter);
   }, [scores, filter]);
 
-  const copyCSV = useCallback(
-    (event: React.MouseEvent) => {
-      event.stopPropagation();
+  const getCSV = useCallback(() => {
+    const getName = (score: ScorecardServiceScore): string => {
+      return (
+        entitiesByTag[score.componentRef]?.name ??
+        humanizeAnyEntityRef(score.componentRef, defaultComponentRefContext)
+      );
+    };
 
-      const getName = (score: ScorecardServiceScore): string => {
-        return (
-          entitiesByTag[score.componentRef]?.name ??
-          humanizeAnyEntityRef(score.componentRef, defaultComponentRefContext)
-        );
-      };
+    const rows = scores.map(score => [
+      `${getName(score)} (${score.tags.join(' ')})`,
+      percentify(score.scorePercentage).toString(),
+    ]);
 
-      const getCSV = () => {
-        const rows = filteredScores.map(score => [
-          `${getName(score)} (${score.tags.toString()})`,
-          percentify(score.scorePercentage).toString(),
-        ]);
+    rows.unshift(['Service', 'Score']);
 
-        rows.unshift(['Service', 'Score']);
-
-        return toCSV(rows);
-      };
-
-      return copyText(getCSV(), undefined, 'Successfully copied text');
-    },
-    [entitiesByTag, filteredScores],
-  );
+    return toCSV(rows);
+  }, [entitiesByTag, scores]);
 
   return (
     <Content>
       <ContentHeader title={scorecard.name}>
         <CardActions>
-          <Button onClick={copyCSV}>
+          <CopyButton textToCopy={getCSV} aria-label="Copy scores">
             <FileCopyOutlinedIcon />
-            &nbsp;Copy Scores
-          </Button>
+            &nbsp;Copy scores
+          </CopyButton>
         </CardActions>
       </ContentHeader>
       <Grid container direction="row" spacing={2}>
