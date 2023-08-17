@@ -80,7 +80,7 @@ export function dedupeByString<T>(items: T[], key: (item: T) => string): T[] {
   return filterNotUndefined(Object.keys(grouped).map(k => grouped[k][0]));
 }
 
-export function toCSV(rows: string[][]): string {
+export function toCsv(rows: string[][]): string {
   return rows
     .map(row =>
       row
