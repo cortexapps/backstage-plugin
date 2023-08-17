@@ -38,7 +38,7 @@ const copyFallback = (text: string) => {
 export const copyText = async (
   text?: string,
   onSuccess?: () => void,
-  confirmationText: string = 'Successfully copied text!',
+  onFail?: () => void,
 ) => {
   if (text === undefined) {
     return;
@@ -48,9 +48,10 @@ export const copyText = async (
     navigator.clipboard
       ? await navigator.clipboard.writeText(text)
       : copyFallback(text);
+
     onSuccess?.();
-    console.log(confirmationText);
   } catch (err) {
+    onFail?.();
     console.error(text);
   }
 };

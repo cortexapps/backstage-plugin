@@ -15,29 +15,35 @@
  */
 import React, { ReactNode, useCallback } from 'react';
 import { Button } from '@material-ui/core';
+import { copyText } from '../../utils/WindowUtils';
 
 interface CopyButtonProps {
   textToCopy: string | (() => string);
   children: ReactNode;
   'aria-label'?: string;
+  onSuccess?: () => void;
+  onFail?: () => void;
 }
 
 export const CopyButton: React.FC<CopyButtonProps> = ({
   textToCopy,
   children,
+  onSuccess,
+  onFail,
   'aria-label': ariaLabel,
 }) => {
-  const onShareLink = useCallback(async () => {
+  const onCopyClicked = useCallback(async () => {
     const text = typeof textToCopy === 'function' ? textToCopy() : textToCopy;
-    return await navigator.clipboard.writeText(text);
-  }, [textToCopy]);
+
+    return copyText(text, onSuccess, onFail);
+  }, [onFail, onSuccess, textToCopy]);
 
   return (
     <Button
       variant="contained"
       color="primary"
       aria-label={ariaLabel}
-      onClick={onShareLink}
+      onClick={onCopyClicked}
     >
       {children}
     </Button>

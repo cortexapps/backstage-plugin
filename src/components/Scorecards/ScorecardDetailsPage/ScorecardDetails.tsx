@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Content, ContentHeader } from '@backstage/core-components';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Scorecard,
   ScorecardLadder,
@@ -25,16 +25,12 @@ import { ScorecardMetadataCard } from './ScorecardMetadataCard';
 import { ScorecardRulesCard } from './ScorecardRulesCard';
 import { ScorecardFilterCard } from './ScorecardFilterCard';
 import { ScorecardsTableCard } from './ScorecardsTableCard';
-import { humanizeAnyEntityRef, Predicate } from '../../../utils/types';
+import { Predicate } from '../../../utils/types';
 import { ScorecardLaddersCard } from './ScorecardLaddersCard';
 import { ScorecardStatsCard } from './ScorecardStatsCard';
 import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
-import FileCopyOutlinedIcon from '@material-ui/icons/FileCopy';
-import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
-import { percentify } from '../../../utils/NumberUtils';
-import { toCSV } from '../../../utils/collections';
-import { CopyButton } from '../../Common/CopyButton';
+import CopyCsvButton from './CopyCsvButton';
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 
@@ -60,32 +56,11 @@ export const ScorecardDetails = ({
     return scores.filter(filter);
   }, [scores, filter]);
 
-  const getCSV = useCallback(() => {
-    const getName = (score: ScorecardServiceScore): string => {
-      return (
-        entitiesByTag[score.componentRef]?.name ??
-        humanizeAnyEntityRef(score.componentRef, defaultComponentRefContext)
-      );
-    };
-
-    const rows = scores.map(score => [
-      `${getName(score)} (${score.tags.join(' ')})`,
-      percentify(score.scorePercentage).toString(),
-    ]);
-
-    rows.unshift(['Service', 'Score']);
-
-    return toCSV(rows);
-  }, [entitiesByTag, scores]);
-
   return (
     <Content>
       <ContentHeader title={scorecard.name}>
         <CardActions>
-          <CopyButton textToCopy={getCSV} aria-label="Copy scores">
-            <FileCopyOutlinedIcon />
-            &nbsp;Copy scores
-          </CopyButton>
+          <CopyCsvButton entitiesByTag={entitiesByTag} scores={scores} />
         </CardActions>
       </ContentHeader>
       <Grid container direction="row" spacing={2}>
