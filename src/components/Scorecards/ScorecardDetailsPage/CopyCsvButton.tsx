@@ -68,7 +68,7 @@ const CopyCsvButton = ({ entitiesByTag, scores }: CopyCsvButton) => {
         onSuccess={() => setOpenSnackbar(true)}
       >
         <FileCopyOutlinedIcon />
-        &nbsp;Copy scorecards as
+        &nbsp;Copy scorecards
       </CopyButton>
       <Snackbar
         anchorOrigin={{
