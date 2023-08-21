@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { isNil } from 'lodash';
+
 const copyFallback = (text: string) => {
   const textArea = document.createElement('textarea');
   textArea.value = text;
@@ -40,7 +42,7 @@ export const copyText = async (
   onSuccess?: () => void,
   onFail?: () => void,
 ) => {
-  if (text === undefined) {
+  if (isNil(text)) {
     return;
   }
 

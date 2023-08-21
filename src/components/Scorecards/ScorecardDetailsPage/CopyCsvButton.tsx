@@ -31,7 +31,6 @@ interface CopyCsvButtonProps {
   scores: ScorecardServiceScore[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 const CopyCsvButton = ({ entitiesByTag, scores }: CopyCsvButtonProps) => {
   const [isSnackbarOpened, setOpenSnackbar] = useState(false);
 
@@ -69,7 +68,7 @@ const CopyCsvButton = ({ entitiesByTag, scores }: CopyCsvButtonProps) => {
         onSuccess={() => setOpenSnackbar(true)}
       >
         <FileCopyOutlinedIcon />
-        &nbsp;Copy scorecards
+        &nbsp;Copy scores
       </CopyButton>
       <Snackbar
         anchorOrigin={{
