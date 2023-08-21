@@ -20,21 +20,22 @@ import { ScorecardServiceScore } from '../../../api/types';
 import { humanizeAnyEntityRef } from '../../../utils/types';
 import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
 import { percentify } from '../../../utils/NumberUtils';
-import { toCSV } from '../../../utils/collections';
+import { toCsv } from '../../../utils/collections';
 import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { IconButton, Snackbar } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
-interface CopyCsvButton {
+interface CopyCsvButtonProps {
   entitiesByTag: StringIndexable<HomepageEntity>;
   scores: ScorecardServiceScore[];
 }
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-const CopyCsvButton = ({ entitiesByTag, scores }: CopyCsvButton) => {
+const CopyCsvButton = ({ entitiesByTag, scores }: CopyCsvButtonProps) => {
   const [isSnackbarOpened, setOpenSnackbar] = useState(false);
-  const getCSV = useCallback(() => {
+
+  const getCsv = useCallback(() => {
     const getName = (score: ScorecardServiceScore): string => {
       return (
         entitiesByTag[score.componentRef]?.name ??
@@ -43,13 +44,13 @@ const CopyCsvButton = ({ entitiesByTag, scores }: CopyCsvButton) => {
     };
 
     const rows = scores.map(score => [
-      `${getName(score)} (${score.tags.join(' ')})`,
+      `${getName(score)} (${entitiesByTag[score.componentRef]?.codeTag})`,
       percentify(score.scorePercentage).toString(),
     ]);
 
     rows.unshift(['Service', 'Score']);
 
-    return toCSV(rows);
+    return toCsv(rows);
   }, [entitiesByTag, scores]);
 
   const handleSnackbarClose = (_event: object, reason?: string) => {
@@ -63,7 +64,7 @@ const CopyCsvButton = ({ entitiesByTag, scores }: CopyCsvButton) => {
   return (
     <>
       <CopyButton
-        textToCopy={getCSV}
+        textToCopy={getCsv}
         aria-label="Copy scorecards"
         onSuccess={() => setOpenSnackbar(true)}
       >
