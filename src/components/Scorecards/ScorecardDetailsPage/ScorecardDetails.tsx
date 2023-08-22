@@ -20,7 +20,7 @@ import {
   ScorecardLadder,
   ScorecardServiceScore,
 } from '../../../api/types';
-import { Grid } from '@material-ui/core';
+import { CardActions, Grid } from '@material-ui/core';
 import { ScorecardMetadataCard } from './ScorecardMetadataCard';
 import { ScorecardRulesCard } from './ScorecardRulesCard';
 import { ScorecardFilterCard } from './ScorecardFilterCard';
@@ -30,6 +30,7 @@ import { ScorecardLaddersCard } from './ScorecardLaddersCard';
 import { ScorecardStatsCard } from './ScorecardStatsCard';
 import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
+import CopyCsvButton from './CopyCsvButton';
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 
@@ -57,7 +58,11 @@ export const ScorecardDetails = ({
 
   return (
     <Content>
-      <ContentHeader title={scorecard.name} />
+      <ContentHeader title={scorecard.name}>
+        <CardActions>
+          <CopyCsvButton entitiesByTag={entitiesByTag} scores={scores} />
+        </CardActions>
+      </ContentHeader>
       <Grid container direction="row" spacing={2}>
         <Grid item lg={4}>
           <ScorecardMetadataCard scorecard={scorecard} scores={scores} />

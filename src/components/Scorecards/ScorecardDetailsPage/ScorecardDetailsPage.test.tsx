@@ -441,6 +441,28 @@ describe('ScorecardDetailsPage', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('copies names, tags and scoreas as CSV on button click', async () => {
+    const originalClipboard = navigator.clipboard;
+    const mockedWriteText = jest.fn();
+
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: mockedWriteText,
+      },
+    });
+
+    const { clickButtonByMatcher } = render();
+    await clickButtonByMatcher(/Copy scores/);
+
+    const expectedValue = 'Service,Score\nfoo (foo-tag),50\nbar (bar-tag),70';
+    expect(mockedWriteText).toHaveBeenCalledTimes(1);
+    expect(mockedWriteText).toHaveBeenCalledWith(expectedValue);
+
+    Object.assign(navigator, {
+      clipboard: originalClipboard,
+    });
+  });
+
   // MUI select is broken in a weird way, can't test
   it.skip('should filter with any of / all of working correctly', async () => {
     const {

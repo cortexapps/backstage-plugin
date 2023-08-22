@@ -79,3 +79,22 @@ export function dedupeByString<T>(items: T[], key: (item: T) => string): T[] {
 
   return filterNotUndefined(Object.keys(grouped).map(k => grouped[k][0]));
 }
+
+export function toCsv(rows: string[][]): string {
+  return rows
+    .map(row =>
+      row
+        .map(item => {
+          if (
+            item.indexOf &&
+            (item.indexOf(',') !== -1 || item.indexOf('"') !== -1)
+          ) {
+            return '"' + item.replace(/"/g, '""') + '"';
+          } else {
+            return item;
+          }
+        })
+        .join(','),
+    )
+    .join('\n');
+}
