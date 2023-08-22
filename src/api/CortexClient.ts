@@ -449,4 +449,4 @@ export class CortexClient implements CortexApi {
   }
 }
 
-const CHUNK_SIZE = 1;
+const CHUNK_SIZE = 1000;
