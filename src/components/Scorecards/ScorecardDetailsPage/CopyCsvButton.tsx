@@ -64,7 +64,7 @@ const CopyCsvButton = ({ entitiesByTag, scores }: CopyCsvButtonProps) => {
     <>
       <CopyButton
         textToCopy={getCsv}
-        aria-label="Copy scorecards"
+        aria-label="Copy scores"
         onSuccess={() => setOpenSnackbar(true)}
       >
         <FileCopyOutlinedIcon />

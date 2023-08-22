@@ -452,7 +452,7 @@ describe('ScorecardDetailsPage', () => {
     });
 
     const { clickButtonByMatcher } = render();
-    await clickButtonByMatcher(/Copy scorecards/);
+    await clickButtonByMatcher(/Copy scores/);
 
     const expectedValue = 'Service,Score\nfoo (foo-tag),50\nbar (bar-tag),70';
     expect(mockedWriteText).toHaveBeenCalledTimes(1);
