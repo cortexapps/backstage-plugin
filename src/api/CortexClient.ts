@@ -52,6 +52,7 @@ import {
   GetUserInsightsResponse,
   HomepageEntityResponse,
 } from './userInsightTypes';
+import { chunk } from "lodash";
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -96,18 +97,30 @@ export class CortexClient implements CortexApi {
     }
 
     await this.postVoid('/api/backstage/v2/entities/sync-init')
-    let maxListSize = Math.max(
-      withCustomMappings.length,
-      teamOverrides?.teams?.length ?? 0,
-      teamOverrides?.relationships?.length ?? 0
-    )
-    for (let i = 0; i < maxListSize; i+= CHUNK_SIZE) {
+
+    for (let customMappingsChunk of chunk(withCustomMappings, CHUNK_SIZE)) {
       await post(`/api/backstage/v2/entities/sync-chunked`, {
-        entities: withCustomMappings.slice(i, i + CHUNK_SIZE),
-        teamOverrides: teamOverrides ? {
-          teams: teamOverrides.teams.slice(i, i + CHUNK_SIZE),
-          relationships: teamOverrides.relationships.slice(i, i + CHUNK_SIZE)
-        } : undefined,
+        entities: customMappingsChunk,
+      })
+    }
+
+    for (let teamOverridesTeamChunk of chunk(teamOverrides?.teams ?? [], CHUNK_SIZE)) {
+      await post(`/api/backstage/v2/entities/sync-chunked`, {
+        entities: [],
+        teamOverrides: {
+          teams: teamOverridesTeamChunk,
+          relationships: []
+        }
+      })
+    }
+
+    for (let teamOverridesRelationshipsChunk of chunk(teamOverrides?.relationships ?? [], CHUNK_SIZE)) {
+      await post(`/api/backstage/v2/entities/sync-chunked`, {
+        entities: [],
+        teamOverrides: {
+          teams: teamOverridesRelationshipsChunk,
+          relationships: []
+        }
       })
     }
 
