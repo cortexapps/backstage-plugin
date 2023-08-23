@@ -32,10 +32,14 @@ export const ScorecardMetadataCard = ({
 }: ScorecardMetadataCardProps) => {
   const classes = useDetailCardStyles();
 
+  // FIXME
+  const tag = 'placeholder-tag';
+
   const lastUpdated =
     scores.length === 0
       ? undefined
       : moment.max(scores.map(score => moment.utc(score.lastUpdated).local()));
+
   const nextUpdated = scorecard.nextUpdated
     ? moment.utc(scorecard.nextUpdated)
     : undefined;
@@ -44,28 +48,21 @@ export const ScorecardMetadataCard = ({
   const showAllTag =
     scorecard.tags.length === 0 && scorecard.excludedTags.length === 0;
 
+  // TODO: remove
+  console.log(scorecard);
+  console.log(scores);
+
   return (
     <InfoCard title="Details" className={classes.root}>
       <Grid container>
+        {tag && (
+          <MetadataItem gridSizes={{ xs: 12 }} label={'Tag'}>
+            <MarkdownContent content={tag} />
+          </MetadataItem>
+        )}
         {scorecard.description && (
           <MetadataItem gridSizes={{ xs: 12 }} label="Description">
             <MarkdownContent content={scorecard.description} />
-          </MetadataItem>
-        )}
-        {lastUpdated && (
-          <MetadataItem
-            gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-            label="Last Updated"
-          >
-            {lastUpdated.fromNow()}
-          </MetadataItem>
-        )}
-        {nextUpdated && (
-          <MetadataItem
-            gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-            label="Next Evaluation"
-          >
-            {nextUpdated.fromNow()}
           </MetadataItem>
         )}
         <MetadataItem
@@ -102,6 +99,22 @@ export const ScorecardMetadataCard = ({
             </>
           )}
         </MetadataItem>
+        {lastUpdated && (
+          <MetadataItem
+            gridSizes={{ xs: 12, sm: 6, lg: 6 }}
+            label="Last Updated"
+          >
+            {lastUpdated.fromNow()}
+          </MetadataItem>
+        )}
+        {nextUpdated && (
+          <MetadataItem
+            gridSizes={{ xs: 12, sm: 6, lg: 6 }}
+            label="Next Evaluation"
+          >
+            {nextUpdated.fromNow()}
+          </MetadataItem>
+        )}
       </Grid>
     </InfoCard>
   );
