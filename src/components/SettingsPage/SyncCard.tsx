@@ -83,8 +83,10 @@ export const SyncCard = () => {
   >(null);
 
   const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
+  const [isSubmittingTask, setIsSubmittingTask] = useState(false);
 
   const submitEntitySync = useCallback(async () => {
+    setIsSubmittingTask(true);
     const { items: entities } = await catalogApi.getEntities();
     const shouldGzipBody =
       config.getOptionalBoolean('cortex.syncWithGzip') ?? false;
@@ -97,6 +99,7 @@ export const SyncCard = () => {
       groupOverrides,
     );
     setSyncTaskProgressPercentage(progress.percentage);
+    setIsSubmittingTask(false);
   }, [catalogApi, config, cortexApi, extensionApi]);
 
   const cancelEntitySync = useCallback(async () => {
@@ -131,7 +134,7 @@ export const SyncCard = () => {
       title="Sync entities"
       action={
         <SyncButton
-          isSyncing={syncTaskProgressPercentage !== null}
+          isSyncing={syncTaskProgressPercentage !== null || isSubmittingTask}
           submitSyncTask={submitEntitySync}
         />
       }

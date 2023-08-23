@@ -52,6 +52,7 @@ import {
   GetUserInsightsResponse,
   HomepageEntityResponse,
 } from './userInsightTypes';
+import { chunk } from "lodash";
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -91,17 +92,39 @@ export class CortexClient implements CortexApi {
       ? entities.map(entity => applyCustomMappings(entity, customMappings))
       : entities;
 
-    if (gzipContents) {
-      return await this.postWithGzipBody(`/api/backstage/v1/entities/sync`, {
-        entities: withCustomMappings,
-        teamOverrides,
-      });
-    } else {
-      return await this.post(`/api/backstage/v1/entities/sync`, {
-        entities: withCustomMappings,
-        teamOverrides,
-      });
+    const post = async (path: string, body?: any) => {
+        return gzipContents ? await this.postVoidWithGzipBody(path, body) : await this.postVoid(path, body)
     }
+
+    await this.postVoid('/api/backstage/v2/entities/sync-init')
+
+    for (let customMappingsChunk of chunk(withCustomMappings, CHUNK_SIZE)) {
+      await post(`/api/backstage/v2/entities/sync-chunked`, {
+        entities: customMappingsChunk,
+      })
+    }
+
+    for (let teamOverridesTeamChunk of chunk(teamOverrides?.teams ?? [], CHUNK_SIZE)) {
+      await post(`/api/backstage/v2/entities/sync-chunked`, {
+        entities: [],
+        teamOverrides: {
+          teams: teamOverridesTeamChunk,
+          relationships: []
+        }
+      })
+    }
+
+    for (let teamOverridesRelationshipsChunk of chunk(teamOverrides?.relationships ?? [], CHUNK_SIZE)) {
+      await post(`/api/backstage/v2/entities/sync-chunked`, {
+        entities: [],
+        teamOverrides: {
+          teams: [],
+          relationships: teamOverridesRelationshipsChunk,
+        }
+      })
+    }
+
+    return await this.post('/api/backstage/v2/entities/sync-submit')
   }
 
   async getServiceScores(
@@ -256,15 +279,15 @@ export class CortexClient implements CortexApi {
   }
 
   async getEntitySyncProgress(): Promise<EntitySyncProgress> {
-    return await this.get(`/api/backstage/v1/entities/progress`);
+    return await this.get(`/api/backstage/v2/entities/progress`);
   }
 
   async getLastEntitySyncTime(): Promise<LastEntitySyncTime> {
-    return await this.get(`/api/backstage/v1/entities/last-sync`);
+    return await this.get(`/api/backstage/v2/entities/last-sync`);
   }
 
   async cancelEntitySync(): Promise<void> {
-    await this.delete(`/api/backstage/v1/entities/sync`);
+    await this.delete(`/api/backstage/v2/entities/sync`);
   }
 
   async getUserOncallByEmail(): Promise<OncallsResponse> {
@@ -349,7 +372,24 @@ export class CortexClient implements CortexApi {
     return response.json();
   }
 
-  private async postWithGzipBody(path: string, body?: any): Promise<any> {
+  private async postVoid(path: string, body?: any): Promise<void> {
+    const basePath = await this.getBasePath();
+    const url = `${basePath}${path}`;
+
+    const response = await this.fetchAuthenticated(url, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (response.status !== 200) {
+      throw new Error(`Error communicating with Cortex`);
+    }
+
+    return;
+  }
+
+  private async postVoidWithGzipBody(path: string, body?: any): Promise<void> {
     const basePath = await this.getBasePath();
     const url = `${basePath}${path}`;
 
@@ -369,7 +409,7 @@ export class CortexClient implements CortexApi {
       throw new Error(`Error communicating with Cortex`);
     }
 
-    return response.json();
+    return;
   }
 
   private async delete(path: string, body?: any): Promise<void> {
@@ -421,3 +461,5 @@ export class CortexClient implements CortexApi {
     }
   }
 }
+
+const CHUNK_SIZE = 1000;
