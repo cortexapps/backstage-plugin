@@ -118,8 +118,8 @@ export class CortexClient implements CortexApi {
       await post(`/api/backstage/v2/entities/sync-chunked`, {
         entities: [],
         teamOverrides: {
-          teams: teamOverridesRelationshipsChunk,
-          relationships: []
+          teams: [],
+          relationships: teamOverridesRelationshipsChunk,
         }
       })
     }
