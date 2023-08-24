@@ -18,16 +18,59 @@ import { ScorecardServiceScore } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { Grid } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
-import { round } from 'lodash';
-import { mean, medianSorted, quantileSorted } from 'simple-statistics';
+import { isEmpty, isNil, round } from 'lodash';
+import { mean, median } from 'simple-statistics';
 import { StatsItem } from './StatsItem';
+import { safeDivide } from '../../../../utils/NumberUtils';
+
+export interface ScorecardLevelRule {
+  description?: string;
+  expression: string;
+  id: string;
+  levelId: string;
+  title?: string;
+}
+
+export interface ScorecardLevel {
+  color: string;
+  description?: string;
+  id: string;
+  name: string;
+  rank: number;
+  rules: ScorecardLevelRule[];
+}
+
+export interface ScorecardLadder {
+  levels: ScorecardLevel[];
+  scorecardId: string;
+}
 
 interface ScorecardStatsCardProps {
   scores: ScorecardServiceScore[];
+  ladder?: ScorecardLadder;
 }
 
-export const ScorecardStatsCard = ({ scores }: ScorecardStatsCardProps) => {
+export const ScorecardStatsCard = ({
+  scores,
+  ladder,
+}: ScorecardStatsCardProps) => {
   const classes = useDetailCardStyles();
+
+  const medianLevel = useMemo(() => {
+    const levelRanks = scores.map(
+      score => score.ladderLevels?.[0]?.currentLevel?.rank ?? 0,
+    );
+    const medianLevelRank = !isEmpty(levelRanks) ? median(levelRanks) : 0;
+    return ladder?.levels.find(level => level.rank === medianLevelRank);
+  }, [scores, ladder]);
+
+  const percentNoLevel = useMemo(() => {
+    return safeDivide(
+      scores.filter(score => isNil(score.ladderLevels?.[0]?.currentLevel))
+        .length,
+      scores.length,
+    );
+  }, [scores]);
 
   const rankedScores = useMemo(
     () => [...scores].sort((a, b) => b.score - a.score),
@@ -43,15 +86,21 @@ export const ScorecardStatsCard = ({ scores }: ScorecardStatsCardProps) => {
   );
 
   const avg = useMemo(() => round(mean(percentages), 2), [percentages]);
-  const medianVal = useMemo(() => medianSorted(percentages), [percentages]);
-  const percentile = useMemo(
-    () => quantileSorted([...percentages].reverse(), 0.8),
-    [percentages],
-  );
+  // TODO: remove or bring back
+  // const medianVal = useMemo(() => medianSorted(percentages), [percentages]);
+  //const percentile = useMemo(
+  //  () => quantileSorted([...percentages].reverse(), 0.8),
+  //  [percentages],
+  //);
 
   return (
     <InfoCard title="Statistics" className={classes.root}>
       <Grid container>
+        <StatsItem
+          value={medianLevel?.rank || 0}
+          label={'Median Level'}
+          gridSizes={{ xs: 3 }}
+        />
         <StatsItem
           value={avg}
           label={'Avg Score'}
@@ -60,20 +109,14 @@ export const ScorecardStatsCard = ({ scores }: ScorecardStatsCardProps) => {
           data-testid={'Stat-Scorecard-Avg-Score'}
         />
         <StatsItem
-          value={medianVal}
-          label={'Median Score'}
+          value={percentNoLevel}
+          label={'% without level'}
           percentage
           gridSizes={{ xs: 3 }}
         />
         <StatsItem
           value={scores.length}
           label={'Services'}
-          gridSizes={{ xs: 3 }}
-        />
-        <StatsItem
-          value={percentile}
-          label={'80th Percentile'}
-          percentage
           gridSizes={{ xs: 3 }}
         />
       </Grid>

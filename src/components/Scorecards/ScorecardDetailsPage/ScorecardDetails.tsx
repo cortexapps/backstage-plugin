@@ -20,17 +20,23 @@ import {
   ScorecardLadder,
   ScorecardServiceScore,
 } from '../../../api/types';
-import { CardActions, Grid } from '@material-ui/core';
+import {
+  Button,
+  ButtonGroup,
+  CardActions,
+  Grid,
+  Tab,
+  Tabs,
+} from '@material-ui/core';
 import { ScorecardMetadataCard } from './ScorecardMetadataCard';
 import { ScorecardRulesCard } from './ScorecardRulesCard';
-import { ScorecardFilterCard } from './ScorecardFilterCard';
-import { ScorecardsTableCard } from './ScorecardsTableCard';
 import { Predicate } from '../../../utils/types';
-import { ScorecardLaddersCard } from './ScorecardLaddersCard';
 import { ScorecardStatsCard } from './ScorecardStatsCard';
 import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import CopyCsvButton from './CopyCsvButton';
+import ScoresTab from './Tabs/ScoresTab';
+import ScorecardFilterDialog from './ScorecardFilterDialog';
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 
@@ -40,6 +46,50 @@ interface ScorecardDetailsProps {
   scorecard: Scorecard;
   scores: ScorecardServiceScore[];
 }
+
+type TabComponentProps = {
+  entitiesByTag: StringIndexable<HomepageEntity>;
+  scorecard: Scorecard;
+  ladder: ScorecardLadder | undefined;
+  scores: ScorecardServiceScore[];
+};
+
+type ActiveTab = {
+  label: string;
+  render: (props: TabComponentProps) => JSX.Element;
+};
+
+export const ScorecardDetailsTab = {
+  Scores: {
+    label: 'Scores',
+    render: (props: TabComponentProps) => (
+      <ScoresTab
+        ladder={props.ladder}
+        scorecard={props.scorecard}
+        scores={props.scores}
+        entitiesByTag={props.entitiesByTag}
+      />
+    ),
+  },
+  Rules: {
+    label: 'Rules',
+    render: (props: TabComponentProps) => (
+      <ScorecardRulesCard scorecard={props.scorecard} />
+    ),
+  },
+  Reports: {
+    label: 'Reports',
+    render: (props: TabComponentProps) => (
+      <ScorecardRulesCard scorecard={props.scorecard} />
+    ),
+  },
+  Exemptions: {
+    label: 'Rule exemptions',
+    render: (props: TabComponentProps) => (
+      <ScorecardRulesCard scorecard={props.scorecard} />
+    ),
+  },
+};
 
 export const ScorecardDetails = ({
   entitiesByTag,
@@ -52,9 +102,24 @@ export const ScorecardDetails = ({
     () => () => true,
   );
 
+  const [isFilterDialogOpen, setFilterDialogOpen] = useState(false);
+
+  const [activeTab, setActiveTab] = useState(ScorecardDetailsTab.Scores);
+
   const filteredScores = useMemo(() => {
     return scores.filter(filter);
   }, [scores, filter]);
+
+  const handleTabChange = (
+    _event: React.ChangeEvent<{}>,
+    newValue: ActiveTab,
+  ) => {
+    setActiveTab(newValue);
+  };
+
+  const handleFilterDialogClose = () => {
+    setFilterDialogOpen(false);
+  };
 
   return (
     <Content>
@@ -63,25 +128,60 @@ export const ScorecardDetails = ({
           <CopyCsvButton entitiesByTag={entitiesByTag} scores={scores} />
         </CardActions>
       </ContentHeader>
-      <Grid container direction="row" spacing={2}>
+      <Grid container direction="row" alignItems={'flex-end'} spacing={2}>
         <Grid item lg={4}>
           <ScorecardMetadataCard scorecard={scorecard} scores={scores} />
-          <ScorecardRulesCard scorecard={scorecard} />
-          {ladder && <ScorecardLaddersCard ladder={ladder} />}
-          <ScorecardFilterCard
-            scorecard={scorecard}
-            setFilter={newFilter => setFilter(() => newFilter)}
-          />
         </Grid>
         <Grid item lg={8} xs={12}>
-          <ScorecardStatsCard scores={filteredScores} />
-          <ScorecardsTableCard
-            entitiesByTag={entitiesByTag}
-            scorecardId={scorecard.id}
-            scores={filteredScores}
-          />
+          <ScorecardStatsCard scores={filteredScores} ladder={ladder} />
         </Grid>
       </Grid>
+      <Grid container justifyContent={'space-between'}>
+        <Tabs
+          value={activeTab}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={handleTabChange}
+          aria-label="Tabs for scorcard"
+        >
+          <Tab
+            label={ScorecardDetailsTab.Scores.label}
+            value={ScorecardDetailsTab.Scores}
+          />
+          <Tab
+            label={ScorecardDetailsTab.Rules.label}
+            value={ScorecardDetailsTab.Rules}
+          />
+          <Tab
+            label={ScorecardDetailsTab.Reports.label}
+            value={ScorecardDetailsTab.Reports}
+          />
+          <Tab
+            label={ScorecardDetailsTab.Exemptions.label}
+            value={ScorecardDetailsTab.Exemptions}
+          />
+        </Tabs>
+        <ButtonGroup>
+          <Button onClick={() => setFilterDialogOpen(true)}>TEST</Button>
+        </ButtonGroup>
+      </Grid>
+      <Grid container>
+        {activeTab.render({
+          scorecard: scorecard,
+          ladder: ladder,
+          entitiesByTag: entitiesByTag,
+          scores: filteredScores,
+        })}
+      </Grid>
+      {isFilterDialogOpen && (
+        <ScorecardFilterDialog
+          isOpen={isFilterDialogOpen}
+          handleClose={handleFilterDialogClose}
+          scorecard={scorecard}
+          filters={filter}
+          setFilter={setFilter}
+        />
+      )}{' '}
     </Content>
   );
 };

@@ -102,6 +102,7 @@ const groupAndSystemFilters: EntityFilterGroup[] = [
 
 interface ScorecardFilterCardProps {
   scorecard: Scorecard;
+  filters: ScorecardServiceScoreFilter[];
   setFilter: (filter: ScorecardServiceScoreFilter) => void;
 }
 
