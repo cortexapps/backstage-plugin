@@ -14,29 +14,37 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { Scorecard } from '../../../../api/types';
+import { Scorecard, ScorecardLadder } from '../../../../api/types';
 import { Grid } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import { ScorecardRuleRow } from './ScorecardRuleRow';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { sortRules } from '../../../../utils/ScorecardRules';
+import { ScorecardLaddersCard } from '../ScorecardLaddersCard';
 
 interface ScorecardRulesCardProps {
   scorecard: Scorecard;
+  ladder: ScorecardLadder | undefined;
 }
 
-export const ScorecardRulesCard = ({ scorecard }: ScorecardRulesCardProps) => {
+export const ScorecardRulesCard = ({
+  scorecard,
+  ladder,
+}: ScorecardRulesCardProps) => {
   const classes = useDetailCardStyles();
 
   const sortedRules = useMemo(() => sortRules(scorecard.rules), [scorecard]);
 
   return (
-    <InfoCard title="Rules" className={classes.root}>
-      <Grid container>
-        {sortedRules.map(rule => (
-          <ScorecardRuleRow key={`ScorecardRuleRow-${rule.id}`} rule={rule} />
-        ))}
-      </Grid>
-    </InfoCard>
+    <>
+      <InfoCard title="Rules" className={classes.root}>
+        <Grid container>
+          {sortedRules.map(rule => (
+            <ScorecardRuleRow key={`ScorecardRuleRow-${rule.id}`} rule={rule} />
+          ))}
+        </Grid>
+      </InfoCard>
+      {ladder && <ScorecardLaddersCard ladder={ladder} />}
+    </>
   );
 };

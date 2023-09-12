@@ -35,8 +35,9 @@ import { ScorecardStatsCard } from './ScorecardStatsCard';
 import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import CopyCsvButton from './CopyCsvButton';
-import ScoresTab from './Tabs/ScoresTab';
 import ScorecardFilterDialog from './ScorecardFilterDialog';
+import { ReportsPage } from '../../ReportsPage';
+import { ScorecardsTableCard } from './ScorecardsTableCard';
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 
@@ -63,30 +64,27 @@ export const ScorecardDetailsTab = {
   Scores: {
     label: 'Scores',
     render: (props: TabComponentProps) => (
-      <ScoresTab
-        ladder={props.ladder}
-        scorecard={props.scorecard}
-        scores={props.scores}
+      <ScorecardsTableCard
         entitiesByTag={props.entitiesByTag}
+        scorecardId={props.scorecard.id}
+        scores={props.scores}
       />
     ),
   },
   Rules: {
     label: 'Rules',
     render: (props: TabComponentProps) => (
-      <ScorecardRulesCard scorecard={props.scorecard} />
+      <ScorecardRulesCard scorecard={props.scorecard} ladder={props.ladder} />
     ),
   },
   Reports: {
     label: 'Reports',
-    render: (props: TabComponentProps) => (
-      <ScorecardRulesCard scorecard={props.scorecard} />
-    ),
+    render: () => <ReportsPage />,
   },
   Exemptions: {
     label: 'Rule exemptions',
     render: (props: TabComponentProps) => (
-      <ScorecardRulesCard scorecard={props.scorecard} />
+      <ScorecardRulesCard scorecard={props.scorecard} ladder={props.ladder} />
     ),
   },
 };
@@ -165,7 +163,7 @@ export const ScorecardDetails = ({
           <Button onClick={() => setFilterDialogOpen(true)}>TEST</Button>
         </ButtonGroup>
       </Grid>
-      <Grid container>
+      <Grid container lg={12}>
         {activeTab.render({
           scorecard: scorecard,
           ladder: ladder,

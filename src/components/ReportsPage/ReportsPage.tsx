@@ -17,14 +17,22 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { Routes, useLocation } from 'react-router-dom';
 import {
-  Button,
   ItemCardGrid,
   ItemCardHeader,
+  LinkButton,
 } from '@backstage/core-components';
-import { Card, CardActions, CardContent, CardMedia } from '@material-ui/core';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+} from '@material-ui/core';
 import { HeatmapPage } from './HeatmapPage';
 import { ProgressPage } from './ProgressPage';
 import { AllScorecardsPage } from './AllScorecardsPage/AllScorecardsPage';
+import { useRouteRefParams } from '@backstage/core-plugin-api';
+import { scorecardRouteRef } from '../../routes';
 
 const ReportsPageCard = ({
   name,
@@ -36,6 +44,23 @@ const ReportsPageCard = ({
   url: string;
 }) => {
   const location = useLocation();
+  const { id: scorecardId } = useRouteRefParams(scorecardRouteRef);
+  const isInReportsContext = location.pathname === 'cortex/reports';
+
+  const renderRelativeLink = () => (
+    <LinkButton to={`${location.pathname}${url}`} color="primary">
+      Details
+    </LinkButton>
+  );
+
+  const renderAbsoluteLink = () => {
+    const reportUrl = `${window.location.origin}/cortex/reports${url}?scorecardId=${scorecardId}`;
+    const redirect = () => {
+      window.location.href = reportUrl;
+    };
+
+    return <Button onClick={redirect}>Details</Button>;
+  };
 
   return (
     <Card>
@@ -44,15 +69,16 @@ const ReportsPageCard = ({
       </CardMedia>
       <CardContent>{description}</CardContent>
       <CardActions>
-        <Button to={`${location.pathname}${url}`} color="primary">
-          Details
-        </Button>
+        {isInReportsContext ? renderRelativeLink() : renderAbsoluteLink()}
       </CardActions>
     </Card>
   );
 };
 
 const ReportsPageBody = () => {
+  const location = useLocation();
+  const isInReportsContext = location.pathname === 'cortex/reports';
+
   return (
     <ItemCardGrid>
       <ReportsPageCard
@@ -60,11 +86,13 @@ const ReportsPageBody = () => {
         description="Dive into your Scorecards to get insight into performance, broken down by teams, groups and rules and visualized as a heatmap."
         url="/heatmap"
       />
-      <ReportsPageCard
-        name="All Scorecards"
-        description="See how services, teams, and groups are doing across all of your Scorecards in a single aggregated view."
-        url="/all-scorecards"
-      />
+      {isInReportsContext && (
+        <ReportsPageCard
+          name="All Scorecards"
+          description="See how services, teams, and groups are doing across all of your Scorecards in a single aggregated view."
+          url="/all-scorecards"
+        />
+      )}
       <ReportsPageCard
         name="Progress"
         description="Progress report of how Scorecards have changed overtime broken down by teams or groups."
