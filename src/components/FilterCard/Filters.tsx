@@ -57,6 +57,10 @@ export interface FilterDefinition<T> {
 
 interface FiltersProps<T> extends FilterDefinition<T> {
   setPredicate: (filter: Predicate<T>) => void;
+  checkedFilters: Record<string, boolean>;
+  setCheckedFilters: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >;
 }
 
 export const Filters = <T extends {}>({
@@ -64,13 +68,12 @@ export const Filters = <T extends {}>({
   filters,
   generatePredicate,
   setPredicate,
+  checkedFilters,
+  setCheckedFilters,
 }: FiltersProps<T>) => {
   const classes = useStyles();
 
   const [oneOf, setOneOf] = useState(true);
-  const [checkedFilters, setCheckedFilters] = useState<Record<string, boolean>>(
-    {},
-  );
 
   const updatePredicate = (
     newCheckedFilters: Record<string, boolean>,
@@ -102,12 +105,23 @@ export const Filters = <T extends {}>({
 
   const toggleFilter = (filter: string) => {
     setCheckedFilters(prevFilters => {
+      const filterName = `${name}${filter}`;
+
       const newFilters = {
         ...prevFilters,
-        [filter]: !(prevFilters[filter] ?? false),
+        [filterName]: !(prevFilters[filterName] ?? false),
       };
 
-      updatePredicate(newFilters, oneOf);
+      const predicateFilters: Record<string, boolean> = {};
+
+      Object.keys(newFilters)
+        .filter(key => key.includes(name))
+        .forEach(key => {
+          const newKey = key.replace(name, '');
+          predicateFilters[newKey] = newFilters[key];
+        });
+
+      updatePredicate(predicateFilters, oneOf);
       return newFilters;
     });
   };
@@ -145,7 +159,7 @@ export const Filters = <T extends {}>({
             <React.Fragment key={`Filter-${name}-${id}`}>
               <Grid item lg={2}>
                 <Checkbox
-                  checked={checkedFilters[id] ?? false}
+                  checked={checkedFilters[`${name}${id}`] ?? false}
                   onChange={() => toggleFilter(id)}
                   color="primary"
                   inputProps={{

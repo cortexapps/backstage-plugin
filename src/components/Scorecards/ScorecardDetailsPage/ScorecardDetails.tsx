@@ -38,6 +38,7 @@ import CopyCsvButton from './CopyCsvButton';
 import ScorecardFilterDialog from './ScorecardFilterDialog';
 import { ReportsPage } from '../../ReportsPage';
 import { ScorecardsTableCard } from './ScorecardsTableCard';
+import Box from '@material-ui/core/Box';
 
 export type ScorecardServiceScoreFilter = Predicate<ScorecardServiceScore>;
 
@@ -81,12 +82,6 @@ export const ScorecardDetailsTab = {
     label: 'Reports',
     render: () => <ReportsPage />,
   },
-  Exemptions: {
-    label: 'Rule exemptions',
-    render: (props: TabComponentProps) => (
-      <ScorecardRulesCard scorecard={props.scorecard} ladder={props.ladder} />
-    ),
-  },
 };
 
 export const ScorecardDetails = ({
@@ -98,6 +93,10 @@ export const ScorecardDetails = ({
   // Have to store lambda of lambda for React to not eagerly invoke
   const [filter, setFilter] = useState<() => ScorecardServiceScoreFilter>(
     () => () => true,
+  );
+
+  const [checkedFilters, setCheckedFilters] = useState<Record<string, boolean>>(
+    {},
   );
 
   const [isFilterDialogOpen, setFilterDialogOpen] = useState(false);
@@ -134,7 +133,7 @@ export const ScorecardDetails = ({
           <ScorecardStatsCard scores={filteredScores} ladder={ladder} />
         </Grid>
       </Grid>
-      <Grid container justifyContent={'space-between'}>
+      <Box display="flex" justifyContent={'space-between'}>
         <Tabs
           value={activeTab}
           indicatorColor="primary"
@@ -154,16 +153,14 @@ export const ScorecardDetails = ({
             label={ScorecardDetailsTab.Reports.label}
             value={ScorecardDetailsTab.Reports}
           />
-          <Tab
-            label={ScorecardDetailsTab.Exemptions.label}
-            value={ScorecardDetailsTab.Exemptions}
-          />
         </Tabs>
         <ButtonGroup>
-          <Button onClick={() => setFilterDialogOpen(true)}>TEST</Button>
+          {activeTab.label === ScorecardDetailsTab.Scores.label && (
+            <Button onClick={() => setFilterDialogOpen(true)}>filter</Button>
+          )}
         </ButtonGroup>
-      </Grid>
-      <Grid container lg={12}>
+      </Box>
+      <Grid>
         {activeTab.render({
           scorecard: scorecard,
           ladder: ladder,
@@ -178,6 +175,8 @@ export const ScorecardDetails = ({
           scorecard={scorecard}
           filters={filter}
           setFilter={setFilter}
+          checkedFilters={checkedFilters}
+          setCheckedFilters={setCheckedFilters}
         />
       )}{' '}
     </Content>

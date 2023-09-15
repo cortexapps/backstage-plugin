@@ -104,11 +104,17 @@ interface ScorecardFilterCardProps {
   scorecard: Scorecard;
   filters: ScorecardServiceScoreFilter[];
   setFilter: (filter: ScorecardServiceScoreFilter) => void;
+  checkedFilters: Record<string, boolean>;
+  setCheckedFilters: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >;
 }
 
 export const ScorecardFilterCard = ({
   scorecard,
   setFilter,
+  checkedFilters,
+  setCheckedFilters,
 }: ScorecardFilterCardProps) => {
   const ruleFilterDefinitions = useMemo(() => {
     return mapValues(
@@ -137,6 +143,8 @@ export const ScorecardFilterCard = ({
   return (
     <FilterCard
       setFilter={setFilter}
+      checkedFilters={checkedFilters}
+      setCheckedFilters={setCheckedFilters}
       filterDefinitions={[
         {
           name: 'Failing Rule',

@@ -48,10 +48,6 @@ export const ScorecardMetadataCard = ({
   const showAllTag =
     scorecard.tags.length === 0 && scorecard.excludedTags.length === 0;
 
-  // TODO: remove
-  console.log(scorecard);
-  console.log(scores);
-
   return (
     <InfoCard title="Details" className={classes.root}>
       <Grid container>

@@ -29,6 +29,10 @@ interface ScorecardFilterDialogProps {
   scorecard: Scorecard;
   filters: any;
   setFilter: Function;
+  checkedFilters: Record<string, boolean>;
+  setCheckedFilters: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >;
 }
 const ScorecardFilterDialog = ({
   isOpen,
@@ -36,6 +40,8 @@ const ScorecardFilterDialog = ({
   scorecard,
   filters,
   setFilter,
+  checkedFilters,
+  setCheckedFilters,
 }: ScorecardFilterDialogProps) => {
   return (
     <Dialog open={isOpen}>
@@ -44,6 +50,8 @@ const ScorecardFilterDialog = ({
           scorecard={scorecard}
           filters={filters}
           setFilter={newFilter => setFilter(() => newFilter)}
+          checkedFilters={checkedFilters}
+          setCheckedFilters={setCheckedFilters}
         />
       </DialogContent>
       <DialogActions>

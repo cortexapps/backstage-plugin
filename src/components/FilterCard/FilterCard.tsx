@@ -22,11 +22,17 @@ import { FilterDefinition, Filters } from './Filters';
 interface FilterCardProps<T> {
   setFilter: (filter: Predicate<T>) => void;
   filterDefinitions: FilterDefinition<T>[];
+  checkedFilters: Record<string, boolean>;
+  setCheckedFilters: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >;
 }
 
 export const FilterCard = <T extends {}>({
   setFilter,
   filterDefinitions,
+  setCheckedFilters,
+  checkedFilters,
 }: FilterCardProps<T>) => {
   const classes = useDetailCardStyles();
 
@@ -51,6 +57,8 @@ export const FilterCard = <T extends {}>({
           <Filters
             key={`Filters-${filterDefinition.name}-${idx}`}
             setPredicate={setPredicate}
+            checkedFilters={checkedFilters}
+            setCheckedFilters={setCheckedFilters}
             {...filterDefinition}
           />
         );
