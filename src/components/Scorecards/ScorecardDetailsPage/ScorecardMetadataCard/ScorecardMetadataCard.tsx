@@ -32,8 +32,8 @@ export const ScorecardMetadataCard = ({
 }: ScorecardMetadataCardProps) => {
   const classes = useDetailCardStyles();
 
-  // FIXME
-  const tag = 'placeholder-tag';
+  // todo
+  // const tag = 'placeholder-tag';
 
   const lastUpdated =
     scores.length === 0
@@ -51,11 +51,14 @@ export const ScorecardMetadataCard = ({
   return (
     <InfoCard title="Details" className={classes.root}>
       <Grid container>
-        {tag && (
+        {
+          // todo
+          /* tag && (
           <MetadataItem gridSizes={{ xs: 12 }} label={'Tag'}>
             <MarkdownContent content={tag} />
           </MetadataItem>
-        )}
+        )*/
+        }
         {scorecard.description && (
           <MetadataItem gridSizes={{ xs: 12 }} label="Description">
             <MarkdownContent content={scorecard.description} />
