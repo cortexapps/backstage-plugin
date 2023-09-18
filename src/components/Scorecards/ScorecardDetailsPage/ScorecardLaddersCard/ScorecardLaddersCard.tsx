@@ -56,8 +56,8 @@ const ScorecardLevelsRow = ({ level }: { level: ScorecardLevel }) => {
           )}
           <MetadataItem gridSizes={{ xs: 12 }}>
             {level.rules.map(rule => (
-              <Grid container direction={'row'}>
-                <ScorecardRuleRow key={`NextRule-${rule.id}`} rule={rule} />
+              <Grid key={`NextRule-${rule.id}`} container direction={'row'}>
+                <ScorecardRuleRow rule={rule} />
               </Grid>
             ))}
           </MetadataItem>
