@@ -32,19 +32,25 @@ export const ScorecardRulesCard = ({
   ladder,
 }: ScorecardRulesCardProps) => {
   const classes = useDetailCardStyles();
+  const isLadderAvailable = !!ladder;
 
   const sortedRules = useMemo(() => sortRules(scorecard.rules), [scorecard]);
 
   return (
     <>
-      <InfoCard title="Rules" className={classes.root}>
-        <Grid container>
-          {sortedRules.map(rule => (
-            <ScorecardRuleRow key={`ScorecardRuleRow-${rule.id}`} rule={rule} />
-          ))}
-        </Grid>
-      </InfoCard>
-      {ladder && <ScorecardLaddersCard ladder={ladder} />}
+      {isLadderAvailable && <ScorecardLaddersCard ladder={ladder} />}
+      {!isLadderAvailable && (
+        <InfoCard title="Rules" className={classes.root}>
+          <Grid container>
+            {sortedRules.map(rule => (
+              <ScorecardRuleRow
+                key={`ScorecardRuleRow-${rule.id}`}
+                rule={rule}
+              />
+            ))}
+          </Grid>
+        </InfoCard>
+      )}
     </>
   );
 };

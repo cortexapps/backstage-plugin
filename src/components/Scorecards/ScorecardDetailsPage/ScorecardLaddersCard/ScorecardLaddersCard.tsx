@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo, useState } from 'react';
-import {
-  ScorecardLevel,
-  ScorecardLadder,
-  ruleName,
-} from '../../../../api/types';
-import { Grid, IconButton, Typography, Collapse } from '@material-ui/core';
+import React, { useMemo } from 'react';
+import { ScorecardLevel, ScorecardLadder } from '../../../../api/types';
+import { Divider, Grid, Typography } from '@material-ui/core';
 import { InfoCard, MarkdownContent } from '@backstage/core-components';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { getSortedLadderLevels } from '../../../../utils/ScorecardLadderUtils';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { MetadataItem } from '../../../MetadataItem';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import { ScorecardRuleRow } from '../ScorecardRulesCard/ScorecardRuleRow';
 
 interface ScorecardLaddersCardProps {
   ladder: ScorecardLadder;
@@ -35,36 +30,38 @@ interface ScorecardLaddersCardProps {
 const ScorecardLevelsRow = ({ level }: { level: ScorecardLevel }) => {
   const classes = useDetailCardStyles();
 
-  const [open, setOpen] = useState(false);
-
   return (
     <React.Fragment>
-      <Grid item lg={1}>
+      <Grid container item direction="row" lg={3} spacing={4}>
+        <Grid item lg={1}>
+          <ScorecardLadderLevelBadge name={level.name} color={level.color} />
+        </Grid>
+        <Grid item lg={2}>
+          <Typography variant="subtitle1" className={classes.level}>
+            {level.name}
+          </Typography>
+        </Grid>
+      </Grid>
+      {/* <Grid item lg={1}>
         <IconButton size="small" onClick={() => setOpen(!open)}>
           {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRight />}
         </IconButton>
-      </Grid>
+      </Grid> */}
       <Grid item lg={9}>
-        <Typography variant="subtitle1" className={classes.level}>
-          {level.name}
-        </Typography>
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <>
-            {level.description && (
-              <MetadataItem gridSizes={{ xs: 12 }} label="Description">
-                <MarkdownContent content={level.description} />
-              </MetadataItem>
-            )}
-            <MetadataItem gridSizes={{ xs: 12 }} label="Rules">
-              {level.rules.map(rule => (
-                <div key={`NextRule-${rule.id}`}>&#8226; {ruleName(rule)}</div>
-              ))}
+        <>
+          {level.description && (
+            <MetadataItem gridSizes={{ xs: 12 }} label="Description">
+              <MarkdownContent content={level.description} />
             </MetadataItem>
-          </>
-        </Collapse>
-      </Grid>
-      <Grid item lg={2}>
-        <ScorecardLadderLevelBadge name={level.name} color={level.color} />
+          )}
+          <MetadataItem gridSizes={{ xs: 12 }}>
+            {level.rules.map(rule => (
+              <Grid container direction={'row'}>
+                <ScorecardRuleRow key={`NextRule-${rule.id}`} rule={rule} />
+              </Grid>
+            ))}
+          </MetadataItem>
+        </>
       </Grid>
     </React.Fragment>
   );
@@ -76,12 +73,19 @@ export const ScorecardLaddersCard = ({ ladder }: ScorecardLaddersCardProps) => {
 
   return (
     <InfoCard title="Ladders" className={classes.root}>
-      <Grid container>
-        {levels.map(level => (
-          <ScorecardLevelsRow
-            key={`ScorecardLevelsRow-${level.id}`}
-            level={level}
-          />
+      <Grid container direction={'column'}>
+        {levels.map((level, index, levels) => (
+          <>
+            <Grid container direction={'row'}>
+              <ScorecardLevelsRow
+                key={`ScorecardLevelsRow-${level.id}`}
+                level={level}
+              />
+            </Grid>
+            {index !== levels.length - 1 && (
+              <Divider style={{ margin: '12px' }} />
+            )}
+          </>
         ))}
       </Grid>
     </InfoCard>
