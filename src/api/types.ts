@@ -97,6 +97,7 @@ export interface ScorecardScoreLadderLevel {
 export interface ScorecardScoreLadderResult {
   ladderDetails: ScorecardScoreLadderDetails;
   currentLevel?: ScorecardScoreLadderLevel;
+  nextLevel?: ScorecardScoreLadderLevel;
 }
 
 export interface ScorecardScoreNextSteps {

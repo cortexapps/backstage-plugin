@@ -18,8 +18,8 @@ import { ScorecardServiceScore } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { Grid } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
-import { isEmpty, isNil, round } from 'lodash';
-import { mean, median } from 'simple-statistics';
+import { isEmpty, isNil } from 'lodash';
+import { median } from 'simple-statistics';
 import { StatsItem } from './StatsItem';
 import { safeDivide } from '../../../../utils/NumberUtils';
 
@@ -64,6 +64,13 @@ export const ScorecardStatsCard = ({
     return ladder?.levels.find(level => level.rank === medianLevelRank);
   }, [scores, ladder]);
 
+  const highestLevel = useMemo(() => {
+    const isHighestLevel = (score: ScorecardServiceScore) =>
+      isNil(score.ladderLevels?.[0]?.nextLevel);
+
+    return safeDivide(scores.filter(isHighestLevel).length, scores.length);
+  }, [scores]);
+
   const percentNoLevel = useMemo(() => {
     return safeDivide(
       scores.filter(score => isNil(score.ladderLevels?.[0]?.currentLevel))
@@ -71,27 +78,6 @@ export const ScorecardStatsCard = ({
       scores.length,
     );
   }, [scores]);
-
-  const rankedScores = useMemo(
-    () => [...scores].sort((a, b) => b.score - a.score),
-    [scores],
-  );
-
-  const percentages = useMemo(
-    () =>
-      rankedScores.length === 0
-        ? [0]
-        : rankedScores.map(s => s.scorePercentage),
-    [rankedScores],
-  );
-
-  const avg = useMemo(() => round(mean(percentages), 2), [percentages]);
-  // TODO: remove or bring back
-  // const medianVal = useMemo(() => medianSorted(percentages), [percentages]);
-  //const percentile = useMemo(
-  //  () => quantileSorted([...percentages].reverse(), 0.8),
-  //  [percentages],
-  //);
 
   return (
     <InfoCard title="Statistics" className={classes.root}>
@@ -102,8 +88,8 @@ export const ScorecardStatsCard = ({
           gridSizes={{ xs: 3 }}
         />
         <StatsItem
-          value={avg}
-          label={'Avg Score'}
+          value={highestLevel}
+          label={'% at highest level'}
           percentage
           gridSizes={{ xs: 3 }}
           data-testid={'Stat-Scorecard-Avg-Score'}
