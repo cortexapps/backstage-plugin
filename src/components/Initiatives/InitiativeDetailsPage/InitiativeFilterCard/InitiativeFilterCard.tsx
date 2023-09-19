@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Initiative,
   InitiativeActionItem,
@@ -69,6 +69,8 @@ export const InitiativeFilterCard = ({
   actionItems,
   setFilter,
 }: InitiativeFilterCardProps) => {
+  const [checkedFilters, setCheckedFilters] = useState({});
+
   const ruleFilterDefinitions = useMemo(() => {
     return mapValues(
       mapByString(initiative.emphasizedRules, rule => `${rule.ruleId}`),
@@ -122,6 +124,8 @@ export const InitiativeFilterCard = ({
   return (
     <FilterCard
       setFilter={setFilter}
+      checkedFilters={checkedFilters}
+      setCheckedFilters={setCheckedFilters}
       filterDefinitions={[
         {
           name: 'Failing Rule',
