@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,8 @@ import { Gauge } from '../../../Gauge';
 import { DefaultEntityRefLink } from '../../../DefaultEntityLink';
 import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
+import { HomepageEntity } from '../../../../api/userInsightTypes';
+import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 
 const columns: TableColumn[] = [
   {
@@ -39,6 +41,7 @@ const columns: TableColumn[] = [
       componentRef?: string;
       numRules?: number;
       serviceName?: string;
+      title?: string;
     }) => {
       return (
         <Box display="flex" flexDirection="row" alignItems="center">
@@ -62,6 +65,7 @@ const columns: TableColumn[] = [
                 data.componentRef ?? '',
                 defaultComponentRefContext,
               )}
+              title={data.title}
             />
           </Box>
         </Box>
@@ -78,13 +82,15 @@ const columns: TableColumn[] = [
 interface PassingComponentsTableProps {
   componentRefs: string[];
   defaultPageSize?: number;
+  entitiesByTag: StringIndexable<HomepageEntity>;
   numRules: number;
 }
 
 export const PassingComponentsTable = ({
   componentRefs,
-  numRules,
   defaultPageSize = 15,
+  entitiesByTag,
+  numRules,
 }: PassingComponentsTableProps) => {
   const classes = useDetailCardStyles();
 
@@ -99,19 +105,12 @@ export const PassingComponentsTable = ({
           componentRef,
           numRules,
           serviceName, // for custom filtering
-          title: (
-            <DefaultEntityRefLink
-              entityRef={parseEntityRef(
-                componentRef,
-                defaultComponentRefContext,
-              )}
-            />
-          ),
+          title: entitiesByTag[componentRef]?.name,
           toggle: null,
         };
       })
       .sort((left, right) => left.serviceName.localeCompare(right.serviceName));
-  }, [componentRefs, numRules]);
+  }, [componentRefs, entitiesByTag, numRules]);
 
   const showPagination = useMemo(
     () => componentRefs.length > defaultPageSize,

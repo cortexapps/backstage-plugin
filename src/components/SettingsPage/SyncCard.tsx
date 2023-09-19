@@ -72,7 +72,7 @@ const CancelSyncButton: React.FC<CancelSyncButtonProps> = ({ cancelSync }) => {
   );
 };
 
-export const SettingsSyncCard = () => {
+export const SyncCard = () => {
   const catalogApi = useApi(catalogApiRef);
   const config = useApi(configApiRef);
   const cortexApi = useApi(cortexApiRef);
@@ -83,8 +83,10 @@ export const SettingsSyncCard = () => {
   >(null);
 
   const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
+  const [isSubmittingTask, setIsSubmittingTask] = useState(false);
 
   const submitEntitySync = useCallback(async () => {
+    setIsSubmittingTask(true);
     const { items: entities } = await catalogApi.getEntities();
     const shouldGzipBody =
       config.getOptionalBoolean('cortex.syncWithGzip') ?? false;
@@ -97,6 +99,7 @@ export const SettingsSyncCard = () => {
       groupOverrides,
     );
     setSyncTaskProgressPercentage(progress.percentage);
+    setIsSubmittingTask(false);
   }, [catalogApi, config, cortexApi, extensionApi]);
 
   const cancelEntitySync = useCallback(async () => {
@@ -128,10 +131,10 @@ export const SettingsSyncCard = () => {
 
   return (
     <InfoCard
-      title="Sync Entities"
+      title="Sync entities"
       action={
         <SyncButton
-          isSyncing={syncTaskProgressPercentage !== null}
+          isSyncing={syncTaskProgressPercentage !== null || isSubmittingTask}
           submitSyncTask={submitEntitySync}
         />
       }

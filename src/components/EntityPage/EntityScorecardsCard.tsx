@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { InfoCard } from '@backstage/core-components';
+import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
 import {
   FormControl,
+  Grid,
   InputAdornment,
   makeStyles,
   Table,
   TableBody,
   TextField,
+  Typography,
 } from '@material-ui/core';
 import { EntityScorecardsCardRow } from './EntityScorecardsCardRow';
 import { BackstageTheme } from '@backstage/theme';
 import { ServiceScorecardScore } from '../../api/types';
-import { SortDropdown } from '../Common/SortDropdown';
-import { useDropdown, useInput } from '../../utils/hooks';
+import { SortDropdown, SortMethods } from '../Common/SortDropdown';
+import {
+  useDropdown,
+  useInput,
+  usePartialScorecardCompareFn,
+} from '../../utils/hooks';
 import SearchIcon from '@material-ui/icons/Search';
 import { searchItems } from '../../utils/SearchUtils';
+import { isEmpty, isNil } from 'lodash';
 
 const useStyles = makeStyles<BackstageTheme>(theme => ({
   table: {
@@ -42,11 +49,7 @@ const useStyles = makeStyles<BackstageTheme>(theme => ({
   },
 }));
 
-export interface SortMethods<T> {
-  [title: string]: (a: T, b: T) => number;
-}
-
-const scorecardScoresSortMethods: SortMethods<ServiceScorecardScore> = {
+const defaultSortMethods: SortMethods<ServiceScorecardScore> = {
   'Name ↑': (a: ServiceScorecardScore, b: ServiceScorecardScore) =>
     a.scorecard.name.localeCompare(b.scorecard.name),
   'Name ↓': (a: ServiceScorecardScore, b: ServiceScorecardScore) =>
@@ -72,8 +75,40 @@ export const EntityScorecardsCard = ({
 }: EntityScorecardsCardProps) => {
   const classes = useStyles();
 
-  const [sortBy, setSortBy] = useDropdown('Name ↑');
   const [searchQuery, setSearchQuery] = useInput();
+
+  const {
+    compareFn: scorecardCompareFn,
+    loading: loadingScorecardCompareFn,
+    error: scorecardCompareFnError,
+  } = usePartialScorecardCompareFn();
+
+  const customScoresSortMethods: SortMethods<ServiceScorecardScore> =
+    useMemo(() => {
+      if (isNil(scorecardCompareFn)) {
+        return {} as SortMethods<ServiceScorecardScore>;
+      }
+
+      return {
+        'Custom ↑': (a: ServiceScorecardScore, b: ServiceScorecardScore) =>
+          scorecardCompareFn(a.scorecard, b.scorecard),
+        'Custom ↓': (a: ServiceScorecardScore, b: ServiceScorecardScore) =>
+          -1 * scorecardCompareFn(a.scorecard, b.scorecard),
+      };
+    }, [scorecardCompareFn]);
+
+  const scorecardScoresSortMethods: SortMethods<ServiceScorecardScore> =
+    useMemo(() => {
+      return {
+        ...customScoresSortMethods,
+        ...defaultSortMethods,
+      };
+    }, [customScoresSortMethods]);
+
+  const [sortBy, setSortBy] = useDropdown(
+    isEmpty(customScoresSortMethods) ? 'Name ↑' : 'Custom ↑',
+    [isEmpty(customScoresSortMethods)],
+  );
 
   const scoresToDisplay = useMemo(() => {
     const scoresToDisplay = searchItems(
@@ -87,48 +122,72 @@ export const EntityScorecardsCard = ({
     }
 
     return scoresToDisplay;
-  }, [sortBy, searchQuery, scores]);
+  }, [scores, searchQuery, sortBy, scorecardScoresSortMethods]);
+
+  if (loadingScorecardCompareFn) {
+    return <Progress />;
+  }
+
+  if (scorecardCompareFnError) {
+    return (
+      <WarningPanel severity="error" title="Could not load Scorecards.">
+        {scorecardCompareFnError.message}
+      </WarningPanel>
+    );
+  }
 
   return (
-    <InfoCard
-      title={title}
-      action={
-        <SortDropdown
-          selected={sortBy}
-          items={Object.keys(scorecardScoresSortMethods)}
-          select={setSortBy}
-        />
-      }
-      subheader={
-        <FormControl fullWidth>
-          <TextField
-            variant="standard"
-            label="Search"
-            value={searchQuery}
-            onChange={setSearchQuery}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </FormControl>
-      }
-    >
-      <Table className={classes.table}>
-        <TableBody>
-          {scoresToDisplay.map(score => (
-            <EntityScorecardsCardRow
-              key={`EntityScorecardsCardRow-${score.scorecard.id}`}
-              score={score}
-              onSelect={() => onSelect(score.scorecard.id)}
-              selected={selectedScorecardId === score.scorecard.id}
+    <InfoCard title={title}>
+      <Grid container direction="column">
+        <Grid
+          container
+          direction="row"
+          lg={12}
+          style={{ marginBottom: '20px' }}
+        >
+          <Grid item lg={9}>
+            <FormControl fullWidth>
+              <TextField
+                variant="standard"
+                placeholder="Search by name, description, or filters"
+                value={searchQuery}
+                onChange={setSearchQuery}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item lg={3}>
+            <SortDropdown
+              selected={sortBy}
+              items={Object.keys(scorecardScoresSortMethods)}
+              select={setSortBy}
             />
-          ))}
-        </TableBody>
-      </Table>
+          </Grid>
+        </Grid>
+        <Table className={classes.table}>
+          <TableBody>
+            {isEmpty(scoresToDisplay) && !isNil(searchQuery) && (
+              <Typography variant="subtitle1">
+                No Scorecards matching search query
+              </Typography>
+            )}
+            {scoresToDisplay.map(score => (
+              <EntityScorecardsCardRow
+                key={`EntityScorecardsCardRow-${score.scorecard.id}`}
+                score={score}
+                onSelect={() => onSelect(score.scorecard.id)}
+                selected={selectedScorecardId === score.scorecard.id}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </Grid>
     </InfoCard>
   );
 };

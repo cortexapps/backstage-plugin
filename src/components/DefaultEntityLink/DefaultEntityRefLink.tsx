@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +19,23 @@ import { defaultComponentRefContext } from '../../utils/ComponentUtils';
 import { Entity, CompoundEntityRef } from '@backstage/catalog-model';
 
 interface DefaultEntityRefLinkProps {
-  entityRef: Entity | CompoundEntityRef;
   children?: React.ReactNode;
+  entityRef: Entity | CompoundEntityRef;
+  title?: string;
 }
 
 export const DefaultEntityRefLink = ({
-  entityRef,
   children,
+  entityRef,
+  title,
 }: DefaultEntityRefLinkProps) => {
   return (
     <EntityRefLink
-      entityRef={entityRef}
-      defaultKind={defaultComponentRefContext.defaultKind}
       /* eslint-disable-next-line react/no-children-prop */
       children={children}
+      defaultKind={defaultComponentRefContext.defaultKind}
+      entityRef={entityRef}
+      title={title}
     />
   );
 };

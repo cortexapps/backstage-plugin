@@ -36,8 +36,6 @@ const PollingLinearGauge: React.FC<PollingLinearGaugeProps> = ({
   poll,
   value,
 }) => {
-  const isDone = value === 1 || done;
-
   const [exponentialBackoff, setExponentialBackoff] = useState(
     () =>
       new ExponentialBackoff({
@@ -52,7 +50,7 @@ const PollingLinearGauge: React.FC<PollingLinearGaugeProps> = ({
       await poll();
       setExponentialBackoff(backoff => backoff.advance());
     },
-    isDone ? null : exponentialBackoff.delay(),
+    done ? null : exponentialBackoff.delay(),
   );
 
   return <LinearGauge value={value} />;

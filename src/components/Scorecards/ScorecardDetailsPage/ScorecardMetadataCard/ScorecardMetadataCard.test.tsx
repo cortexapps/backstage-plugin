@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ describe('ScorecardMetadataCard', () => {
       <ScorecardMetadataCard scorecard={scorecard} scores={[]} />,
     );
 
-    expect(await findByText('Bob Jones')).toBeVisible();
     expect(await findByText('My Description')).toBeVisible();
     expect(await findByText('tag1')).toBeVisible();
     expect(await findByText('tag2')).toBeVisible();

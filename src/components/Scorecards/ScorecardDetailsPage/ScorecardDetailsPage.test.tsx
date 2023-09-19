@@ -33,6 +33,7 @@ import {
 import { EntityFilterGroup } from '../../../filters';
 import { extensionApiRef } from '../../../api/ExtensionApi';
 import { act } from 'react-dom/test-utils';
+import { HomepageEntityResponse } from '../../../api/userInsightTypes';
 
 describe('ScorecardDetailsPage', () => {
   const emptyExtensionApi: ExtensionApi = {
@@ -88,14 +89,39 @@ describe('ScorecardDetailsPage', () => {
     async getScorecardScores(_: number): Promise<ScorecardServiceScore[]> {
       return [
         Fixtures.scorecardServiceScore({
-          componentRef: 'foo',
+          componentRef: 'foo-tag',
           scorePercentage: 0.5,
         }),
         Fixtures.scorecardServiceScore({
-          componentRef: 'bar',
+          componentRef: 'bar-tag',
           scorePercentage: 0.7,
         }),
       ];
+    },
+
+    async getCatalogEntities(): Promise<HomepageEntityResponse> {
+      return {
+        entities: [
+          {
+            codeTag: 'foo-tag',
+            groupNames: [],
+            id: 1,
+            name: 'foo',
+            serviceGroupTags: [],
+            serviceOwnerEmails: [],
+            type: 'service',
+          },
+          {
+            codeTag: 'bar-tag',
+            groupNames: [],
+            id: 2,
+            name: 'bar',
+            serviceGroupTags: [],
+            serviceOwnerEmails: [],
+            type: 'service',
+          },
+        ],
+      };
     },
   };
 
@@ -105,7 +131,7 @@ describe('ScorecardDetailsPage', () => {
         items: [
           Fixtures.entity({
             kind: 'Component',
-            metadata: Fixtures.entityMeta({ name: 'foo' }),
+            metadata: Fixtures.entityMeta({ name: 'foo-tag' }),
             relations: [
               { type: 'ownedBy', targetRef: 'Group:shared' },
               { type: 'ownedBy', targetRef: 'Group:mine' },
@@ -113,7 +139,7 @@ describe('ScorecardDetailsPage', () => {
           }),
           Fixtures.entity({
             kind: 'Component',
-            metadata: Fixtures.entityMeta({ name: 'bar' }),
+            metadata: Fixtures.entityMeta({ name: 'bar-tag' }),
             relations: [
               { type: 'ownedBy', targetRef: 'Group:alsomine' },
               { type: 'ownedBy', targetRef: 'Group:shared' },

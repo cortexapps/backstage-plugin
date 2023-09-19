@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,13 @@ export interface Config {
      * @visibility frontend
      */
     frontendBaseUrl?: string;
+
+    /**
+     * The 'hideSettings' attribute. If true, settings tab + sync button will be hidden from all users, including admins.
+     * @visibility frontend
+     */
+    hideSettings?: boolean;
+
     /**
      * The 'syncWithGzip' attribute. If true, the Cortex Backstage entity sync will use gzip.
      * If not provided, the Cortex Backstage entity sync will not use gzip.

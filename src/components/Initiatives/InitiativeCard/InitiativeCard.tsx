@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import { Initiative } from '../../../api/types';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { initiativeRouteRef } from '../../../routes';
 import { ListCard } from '../../ListCard';
+import moment from 'moment';
 
 type InitiativeCardProps = {
   initiative: Initiative;
@@ -30,6 +31,11 @@ export const InitiativeCard = ({ initiative }: InitiativeCardProps) => {
     <ListCard
       name={initiative.name}
       description={initiative.description}
+      badges={[
+        `Due ${moment(initiative.targetDate)
+          .local()
+          .format('dddd, MMMM Do YYYY')}`,
+      ]}
       url={initiativeRef({ id: `${initiative.id}` })}
     />
   );

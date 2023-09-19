@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 import React, { useEffect, useMemo } from 'react';
 import { getLookbackRange, Lookback } from '../../../utils/lookback';
-import { useCortexApi } from '../../../utils/hooks';
+import { useCortexApi, useCortexFrontendUrl } from '../../../utils/hooks';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { Button, Typography } from '@material-ui/core';
 import { Timeseries } from '../../Timeseries';
@@ -23,6 +23,7 @@ import Box from '@material-ui/core/Box';
 import moment from 'moment';
 import { mapByString } from '../../../utils/collections';
 import { GroupByOption } from '../../../api/types';
+import { cortexScorecardPageUrl } from '../../../utils/URLUtils';
 
 interface AggregatedScorecardProgressProps {
   scorecardId: number;
@@ -89,13 +90,15 @@ export const AggregatedScorecardProgress = ({
     setFilterOptions(unfilteredData.map(d => d.id));
   }, [setFilterOptions, unfilteredData]);
 
+  const cortexBaseUrl = useCortexFrontendUrl();
+
   if (loading) {
     return <Progress />;
   }
 
   if (error || data === undefined || historicalScores === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scores.">
+      <WarningPanel severity="error" title="Could not load Scorecard scores.">
         {error?.message ?? ''}
       </WarningPanel>
     );
@@ -106,12 +109,15 @@ export const AggregatedScorecardProgress = ({
       <EmptyState
         missing="data"
         title="Scorecard has not been evaluated yet."
-        description="Wait until next scorecard evaluation, or manually trigger from within Cortex."
+        description="Wait until next Scorecard evaluation, or manually trigger from within Cortex."
         action={
           <Button
             variant="contained"
             color="primary"
-            href={`https://app.getcortexapp.com/admin/scorecards/${scorecardId}`}
+            href={cortexScorecardPageUrl({
+              scorecardId: scorecardId,
+              cortexUrl: cortexBaseUrl,
+            })}
           >
             Go to Cortex
           </Button>
@@ -135,8 +141,10 @@ export const AggregatedScorecardProgress = ({
               <Typography>{point.point.serieId}</Typography>
             )}
             <Typography>
-              {moment.utc(point.point.data.x).fromNow()}: &nbsp;
-              {point.point.data.y}%
+              <>
+                {moment.utc(point.point.data.x).fromNow()}: &nbsp;
+                {point.point.data.y}%
+              </>
             </Typography>
           </Box>
         );

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,10 +47,10 @@ export const InitiativeMetadataCard = ({
 
   const filtersLabel = `Filtered ${
     filteredByBoth
-      ? 'by Services & Service Groups'
+      ? 'by services & groups'
       : filteredByServices
-      ? `to ${initiative.componentRefs.length} Services`
-      : 'by Service Groups'
+      ? `to ${initiative.componentRefs.length} services`
+      : 'by groups'
   }`;
 
   return (
@@ -73,11 +73,6 @@ export const InitiativeMetadataCard = ({
             href={scorecardRef({ id: `${initiative.scorecard.id}` })}
           />
         </MetadataItem>
-        {initiative.creator && (
-          <MetadataItem gridSizes={{ xs: 12 }} label="Owner">
-            {initiative.creator.name}
-          </MetadataItem>
-        )}
         {initiative.emphasizedLevels.length !== 0 && (
           <MetadataItem gridSizes={{ xs: 12 }} label="Prioritized Ladder Level">
             {initiative.emphasizedLevels.map(level => (
@@ -107,7 +102,7 @@ export const InitiativeMetadataCard = ({
           {(filteredByServiceGroups || !filteredByServices) && (
             <MetadataItem
               gridSizes={{ xs: 12 }}
-              label={filteredByBoth ? 'Service Groups' : 'Applies to'}
+              label={filteredByBoth ? 'Groups' : 'Applies to'}
             >
               {initiative.tags.map(s => (
                 <Chip

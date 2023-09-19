@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import {
   Initiative,
   InitiativeActionItem,
   InitiativeWithScores,
+  JobsResponse,
   LastEntitySyncTime,
   OncallsResponse,
   Scorecard,
@@ -29,6 +30,7 @@ import {
   ScorecardServiceScore,
   ScoresByIdentifier,
   ServiceScorecardScore,
+  UserPermissionsResponse,
 } from './types';
 import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
@@ -50,6 +52,7 @@ import {
   GetUserInsightsResponse,
   HomepageEntityResponse,
 } from './userInsightTypes';
+import { chunk } from "lodash";
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -89,17 +92,39 @@ export class CortexClient implements CortexApi {
       ? entities.map(entity => applyCustomMappings(entity, customMappings))
       : entities;
 
-    if (gzipContents) {
-      return await this.postWithGzipBody(`/api/backstage/v1/entities/sync`, {
-        entities: withCustomMappings,
-        teamOverrides,
-      });
-    } else {
-      return await this.post(`/api/backstage/v1/entities/sync`, {
-        entities: withCustomMappings,
-        teamOverrides,
-      });
+    const post = async (path: string, body?: any) => {
+        return gzipContents ? await this.postVoidWithGzipBody(path, body) : await this.postVoid(path, body)
     }
+
+    await this.postVoid('/api/backstage/v2/entities/sync-init')
+
+    for (let customMappingsChunk of chunk(withCustomMappings, CHUNK_SIZE)) {
+      await post(`/api/backstage/v2/entities/sync-chunked`, {
+        entities: customMappingsChunk,
+      })
+    }
+
+    for (let teamOverridesTeamChunk of chunk(teamOverrides?.teams ?? [], CHUNK_SIZE)) {
+      await post(`/api/backstage/v2/entities/sync-chunked`, {
+        entities: [],
+        teamOverrides: {
+          teams: teamOverridesTeamChunk,
+          relationships: []
+        }
+      })
+    }
+
+    for (let teamOverridesRelationshipsChunk of chunk(teamOverrides?.relationships ?? [], CHUNK_SIZE)) {
+      await post(`/api/backstage/v2/entities/sync-chunked`, {
+        entities: [],
+        teamOverrides: {
+          teams: [],
+          relationships: teamOverridesRelationshipsChunk,
+        }
+      })
+    }
+
+    return await this.post('/api/backstage/v2/entities/sync-submit')
   }
 
   async getServiceScores(
@@ -254,27 +279,35 @@ export class CortexClient implements CortexApi {
   }
 
   async getEntitySyncProgress(): Promise<EntitySyncProgress> {
-    return await this.get(`/api/backstage/v1/entities/progress`);
+    return await this.get(`/api/backstage/v2/entities/progress`);
   }
 
   async getLastEntitySyncTime(): Promise<LastEntitySyncTime> {
-    return await this.get(`/api/backstage/v1/entities/last-sync`);
+    return await this.get(`/api/backstage/v2/entities/last-sync`);
   }
 
   async cancelEntitySync(): Promise<void> {
-    await this.delete(`/api/backstage/v1/entities/sync`);
+    await this.delete(`/api/backstage/v2/entities/sync`);
   }
 
-  async getUserOncallByEmail(email: string): Promise<OncallsResponse> {
-    return this.get(`/api/backstage/v1/homepage/oncall?email=${email}`);
+  async getUserOncallByEmail(): Promise<OncallsResponse> {
+    return this.get(`/api/backstage/v2/homepage/oncall`);
   }
 
-  async getInsightsByEmail(email: string): Promise<GetUserInsightsResponse> {
-    return this.get(`/api/backstage/v1/homepage/insights?email=${email}`);
+  async getInsightsByEmail(): Promise<GetUserInsightsResponse> {
+    return this.get(`/api/backstage/v2/homepage/insights`);
   }
 
   async getCatalogEntities(): Promise<HomepageEntityResponse> {
     return this.get(`/api/backstage/v1/homepage/catalog`);
+  }
+
+  async getUserPermissions(): Promise<UserPermissionsResponse> {
+    return this.get(`/api/backstage/v2/permissions`);
+  }
+
+  async getSyncJobs(): Promise<JobsResponse> {
+    return this.get(`/api/backstage/v2/jobs`);
   }
 
   private async getBasePath(): Promise<string> {
@@ -339,7 +372,24 @@ export class CortexClient implements CortexApi {
     return response.json();
   }
 
-  private async postWithGzipBody(path: string, body?: any): Promise<any> {
+  private async postVoid(path: string, body?: any): Promise<void> {
+    const basePath = await this.getBasePath();
+    const url = `${basePath}${path}`;
+
+    const response = await this.fetchAuthenticated(url, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (response.status !== 200) {
+      throw new Error(`Error communicating with Cortex`);
+    }
+
+    return;
+  }
+
+  private async postVoidWithGzipBody(path: string, body?: any): Promise<void> {
     const basePath = await this.getBasePath();
     const url = `${basePath}${path}`;
 
@@ -359,7 +409,7 @@ export class CortexClient implements CortexApi {
       throw new Error(`Error communicating with Cortex`);
     }
 
-    return response.json();
+    return;
   }
 
   private async delete(path: string, body?: any): Promise<void> {
@@ -381,21 +431,35 @@ export class CortexClient implements CortexApi {
     input: RequestInfo,
     init?: RequestInit,
   ): Promise<Response> {
-    let token: string | undefined = undefined;
+    let token: string | undefined;
+    let email: string | undefined;
+    let displayName: string | undefined;
     if (this.identityApi !== undefined) {
-      ({ token } = await this.identityApi.getCredentials());
+      const [credentials, profileInfo] = await Promise.all([
+        this.identityApi.getCredentials(),
+        this.identityApi.getProfileInfo(),
+      ]);
+      token = credentials.token;
+      email = profileInfo.email;
+      displayName = profileInfo.displayName;
     }
+
+    const headers = {
+      ...init?.headers,
+      Authorization: `Bearer ${(token ?? '').replace(/^[Bb]earer\s+/, '').trim()}`,
+      'x-cortex-email': email ?? '',
+      'x-cortex-name': displayName ?? '',
+    };
 
     if (token !== undefined) {
       return fetch(input, {
         ...init,
-        headers: {
-          ...init?.headers,
-          Authorization: `Bearer ${token}`,
-        },
+        headers: headers,
       });
     } else {
       return fetch(input, init);
     }
   }
 }
+
+const CHUNK_SIZE = 1000;

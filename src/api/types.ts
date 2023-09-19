@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,13 @@ export interface Rule extends RuleName {
   failureMessage?: string;
   dateCreated?: string;
   weight: number;
+  filter?: RuleFilter;
+}
+
+export interface RuleFilter {
+  query?: string;
+  includedTags?: string[];
+  excludedTags?: string[];
 }
 
 export function ruleName(rule: RuleName): string {
@@ -59,6 +66,7 @@ export interface ScorecardLevelRule {
   expression: string;
   title?: string;
   description?: string;
+  filter?: RuleFilter;
 }
 
 export interface ScorecardLevel {
@@ -170,8 +178,8 @@ export interface ApplicableRuleOutcome extends RuleOutcomeBase {
 
 export interface NotApplicableRuleOutcome extends RuleOutcomeBase {
   endDate?: string;
-  requestedDate: string;
-  approvedDate: string;
+  requestedDate?: string;
+  approvedDate?: string;
   type: RuleOutcomeType.NOT_APPLICABLE;
 }
 
@@ -247,6 +255,7 @@ export interface InitiativeRule {
   expression: string;
   title: string;
   description?: string;
+  filter?: RuleFilter;
 }
 
 export interface InitiativeLevel {
@@ -299,4 +308,29 @@ export interface Oncall {
 
 export interface OncallsResponse {
   oncalls: Oncall[];
+}
+
+export interface UserPermissionsResponse {
+  permissions: string[];
+}
+
+export enum Permission {
+  EDIT_SETTINGS = 'EDIT_SETTINGS',
+}
+
+export interface JobsResponse {
+  jobs: Job[];
+}
+
+export interface Job {
+  status: JobStatus;
+  dateCreated: string;
+}
+
+export enum JobStatus {
+  InProgress = 'IN_PROGRESS',
+  Done = 'DONE',
+  Cancelled = 'CANCELLED',
+  Failure = 'FAILURE',
+  TimedOut = 'TIMED_OUT',
 }

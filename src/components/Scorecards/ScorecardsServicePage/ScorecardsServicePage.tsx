@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 import React, { useEffect, useState } from 'react';
 import {
-  configApiRef,
   useApi,
+  useRouteRef,
   useRouteRefParams,
 } from '@backstage/core-plugin-api';
 import {
@@ -29,7 +29,10 @@ import {
 import { Grid, makeStyles, Typography } from '@material-ui/core';
 import { useAsync } from 'react-use';
 import { cortexApiRef } from '../../../api';
-import { scorecardServiceDetailsRouteRef } from '../../../routes';
+import {
+  scorecardRouteRef,
+  scorecardServiceDetailsRouteRef,
+} from '../../../routes';
 import { Gauge } from '../../Gauge';
 import Box from '@material-ui/core/Box';
 import { DefaultEntityRefLink } from '../../DefaultEntityLink';
@@ -38,7 +41,9 @@ import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
 import { RuleOutcome } from '../../../api/types';
-import { cortexScorecardServicePageURL } from '../../../utils/URLUtils';
+import { cortexScorecardServicePageUrl } from '../../../utils/URLUtils';
+import { useCortexFrontendUrl, useEntitiesByTag } from '../../../utils/hooks';
+import { KeyboardArrowLeft } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   progress: {
@@ -48,11 +53,13 @@ const useStyles = makeStyles({
 
 export const ScorecardsServicePage = () => {
   const cortexApi = useApi(cortexApiRef);
-  const config = useApi(configApiRef);
 
   const { scorecardId, kind, namespace, name } = useRouteRefParams(
     scorecardServiceDetailsRouteRef,
   );
+  const scorecardRef = useRouteRef(scorecardRouteRef);
+
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
   const entityRef = { kind, namespace, name };
 
@@ -60,7 +67,7 @@ export const ScorecardsServicePage = () => {
 
   const [selectedRules, setSelectedRules] = useState<RuleOutcome[]>([]);
 
-  const cortexBaseUrl = config.getOptionalString('cortex.frontendBaseUrl');
+  const cortexBaseUrl = useCortexFrontendUrl();
 
   const { value, loading, error } = useAsync(async () => {
     const allScores = await cortexApi.getScorecardScores(+scorecardId);
@@ -79,13 +86,13 @@ export const ScorecardsServicePage = () => {
     setSelectedRules(score?.rules ?? []);
   }, [score]);
 
-  if (loading) {
+  if (loading || loadingEntities) {
     return <Progress />;
   }
 
   if (error || score === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load scores.">
+      <WarningPanel severity="error" title="Could not load Scorecard scores.">
         {error?.message ?? ''}
       </WarningPanel>
     );
@@ -96,6 +103,19 @@ export const ScorecardsServicePage = () => {
 
   return (
     <Content>
+      <Box display="flex" flexDirection="row" style={{ marginBottom: '20px' }}>
+        <Link to={scorecardRef({ id: `${scorecardId}` })}>
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="flex-start"
+            alignItems="center"
+          >
+            <KeyboardArrowLeft />
+            <b>Back to Scorecard</b>
+          </Box>
+        </Link>
+      </Box>
       <Box
         display="flex"
         flexDirection="row"
@@ -112,15 +132,18 @@ export const ScorecardsServicePage = () => {
         </Box>
         <Box alignSelf="center" flex="1">
           <Typography variant="h4" component="h2">
-            <DefaultEntityRefLink entityRef={entityRef} />
+            <DefaultEntityRefLink
+              entityRef={entityRef}
+              title={entitiesByTag[entityRef.name]?.name}
+            />
           </Typography>
         </Box>
         <Box alignSelf="center">
           <Link
-            to={cortexScorecardServicePageURL({
+            to={cortexScorecardServicePageUrl({
               scorecardId,
               serviceId: score.serviceId,
-              cortexURL: cortexBaseUrl,
+              cortexUrl: cortexBaseUrl,
             })}
             target="_blank"
           >

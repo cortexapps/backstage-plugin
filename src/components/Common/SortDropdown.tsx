@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 import React from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+
+export interface SortMethods<T> {
+  [title: string]: (a: T, b: T) => number;
+}
 
 interface SortDropdownProps {
   label?: string;

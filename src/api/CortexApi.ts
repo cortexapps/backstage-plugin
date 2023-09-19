@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Cortex Applications, Inc.
+ * Copyright 2023 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import {
   Initiative,
   InitiativeActionItem,
   InitiativeWithScores,
+  JobsResponse,
   LastEntitySyncTime,
   OncallsResponse,
   Scorecard,
@@ -28,6 +29,7 @@ import {
   ScorecardServiceScore,
   ScoresByIdentifier,
   ServiceScorecardScore,
+  UserPermissionsResponse,
 } from './types';
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
@@ -99,9 +101,13 @@ export interface CortexApi {
 
   cancelEntitySync(): Promise<void>;
 
-  getUserOncallByEmail(email: string): Promise<OncallsResponse>;
+  getUserOncallByEmail(): Promise<OncallsResponse>;
 
-  getInsightsByEmail(email: string): Promise<GetUserInsightsResponse>;
+  getInsightsByEmail(): Promise<GetUserInsightsResponse>;
 
   getCatalogEntities(): Promise<HomepageEntityResponse>;
+
+  getUserPermissions(): Promise<UserPermissionsResponse>;
+
+  getSyncJobs(): Promise<JobsResponse>;
 }
