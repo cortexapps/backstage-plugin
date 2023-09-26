@@ -34,10 +34,7 @@ import {
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef } from '../utils/types';
-import {
-  CustomMapping,
-  TeamOverrides,
-} from '@cortexapps/backstage-plugin-extensions';
+import { TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
 import {
   GetUserInsightsResponse,
   HomepageEntityResponse,
@@ -91,7 +88,6 @@ export interface CortexApi {
   submitEntitySync(
     entities: Entity[],
     shouldGzipBody: boolean,
-    customMappings?: CustomMapping[],
     teamOverrides?: TeamOverrides,
   ): Promise<EntitySyncProgress>;
 

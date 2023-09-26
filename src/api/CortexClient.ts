@@ -37,11 +37,7 @@ import { Entity } from '@backstage/catalog-model';
 import { Buffer } from 'buffer';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
-import {
-  CustomMapping,
-  TeamOverrides,
-} from '@cortexapps/backstage-plugin-extensions';
-import { applyCustomMappings } from '../utils/ComponentUtils';
+import { TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
 import {
   createApiRef,
   DiscoveryApi,
@@ -52,7 +48,7 @@ import {
   GetUserInsightsResponse,
   HomepageEntityResponse,
 } from './userInsightTypes';
-import { chunk } from "lodash";
+import { chunk } from 'lodash';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -85,46 +81,49 @@ export class CortexClient implements CortexApi {
   async submitEntitySync(
     entities: Entity[],
     gzipContents: boolean,
-    customMappings?: CustomMapping[],
     teamOverrides?: TeamOverrides,
   ): Promise<EntitySyncProgress> {
-    const withCustomMappings: Entity[] = customMappings
-      ? entities.map(entity => applyCustomMappings(entity, customMappings))
-      : entities;
-
     const post = async (path: string, body?: any) => {
-        return gzipContents ? await this.postVoidWithGzipBody(path, body) : await this.postVoid(path, body)
-    }
+      return gzipContents
+        ? await this.postVoidWithGzipBody(path, body)
+        : await this.postVoid(path, body);
+    };
 
-    await this.postVoid('/api/backstage/v2/entities/sync-init')
+    await this.postVoid('/api/backstage/v2/entities/sync-init');
 
-    for (let customMappingsChunk of chunk(withCustomMappings, CHUNK_SIZE)) {
+    for (let customMappingsChunk of chunk(entities, CHUNK_SIZE)) {
       await post(`/api/backstage/v2/entities/sync-chunked`, {
         entities: customMappingsChunk,
-      })
+      });
     }
 
-    for (let teamOverridesTeamChunk of chunk(teamOverrides?.teams ?? [], CHUNK_SIZE)) {
+    for (let teamOverridesTeamChunk of chunk(
+      teamOverrides?.teams ?? [],
+      CHUNK_SIZE,
+    )) {
       await post(`/api/backstage/v2/entities/sync-chunked`, {
         entities: [],
         teamOverrides: {
           teams: teamOverridesTeamChunk,
-          relationships: []
-        }
-      })
+          relationships: [],
+        },
+      });
     }
 
-    for (let teamOverridesRelationshipsChunk of chunk(teamOverrides?.relationships ?? [], CHUNK_SIZE)) {
+    for (let teamOverridesRelationshipsChunk of chunk(
+      teamOverrides?.relationships ?? [],
+      CHUNK_SIZE,
+    )) {
       await post(`/api/backstage/v2/entities/sync-chunked`, {
         entities: [],
         teamOverrides: {
           teams: [],
           relationships: teamOverridesRelationshipsChunk,
-        }
-      })
+        },
+      });
     }
 
-    return await this.post('/api/backstage/v2/entities/sync-submit')
+    return await this.post('/api/backstage/v2/entities/sync-submit');
   }
 
   async getServiceScores(
@@ -446,7 +445,9 @@ export class CortexClient implements CortexApi {
 
     const headers = {
       ...init?.headers,
-      Authorization: `Bearer ${(token ?? '').replace(/^[Bb]earer\s+/, '').trim()}`,
+      Authorization: `Bearer ${(token ?? '')
+        .replace(/^[Bb]earer\s+/, '')
+        .trim()}`,
       'x-cortex-email': email ?? '',
       'x-cortex-name': displayName ?? '',
     };

@@ -29,6 +29,8 @@ import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { extensionApiRef } from '../../api/ExtensionApi';
 import PollingLinearGauge from '../Common/PollingLinearGauge';
 import moment from 'moment';
+import { Entity } from '@backstage/catalog-model';
+import { applyCustomMappings } from '../../utils/ComponentUtils';
 
 interface SyncButtonProps {
   isSyncing: boolean;
@@ -85,17 +87,37 @@ export const SyncCard = () => {
   const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
   const [isSubmittingTask, setIsSubmittingTask] = useState(false);
 
+  const getBackstageEntities = useCallback(async () => {
+    const syncEntityFilter = await extensionApi.getSyncEntityFilter?.();
+    const { items: entities } = await catalogApi.getEntities(
+      syncEntityFilter?.kinds
+        ? { filter: { kind: syncEntityFilter?.kinds } }
+        : undefined,
+    );
+
+    const filteredEntities = syncEntityFilter?.entityFilter
+      ? entities.filter(syncEntityFilter?.entityFilter)
+      : entities;
+
+    const customMappings = await extensionApi.getCustomMappings?.();
+    const withCustomMappings: Entity[] = customMappings
+      ? filteredEntities.map(entity =>
+          applyCustomMappings(entity, customMappings),
+        )
+      : filteredEntities;
+
+    return withCustomMappings;
+  }, [catalogApi, extensionApi]);
+
   const submitEntitySync = useCallback(async () => {
     setIsSubmittingTask(true);
-    const { items: entities } = await catalogApi.getEntities();
+    const entities = await getBackstageEntities();
     const shouldGzipBody =
       config.getOptionalBoolean('cortex.syncWithGzip') ?? false;
-    const customMappings = await extensionApi.getCustomMappings?.();
     const groupOverrides = await extensionApi.getTeamOverrides?.(entities);
     const progress = await cortexApi.submitEntitySync(
       entities,
       shouldGzipBody,
-      customMappings,
       groupOverrides,
     );
     setSyncTaskProgressPercentage(progress.percentage);
