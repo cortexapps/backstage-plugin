@@ -122,7 +122,7 @@ export const SyncCard = () => {
     );
     setSyncTaskProgressPercentage(progress.percentage);
     setIsSubmittingTask(false);
-  }, [catalogApi, config, cortexApi, extensionApi]);
+  }, [getBackstageEntities, config, cortexApi, extensionApi]);
 
   const cancelEntitySync = useCallback(async () => {
     await cortexApi.cancelEntitySync();
