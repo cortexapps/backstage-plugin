@@ -19,8 +19,11 @@ import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
 import { Fixtures } from '../../utils/TestUtils';
 import { renderWrapped } from '../../utils/TestUtils';
 import { SettingsPage } from './SettingsPage';
-import { captor, mock } from 'jest-mock-extended';
-import { ExtensionApi } from '@cortexapps/backstage-plugin-extensions';
+import { mock } from 'jest-mock-extended';
+import {
+  EntityFilter,
+  ExtensionApi,
+} from '@cortexapps/backstage-plugin-extensions';
 import { extensionApiRef } from '../../api/ExtensionApi';
 import { waitFor } from '@testing-library/react';
 import { ConfigApi, configApiRef } from '@backstage/core-plugin-api';
@@ -142,16 +145,118 @@ describe('<SettingsPage/>', () => {
       ),
     );
     await checkForText(/Entities have never been synced before/);
-    const customMappingsCaptor = captor();
     expect(cortexApi.submitEntitySync).toHaveBeenLastCalledWith(
-      [component1, component2],
+      [
+        { ...component1, spec: extension },
+        { ...component2, spec: extension },
+      ],
       false,
-      customMappingsCaptor,
       { teams, relationships },
     );
+  });
 
-    expect(customMappingsCaptor.value).toHaveLength(1);
-    expect(customMappingsCaptor.value[0]()).toBe(extension);
+  it('should support entity sync with kinds filter', async () => {
+    const extensionApi: Partial<ExtensionApi> = {
+      getSyncEntityFilter(): Promise<EntityFilter> {
+        return Promise.resolve({
+          kinds: [],
+        });
+      },
+    };
+
+    const catalogApi = mock<CatalogApi>();
+
+    catalogApi.getEntities.mockResolvedValue(
+      Promise.resolve({
+        items: [],
+      }),
+    );
+
+    cortexApi.submitEntitySync.mockResolvedValue({ percentage: null });
+    cortexApi.getEntitySyncProgress.mockResolvedValue({ percentage: null });
+    cortexApi.getLastEntitySyncTime.mockResolvedValue({
+      lastSynced: null,
+    });
+
+    const { clickButton, checkForText, queryByLabelText } = renderWrapped(
+      <SettingsPage />,
+      cortexApi,
+      {},
+      [catalogApiRef, catalogApi],
+      [configApiRef, configApi(undefined)],
+      [extensionApiRef, extensionApi],
+    );
+
+    await clickButton('Sync Entities');
+    await waitFor(() =>
+      expect(queryByLabelText('Sync Entities')).toHaveAttribute(
+        'aria-busy',
+        'false',
+      ),
+    );
+    await checkForText(/Entities have never been synced before/);
+
+    expect(catalogApi.getEntities).toHaveBeenCalledWith({
+      filter: { kind: [] },
+    });
+
+    expect(cortexApi.submitEntitySync).toHaveBeenLastCalledWith(
+      [],
+      false,
+      undefined,
+    );
+  });
+
+  it('should support entity sync with kinds filter and entity filter', async () => {
+    const extensionApi: Partial<ExtensionApi> = {
+      getSyncEntityFilter(): Promise<EntityFilter> {
+        return Promise.resolve({
+          kinds: ['Component'],
+          entityFilter: entity => entity.metadata.name === 'foo',
+        });
+      },
+    };
+
+    const catalogApi = mock<CatalogApi>();
+
+    catalogApi.getEntities.mockResolvedValue(
+      Promise.resolve({
+        items: [component1, component2],
+      }),
+    );
+
+    cortexApi.submitEntitySync.mockResolvedValue({ percentage: null });
+    cortexApi.getEntitySyncProgress.mockResolvedValue({ percentage: null });
+    cortexApi.getLastEntitySyncTime.mockResolvedValue({
+      lastSynced: null,
+    });
+
+    const { clickButton, queryByLabelText } = renderWrapped(
+      <SettingsPage />,
+      cortexApi,
+      {},
+      [catalogApiRef, catalogApi],
+      [configApiRef, configApi(undefined)],
+      [extensionApiRef, extensionApi],
+    );
+
+    await clickButton('Sync Entities');
+    await waitFor(() =>
+      expect(queryByLabelText('Sync Entities')).toHaveAttribute(
+        'aria-busy',
+        'false',
+      ),
+    );
+
+    expect(catalogApi.getEntities).toHaveBeenCalledWith({
+      filter: { kind: ['Component'] },
+    });
+
+    expect(cortexApi.submitEntitySync).toHaveBeenLastCalledWith(
+      [component1],
+      false,
+      undefined,
+    );
   });
 
   it('should submit entity sync with gzip', async () => {
@@ -176,16 +281,12 @@ describe('<SettingsPage/>', () => {
         'false',
       ),
     );
-    const customMappingsCaptor = captor();
+
     expect(cortexApi.submitEntitySync).toHaveBeenLastCalledWith(
       [component1, component2],
       true,
-      customMappingsCaptor,
       { teams, relationships },
     );
-
-    expect(customMappingsCaptor.value).toHaveLength(1);
-    expect(customMappingsCaptor.value[0]()).toBe(extension);
   });
 
   it('shows in progress entity sync', async () => {
