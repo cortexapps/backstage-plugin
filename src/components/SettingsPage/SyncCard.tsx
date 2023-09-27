@@ -118,12 +118,17 @@ export const SyncCard = () => {
     const shouldGzipBody =
       config.getOptionalBoolean('cortex.syncWithGzip') ?? false;
     const groupOverrides = await extensionApi.getTeamOverrides?.(entities);
-    const progress = await cortexApi.submitEntitySync(
-      entities,
-      shouldGzipBody,
-      groupOverrides,
-    );
-    setSyncTaskProgressPercentage(progress.percentage);
+    setCortexSyncError(undefined);
+    try {
+      const progress = await cortexApi.submitEntitySync(
+        entities,
+        shouldGzipBody,
+        groupOverrides,
+      );
+      setSyncTaskProgressPercentage(progress.percentage);
+    } catch (e: any) {
+      setCortexSyncError(e.message);
+    }
     setIsSubmittingTask(false);
   }, [getBackstageEntities, config, cortexApi, extensionApi]);
 
@@ -169,14 +174,7 @@ export const SyncCard = () => {
               isSyncing={
                 syncTaskProgressPercentage !== null || isSubmittingTask
               }
-              submitSyncTask={async () => {
-                try {
-                  await submitEntitySync();
-                  setCortexSyncError(undefined);
-                } catch (e: any) {
-                  setCortexSyncError(e.message);
-                }
-              }}
+              submitSyncTask={submitEntitySync}
             />
           )
         }
@@ -219,7 +217,7 @@ export const SyncCard = () => {
         <Typography>
           Manually sync your Backstage entities with Cortex.
           <br />
-          You can also set this up to automatically sync with our&nbsp;
+          You can also set this up to automatically sync with our{' '}
           <Link to="https://www.npmjs.com/package/@cortexapps/backstage-backend-plugin">
             backend plugin
           </Link>
