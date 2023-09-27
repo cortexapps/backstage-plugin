@@ -342,6 +342,6 @@ describe('<SettingsPage/>', () => {
     );
 
     await clickButton('Sync Entities');
-    await checkForText(/Entities have never been synced before/);
+    await checkForText(/Error communicating with Cortex/);
   })
 });
