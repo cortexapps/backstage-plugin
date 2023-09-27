@@ -325,4 +325,25 @@ describe('<SettingsPage/>', () => {
       await queryByLabelText('Cancel entity sync'),
     ).not.toBeInTheDocument();
   });
+
+  it('should handle errors from sync dispatch gracefully', async () => {
+    cortexApi.submitEntitySync.mockRejectedValue(
+      new Error('Error communicating with Cortex'),
+    );
+    cortexApi.getEntitySyncProgress.mockResolvedValue({ percentage: null });
+    cortexApi.getLastEntitySyncTime.mockResolvedValue({
+      lastSynced: null,
+    });
+    const { clickButton, checkForText } = renderWrapped(
+      <SettingsPage />,
+      cortexApi,
+      {},
+      [catalogApiRef, catalogApi],
+      [configApiRef, configApi(true)],
+      [extensionApiRef, extensionApi],
+    );
+
+    await clickButton('Sync Entities');
+    await checkForText(/Error communicating with Cortex/);
+  });
 });
