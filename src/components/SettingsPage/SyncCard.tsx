@@ -86,7 +86,9 @@ export const SyncCard = () => {
 
   const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
   const [isSubmittingTask, setIsSubmittingTask] = useState(false);
-  const [cortexSyncError, setCortexSyncError] = useState<string | undefined>(undefined);
+  const [cortexSyncError, setCortexSyncError] = useState<string | undefined>(
+    undefined,
+  );
 
   const getBackstageEntities = useCallback(async () => {
     const syncEntityFilter = await extensionApi.getSyncEntityFilter?.();
@@ -154,7 +156,7 @@ export const SyncCard = () => {
 
   return (
     <>
-      { cortexSyncError !== undefined && (
+      {cortexSyncError !== undefined && (
         <WarningPanel severity="error" title={cortexSyncError}>
           There is already a sync in progress. Try again in 10 minutes.
         </WarningPanel>
@@ -162,17 +164,21 @@ export const SyncCard = () => {
       <InfoCard
         title="Sync entities"
         action={
-          cortexSyncError === undefined && <SyncButton
-            isSyncing={syncTaskProgressPercentage !== null || isSubmittingTask}
-            submitSyncTask={async () => {
-              try {
-                await submitEntitySync();
-                setCortexSyncError(undefined);
-              } catch (e: any) {
-                setCortexSyncError(e.message);
+          cortexSyncError === undefined && (
+            <SyncButton
+              isSyncing={
+                syncTaskProgressPercentage !== null || isSubmittingTask
               }
-            }}
-          />
+              submitSyncTask={async () => {
+                try {
+                  await submitEntitySync();
+                  setCortexSyncError(undefined);
+                } catch (e: any) {
+                  setCortexSyncError(e.message);
+                }
+              }}
+            />
+          )
         }
       >
         {syncTaskProgressPercentage !== null && (
