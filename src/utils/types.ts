@@ -21,7 +21,7 @@ import {
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import { defaultComponentRefContext, EntityRefContext } from './ComponentUtils';
-import { isObject } from 'lodash';
+import { isNil, isObject } from 'lodash';
 
 export const identity = <T>(t: T) => t;
 
@@ -137,3 +137,6 @@ export function nullsToUndefined<T>(
   }
   return obj as any;
 }
+
+export const isNotUndefined = <S>(value: S | undefined): value is S =>
+  isNil(value) === false;

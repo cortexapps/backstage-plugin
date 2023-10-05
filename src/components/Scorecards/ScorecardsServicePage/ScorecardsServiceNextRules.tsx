@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Grid, Typography, Divider } from '@material-ui/core';
-import { InfoCard, Progress, WarningPanel } from '@backstage/core-components';
-import { useDetailCardStyles } from '../../../styles/styles';
+import { Typography, Box } from '@material-ui/core';
+import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../../utils/hooks';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../../../utils/types';
-import { ScorecardRuleRow } from '../ScorecardDetailsPage/ScorecardRulesCard/ScorecardRuleRow';
 import { ScorecardLadderLevelBadge } from '../../Common/ScorecardLadderLevelBadge';
+import { isNil } from 'lodash';
+import { ScorecardsServiceCard, useStyles } from './ScorecardsServiceCard';
+import ScorecardServiceRuleRow from './ScorecardServiceRuleRow';
 
 interface ScorecardsServiceNextRulesProps {
   scorecardId: number;
@@ -31,8 +32,6 @@ export const ScorecardsServiceNextRules = ({
   entityRef,
   scorecardId,
 }: ScorecardsServiceNextRulesProps) => {
-  const classes = useDetailCardStyles();
-
   const {
     value,
     loading: nextStepsLoading,
@@ -46,6 +45,7 @@ export const ScorecardsServiceNextRules = ({
     },
     [entityRef],
   );
+  const rulesCardClasses = useStyles();
 
   const nextSteps = value?.[0] ?? undefined;
 
@@ -64,49 +64,33 @@ export const ScorecardsServiceNextRules = ({
     );
   }
 
+  if (isNil(nextSteps.nextLevel) || isNil(nextSteps.rulesToComplete)) {
+    return null;
+  }
+
   return (
-    <InfoCard title="Level Progress" className={classes.root}>
-      <Grid container direction="column">
-        <Grid item>
-          {nextSteps.currentLevel ? (
-            <Typography variant="subtitle1" className={classes.level}>
-              <b>Current Level: </b> {nextSteps.currentLevel.name}
-              <ScorecardLadderLevelBadge
-                name={nextSteps.currentLevel.name}
-                color={nextSteps.currentLevel.color}
-              />
-            </Typography>
-          ) : (
-            <Typography variant="subtitle1" className={classes.level}>
-              This service hasn't achieved any levels yet.
-            </Typography>
-          )}
-        </Grid>
-        <Divider variant="middle" />
-        <Grid item>
-          {nextSteps.nextLevel ? (
-            <Typography variant="subtitle1" className={classes.level}>
-              <b>Next Level: </b> {nextSteps.nextLevel.name}
-              <ScorecardLadderLevelBadge
-                name={nextSteps.nextLevel.name}
-                color={nextSteps.nextLevel.color}
-              />
-              <br />
-              Complete these rules to get to the next level:
-              <br />
-              {nextSteps.rulesToComplete.map(rule => (
-                <Grid key={`NextRule-${rule.id}`} container>
-                  <ScorecardRuleRow rule={rule} />
-                </Grid>
-              ))}
-            </Typography>
-          ) : (
-            <Typography variant="subtitle1" className={classes.level}>
-              Congratulations!! This service has achieved all levels!
-            </Typography>
-          )}
-        </Grid>
-      </Grid>
-    </InfoCard>
+    <ScorecardsServiceCard
+      title={
+        <Box display="flex" flexDirection="row">
+          <Typography
+            variant="body1"
+            className={rulesCardClasses.cardHeaderTitle}
+          >
+            Tasks to advance to {nextSteps.nextLevel.name}
+          </Typography>
+          <ScorecardLadderLevelBadge
+            name={nextSteps.nextLevel.name}
+            color={nextSteps.nextLevel.color}
+          />
+        </Box>
+      }
+    >
+      {nextSteps.rulesToComplete.map(rule => (
+        <ScorecardServiceRuleRow
+          key={`rule-to-complete-${rule.id}`}
+          rule={rule}
+        />
+      ))}
+    </ScorecardsServiceCard>
   );
 };

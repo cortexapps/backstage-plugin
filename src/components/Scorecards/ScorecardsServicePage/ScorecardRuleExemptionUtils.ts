@@ -1,3 +1,6 @@
+import { isUndefined } from 'util';
+import { RuleOutcome, ApplicableRuleOutcome } from '../../../api/types';
+
 /*
  * Copyright 2023 Cortex Applications, Inc.
  *
@@ -13,22 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+export const isPassingRule = (rule?: RuleOutcome) => {
+  const score = (rule as ApplicableRuleOutcome).score;
 
-import { round } from 'lodash';
+  // We treat exempt rules as passing
+  if (isUndefined(score)) return true;
 
-export function percentify(value: number = 0, decimal: number = 0): number {
-  return value <= 1 ? round(value * 100, decimal) : round(value, decimal);
-}
+  return score !== 0;
+};
 
-/**
- * Safe division that converts division by 0 errors to 0
- * @param numerator Numerator
- * @param denominator Denominator
- */
-export const safeDivide = (numerator: number, denominator: number) => {
-  if (denominator === 0) {
-    return 0;
-  } else {
-    return numerator / denominator;
-  }
+export const filterToFailingRules = (rules: RuleOutcome[]) => {
+  return rules.filter(rule => !isPassingRule(rule));
 };

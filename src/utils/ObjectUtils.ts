@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { StringIndexable } from '../components/ReportsPage/HeatmapPage/HeatmapUtils';
+import { Predicate } from './types';
 
-import { round } from 'lodash';
+export const filterByValues = <T>(
+  obj: StringIndexable<T>,
+  map: Predicate<T>,
+): StringIndexable<T> => {
+  let out: StringIndexable<T> = {};
+  Object.keys(obj).forEach((key: string) => {
+    const val = obj[key];
+    if (map(val)) {
+      out[key] = val;
+    }
+  });
 
-export function percentify(value: number = 0, decimal: number = 0): number {
-  return value <= 1 ? round(value * 100, decimal) : round(value, decimal);
-}
-
-/**
- * Safe division that converts division by 0 errors to 0
- * @param numerator Numerator
- * @param denominator Denominator
- */
-export const safeDivide = (numerator: number, denominator: number) => {
-  if (denominator === 0) {
-    return 0;
-  } else {
-    return numerator / denominator;
-  }
+  return out;
 };

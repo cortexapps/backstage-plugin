@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button, Typography } from '@material-ui/core';
 import { useCortexFrontendUrl, useDropdown } from '../../../utils/hooks';
 import { useApi } from '@backstage/core-plugin-api';
@@ -21,50 +21,32 @@ import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { CompoundEntityRef } from '@backstage/catalog-model';
-import { Timeseries } from '../../Timeseries';
-import moment from 'moment';
 import Box from '@material-ui/core/Box';
-import { Point } from '@nivo/line';
 import { getLookbackRange, Lookback } from '../../../utils/lookback';
-import { RuleOutcome, RuleOutcomeType, RuleResult } from '../../../api/types';
+import { Rule, RuleOutcome } from '../../../api/types';
 import { LookbackDropdown } from '../../ReportsPage/Common/LookbackDropdown';
 import { cortexScorecardPageUrl } from '../../../utils/URLUtils';
+import { ScorecardsServiceCard, useStyles } from './ScorecardsServiceCard';
+import { isUndefined } from 'lodash';
+import { ScorecardsServiceOverallScoreProgress } from './ScorecardsServiceOverallScoreProgress';
+import { ScorecardsServiceRuleProgress } from './ScorecardsServiceRuleProgress';
+import ScorecardsServiceRulesFilter from './ScorecardsServiceRulesFilter';
 
 interface ScorecardsServiceProgressProps {
   scorecardId: string;
   entityRef: CompoundEntityRef;
-  setSelectedRules: (rules: RuleOutcome[]) => void;
-}
-
-/**
- * Convert cached results to standardized RuleName version.
- * TODO: Use current scorecards' rules to use titles where possible
- * @param cachedRuleResults Cached historical results per rule.
- */
-export function toScorecardServiceScoresRule(
-  cachedRuleResults: RuleResult[],
-): RuleOutcome[] {
-  return cachedRuleResults.map(ruleResult => {
-    return {
-      ...ruleResult,
-      rule: {
-        id: ruleResult.id,
-        expression: ruleResult.expression,
-        weight: ruleResult.weight,
-      },
-      type: RuleOutcomeType.APPLICABLE,
-    };
-  });
+  rules: RuleOutcome[];
 }
 
 export const ScorecardsServiceProgress = ({
   scorecardId,
   entityRef,
-  setSelectedRules,
+  rules,
 }: ScorecardsServiceProgressProps) => {
   const cortexApi = useApi(cortexApiRef);
 
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
+  const [selected, setSelected] = useState<Rule | undefined>(undefined);
 
   const {
     value: historicalScores,
@@ -93,6 +75,7 @@ export const ScorecardsServiceProgress = ({
   }, [historicalScores]);
 
   const cortexBaseUrl = useCortexFrontendUrl();
+  const rulesCardClasses = useStyles();
 
   if (loading) {
     return <Progress />;
@@ -108,57 +91,61 @@ export const ScorecardsServiceProgress = ({
 
   if (data.length === 0) {
     return (
-      <EmptyState
-        missing="data"
-        title="Scorecard has not been evaluated yet."
-        description="Wait until next Scorecard evaluation, or manually trigger from within Cortex."
-        action={
-          <Button
-            variant="contained"
-            color="primary"
-            href={cortexScorecardPageUrl({
-              scorecardId: scorecardId,
-              cortexUrl: cortexBaseUrl,
-            })}
-          >
-            Go to Cortex
-          </Button>
-        }
-      />
+      <ScorecardsServiceCard title="Progress">
+        <EmptyState
+          missing="data"
+          title="Scorecard has not been evaluated yet."
+          description="Wait until next Scorecard evaluation, or manually trigger from within Cortex."
+          action={
+            <Button
+              variant="contained"
+              color="primary"
+              href={cortexScorecardPageUrl({
+                scorecardId: scorecardId,
+                cortexUrl: cortexBaseUrl,
+              })}
+            >
+              Go to Cortex
+            </Button>
+          }
+        />
+      </ScorecardsServiceCard>
     );
   }
 
   return (
-    <>
-      <LookbackDropdown lookback={lookback} setLookback={setLookback} />
-      {data.length > 0 && (
-        <Timeseries
-          data={[{ id: `${scorecardId}-${entityRef}`, data: data }]}
-          onClick={(point: Point) => {
-            setSelectedRules(
-              toScorecardServiceScoresRule(
-                historicalScores[point.index].ruleResults,
-              ),
-            );
-          }}
-          tooltip={point => {
-            return (
-              <Box
-                bgcolor="background.paper"
-                border={1}
-                borderRadius="borderRadius"
-                borderColor="divider"
-              >
-                <Typography>
-                  {moment
-                    .utc(historicalScores[point.point.index].dateCreated)
-                    .fromNow()}
-                </Typography>
-              </Box>
-            );
-          }}
+    <ScorecardsServiceCard
+      title={
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography
+            variant="body1"
+            className={rulesCardClasses.cardHeaderTitle}
+          >
+            Progress
+          </Typography>
+          <Box display="flex" flexDirection="row" gridGap={8}>
+            <LookbackDropdown lookback={lookback} setLookback={setLookback} />
+            <ScorecardsServiceRulesFilter
+              selected={selected}
+              rules={rules}
+              setSelected={setSelected}
+            />
+          </Box>
+        </Box>
+      }
+    >
+      {isUndefined(selected) ? (
+        <ScorecardsServiceOverallScoreProgress
+          results={historicalScores}
+          scorecardId={scorecardId}
+        />
+      ) : (
+        <ScorecardsServiceRuleProgress
+          expression={selected.expression}
+          results={historicalScores}
+          scorecardId={scorecardId}
         />
       )}
-    </>
+    </ScorecardsServiceCard>
   );
 };
