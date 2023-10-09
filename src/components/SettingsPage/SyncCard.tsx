@@ -22,13 +22,15 @@ import {
   IconButton,
   Typography,
 } from '@material-ui/core';
-import { InfoCard, Link } from '@backstage/core-components';
+import { InfoCard, Link, WarningPanel } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { extensionApiRef } from '../../api/ExtensionApi';
 import PollingLinearGauge from '../Common/PollingLinearGauge';
 import moment from 'moment';
+import { Entity } from '@backstage/catalog-model';
+import { applyCustomMappings } from '../../utils/ComponentUtils';
 
 interface SyncButtonProps {
   isSyncing: boolean;
@@ -83,21 +85,52 @@ export const SyncCard = () => {
   >(null);
 
   const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
+  const [isSubmittingTask, setIsSubmittingTask] = useState(false);
+  const [cortexSyncError, setCortexSyncError] = useState<string | undefined>(
+    undefined,
+  );
+
+  const getBackstageEntities = useCallback(async () => {
+    const syncEntityFilter = await extensionApi.getSyncEntityFilter?.();
+    const { items: entities } = await catalogApi.getEntities(
+      syncEntityFilter?.kinds
+        ? { filter: { kind: syncEntityFilter?.kinds } }
+        : undefined,
+    );
+
+    const filteredEntities = syncEntityFilter?.entityFilter
+      ? entities.filter(syncEntityFilter?.entityFilter)
+      : entities;
+
+    const customMappings = await extensionApi.getCustomMappings?.();
+    const withCustomMappings: Entity[] = customMappings
+      ? filteredEntities.map(entity =>
+          applyCustomMappings(entity, customMappings),
+        )
+      : filteredEntities;
+
+    return withCustomMappings;
+  }, [catalogApi, extensionApi]);
 
   const submitEntitySync = useCallback(async () => {
-    const { items: entities } = await catalogApi.getEntities();
+    setIsSubmittingTask(true);
+    const entities = await getBackstageEntities();
     const shouldGzipBody =
       config.getOptionalBoolean('cortex.syncWithGzip') ?? false;
-    const customMappings = await extensionApi.getCustomMappings?.();
     const groupOverrides = await extensionApi.getTeamOverrides?.(entities);
-    const progress = await cortexApi.submitEntitySync(
-      entities,
-      shouldGzipBody,
-      customMappings,
-      groupOverrides,
-    );
-    setSyncTaskProgressPercentage(progress.percentage);
-  }, [catalogApi, config, cortexApi, extensionApi]);
+    setCortexSyncError(undefined);
+    try {
+      const progress = await cortexApi.submitEntitySync(
+        entities,
+        shouldGzipBody,
+        groupOverrides,
+      );
+      setSyncTaskProgressPercentage(progress.percentage);
+    } catch (e: any) {
+      setCortexSyncError(e.message);
+    }
+    setIsSubmittingTask(false);
+  }, [getBackstageEntities, config, cortexApi, extensionApi]);
 
   const cancelEntitySync = useCallback(async () => {
     await cortexApi.cancelEntitySync();
@@ -127,59 +160,70 @@ export const SyncCard = () => {
   }, [updateLastEntitySyncTime]);
 
   return (
-    <InfoCard
-      title="Sync entities"
-      action={
-        <SyncButton
-          isSyncing={syncTaskProgressPercentage !== null}
-          submitSyncTask={submitEntitySync}
-        />
-      }
-    >
-      {syncTaskProgressPercentage !== null && (
-        <Grid
-          container
-          alignItems="center"
-          direction={'row'}
-          justifyContent="center"
-          style={{ marginBottom: '2px' }}
-        >
-          <Grid item lg={10} data-testid={`PollingLinearGauge-entity-sync`}>
-            <PollingLinearGauge
-              done={false}
-              poll={updateEntitySyncProgress}
-              value={syncTaskProgressPercentage}
+    <>
+      {cortexSyncError !== undefined && (
+        <WarningPanel severity="error" title={cortexSyncError}>
+          There is already a sync in progress. Try again in 10 minutes.
+        </WarningPanel>
+      )}
+      <InfoCard
+        title="Sync entities"
+        action={
+          cortexSyncError === undefined && (
+            <SyncButton
+              isSyncing={
+                syncTaskProgressPercentage !== null || isSubmittingTask
+              }
+              submitSyncTask={submitEntitySync}
             />
+          )
+        }
+      >
+        {syncTaskProgressPercentage !== null && (
+          <Grid
+            container
+            alignItems="center"
+            direction={'row'}
+            justifyContent="center"
+            style={{ marginBottom: '2px' }}
+          >
+            <Grid item lg={10} data-testid={`PollingLinearGauge-entity-sync`}>
+              <PollingLinearGauge
+                done={false}
+                poll={updateEntitySyncProgress}
+                value={syncTaskProgressPercentage}
+              />
+            </Grid>
+            <Grid item lg={2}>
+              <CancelSyncButton cancelSync={cancelEntitySync} />
+            </Grid>
           </Grid>
-          <Grid item lg={2}>
-            <CancelSyncButton cancelSync={cancelEntitySync} />
-          </Grid>
-        </Grid>
-      )}
-      {lastSyncedTime !== null ? (
+        )}
+        {lastSyncedTime !== null ? (
+          <Typography>
+            <i>
+              Last synced on{' '}
+              {moment
+                .utc(lastSyncedTime)
+                .local()
+                .format('MMM Do YYYY, h:mm:ss a')}
+            </i>
+          </Typography>
+        ) : (
+          <Typography>
+            <i>Entities have never been synced before.</i>
+          </Typography>
+        )}
         <Typography>
-          <i>
-            Last synced on{' '}
-            {moment
-              .utc(lastSyncedTime)
-              .local()
-              .format('MMM Do YYYY, h:mm:ss a')}
-          </i>
+          Manually sync your Backstage entities with Cortex.
+          <br />
+          You can also set this up to automatically sync with our{' '}
+          <Link to="https://www.npmjs.com/package/@cortexapps/backstage-backend-plugin">
+            backend plugin
+          </Link>
+          .
         </Typography>
-      ) : (
-        <Typography>
-          <i>Entities have never been synced before.</i>
-        </Typography>
-      )}
-      <Typography>
-        Manually sync your Backstage entities with Cortex.
-        <br />
-        You can also set this up to automatically sync with our&nbsp;
-        <Link to="https://www.npmjs.com/package/@cortexapps/backstage-backend-plugin">
-          backend plugin
-        </Link>
-        .
-      </Typography>
-    </InfoCard>
+      </InfoCard>
+    </>
   );
 };
