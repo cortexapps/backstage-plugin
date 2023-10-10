@@ -30,7 +30,6 @@ export interface ApexSeriesData {
 }
 
 /**
- * Copied from brain-app!
  * Breakdown list of ScorecardResults into the list of ApexSeries that it's made of, given our list of
  * current scorecard rules.
  *
