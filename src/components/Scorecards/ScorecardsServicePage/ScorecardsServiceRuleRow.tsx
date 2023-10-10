@@ -66,7 +66,7 @@ interface ScorecardServiceRuleRowProps {
   hideWeight?: boolean;
 }
 
-const ScorecardServiceRuleRow = ({
+export const ScorecardServiceRuleRow = ({
   hideWeight,
   rule,
 }: ScorecardServiceRuleRowProps) => {
@@ -146,5 +146,3 @@ const ScorecardServiceRuleRow = ({
     </Box>
   );
 };
-
-export default ScorecardServiceRuleRow;

@@ -17,7 +17,7 @@ import React, { PropsWithChildren } from 'react';
 import { InfoCard } from '@backstage/core-components';
 import { makeStyles } from '@material-ui/core';
 
-export interface ScorecardsServiceCardProps extends PropsWithChildren {
+interface ScorecardsServiceCardProps extends PropsWithChildren {
   title: React.ReactNode;
 }
 

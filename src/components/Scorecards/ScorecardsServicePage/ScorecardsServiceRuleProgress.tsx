@@ -15,9 +15,6 @@
  */
 import React, { useMemo, useRef } from 'react';
 import { ScorecardResult } from '../../../api/types';
-import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
-import moment from 'moment';
-import { filterByValues } from '../../../utils/ObjectUtils';
 import {
   Box,
   Paper,
@@ -29,6 +26,10 @@ import { useDimensions } from '../../../utils/pureHooks';
 import { LineCanvas, PointTooltipProps } from '@nivo/line';
 import { nivoTheme } from '../../Timeseries/Timeseries';
 import { fallbackPalette } from '../../../styles/styles';
+import {
+  precision,
+  unflattenScorecardResults,
+} from './ScorecardsServiceRuleProgressUtils';
 
 interface ScorecardsServiceRuleProgressProps {
   expression: string;
@@ -42,22 +43,6 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
   },
 }));
-
-export function precision(val: number) {
-  if (val >= 10 * 30 * 6) {
-    return 'every 3 months';
-  } else if (val >= 30 * 6) {
-    return 'every 1 month';
-  } else if (val >= 10 * 6) {
-    return 'every 10 days';
-  } else if (val >= 24) {
-    return 'every 4 days';
-  } else if (val >= 14) {
-    return 'every 2 days';
-  } else {
-    return 'every 1 days';
-  }
-}
 
 export const ScorecardsServiceRuleProgress: React.FC<ScorecardsServiceRuleProgressProps> =
   ({ expression, results, scorecardId }) => {
@@ -142,99 +127,3 @@ export const ScorecardsServiceRuleProgress: React.FC<ScorecardsServiceRuleProgre
       </div>
     );
   };
-
-/**
- * Copied from brain-app!
- * Breakdown list of ScorecardResults into the list of ApexSeries that it's made of, given our list of
- * current scorecard rules.
- *
- * To sync all of the ApexCharts, we need to have the same x-coordinates for every chart.
- * For missing data values for Rule charts, ApexCharts expects 'null' y coordinates.
- *
- * For example:
- *   const results = [5,4,3,6,8]
- * This possibly could be broken down into:
- *   const brokenDownRules = [
- *      [3,    1,    null, null, null],
- *      [2,    3,    1,    3,    null],
- *      [null, null, 2,    3,    8   ]
- *   ]
- *
- * @param currentExpressions List of existing scorecard rules. We only want to graph this set of expressions.
- * @param results List of cached scorecard results for a scorecard
- * @returns All ApexSeries for currentExpressions expressions, indexed by the expressions.
- */
-export function unflattenScorecardResults(
-  currentExpressions: string[],
-  results: ScorecardResult[],
-): StringIndexable<ApexSeries> {
-  const seriesByExpression = currentExpressions.reduce(
-    (datasets: StringIndexable<ApexSeries>, ruleExpression: string) => {
-      datasets[ruleExpression] = {
-        data: [],
-        name: ruleExpression,
-        target: { label: { text: '' }, y: 0 },
-      };
-      return datasets;
-    },
-    {},
-  );
-
-  results.forEach((result, idx) => {
-    Object.values(seriesByExpression).forEach(series => {
-      series.data[idx] = {
-        x: moment.utc(result.dateCreated).local().toISOString(),
-        y: null,
-      };
-    });
-
-    result.ruleResults.forEach(ruleResult => {
-      const series = seriesByExpression[ruleResult.expression];
-
-      if (series !== undefined) {
-        if (
-          ruleResult.leftExpression !== undefined &&
-          ruleResult.leftResult !== undefined &&
-          Number.isFinite(ruleResult.leftResult)
-        ) {
-          // Handle numbers ie runbooks.count > 1
-          series.name = ruleResult.leftExpression;
-          series.data[idx].y = ruleResult.leftResult;
-          series.target = {
-            label: { text: ruleResult.rightExpression },
-            y: ruleResult.rightResult,
-          };
-        } else {
-          // Handle non-numerical results
-          series.name = ruleResult.expression;
-          series.data[idx].y = ruleResult.score;
-          series.target = {
-            label: { text: ruleResult.expression },
-            y: ruleResult.score,
-          };
-        }
-      }
-    });
-  });
-
-  // Filter out empty series
-  return filterByValues(seriesByExpression, apexSeries => {
-    return apexSeries.data.reduce(
-      (shouldTake: boolean, datum: ApexSeriesData) => {
-        return shouldTake || datum.y !== null;
-      },
-      false,
-    );
-  });
-}
-
-export interface ApexSeries {
-  data: ApexSeriesData[];
-  name: string;
-  target: { label: { text?: string }; y: number };
-}
-
-export interface ApexSeriesData {
-  x: string;
-  y: any;
-}

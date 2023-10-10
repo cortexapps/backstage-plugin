@@ -23,8 +23,8 @@ import {
   getRuleTitle,
   filterNotEvaluatedRuleOutcomes,
 } from '../../../utils/ScorecardRules';
-import ScorecardServiceRuleRow from './ScorecardServiceRuleRow';
 import { ScorecardsServiceCard } from './ScorecardsServiceCard';
+import { ScorecardServiceRuleRow } from './ScorecardsServiceRuleRow';
 
 interface ScorecardsServiceRulesDetailsProps {
   ruleOutcomes: RuleOutcome[];

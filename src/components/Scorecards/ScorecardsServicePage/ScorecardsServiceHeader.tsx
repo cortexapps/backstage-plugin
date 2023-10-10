@@ -39,7 +39,7 @@ interface ScorecardServiceHeaderProps {
   scorecard: Scorecard;
 }
 
-const ScorecardServiceHeader = ({
+export const ScorecardServiceHeader = ({
   entitiesByTag,
   score,
   scorecard,
@@ -112,5 +112,3 @@ const ScorecardServiceHeader = ({
     </Box>
   );
 };
-
-export default ScorecardServiceHeader;

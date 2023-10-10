@@ -26,9 +26,9 @@ import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
 import { RuleOutcome } from '../../../api/types';
 import { useEntitiesByTag } from '../../../utils/hooks';
-import ScorecardServiceHeader from './ScorecardServiceHeader';
 import { ScorecardsServiceRulesDetails } from './ScorecardsServiceRulesDetails';
 import { ScorecardsServiceStatistics } from './ScorecardsServiceStatistics';
+import { ScorecardServiceHeader } from './ScorecardsServiceHeader';
 
 export const ScorecardsServicePage = () => {
   const cortexApi = useApi(cortexApiRef);

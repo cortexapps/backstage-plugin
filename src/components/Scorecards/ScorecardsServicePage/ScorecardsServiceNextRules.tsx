@@ -21,7 +21,7 @@ import { AnyEntityRef, stringifyAnyEntityRef } from '../../../utils/types';
 import { ScorecardLadderLevelBadge } from '../../Common/ScorecardLadderLevelBadge';
 import { isNil } from 'lodash';
 import { ScorecardsServiceCard, useStyles } from './ScorecardsServiceCard';
-import ScorecardServiceRuleRow from './ScorecardServiceRuleRow';
+import { ScorecardServiceRuleRow } from './ScorecardsServiceRuleRow';
 
 interface ScorecardsServiceNextRulesProps {
   scorecardId: number;
