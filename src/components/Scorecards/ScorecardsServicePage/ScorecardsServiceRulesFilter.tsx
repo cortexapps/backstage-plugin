@@ -25,6 +25,8 @@ interface ScorecardsServiceRulesFilterProps {
   rules: RuleOutcome[];
 }
 
+const allRulesValue = 'all-rules';
+
 const ScorecardsServiceRulesFilter: React.FC<ScorecardsServiceRulesFilterProps> =
   ({ selected, setSelected, rules }) => {
     const rulesMap: StringIndexable<Rule | undefined> = useMemo(() => {
@@ -33,20 +35,19 @@ const ScorecardsServiceRulesFilter: React.FC<ScorecardsServiceRulesFilterProps> 
           ...acc,
           [getRuleTitle(curr.rule)]: curr.rule,
         }),
-        { '': undefined },
+        { [allRulesValue]: undefined },
       );
     }, [rules]);
 
     return (
       <FormControl>
         <Select
-          displayEmpty
-          value={selected ? getRuleTitle(selected) : ''}
+          value={selected ? getRuleTitle(selected) : allRulesValue}
           onChange={event =>
             setSelected(rulesMap[event.target.value as string])
           }
         >
-          <MenuItem value="">All rules</MenuItem>
+          <MenuItem value={allRulesValue}>All rules</MenuItem>
           {rules.map(rule => (
             <MenuItem
               key={`rule-${rule.rule.id}`}

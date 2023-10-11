@@ -15,12 +15,11 @@
  */
 import { alpha, makeStyles } from '@material-ui/core';
 import classnames from 'classnames';
-import { identity, isEmpty } from 'lodash';
-import React from 'react';
+import { identity } from 'lodash';
+import React, { PropsWithChildren } from 'react';
 import { fallbackPalette } from '../../styles/styles';
 
-interface StatsProps {
-  children: React.ReactNode;
+interface StatsProps extends PropsWithChildren {
   column?: boolean;
   stretch?: boolean;
 }
@@ -58,13 +57,7 @@ const useStyles = makeStyles({
 const Stats: React.FC<StatsProps> = ({ children, column = false, stretch }) => {
   const classes = useStyles();
   // filter falsey (e.g. null) children out
-  const childrenToRender = Array.isArray(children)
-    ? children.filter(identity)
-    : children;
-
-  if (isEmpty(childrenToRender)) {
-    return null;
-  }
+  const childrenToRender = React.Children.toArray(children).filter(identity);
 
   return (
     <ol
@@ -73,9 +66,10 @@ const Stats: React.FC<StatsProps> = ({ children, column = false, stretch }) => {
         [classes.flexRow]: !column,
       })}
     >
-      {React.Children.map(childrenToRender, child => {
+      {React.Children.map(childrenToRender, (child, idx) => {
         return (
           <li
+            key={`stats-item-${idx}`}
             className={classnames({
               [classes.rowItem]: !column,
               [classes.columnItem]: column,

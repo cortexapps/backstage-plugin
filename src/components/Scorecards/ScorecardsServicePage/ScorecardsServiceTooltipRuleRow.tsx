@@ -21,11 +21,11 @@ import {
   getRuleTitle,
   isRuleFailing,
 } from '../../../utils/ScorecardRules';
-import { isNotUndefined } from '../../../utils/types';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { useIconsStyles } from '../../../styles/styles';
 import classNames from 'classnames';
+import { isNil } from 'lodash';
 
 interface ScorecardsServiceTooltipRuleRowProps {
   rule: RuleDetail;
@@ -38,7 +38,7 @@ export const ScorecardsServiceTooltipRuleRow: React.FC<ScorecardsServiceTooltipR
 
     return (
       <Box display={'flex'} flexDirection={'row'} gridGap={4}>
-        {isNotUndefined(rule.score) && (
+        {!isNil(rule.score) && (
           <Box>
             {isFailing ? (
               <CancelIcon

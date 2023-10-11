@@ -15,8 +15,8 @@
  */
 import moment from 'moment';
 import { ScorecardResult } from '../../../api/types';
-import { filterByValues } from '../../../utils/ObjectUtils';
 import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { pickBy } from 'lodash';
 
 export interface ApexSeries {
   data: ApexSeriesData[];
@@ -103,7 +103,7 @@ export function unflattenScorecardResults(
   });
 
   // Filter out empty series
-  return filterByValues(seriesByExpression, apexSeries => {
+  return pickBy(seriesByExpression, apexSeries => {
     return apexSeries.data.reduce(
       (shouldTake: boolean, datum: ApexSeriesData) => {
         return shouldTake || datum.y !== null;
