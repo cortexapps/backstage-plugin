@@ -54,9 +54,7 @@ export const isNotEvaluatedRuleOutcome = (
 export const getApplicableRules = (
   rules: RuleOutcome[],
 ): ApplicableRuleOutcome[] => {
-  return rules.filter(rule =>
-    isApplicableRuleOutcome(rule),
-  ) as ApplicableRuleOutcome[];
+  return rules.filter(isApplicableRuleOutcome);
 };
 
 export function isRuleOutcomePassing(ruleOutcome: RuleOutcome): boolean {
