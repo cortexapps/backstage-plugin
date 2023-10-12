@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import React from 'react';
+import { LinearProgress, Typography } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
 
-import { round } from 'lodash';
-
-export function percentify(value: number = 0, decimal: number = 0): number {
-  return value <= 1 ? round(value * 100, decimal) : round(value, decimal);
+interface LinearProgressWithLabelProps {
+  value: number;
 }
 
-/**
- * Safe division that converts division by 0 errors to 0
- * @param numerator Numerator
- * @param denominator Denominator
- */
-export const safeDivide = (numerator: number, denominator: number) => {
-  if (denominator === 0) {
-    return 0;
-  } else {
-    return numerator / denominator;
-  }
-};
+export const LinearProgressWithLabel: React.FC<LinearProgressWithLabelProps> =
+  ({ value }) => {
+    return (
+      <Box display="flex" alignItems="center">
+        <Box width="100%" mr={1}>
+          <LinearProgress variant="determinate" value={value} />
+        </Box>
+        <Box minWidth={35}>
+          <Typography variant="body1">{`${Math.round(value)}%`}</Typography>
+        </Box>
+      </Box>
+    );
+  };

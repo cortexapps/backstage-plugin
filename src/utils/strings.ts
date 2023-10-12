@@ -61,3 +61,7 @@ export const joinWithSpecialLastJoin = (
   }
   return strings.slice(0, -1).join(joiner) + lastJoiner + strings.slice(-1);
 };
+
+export function isNotNullOrEmpty(value?: string | null): value is string {
+  return (value?.trim()?.length ?? 0) > 0;
+}

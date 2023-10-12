@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.5.0
+
+- Scorecard service page revamp
+
 ### 2.4.1
 
 - Handle conflicting/duplicate Backstage ↔ Cortex syncs

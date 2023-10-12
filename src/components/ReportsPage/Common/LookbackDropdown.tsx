@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, MenuItem, Select } from '@material-ui/core';
 import { enumKeys } from '../../../utils/types';
 import { Lookback, lookbackLabels } from '../../../utils/lookback';
 
@@ -29,7 +29,6 @@ export const LookbackDropdown = ({
 }: LookbackDropdownProps) => {
   return (
     <FormControl>
-      <InputLabel>Time Range</InputLabel>
       <Select value={lookback} onChange={setLookback}>
         {enumKeys(Lookback).map(key => (
           <MenuItem key={`Lookback-${key}`} value={Lookback[key]}>

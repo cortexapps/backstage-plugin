@@ -13,43 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
-import {
-  useApi,
-  useRouteRef,
-  useRouteRefParams,
-} from '@backstage/core-plugin-api';
-import {
-  Content,
-  InfoCard,
-  Link,
-  Progress,
-  WarningPanel,
-} from '@backstage/core-components';
-import { Grid, makeStyles, Typography } from '@material-ui/core';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
+import { Content, Progress, WarningPanel } from '@backstage/core-components';
+import { Grid } from '@material-ui/core';
 import { useAsync } from 'react-use';
 import { cortexApiRef } from '../../../api';
-import {
-  scorecardRouteRef,
-  scorecardServiceDetailsRouteRef,
-} from '../../../routes';
-import { Gauge } from '../../Gauge';
+import { scorecardServiceDetailsRouteRef } from '../../../routes';
 import Box from '@material-ui/core/Box';
-import { DefaultEntityRefLink } from '../../DefaultEntityLink';
-import { ScorecardResultDetails } from '../ScorecardDetailsPage/ScorecardsTableCard/ScorecardResultDetails';
 import { ScorecardsServiceProgress } from './ScorecardsServiceProgress';
 import { entityEquals } from '../../../utils/types';
 import { ScorecardsServiceNextRules } from './ScorecardsServiceNextRules';
 import { RuleOutcome } from '../../../api/types';
-import { cortexScorecardServicePageUrl } from '../../../utils/URLUtils';
-import { useCortexFrontendUrl, useEntitiesByTag } from '../../../utils/hooks';
-import { KeyboardArrowLeft } from '@material-ui/icons';
-
-const useStyles = makeStyles({
-  progress: {
-    height: '100%',
-  },
-});
+import { useEntitiesByTag } from '../../../utils/hooks';
+import { ScorecardsServiceRulesDetails } from './ScorecardsServiceRulesDetails';
+import { ScorecardsServiceStatistics } from './ScorecardsServiceStatistics';
+import { ScorecardServiceHeader } from './ScorecardsServiceHeader';
 
 export const ScorecardsServicePage = () => {
   const cortexApi = useApi(cortexApiRef);
@@ -57,40 +36,46 @@ export const ScorecardsServicePage = () => {
   const { scorecardId, kind, namespace, name } = useRouteRefParams(
     scorecardServiceDetailsRouteRef,
   );
-  const scorecardRef = useRouteRef(scorecardRouteRef);
 
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
   const entityRef = { kind, namespace, name };
 
-  const classes = useStyles();
-
   const [selectedRules, setSelectedRules] = useState<RuleOutcome[]>([]);
-
-  const cortexBaseUrl = useCortexFrontendUrl();
 
   const { value, loading, error } = useAsync(async () => {
     const allScores = await cortexApi.getScorecardScores(+scorecardId);
     const ladders = await cortexApi.getScorecardLadders(+scorecardId);
+    const scorecard = await cortexApi.getScorecard(+scorecardId);
 
     const score = allScores.find(serviceScore =>
       entityEquals(serviceScore.componentRef, entityRef),
     );
 
-    return { score, ladders };
+    return { allScores, score, scorecard, ladders };
   }, []);
 
-  const { score, ladders } = value ?? { score: undefined, ladders: [] };
+  const { allScores, score, ladders, scorecard } = value ?? {
+    allScores: [],
+    score: undefined,
+    scorecard: undefined,
+    ladders: [],
+  };
 
   useEffect(() => {
     setSelectedRules(score?.rules ?? []);
   }, [score]);
 
+  const scores = useMemo(
+    () => allScores?.map(score => score.scorePercentage).sort(),
+    [allScores],
+  );
+
   if (loading || loadingEntities) {
     return <Progress />;
   }
 
-  if (error || score === undefined) {
+  if (error || score === undefined || scorecard === undefined) {
     return (
       <WarningPanel severity="error" title="Could not load Scorecard scores.">
         {error?.message ?? ''}
@@ -103,75 +88,36 @@ export const ScorecardsServicePage = () => {
 
   return (
     <Content>
-      <Box display="flex" flexDirection="row" style={{ marginBottom: '20px' }}>
-        <Link to={scorecardRef({ id: `${scorecardId}` })}>
-          <Box
-            display="flex"
-            flexDirection="row"
-            justifyContent="flex-start"
-            alignItems="center"
-          >
-            <KeyboardArrowLeft />
-            <b>Back to Scorecard</b>
-          </Box>
-        </Link>
-      </Box>
-      <Box
-        display="flex"
-        flexDirection="row"
-        justifyContent="flex-start"
-        alignItems="center"
-        style={{ marginBottom: '20px' }}
-      >
-        <Box alignSelf="center">
-          <Gauge
-            value={score.scorePercentage}
-            strokeWidth={10}
-            trailWidth={10}
-          />
-        </Box>
-        <Box alignSelf="center" flex="1">
-          <Typography variant="h4" component="h2">
-            <DefaultEntityRefLink
-              entityRef={entityRef}
-              title={entitiesByTag[entityRef.name]?.name}
-            />
-          </Typography>
-        </Box>
-        <Box alignSelf="center">
-          <Link
-            to={cortexScorecardServicePageUrl({
-              scorecardId,
-              serviceId: score.serviceId,
-              cortexUrl: cortexBaseUrl,
-            })}
-            target="_blank"
-          >
-            <b>View in Cortex</b>
-          </Link>
-        </Box>
-      </Box>
+      <ScorecardServiceHeader
+        entitiesByTag={entitiesByTag}
+        score={score}
+        scorecard={scorecard}
+      />
 
-      <Grid container direction="row" spacing={2}>
+      <Grid container direction="row" spacing={1}>
         <Grid item lg={4}>
-          <InfoCard title="Rules">
-            <ScorecardResultDetails ruleOutcomes={selectedRules} />
-          </InfoCard>
+          <ScorecardsServiceRulesDetails ruleOutcomes={selectedRules} />
         </Grid>
         <Grid item lg={8} xs={12}>
+          <Box marginBottom={1}>
+            <ScorecardsServiceStatistics
+              scores={scores}
+              score={score}
+              rules={selectedRules}
+            />
+          </Box>
+
           {ladder && (
             <ScorecardsServiceNextRules
               scorecardId={+scorecardId}
               entityRef={entityRef}
             />
           )}
-          <InfoCard title="Score Progress" className={classes.progress}>
-            <ScorecardsServiceProgress
-              scorecardId={scorecardId}
-              entityRef={entityRef}
-              setSelectedRules={setSelectedRules}
-            />
-          </InfoCard>
+          <ScorecardsServiceProgress
+            scorecardId={scorecardId}
+            entityRef={entityRef}
+            rules={selectedRules}
+          />
         </Grid>
       </Grid>
     </Content>
