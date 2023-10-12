@@ -8,14 +8,11 @@
 - [ ] New feature (adds functionality)
 - [ ] Improvement (improves codebase without changing functionality)
 
-## Related issues
-
-> Fix [#1]()
-
 ## Checklists
 
 ### Development
 
+- [ ] The changelog has been updated as appropriate
 - [ ] Lint rules pass locally
 - [ ] Application changes have been tested thoroughly
 - [ ] Automated tests covering modified code pass
