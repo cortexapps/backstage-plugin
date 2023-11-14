@@ -2,7 +2,7 @@
 
 ### 2.4.2
 
-- Block not supported grouping by level option for historical report.
+- Add indicator explaining that grouping by level is not available for historical reports.
 
 ### 2.4.1
 
