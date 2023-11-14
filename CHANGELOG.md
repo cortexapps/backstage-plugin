@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.4.2
+
+- Block not supported grouping by level option for historical report.
+
 ### 2.4.1
 
 - Handle conflicting/duplicate Backstage ↔ Cortex syncs
