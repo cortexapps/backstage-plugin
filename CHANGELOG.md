@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.4.2
+
+- Add indicator explaining that grouping by level is not available for historical reports.
+
 ### 2.4.1
 
 - Handle conflicting/duplicate Backstage ↔ Cortex syncs
