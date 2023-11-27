@@ -23,7 +23,7 @@ import { useRouteRef } from '@backstage/core-plugin-api';
 import { scorecardRouteRef } from '../../../../routes';
 import moment from 'moment/moment';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
-import { ScorecardRuleRow } from '../../../Scorecards/ScorecardDetailsPage/ScorecardRulesCard/ScorecardRuleRow';
+import { ScorecardRuleRow } from './ScorecardRuleRow';
 import { sortRules } from '../../../../utils/ScorecardRules';
 
 interface InitiativeMetadataCardProps {

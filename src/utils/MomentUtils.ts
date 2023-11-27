@@ -13,4 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { ScorecardsTableCard } from './ScorecardsTableCard';
+import { isNil } from 'lodash';
+import moment from 'moment';
+
+export const daysUntil = (endDate?: string) => {
+  if (isNil(endDate)) {
+    return undefined;
+  }
+
+  const currDate = moment();
+  const expirationDate = moment(endDate);
+  return expirationDate.diff(currDate, 'days');
+};
+
+export const getFormattedDate = (
+  dateStr: string | Date,
+  format: string = 'MM/DD/YYYY',
+) => {
+  const date = moment(dateStr);
+  return date.format(format);
+};

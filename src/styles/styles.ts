@@ -115,6 +115,9 @@ export const fallbackPalette = {
       300: '#A099B9',
       400: '#7650E9',
     },
+    orange: {
+      100: '#FFEFD6',
+    },
   },
 };
 

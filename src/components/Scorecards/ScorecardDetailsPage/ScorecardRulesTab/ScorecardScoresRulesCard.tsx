@@ -15,28 +15,30 @@
  */
 import React, { useMemo } from 'react';
 import { Scorecard } from '../../../../api/types';
-import { Grid } from '@material-ui/core';
-import { InfoCard } from '@backstage/core-components';
-import { ScorecardRuleRow } from './ScorecardRuleRow';
-import { useDetailCardStyles } from '../../../../styles/styles';
+import { Box } from '@material-ui/core';
 import { sortRules } from '../../../../utils/ScorecardRules';
+import { CortexInfoCard } from '../../../Common/CortexInfoCard';
+import { ScorecardRuleRow } from './ScorecardRuleRow';
 
-interface ScorecardRulesCardProps {
+interface SScorecardScoresRulesCardProps {
   scorecard: Scorecard;
 }
 
-export const ScorecardRulesCard = ({ scorecard }: ScorecardRulesCardProps) => {
-  const classes = useDetailCardStyles();
-
+export const ScorecardScoresRulesCard = ({
+  scorecard,
+}: SScorecardScoresRulesCardProps) => {
   const sortedRules = useMemo(() => sortRules(scorecard.rules), [scorecard]);
 
   return (
-    <InfoCard title="Rules" className={classes.root}>
-      <Grid container>
+    <CortexInfoCard>
+      <Box display="flex" flexDirection="column">
         {sortedRules.map(rule => (
-          <ScorecardRuleRow key={`ScorecardRuleRow-${rule.id}`} rule={rule} />
+          <ScorecardRuleRow
+            key={`ScorecardRuleRowNew-${rule.id}`}
+            rule={rule}
+          />
         ))}
-      </Grid>
-    </InfoCard>
+      </Box>
+    </CortexInfoCard>
   );
 };

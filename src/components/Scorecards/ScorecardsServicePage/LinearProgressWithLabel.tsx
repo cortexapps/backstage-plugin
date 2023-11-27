@@ -13,22 +13,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { LinearProgress, Typography } from '@material-ui/core';
+import React, { useMemo } from 'react';
+import { LinearProgress, Typography, makeStyles } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
+import { isNil } from 'lodash';
+import { fallbackPalette } from '../../../styles/styles';
 
 interface LinearProgressWithLabelProps {
   value: number;
+  colorByValue?: boolean;
+}
+
+const useStyles = makeStyles(() => ({
+  barColorSuccess: {
+    backgroundColor: fallbackPalette.status.ok,
+  },
+  barColorWarning: {
+    backgroundColor: fallbackPalette.status.warning,
+  },
+  barColorDanger: {
+    backgroundColor: fallbackPalette.status.error,
+  },
+}));
+
+export function colorForNum(value: number): 'success' | 'warning' | 'danger' {
+  if (value > 90) {
+    return 'success';
+  } else if (value > 49) {
+    return 'warning';
+  } else {
+    return 'danger';
+  }
 }
 
 export const LinearProgressWithLabel: React.FC<LinearProgressWithLabelProps> =
-  ({ value }) => {
+  ({ value, colorByValue }) => {
+    const classes = useStyles();
+    const className = useMemo(() => {
+      const color = colorByValue ? undefined : colorForNum(value);
+
+      return isNil(color)
+        ? undefined
+        : color === 'success'
+        ? classes.barColorSuccess
+        : color === 'warning'
+        ? classes.barColorWarning
+        : classes.barColorDanger;
+    }, [classes, colorByValue, value]);
+
     return (
       <Box display="flex" alignItems="center">
         <Box width="100%" mr={1}>
-          <LinearProgress variant="determinate" value={value} />
+          <LinearProgress
+            variant="determinate"
+            value={value}
+            classes={{ barColorPrimary: className }}
+          />
         </Box>
-        <Box minWidth={35}>
+        <Box minWidth={45}>
           <Typography variant="body1">{`${Math.round(value)}%`}</Typography>
         </Box>
       </Box>

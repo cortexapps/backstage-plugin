@@ -26,6 +26,7 @@ import {
   Scorecard,
   ScorecardLadder,
   ScorecardResult,
+  ScorecardRuleExemptionResult,
   ScorecardScoreNextSteps,
   ScorecardServiceScore,
   ScoresByIdentifier,
@@ -220,7 +221,7 @@ export class CortexClient implements CortexApi {
   }
 
   async getScorecard(scorecardId: number): Promise<Scorecard> {
-    return await this.get(`/api/backstage/v1/scorecards/${scorecardId}`);
+    return await this.get(`/api/backstage/v2/scorecards/${scorecardId}`);
   }
 
   async getScorecardLadders(scorecardId: number): Promise<ScorecardLadder[]> {
@@ -233,6 +234,14 @@ export class CortexClient implements CortexApi {
     scorecardId: number,
   ): Promise<ScorecardServiceScore[]> {
     return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/scores`);
+  }
+
+  async getScorecardRulesExemptions(
+    scorecardId: number,
+  ): Promise<ScorecardRuleExemptionResult> {
+    return await this.get(
+      `/api/backstage/v2/scorecards/${scorecardId}/rules/exemptions`,
+    );
   }
 
   async getInitiatives(): Promise<Initiative[]> {

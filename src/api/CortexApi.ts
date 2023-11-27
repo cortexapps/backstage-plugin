@@ -25,6 +25,7 @@ import {
   Scorecard,
   ScorecardLadder,
   ScorecardResult,
+  ScorecardRuleExemptionResult,
   ScorecardScoreNextSteps,
   ScorecardServiceScore,
   ScoresByIdentifier,
@@ -45,6 +46,9 @@ export interface CortexApi {
   getScorecard(scorecardId: number): Promise<Scorecard | undefined>;
   getScorecardLadders(scorecardId: number): Promise<ScorecardLadder[]>;
   getScorecardScores(scorecardId: number): Promise<ScorecardServiceScore[]>;
+  getScorecardRulesExemptions(
+    scorecardId: number,
+  ): Promise<ScorecardRuleExemptionResult>;
 
   getServiceScores(entityRef: AnyEntityRef): Promise<ServiceScorecardScore[]>;
   getServiceNextSteps(

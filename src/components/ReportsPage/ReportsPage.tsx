@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { Routes, useLocation } from 'react-router-dom';
+import { Routes } from 'react-router-dom';
 import {
   Button,
   ItemCardGrid,
@@ -26,7 +26,7 @@ import { HeatmapPage } from './HeatmapPage';
 import { ProgressPage } from './ProgressPage';
 import { AllScorecardsPage } from './AllScorecardsPage/AllScorecardsPage';
 
-const ReportsPageCard = ({
+export const ReportsPageCard = ({
   name,
   description,
   url,
@@ -35,8 +35,6 @@ const ReportsPageCard = ({
   description: string;
   url: string;
 }) => {
-  const location = useLocation();
-
   return (
     <Card>
       <CardMedia>
@@ -44,7 +42,7 @@ const ReportsPageCard = ({
       </CardMedia>
       <CardContent>{description}</CardContent>
       <CardActions>
-        <Button to={`${location.pathname}${url}`} color="primary">
+        <Button to={`/cortex/reports${url}`} color="primary">
           Details
         </Button>
       </CardActions>

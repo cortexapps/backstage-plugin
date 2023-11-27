@@ -26,11 +26,14 @@ import { getLookbackRange, Lookback } from '../../../utils/lookback';
 import { Rule, RuleOutcome } from '../../../api/types';
 import { LookbackDropdown } from '../../ReportsPage/Common/LookbackDropdown';
 import { cortexScorecardPageUrl } from '../../../utils/URLUtils';
-import { ScorecardsServiceCard, useStyles } from './ScorecardsServiceCard';
 import { isUndefined } from 'lodash';
 import { ScorecardsServiceOverallScoreProgress } from './ScorecardsServiceOverallScoreProgress';
 import { ScorecardsServiceRuleProgress } from './ScorecardsServiceRuleProgress';
 import ScorecardsServiceRulesFilter from './ScorecardsServiceRulesFilter';
+import {
+  CortexInfoCard,
+  useCortexInfoCardStyles,
+} from '../../Common/CortexInfoCard';
 
 interface ScorecardsServiceProgressProps {
   scorecardId: string;
@@ -75,7 +78,7 @@ export const ScorecardsServiceProgress = ({
   }, [historicalScores]);
 
   const cortexBaseUrl = useCortexFrontendUrl();
-  const rulesCardClasses = useStyles();
+  const rulesCardClasses = useCortexInfoCardStyles();
 
   if (loading) {
     return <Progress />;
@@ -91,7 +94,7 @@ export const ScorecardsServiceProgress = ({
 
   if (data.length === 0) {
     return (
-      <ScorecardsServiceCard title="Progress">
+      <CortexInfoCard title="Progress">
         <EmptyState
           missing="data"
           title="Scorecard has not been evaluated yet."
@@ -109,12 +112,12 @@ export const ScorecardsServiceProgress = ({
             </Button>
           }
         />
-      </ScorecardsServiceCard>
+      </CortexInfoCard>
     );
   }
 
   return (
-    <ScorecardsServiceCard
+    <CortexInfoCard
       title={
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography
@@ -146,6 +149,6 @@ export const ScorecardsServiceProgress = ({
           scorecardId={scorecardId}
         />
       )}
-    </ScorecardsServiceCard>
+    </CortexInfoCard>
   );
 };

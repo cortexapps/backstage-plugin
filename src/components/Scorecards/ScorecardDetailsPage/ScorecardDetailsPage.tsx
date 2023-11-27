@@ -28,19 +28,21 @@ export const ScorecardDetailsPage = () => {
   const cortexApi = useApi(cortexApiRef);
 
   const { value, loading, error } = useAsync(async () => {
-    const [ladders, scorecard, scores] = await Promise.all([
+    const [ladders, scorecard, scores, ruleExemptions] = await Promise.all([
       cortexApi.getScorecardLadders(+scorecardId),
       cortexApi.getScorecard(+scorecardId),
       cortexApi.getScorecardScores(+scorecardId),
+      cortexApi.getScorecardRulesExemptions(+scorecardId),
     ]);
 
-    return { ladders, scorecard, scores };
+    return { ladders, scorecard, scores, ruleExemptions };
   }, []);
 
-  const { ladders, scorecard, scores } = value ?? {
+  const { ladders, scorecard, scores, ruleExemptions } = value ?? {
     ladders: [],
     scorecard: undefined,
     scores: undefined,
+    ruleExemptions: { scorecardRuleExemptions: {} },
   };
 
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
@@ -66,6 +68,7 @@ export const ScorecardDetailsPage = () => {
       ladder={ladder}
       scorecard={scorecard}
       scores={scores}
+      ruleExemptions={ruleExemptions.scorecardRuleExemptions}
     />
   );
 };

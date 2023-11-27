@@ -19,7 +19,7 @@ import { ScorecardsPage } from './ScorecardsPage';
 import { Fixtures, renderWrapped } from '../../../utils/TestUtils';
 import { extensionApiRef } from '../../../api/ExtensionApi';
 import { rootRouteRef } from '../../../routes';
-import { Scorecard } from '../../../api/types';
+import { FilterType, Scorecard } from '../../../api/types';
 import {
   ExtensionApi,
   UiExtensions,
@@ -36,13 +36,15 @@ describe('ScorecardsPage', () => {
           creator: { name: 'Billy Bob', email: 'billybob@cortex.io' },
           id: 1,
           name: 'My Scorecard',
+          tag: 'my-scorecard',
           description: 'Some description',
           rules: [],
-          tags: [],
-          excludedTags: [],
+          filter: {
+            type: FilterType.SERVICE_FILTER,
+          },
           filterQuery: undefined,
           nextUpdated: '2021-08-25T04:00:00',
-        },
+        } as Scorecard,
       ]),
     ...overrides,
   });

@@ -28,7 +28,9 @@ import { cortexApiRef } from '../api';
 import { CortexApi } from '../api/CortexApi';
 import { ExternalRouteRef, RouteRef } from '@backstage/core-plugin-api';
 import {
+  FilterType,
   Scorecard,
+  ScorecardLevel,
   ScorecardServiceScore,
   ServiceScorecardScore,
 } from '../api/types';
@@ -131,6 +133,7 @@ export class Fixtures {
       creator: { name: 'Bob Jones', email: 'bobjones@cortex.io' },
       id: 1,
       name: 'My Scorecard',
+      tag: 'my-scorecard',
       description: 'My Description',
       rules: [
         {
@@ -141,8 +144,9 @@ export class Fixtures {
         },
         { id: 3, expression: 'documentation.count > 0', weight: 20 },
       ],
-      tags: [{ id: '1', tag: 'tag1' }],
-      excludedTags: [{ id: '2', tag: 'tag2' }],
+      filter: {
+        type: FilterType.SERVICE_FILTER,
+      },
       ...partial,
     };
   };
@@ -179,6 +183,39 @@ export class Fixtures {
         rules: [],
         ladderLevels: [],
       },
+      ...partial,
+    };
+  };
+
+  static scorecardLadderLevel: (
+    partial?: Partial<ScorecardLevel>,
+  ) => ScorecardLevel = partial => {
+    return {
+      id: '1',
+      name: 'Bronze',
+      color: '#c38b5f',
+      rank: 1,
+      rules: [
+        {
+          id: '1',
+          levelId: '1',
+          expression:
+            'git.fileExists(".prettierrc.json") or git.fileExists(".eslintrc.js")',
+          description: 'Projects should have standard linter',
+          title: 'Has linter enabled',
+          cqlVersion: '1.0',
+        },
+        {
+          id: '2',
+          levelId: '1',
+          expression:
+            'git.fileExists("yarn.lock") or git.fileExists("package-lock.json")',
+          description:
+            'Lockfile should be checked in to provide consistency in package installs',
+          title: 'Has Lockfile checked in',
+          cqlVersion: '1.0',
+        },
+      ],
       ...partial,
     };
   };
