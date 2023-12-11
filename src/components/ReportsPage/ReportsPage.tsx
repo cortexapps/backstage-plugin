@@ -55,7 +55,7 @@ const ReportsPageBody = () => {
     <ItemCardGrid>
       <ReportsPageCard
         name="Bird's Eye"
-        description="Dive into your Scorecards to get insight into performance, broken down by teams, groups and rules and visualized as a heatmap."
+        description="Dive into your Scorecards to get insight into performance, broken down by teams, groups, and rules and visualized as a heatmap."
         url="/heatmap"
       />
       <ReportsPageCard
@@ -65,7 +65,7 @@ const ReportsPageBody = () => {
       />
       <ReportsPageCard
         name="Progress"
-        description="Progress report of how Scorecards have changed overtime broken down by teams or groups."
+        description="Progress report of how Scorecards have changed over time, broken down by teams or groups."
         url="/progress"
       />
     </ItemCardGrid>

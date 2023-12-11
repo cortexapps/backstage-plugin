@@ -76,7 +76,7 @@ export class CortexClient implements CortexApi {
   }
 
   async getScorecards(): Promise<Scorecard[]> {
-    return await this.get(`/api/backstage/v1/scorecards`);
+    return await this.get(`/api/backstage/v2/scorecards`);
   }
 
   async submitEntitySync(
@@ -236,7 +236,7 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/scores`);
   }
 
-  async getScorecardRulesExemptions(
+  async getScorecardRuleExemptions(
     scorecardId: number,
   ): Promise<ScorecardRuleExemptionResult> {
     return await this.get(

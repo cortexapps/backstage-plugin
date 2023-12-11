@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { PropsWithChildren, useContext, useState } from 'react';
-import React from 'react';
+import React, { PropsWithChildren, useContext, useState } from 'react';
 
 interface FilterContextState {
   checkedFilters: Record<string, boolean>;

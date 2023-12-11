@@ -31,8 +31,7 @@ interface ScorecardMetadataFilterProps {
 
 const useStyles = makeStyles(() => ({
   ruleQuery: {
-    fontFamily:
-      'Soehne Mono, Input, Consolas, "Liberation Mono", Menlo, monospace',
+    fontFamily: 'Input, Consolas, "Liberation Mono", Menlo, monospace',
     fontSize: 12,
   },
 }));
@@ -45,13 +44,14 @@ const ScorecardMetadataFilter: React.FC<ScorecardMetadataFilterProps> = ({
 
   const entityCategory = getEntityCategoryFromFilter(filter);
 
-  const [groups, excludedGroups] = useMemo(() => {
+  const { entityGroups, excludeEntityGroups } = useMemo(() => {
     return getEntityGroupsFromFilter(filter);
   }, [filter]);
 
-  const [includingResourceTypes, resourceTypes] = useMemo(() => {
-    return getResourceTypesFromFilter(filter);
-  }, [filter]);
+  const { include: includingResourceTypes, types: resourceTypes } =
+    useMemo(() => {
+      return getResourceTypesFromFilter(filter);
+    }, [filter]);
 
   const cqlQuery = useMemo(() => {
     return getQueryFromFilter(filter);
@@ -59,12 +59,12 @@ const ScorecardMetadataFilter: React.FC<ScorecardMetadataFilterProps> = ({
 
   const hasFilter = useMemo(() => {
     return (
-      !isEmpty(groups) ||
-      !isEmpty(excludedGroups) ||
+      !isEmpty(entityGroups) ||
+      !isEmpty(excludeEntityGroups) ||
       isNotNullOrEmpty(cqlQuery) ||
       !isEmpty(resourceTypes)
     );
-  }, [cqlQuery, excludedGroups, groups, resourceTypes]);
+  }, [cqlQuery, excludeEntityGroups, entityGroups, resourceTypes]);
 
   if (!hasFilter) {
     return (
@@ -95,13 +95,13 @@ const ScorecardMetadataFilter: React.FC<ScorecardMetadataFilterProps> = ({
         Applies to resources{' '}
         {includingResourceTypes ? 'of type ' : 'excluding types '}
         {joinWithAnds(resourceTypes)}
-        {(!isEmpty(groups) || !isEmpty(excludedGroups)) && (
+        {(!isEmpty(entityGroups) || !isEmpty(excludeEntityGroups)) && (
           <>
             {' '}
-            in {isEmpty(groups) && ' all '} groups{' '}
-            {!isEmpty(groups) && joinWithAnds(groups)}
-            {!isEmpty(excludedGroups) && (
-              <>, excluding {joinWithAnds(excludedGroups)}</>
+            in {isEmpty(entityGroups) && ' all '} groups{' '}
+            {!isEmpty(entityGroups) && joinWithAnds(entityGroups)}
+            {!isEmpty(excludeEntityGroups) && (
+              <>, excluding {joinWithAnds(excludeEntityGroups)}</>
             )}
           </>
         )}
@@ -111,12 +111,16 @@ const ScorecardMetadataFilter: React.FC<ScorecardMetadataFilterProps> = ({
 
   return (
     <Typography variant={'body2'}>
-      {isEmpty(groups) ? 'All' : <>Applies to {joinWithAnds(groups)}</>}{' '}
+      {isEmpty(entityGroups) ? (
+        'All'
+      ) : (
+        <>Applies to {joinWithAnds(entityGroups)}</>
+      )}{' '}
       {entityCategory.toLowerCase()}s
-      {!isEmpty(excludedGroups) && (
+      {!isEmpty(excludeEntityGroups) && (
         <>
           , excluding {entityCategory.toLowerCase()}s in{' '}
-          {joinWithAnds(excludedGroups)}
+          {joinWithAnds(excludeEntityGroups)}
         </>
       )}
     </Typography>

@@ -29,7 +29,7 @@ export const getJoinerString = (idx: number, length: number) => {
 
 export const getEntityGroupsFromFilter = (
   filter: EntityFilter | null,
-): [string[], string[]] => {
+): { entityGroups: string[]; excludeEntityGroups: string[] } => {
   if (
     filter?.type === FilterType.DOMAIN_FILTER ||
     filter?.type === FilterType.SERVICE_FILTER ||
@@ -37,28 +37,28 @@ export const getEntityGroupsFromFilter = (
     filter?.type === FilterType.TEAM_FILTER
   ) {
     const entityGroups = filter?.entityGroupFilter?.entityGroups ?? [];
-    const excludeServiceGroups =
+    const excludeEntityGroups =
       filter?.entityGroupFilter?.excludedEntityGroups ?? [];
 
-    return [entityGroups, excludeServiceGroups];
+    return { entityGroups, excludeEntityGroups };
   }
 
-  return [[], []];
+  return { entityGroups: [], excludeEntityGroups: [] };
 };
 
 export const getResourceTypesFromFilter = (
   filter: EntityFilter | null,
-): [boolean, string[]] => {
+): { include: boolean; types: string[] } => {
   if (filter?.type === FilterType.RESOURCE_FILTER) {
     const types = filter?.typeFilter?.types ?? [];
     const include =
       isUndefined(filter?.typeFilter) ||
       (filter?.typeFilter?.include === true && !isEmpty(types));
 
-    return [include, types];
+    return { include, types };
   }
 
-  return [true, []];
+  return { include: true, types: [] };
 };
 
 export const getQueryFromFilter = (

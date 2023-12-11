@@ -54,8 +54,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   ruleQuery: {
-    fontFamily:
-      'Soehne Mono, Input, Consolas, "Liberation Mono", Menlo, monospace',
+    fontFamily: 'Input, Consolas, "Liberation Mono", Menlo, monospace',
     fontSize: 12,
   },
 }));

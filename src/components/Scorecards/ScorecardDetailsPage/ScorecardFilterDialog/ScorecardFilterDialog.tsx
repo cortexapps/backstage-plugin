@@ -120,13 +120,13 @@ export const ScorecardFilterDialog = ({
       );
       const filterOneOf = oneOf[filterDefinition.name] ?? true;
 
-      allFilters[idx] = (t: ScorecardServiceScore) => {
+      allFilters[idx] = (score: ScorecardServiceScore) => {
         const results = Object.keys(predicateFilters)
           .filter(id => predicateFilters[id])
           .map(id =>
             filterDefinition.generatePredicate(
               filterDefinition.filters[id].value,
-            )(t),
+            )(score),
           );
 
         if (results.length === 0) {

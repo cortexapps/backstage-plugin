@@ -46,7 +46,7 @@ export interface CortexApi {
   getScorecard(scorecardId: number): Promise<Scorecard | undefined>;
   getScorecardLadders(scorecardId: number): Promise<ScorecardLadder[]>;
   getScorecardScores(scorecardId: number): Promise<ScorecardServiceScore[]>;
-  getScorecardRulesExemptions(
+  getScorecardRuleExemptions(
     scorecardId: number,
   ): Promise<ScorecardRuleExemptionResult>;
 

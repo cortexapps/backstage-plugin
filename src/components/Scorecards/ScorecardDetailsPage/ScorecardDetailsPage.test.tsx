@@ -125,7 +125,7 @@ describe('ScorecardDetailsPage', () => {
       };
     },
 
-    async getScorecardRulesExemptions(): Promise<ScorecardRuleExemptionResult> {
+    async getScorecardRuleExemptions(): Promise<ScorecardRuleExemptionResult> {
       return { scorecardRuleExemptions: {} };
     },
   };
@@ -400,19 +400,19 @@ describe('ScorecardDetailsPage', () => {
       checkForText,
       checkNotText,
       clickButtonByMatcher,
-      findByLabelText,
+      findByTestId,
     } = render(mockCortexApi);
 
     await checkForText('My Scorecard');
     await checkNotText(/No scores found/);
 
-    expect((await findByLabelText('Entities')).textContent).toBe('4'); // Num of entities
+    expect((await findByTestId('Entities')).textContent).toBe('4'); // Num of entities
 
     await clickButton('Filter');
     await clickButtonByMatcher(/Filter failing rule by git/);
     await clickButton('Close modal');
 
-    expect((await findByLabelText('Entities')).textContent).toBe('0'); // Num of entities
+    expect((await findByTestId('Entities')).textContent).toBe('0'); // Num of entities
     await checkForText(/No scores found/);
 
     await clickButton('Filter');
@@ -420,7 +420,7 @@ describe('ScorecardDetailsPage', () => {
     await clickButtonByMatcher(/Filter failing rule by oncall/);
     await clickButton('Close modal');
 
-    expect((await findByLabelText('Entities')).textContent).toBe('2'); // Num of entities
+    expect((await findByTestId('Entities')).textContent).toBe('2'); // Num of entities
     await checkNotText(/No scores found/);
     await checkForText(/lorem/, 0);
     await checkForText(/ipsum/, 0);
@@ -432,7 +432,7 @@ describe('ScorecardDetailsPage', () => {
     await clickButtonByMatcher(/Filter exempt rule by k8s/);
     await clickButton('Close modal');
 
-    expect((await findByLabelText('Entities')).textContent).toBe('1'); // Num of entities
+    expect((await findByTestId('Entities')).textContent).toBe('1'); // Num of entities
     await checkForText(/foo/, 0);
     await checkNotText(/lorem/);
     await checkNotText(/ipsum/);
@@ -501,7 +501,7 @@ describe('ScorecardDetailsPage', () => {
     const { clickButtonByMatcher } = render();
     await clickButtonByMatcher(/Copy scores/);
 
-    const expectedValue = 'Service,Score\nfoo (foo-tag),50\nbar (bar-tag),70';
+    const expectedValue = 'Service,Score\nbar (bar-tag),70\nfoo (foo-tag),50';
     expect(mockedWriteText).toHaveBeenCalledTimes(1);
     expect(mockedWriteText).toHaveBeenCalledWith(expectedValue);
 

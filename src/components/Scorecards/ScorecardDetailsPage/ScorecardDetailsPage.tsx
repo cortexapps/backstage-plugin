@@ -32,7 +32,7 @@ export const ScorecardDetailsPage = () => {
       cortexApi.getScorecardLadders(+scorecardId),
       cortexApi.getScorecard(+scorecardId),
       cortexApi.getScorecardScores(+scorecardId),
-      cortexApi.getScorecardRulesExemptions(+scorecardId),
+      cortexApi.getScorecardRuleExemptions(+scorecardId),
     ]);
 
     return { ladders, scorecard, scores, ruleExemptions };

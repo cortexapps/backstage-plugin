@@ -34,7 +34,6 @@ import { HomepageEntity } from '../../../api/userInsightTypes';
 import CopyCsvButton from './CopyCsvButton';
 import { ScorecardReportsTab } from './ScorecardReportsTab';
 import { ScorecardFilterDialog } from './ScorecardFilterDialog';
-import { ScorecardFilterProvider } from './ScorecardFilterDialog/useScorecardFilter';
 import { getEntityCategoryFromFilter } from './ScorecardMetadataCard/ScorecardMetadataUtils';
 import { ScorecardRuleExemptionsTab } from './ScorecardRuleExemptionsTab';
 import { ScorecardsScoresTable } from './ScorecardsScoresTab';
@@ -120,7 +119,6 @@ export const ScorecardDetails = ({
   };
 
   return (
-    // <ScorecardFilterProvider>
     <Content>
       <Grid container direction="row" spacing={1}>
         <Grid item lg={5} xs={12}>
@@ -183,6 +181,5 @@ export const ScorecardDetails = ({
         setFilter={(filter: any) => setFilter(() => filter)}
       />
     </Content>
-    // </ScorecardFilterProvider>
   );
 };

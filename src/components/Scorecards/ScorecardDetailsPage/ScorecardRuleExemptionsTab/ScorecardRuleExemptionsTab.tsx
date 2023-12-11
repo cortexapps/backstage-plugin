@@ -16,6 +16,7 @@
 import React, { useMemo } from 'react';
 import {
   ExemptionStatusResponseType,
+  Rule,
   Scorecard,
   ScorecardRuleExemptionResult,
   ScorecardServiceScore,
@@ -55,7 +56,7 @@ export const ScorecardRuleExemptionsTab = ({
 
   const rulesMap = useMemo(
     () =>
-      scorecard.rules.reduce<Record<number, string>>((acc, rule) => {
+      scorecard.rules.reduce<Record<Rule['id'], string>>((acc, rule) => {
         acc[rule.id] = getRuleTitle(rule);
         return acc;
       }, {}),
@@ -64,10 +65,13 @@ export const ScorecardRuleExemptionsTab = ({
 
   const scoresMap = useMemo(
     () =>
-      scores.reduce<Record<number, string>>((acc, score) => {
-        acc[score.serviceId] = score.componentRef;
-        return acc;
-      }, {}),
+      scores.reduce<Record<ScorecardServiceScore['serviceId'], string>>(
+        (acc, score) => {
+          acc[score.serviceId] = score.componentRef;
+          return acc;
+        },
+        {},
+      ),
     [scores],
   );
 
