@@ -51,7 +51,7 @@ interface ScorecardsScoresTableProps {
 
 const useScorecardsScoresTableCardStyle = makeStyles(() => ({
   tag: {
-    fontFamily: 'Input, Consolas, "Liberation Mono", Menlo, monospace',
+    fontFamily: 'Monospace',
     fontSize: 12,
   },
 }));

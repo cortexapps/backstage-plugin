@@ -31,7 +31,7 @@ interface ScorecardMetadataFilterProps {
 
 const useStyles = makeStyles(() => ({
   ruleQuery: {
-    fontFamily: 'Input, Consolas, "Liberation Mono", Menlo, monospace',
+    fontFamily: 'Monospace',
     fontSize: 12,
   },
 }));
