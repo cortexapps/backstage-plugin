@@ -15,7 +15,7 @@
  */
 
 import {
-  EntitySyncProgress,
+  EntitySyncProgress, ExpirationResponse,
   GroupByOption,
   Initiative,
   InitiativeActionItem,
@@ -307,6 +307,10 @@ export class CortexClient implements CortexApi {
 
   async getSyncJobs(): Promise<JobsResponse> {
     return this.get(`/api/backstage/v2/jobs`);
+  }
+
+  async getExpiration(): Promise<ExpirationResponse> {
+    return this.get(`/api/backstage/v1/entitlements/expiration-date`);
   }
 
   private async getBasePath(): Promise<string> {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import {
-  EntitySyncProgress,
+  EntitySyncProgress, ExpirationResponse,
   GroupByOption,
   Initiative,
   InitiativeActionItem,
@@ -106,4 +106,6 @@ export interface CortexApi {
   getUserPermissions(): Promise<UserPermissionsResponse>;
 
   getSyncJobs(): Promise<JobsResponse>;
+
+  getExpiration(): Promise<ExpirationResponse>;
 }

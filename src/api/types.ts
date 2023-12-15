@@ -334,3 +334,14 @@ export enum JobStatus {
   Failure = 'FAILURE',
   TimedOut = 'TIMED_OUT',
 }
+
+export enum ContractType {
+  Production = 'PRODUCTION',
+  Trial = 'TRIAL',
+}
+
+export interface ExpirationResponse {
+  contractType: ContractType;
+  expirationDate?: string;
+  shutdownDate?: string;
+}
