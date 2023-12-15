@@ -21,8 +21,6 @@ import moment from "moment/moment";
 export const shouldShowExpirationBanner = (
   expiration?: ExpirationResponse
 ) => {
-  console.debug('expiration ', expiration);
-
   // Always show banner for trial
   if (!isNil(expiration) && expiration.contractType === ContractType.Trial) {
     return true;
@@ -43,7 +41,5 @@ export const isBeforeShutdownDate = (
     !isNil(expiration?.shutdownDate)
       ? moment(expiration?.shutdownDate).diff(moment(), 'days')
       : undefined;
-  const ret =  !daysUntilShutdown || daysUntilShutdown > 0;
-  console.debug('allowAccess ', ret);
-  return ret;
+  return !daysUntilShutdown || daysUntilShutdown > 0;
 };

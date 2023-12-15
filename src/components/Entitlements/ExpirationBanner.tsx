@@ -38,10 +38,12 @@ export const ExpirationBanner = ({ contractType, expirationDate, shutdownDate }:
   }
   const isExpired = daysUntilExpiration < 0;
 
-  return <WarningPanel
-    severity={isExpired ? 'error' : 'warning'}
-    title={getExpirationMessage(isTrial, daysUntilExpiration, -daysUntilExpiration, daysUntilShutdown)}
-  />;
+  return (
+    <WarningPanel
+      severity={isExpired ? 'error' : 'warning'}
+      title={getExpirationMessage(isTrial, daysUntilExpiration, -daysUntilExpiration, daysUntilShutdown)}
+    />
+  );
 };
 
 
