@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {ContractType, ExpirationResponse} from "../../api/types";
+import { ContractType, ExpirationResponse } from "../../api/types";
 
-import {isNil} from 'lodash';
+import { isNil } from 'lodash';
 import moment from "moment/moment";
+import { maybePluralize } from "../../utils/strings";
 
 export const shouldShowExpirationBanner = (
   expiration?: ExpirationResponse
@@ -42,4 +43,48 @@ export const isBeforeShutdownDate = (
       ? moment(expiration?.shutdownDate).diff(moment(), 'days')
       : undefined;
   return !daysUntilShutdown || daysUntilShutdown > 0;
+};
+
+export const getExpirationMessage = (
+  isTrial: boolean,
+  daysUntilExpiration: number,
+  daysPastExpiration?: number,
+  daysUntilShutdown?: number
+) => {
+  return isTrial
+    ? getTrialExpirationMessage(daysUntilExpiration)
+    : getProdExpirationMessage(daysUntilExpiration, daysPastExpiration, daysUntilShutdown);
+};
+
+const getProdExpirationMessage = (
+  daysUntilExpiration: number,
+  daysPastExpiration?: number,
+  daysUntilShutdown?: number
+) => {
+  const shutdownDates =
+    !isNil(daysUntilShutdown) && daysUntilShutdown > 0
+      ? `in ${maybePluralize(daysUntilShutdown, 'day')}`
+      : 'today';
+
+  const shutdownMessage =
+    !isNil(daysUntilShutdown)
+      ? `. Your workspace will automatically shut down ${shutdownDates}`
+      : '';
+
+  const expirationState =
+    daysUntilExpiration > 0
+      ? `is expiring in ${maybePluralize(daysUntilExpiration, 'day')}`
+      : daysUntilExpiration === 0
+        ? `expires today${shutdownMessage}`
+        : `expired ${daysPastExpiration} days ago${shutdownMessage}`;
+
+  return `Your access ${expirationState}. Please reach out to your account manager for support.`;
+};
+
+const getTrialExpirationMessage = (daysUntilExpiration: number) => {
+  return daysUntilExpiration > 0
+    ? `Your Cortex trial expires in ${maybePluralize(daysUntilExpiration, 'day')}.`
+    : daysUntilExpiration === 0
+      ? 'Your Cortex trial expires today - Please contact your account manager to continue using Cortex!'
+      : 'Your Cortex trial has expired - Please contact your account manager to continue using Cortex!';
 };
