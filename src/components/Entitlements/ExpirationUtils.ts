@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ContractType, ExpirationResponse } from "../../api/types";
+import { ContractType, ExpirationResponse } from '../../api/types';
 
 import { isNil } from 'lodash';
-import moment from "moment/moment";
-import { maybePluralize } from "../../utils/strings";
+import { maybePluralize } from '../../utils/strings';
+import { daysUntil } from '../../utils/dates';
 
 export const shouldShowExpirationBanner = (
   expiration?: ExpirationResponse
@@ -27,21 +27,14 @@ export const shouldShowExpirationBanner = (
     return true;
   }
 
-  const daysUntilExpiration =
-    !isNil(expiration?.expirationDate)
-      ? moment(expiration?.expirationDate).diff(moment(), 'days')
-      : undefined;
-
+  const daysUntilExpiration = daysUntil(expiration?.expirationDate);
   return !isNil(daysUntilExpiration) && daysUntilExpiration < 14;
 };
 
 export const isBeforeShutdownDate = (
   expiration?: ExpirationResponse
 ) => {
-  const daysUntilShutdown =
-    !isNil(expiration?.shutdownDate)
-      ? moment(expiration?.shutdownDate).diff(moment(), 'days')
-      : undefined;
+  const daysUntilShutdown = daysUntil(expiration?.shutdownDate);
   return !daysUntilShutdown || daysUntilShutdown > 0;
 };
 

@@ -14,31 +14,24 @@
  * limitations under the License.
  */
 import React from 'react';
-import { ExpirationResponse } from "../../api/types";
-import { WarningPanel } from "@backstage/core-components";
-import { isNil } from "lodash";
-import moment from "moment";
-import { getExpirationMessage } from "./ExpirationUtils";
+import { ExpirationResponse } from '../../api/types';
+import { WarningPanel } from '@backstage/core-components';
+import { isNil } from 'lodash';
+import { getExpirationMessage } from './ExpirationUtils';
+import { daysUntil } from '../../utils/dates';
 
 interface ExpirationBannerProps extends ExpirationResponse {
 }
 
 export const ExpirationBanner = ({ contractType, expirationDate, shutdownDate }: ExpirationBannerProps) => {
-  const isTrial = contractType === 'TRIAL';
-  const daysUntilShutdown =
-    !isNil(shutdownDate)
-      ? moment(shutdownDate).diff(moment(), 'days')
-      : undefined;
-  const daysUntilExpiration =
-    !isNil(expirationDate)
-      ? moment(expirationDate).diff(moment(), 'days')
-      : undefined;
-
+  const daysUntilExpiration = daysUntil(expirationDate);
   if (isNil(daysUntilExpiration)) {
     return null;
   }
-  const isExpired = daysUntilExpiration < 0;
 
+  const daysUntilShutdown = daysUntil(shutdownDate);
+  const isTrial = contractType === 'TRIAL';
+  const isExpired = daysUntilExpiration < 0;
   return (
     <WarningPanel
       severity={isExpired ? 'error' : 'warning'}
