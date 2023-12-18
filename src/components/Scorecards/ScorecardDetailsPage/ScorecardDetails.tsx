@@ -141,7 +141,6 @@ export const ScorecardDetails = ({
           indicatorColor="primary"
           textColor="primary"
           onChange={handleTabChange}
-          aria-label="Tabs for Scorecard"
         >
           <Tab
             label={ScorecardDetailsTab.Scores}
