@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Rule, ruleName, ScorecardLevelRule } from '../../../../api/types';
+import { fallbackPalette } from '../../../../styles/styles';
+import React, { useState } from 'react';
 import {
   Box,
   Collapse,
   IconButton,
-  Typography,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
-import React, { useState } from 'react';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
 import { MarkdownContent } from '@backstage/core-components';
 
-import classNames from 'classnames';
-import { fallbackPalette, useIconsStyles } from '../../../styles/styles';
-import { RuleDetail, isRuleFailing } from '../../../utils/ScorecardRules';
-import { ruleName } from '../../../api/types';
-import { isNil } from 'lodash';
+interface ScorecardRuleRowProps {
+  rule: ScorecardLevelRule | Rule;
+}
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -59,21 +57,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ScorecardServiceRuleRowProps {
-  rule: RuleDetail;
-  isFailing?: boolean;
-  hideWeight?: boolean;
-}
-
-export const ScorecardServiceRuleRow = ({
-  hideWeight,
-  rule,
-}: ScorecardServiceRuleRowProps) => {
+export const ScorecardRuleRow = ({ rule }: ScorecardRuleRowProps) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
-  const iconsClasses = useIconsStyles();
   const showExpandButton = rule.description || rule.filter || rule.expression;
-  const isFailing = isRuleFailing(rule);
+  const hasWeight = 'weight' in rule;
 
   return (
     <Box className={classes.root}>
@@ -89,36 +77,17 @@ export const ScorecardServiceRuleRow = ({
             </IconButton>
           )}
         </Box>
-
-        {!isNil(rule.score) && (
-          <>
-            {isFailing ? (
-              <CancelIcon
-                color="error"
-                className={classNames(
-                  iconsClasses.statusIcon,
-                  iconsClasses.failingRule,
-                )}
-              />
-            ) : (
-              <CheckCircleIcon
-                className={classNames(
-                  iconsClasses.statusIcon,
-                  iconsClasses.passingRule,
-                )}
-              />
-            )}
-          </>
-        )}
         <Box>
-          <Typography
-            variant="subtitle2"
-            className={classNames({ [iconsClasses.failingRule]: isFailing })}
-          >
-            {ruleName(rule)}
-          </Typography>
+          <Box display="flex" flexDirection="row">
+            {hasWeight && (
+              <Box ml={2} mr={1.5}>
+                <Typography variant="subtitle2">{rule.weight} pt</Typography>
+              </Box>
+            )}
+            <Typography variant="subtitle2">{ruleName(rule)}</Typography>
+          </Box>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <>
+            <Box ml={2}>
               {rule.description && (
                 <MarkdownContent
                   className={classes.ruleDescription}
@@ -133,15 +102,10 @@ export const ScorecardServiceRuleRow = ({
               {rule.filter?.query && (
                 <Typography variant="overline">{rule.filter.query}</Typography>
               )}
-            </>
+            </Box>
           </Collapse>
         </Box>
       </Box>
-      {!hideWeight && (
-        <Box>
-          <Typography variant="caption">{rule.weight}</Typography>
-        </Box>
-      )}
     </Box>
   );
 };

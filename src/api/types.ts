@@ -23,11 +23,10 @@ export interface Scorecard {
   creator: ScorecardCreator;
   id: number;
   name: string;
+  tag: string;
   description?: string;
   rules: Rule[];
-  tags: ServiceGroup[];
-  excludedTags: ServiceGroup[];
-  filterQuery?: string;
+  filter: EntityFilter | null;
   nextUpdated?: string;
 }
 
@@ -53,6 +52,48 @@ export interface RuleFilter {
 
 export function ruleName(rule: RuleName): string {
   return rule.title ?? rule.expression;
+}
+
+export enum ExemptionStatusResponseType {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+}
+
+export interface PendingExemptionStatus {
+  type: ExemptionStatusResponseType.PENDING;
+}
+
+export interface ApprovedExemptionStatus {
+  type: ExemptionStatusResponseType.APPROVED;
+  approvedBy: string;
+  approvedDate: string;
+}
+
+export interface RejectedExemptionStatus {
+  type: ExemptionStatusResponseType.REJECTED;
+  rejectedBy: string;
+  rejectedDate: string;
+  reason: string;
+}
+
+export type ExemptionStatus =
+  | PendingExemptionStatus
+  | ApprovedExemptionStatus
+  | RejectedExemptionStatus;
+
+export interface RuleExemptionResponse {
+  id: number;
+  ruleId: number;
+  requestingReason: string;
+  requestedBy: string;
+  requestedDate: string;
+  endDate: string | null;
+  status: ExemptionStatus;
+}
+
+export interface ScorecardRuleExemptionResult {
+  scorecardRuleExemptions: Record<number, RuleExemptionResponse[]>;
 }
 
 export interface ServiceGroup {
@@ -138,6 +179,7 @@ export interface ServiceScorecardScore {
 export interface ScorecardServiceScore {
   serviceId: number;
   componentRef: string;
+  description?: string;
   score: number;
   scorePercentage: number;
   totalPossibleScore: number;
@@ -145,7 +187,7 @@ export interface ScorecardServiceScore {
   lastUpdated: string;
   tags: string[]; // service groups
   teams: string[]; // owner groups
-  ladderLevels: ScorecardScoreLadderResult[];
+  ladderLevels: ScorecardScoreNextSteps[];
 }
 
 export type RuleOutcome =
@@ -334,3 +376,64 @@ export enum JobStatus {
   Failure = 'FAILURE',
   TimedOut = 'TIMED_OUT',
 }
+
+// Entity Filter
+export enum CategoryFilter {
+  Domain = 'Domain',
+  Resource = 'Resource',
+  Service = 'Service',
+  Team = 'Team',
+}
+
+export enum FilterType {
+  CQL_FILTER = 'CQL_FILTER',
+  DOMAIN_FILTER = 'DOMAIN_FILTER',
+  RESOURCE_FILTER = 'RESOURCE_FILTER',
+  SERVICE_FILTER = 'SERVICE_FILTER',
+  TEAM_FILTER = 'TEAM_FILTER',
+}
+
+export interface EntityGroupFilter {
+  entityGroups: string[];
+  excludedEntityGroups: string[];
+}
+
+export interface ResourcesTypeFilter {
+  include: boolean;
+  types: string[];
+}
+
+export interface CqlFilter {
+  category: CategoryFilter;
+  cqlVersion: string;
+  query: string;
+  type: FilterType.CQL_FILTER;
+}
+
+export interface ServiceFilter {
+  entityGroupFilter?: EntityGroupFilter;
+  type: FilterType.SERVICE_FILTER;
+}
+
+export interface DomainFilter {
+  entityGroupFilter?: EntityGroupFilter;
+  type: FilterType.DOMAIN_FILTER;
+}
+
+export interface ResourceFilter {
+  entityGroupFilter?: EntityGroupFilter;
+  type: FilterType.RESOURCE_FILTER;
+  typeFilter?: ResourcesTypeFilter;
+}
+
+export interface TeamFilter {
+  entityGroupFilter?: EntityGroupFilter;
+  type: FilterType.TEAM_FILTER;
+}
+
+export type EntityFilter =
+  | CqlFilter
+  | DomainFilter
+  | ServiceFilter
+  | ResourceFilter
+  | TeamFilter;

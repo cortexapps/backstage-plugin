@@ -35,11 +35,20 @@ import { GroupByOption, ruleName } from '../../../api/types';
 import { SerieFilter } from './SerieFilter';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { LookbackDropdown } from '../Common/LookbackDropdown';
+import { useLocation } from 'react-router-dom';
 
 export const ProgressPage = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const queryScorecardId = Number(queryParams.get('scorecardId') ?? undefined);
+  const initialScorecardId = Number.isNaN(queryScorecardId)
+    ? undefined
+    : queryScorecardId;
+
   const [selectedScorecardId, setSelectedScorecardId] = useState<
     number | undefined
-  >();
+  >(initialScorecardId);
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
     GroupByOption.SERVICE,

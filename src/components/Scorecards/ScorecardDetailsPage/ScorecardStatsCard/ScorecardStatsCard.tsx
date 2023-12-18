@@ -14,69 +14,92 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { ScorecardServiceScore } from '../../../../api/types';
-import { useDetailCardStyles } from '../../../../styles/styles';
-import { Grid } from '@material-ui/core';
-import { InfoCard } from '@backstage/core-components';
-import { round } from 'lodash';
-import { mean, medianSorted, quantileSorted } from 'simple-statistics';
-import { StatsItem } from './StatsItem';
+import { ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
+import { Box, Paper, Typography, makeStyles } from '@material-ui/core';
+import { isEmpty, isNil } from 'lodash';
+import { median } from 'simple-statistics';
+import Stats from '../../../Common/Stats';
+import StatsItem, { CaptionTypography } from '../../../Common/StatsItem';
+import { safeDivide } from '../../../../utils/NumberUtils';
+import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
 
 interface ScorecardStatsCardProps {
+  scorecardLadder: ScorecardLadder;
   scores: ScorecardServiceScore[];
 }
 
-export const ScorecardStatsCard = ({ scores }: ScorecardStatsCardProps) => {
-  const classes = useDetailCardStyles();
+const useStyles = makeStyles(theme => ({
+  levelBox: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: theme.spacing(0.5),
+    alignItems: 'center',
+  },
+}));
 
-  const rankedScores = useMemo(
-    () => [...scores].sort((a, b) => b.score - a.score),
-    [scores],
-  );
+export const ScorecardStatsCard = ({
+  scores,
+  scorecardLadder,
+}: ScorecardStatsCardProps) => {
+  const classes = useStyles();
+  const numberOfEntities = scores.length;
 
-  const percentages = useMemo(
-    () =>
-      rankedScores.length === 0
-        ? [0]
-        : rankedScores.map(s => s.scorePercentage),
-    [rankedScores],
-  );
+  const medianLevel = useMemo(() => {
+    const levelRanks = scores.map(
+      score => score.ladderLevels?.[0]?.currentLevel?.rank ?? 0,
+    );
+    const medianLevelRank = !isEmpty(levelRanks) ? median(levelRanks) : 0;
+    return scorecardLadder.levels.find(level => level.rank === medianLevelRank);
+  }, [scores, scorecardLadder]);
 
-  const avg = useMemo(() => round(mean(percentages), 2), [percentages]);
-  const medianVal = useMemo(() => medianSorted(percentages), [percentages]);
-  const percentile = useMemo(
-    () => quantileSorted([...percentages].reverse(), 0.8),
-    [percentages],
-  );
+  const percentAtHighestLevel = useMemo(() => {
+    return safeDivide(
+      scores.filter(score => isNil(score.ladderLevels?.[0]?.nextLevel)).length,
+      numberOfEntities,
+    );
+  }, [scores, numberOfEntities]);
+
+  const percentNoLevel = useMemo(() => {
+    return safeDivide(
+      scores.filter(score => isNil(score.ladderLevels?.[0]?.currentLevel))
+        .length,
+      numberOfEntities,
+    );
+  }, [scores, numberOfEntities]);
 
   return (
-    <InfoCard title="Statistics" className={classes.root}>
-      <Grid container>
+    <Paper elevation={0} style={{ marginBottom: 8 }}>
+      <Stats>
+        <Box display="flex" flexDirection="column">
+          <CaptionTypography variant="caption">Level</CaptionTypography>
+          <Box className={classes.levelBox}>
+            <ScorecardLadderLevelBadge
+              name={medianLevel?.name}
+              color={medianLevel?.color}
+            />
+            <Typography variant="body1">
+              {medianLevel?.name ?? 'No Level'}
+            </Typography>
+          </Box>
+        </Box>
         <StatsItem
-          value={avg}
-          label={'Avg Score'}
+          caption={'% at highest level'}
           percentage
-          gridSizes={{ xs: 3 }}
-          data-testid={'Stat-Scorecard-Avg-Score'}
+          type={'PERCENTAGE'}
+          value={percentAtHighestLevel}
         />
         <StatsItem
-          value={medianVal}
-          label={'Median Score'}
+          caption={'% without level'}
           percentage
-          gridSizes={{ xs: 3 }}
+          type={'PERCENTAGE'}
+          value={percentNoLevel}
         />
         <StatsItem
-          value={scores.length}
-          label={'Services'}
-          gridSizes={{ xs: 3 }}
+          caption={'Entities'}
+          type={'NONE'}
+          value={numberOfEntities}
         />
-        <StatsItem
-          value={percentile}
-          label={'80th Percentile'}
-          percentage
-          gridSizes={{ xs: 3 }}
-        />
-      </Grid>
-    </InfoCard>
+      </Stats>
+    </Paper>
   );
 };

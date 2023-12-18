@@ -14,19 +14,30 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Tooltip } from '@material-ui/core';
+import { Box, Tooltip, Typography } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
+import { fallbackPalette } from '../../styles/styles';
 
 interface ScorecardLadderLevelBadgeProps {
-  name: string;
-  color: string;
+  name?: string;
+  color?: string;
+  showName?: boolean;
 }
 
 export const ScorecardLadderLevelBadge = ({
-  name,
+  name = 'No Level',
   color,
+  showName,
 }: ScorecardLadderLevelBadgeProps) => (
   <Tooltip title={name}>
-    <StarIcon style={{ color: `${color}` }} />
+    <Box display="flex" flexDirection="row" alignItems={'center'}>
+      <StarIcon
+        style={{
+          color: `${color ?? fallbackPalette.common.grayLight}`,
+          marginRight: 8,
+        }}
+      />
+      {showName && <Typography variant="body2">{name}</Typography>}
+    </Box>
   </Tooltip>
 );

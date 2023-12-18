@@ -16,17 +16,23 @@
 import React, { PropsWithChildren } from 'react';
 import { InfoCard } from '@backstage/core-components';
 import { makeStyles } from '@material-ui/core';
+import classnames from 'classnames';
 
-interface ScorecardsServiceCardProps extends PropsWithChildren {
-  title: React.ReactNode;
+interface CortexInfoCardProps extends PropsWithChildren {
+  title?: React.ReactNode;
+  padding?: 'default' | 'dense';
+  className?: string;
 }
 
-export const useStyles = makeStyles(theme => ({
+export const useCortexInfoCardStyles = makeStyles(theme => ({
   root: {
     marginBottom: theme.spacing(1),
   },
   cardRoot: {
     padding: theme.spacing(2),
+  },
+  cardDense: {
+    padding: theme.spacing(0),
   },
   cardHeader: {
     padding: theme.spacing(2),
@@ -37,17 +43,22 @@ export const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const ScorecardsServiceCard: React.FC<ScorecardsServiceCardProps> = ({
+export const CortexInfoCard: React.FC<CortexInfoCardProps> = ({
   children,
   title,
+  padding = 'default',
+  className,
 }) => {
-  const classes = useStyles();
+  const classes = useCortexInfoCardStyles();
 
   return (
     <InfoCard
       title={title}
-      className={classes.root}
-      cardClassName={classes.cardRoot}
+      className={classnames(classes.root, className)}
+      cardClassName={classnames({
+        [classes.cardRoot]: padding === 'default',
+        [classes.cardDense]: padding === 'dense',
+      })}
       headerProps={{
         className: classes.cardHeader,
         titleTypographyProps: {

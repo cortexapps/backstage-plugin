@@ -20,8 +20,11 @@ import { useCortexApi } from '../../../utils/hooks';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../../../utils/types';
 import { ScorecardLadderLevelBadge } from '../../Common/ScorecardLadderLevelBadge';
 import { isNil } from 'lodash';
-import { ScorecardsServiceCard, useStyles } from './ScorecardsServiceCard';
 import { ScorecardServiceRuleRow } from './ScorecardsServiceRuleRow';
+import {
+  CortexInfoCard,
+  useCortexInfoCardStyles,
+} from '../../Common/CortexInfoCard';
 
 interface ScorecardsServiceNextRulesProps {
   scorecardId: number;
@@ -45,7 +48,7 @@ export const ScorecardsServiceNextRules = ({
     },
     [entityRef],
   );
-  const rulesCardClasses = useStyles();
+  const rulesCardClasses = useCortexInfoCardStyles();
 
   const nextSteps = value?.[0] ?? undefined;
 
@@ -69,7 +72,7 @@ export const ScorecardsServiceNextRules = ({
   }
 
   return (
-    <ScorecardsServiceCard
+    <CortexInfoCard
       title={
         <Box display="flex" flexDirection="row">
           <Typography
@@ -91,6 +94,6 @@ export const ScorecardsServiceNextRules = ({
           rule={rule}
         />
       ))}
-    </ScorecardsServiceCard>
+    </CortexInfoCard>
   );
 };

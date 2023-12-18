@@ -42,10 +42,12 @@ const CopyCsvButton = ({ entitiesByTag, scores }: CopyCsvButtonProps) => {
       );
     };
 
-    const rows = scores.map(score => [
-      `${getName(score)} (${entitiesByTag[score.componentRef]?.codeTag})`,
-      percentify(score.scorePercentage).toString(),
-    ]);
+    const rows = scores
+      .sort((score1, score2) => score2.scorePercentage - score1.scorePercentage)
+      .map(score => [
+        `${getName(score)} (${entitiesByTag[score.componentRef]?.codeTag})`,
+        percentify(score.scorePercentage).toString(),
+      ]);
 
     rows.unshift(['Service', 'Score']);
 
