@@ -27,14 +27,14 @@ export const shouldShowExpirationBanner = (
     return true;
   }
 
-  const daysUntilExpiration = daysUntil(expiration?.expirationDate);
+  const daysUntilExpiration = expiration && daysUntil(expiration.expirationDate);
   return !isNil(daysUntilExpiration) && daysUntilExpiration < 14;
 };
 
 export const isBeforeShutdownDate = (
   expiration?: ExpirationResponse
 ) => {
-  const daysUntilShutdown = daysUntil(expiration?.shutdownDate);
+  const daysUntilShutdown = expiration && daysUntil(expiration.shutdownDate);
   return !daysUntilShutdown || daysUntilShutdown > 0;
 };
 

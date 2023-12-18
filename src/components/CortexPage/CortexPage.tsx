@@ -27,8 +27,8 @@ import { cortexApiRef } from '../../api';
 import { Permission } from '../../api/types';
 import { extensionApiRef } from '../../api/ExtensionApi';
 import { HelpPage } from '../HelpPage';
-import {isBeforeShutdownDate, shouldShowExpirationBanner} from "../Entitlements/ExpirationUtils";
-import {ExpirationBanner} from "../Entitlements/ExpirationBanner";
+import { isBeforeShutdownDate, shouldShowExpirationBanner } from '../Entitlements/ExpirationUtils';
+import { ExpirationBanner } from '../Entitlements/ExpirationBanner';
 
 export const CortexPage = ({
   title = 'Cortex',

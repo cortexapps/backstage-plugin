@@ -342,6 +342,6 @@ export enum ContractType {
 
 export interface ExpirationResponse {
   contractType: ContractType;
-  expirationDate?: string;
-  shutdownDate?: string;
+  expirationDate: string | null;
+  shutdownDate: string | null;
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import moment from 'moment/moment';
+import moment from 'moment';
 import { getExpirationMessage, isBeforeShutdownDate, shouldShowExpirationBanner } from './ExpirationUtils';
 import { ContractType } from '../../api/types';
 
@@ -48,7 +48,9 @@ describe('ExpirationUtils', () => {
   describe('shouldShowExpirationBanner', () => {
     it('should show banner in Trial', async () => {
       const result = shouldShowExpirationBanner({
-        contractType: ContractType.Trial
+        contractType: ContractType.Trial,
+        expirationDate: futureFar,
+        shutdownDate: futureFar,
       });
       expect(result).toBe(true);
     });
@@ -59,7 +61,11 @@ describe('ExpirationUtils', () => {
       { expirationDate: futureFar, expected: false },
     ].forEach(({ expirationDate, expected }) => {
       it(`should show banner in Prod with expiration ${expirationDate}`, async () => {
-        const result = shouldShowExpirationBanner({ contractType: ContractType.Production, expirationDate });
+        const result = shouldShowExpirationBanner({
+          contractType: ContractType.Production,
+          expirationDate,
+          shutdownDate: futureFar,
+        });
         expect(result).toBe(expected);
       });
     });

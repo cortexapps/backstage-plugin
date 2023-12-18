@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import { isNil } from 'lodash';
-import moment from 'moment/moment';
+import moment from 'moment';
 
-export const daysUntil = (expirationDate?: string) => {
+export const daysUntil = (expirationDate: string | null) => {
   return !isNil(expirationDate)
     ? moment(expirationDate).diff(moment(), 'days')
     : undefined;
