@@ -17,7 +17,7 @@ import { TableColumn } from '@backstage/core-components';
 import { ScorecardScoreLadderLevel } from '../../../../api/types';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
 import React from 'react';
-import { LinearProgressWithLabel } from '../../ScorecardsServicePage/LinearProgressWithLabel';
+import { LinearProgressWithLabel } from '../../../Common/LinearProgressWithLabel';
 import { percentify } from '../../../../utils/NumberUtils';
 
 export const PAGE_SIZE = 25;

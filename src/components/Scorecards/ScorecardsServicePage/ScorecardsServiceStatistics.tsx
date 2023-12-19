@@ -23,7 +23,7 @@ import { ScorecardLadderLevelBadge } from '../../Common/ScorecardLadderLevelBadg
 import { percentify } from '../../../utils/NumberUtils';
 import { quantileRankSorted } from 'simple-statistics';
 import { filterFailingRuleOutcomes } from '../../../utils/ScorecardRules';
-import { LinearProgressWithLabel } from './LinearProgressWithLabel';
+import { LinearProgressWithLabel } from '../../Common/LinearProgressWithLabel';
 
 interface ScorecardsServiceStatisticsProps {
   scores: number[];

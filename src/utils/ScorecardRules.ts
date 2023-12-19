@@ -28,10 +28,11 @@ import {
 import { isNotNullOrEmpty } from './strings';
 
 export interface RuleDetail {
-  id: number | string;
   description?: string;
   expression: string;
+  failureMessage?: string;
   filter?: RuleFilter;
+  id: number | string;
   score?: number;
   title?: string;
   weight?: number;

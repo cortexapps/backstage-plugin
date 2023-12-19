@@ -17,11 +17,12 @@ import React, { useMemo } from 'react';
 import { LinearProgress, Typography, makeStyles } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { isNil } from 'lodash';
-import { fallbackPalette } from '../../../styles/styles';
+import { fallbackPalette } from '../../styles/styles';
 
 interface LinearProgressWithLabelProps {
   value: number;
   colorByValue?: boolean;
+  label?: string;
 }
 
 const useStyles = makeStyles(() => ({
@@ -47,7 +48,7 @@ export function colorForNum(value: number): 'success' | 'warning' | 'danger' {
 }
 
 export const LinearProgressWithLabel: React.FC<LinearProgressWithLabelProps> =
-  ({ value, colorByValue }) => {
+  ({ value, colorByValue, label }) => {
     const classes = useStyles();
     const className = useMemo(() => {
       const color = colorByValue ? undefined : colorForNum(value);
@@ -71,7 +72,11 @@ export const LinearProgressWithLabel: React.FC<LinearProgressWithLabelProps> =
           />
         </Box>
         <Box minWidth={45}>
-          <Typography variant="body1">{`${Math.round(value)}%`}</Typography>
+          {label ? (
+            <Typography variant="body1">{label}</Typography>
+          ) : (
+            <Typography variant="body1">{`${Math.round(value)}%`}</Typography>
+          )}
         </Box>
       </Box>
     );

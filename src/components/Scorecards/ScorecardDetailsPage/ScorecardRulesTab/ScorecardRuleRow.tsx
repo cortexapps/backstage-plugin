@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Rule, ruleName, ScorecardLevelRule } from '../../../../api/types';
+import {
+  InitiativeRule,
+  Rule,
+  ruleName,
+  ScorecardLevelRule,
+} from '../../../../api/types';
 import { fallbackPalette } from '../../../../styles/styles';
 import React, { useState } from 'react';
 import {
@@ -28,7 +33,7 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { MarkdownContent } from '@backstage/core-components';
 
 interface ScorecardRuleRowProps {
-  rule: ScorecardLevelRule | Rule;
+  rule: ScorecardLevelRule | Rule | InitiativeRule;
 }
 
 const useStyles = makeStyles(theme => ({
