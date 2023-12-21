@@ -2,7 +2,7 @@
 
 ### 2.4.3
 
-- Show expiration banner when Cortex access is expiring. Block access when expired.
+- Show expiration banner when Cortex access is expiring & block access after expiration.
 
 ### 2.4.2
 

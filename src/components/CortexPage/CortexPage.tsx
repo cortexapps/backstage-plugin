@@ -71,35 +71,31 @@ export const CortexPage = ({
       {shouldShowExpirationBanner(expiration) && (
         <ExpirationBanner {...expiration} />
       )}
-      {
-        isBeforeShutdownDate(expiration) && (
-          <CortexLayout title={title} subtitle={subtitle}>
-            <CortexLayout.Route path="scorecards" title="Scorecards">
-              <ScorecardsPage />
-            </CortexLayout.Route>
-            <CortexLayout.Route path="reports" title="Reports">
-              <ReportsPage />
-            </CortexLayout.Route>
-            <CortexLayout.Route path="initiatives" title="Initiatives">
-              <InitiativesPage />
-            </CortexLayout.Route>
-            {/*
+      <CortexLayout title={title} subtitle={subtitle} hideContent={!isBeforeShutdownDate(expiration)}>
+        <CortexLayout.Route path="scorecards" title="Scorecards">
+          <ScorecardsPage />
+        </CortexLayout.Route>
+        <CortexLayout.Route path="reports" title="Reports">
+          <ReportsPage />
+        </CortexLayout.Route>
+        <CortexLayout.Route path="initiatives" title="Initiatives">
+          <InitiativesPage />
+        </CortexLayout.Route>
+        {/*
         Show the settings page if there is an error (will occur when email header authorization returns an error, which is a valid use case)
         or if the user has the EDIT_SETTINGS permission
          */}
-            {!hideSettings && (!isNil(permissionsError) || canEditSettings) && (
-              <CortexLayout.Route path="settings" title="Settings">
-                <SettingsPage />
-              </CortexLayout.Route>
-            )}
-            {!isNil(helpPage) && (
-              <CortexLayout.Route path="help" title="Help">
-                <HelpPage helpPage={helpPage} />
-              </CortexLayout.Route>
-            )}
-          </CortexLayout>
-        )
-      }
+        {!hideSettings && (!isNil(permissionsError) || canEditSettings) && (
+          <CortexLayout.Route path="settings" title="Settings">
+            <SettingsPage />
+          </CortexLayout.Route>
+        )}
+        {!isNil(helpPage) && (
+          <CortexLayout.Route path="help" title="Help">
+            <HelpPage helpPage={helpPage} />
+          </CortexLayout.Route>
+        )}
+      </CortexLayout>
     </>
   );
 };
