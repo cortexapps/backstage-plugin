@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import {
-  EntitySyncProgress, ExpirationResponse,
+  EntitySyncProgress,
+  ExpirationResponse,
   GroupByOption,
   Initiative,
   InitiativeActionItem,

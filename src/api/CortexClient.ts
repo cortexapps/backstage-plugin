@@ -15,7 +15,8 @@
  */
 
 import {
-  EntitySyncProgress, ExpirationResponse,
+  EntitySyncProgress,
+  ExpirationResponse,
   GroupByOption,
   Initiative,
   InitiativeActionItem,
