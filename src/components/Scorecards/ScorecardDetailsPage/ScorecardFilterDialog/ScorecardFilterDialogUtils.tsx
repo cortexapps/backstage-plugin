@@ -34,6 +34,17 @@ import {
   isApplicableRuleOutcome,
 } from '../../../../utils/ScorecardRules';
 import { stringifyAnyEntityRef } from '../../../../utils/types';
+import { isEmpty, isNil } from 'lodash';
+
+export const createLevelPredicate = (levelId: string) => {
+  return (score: ScorecardServiceScore) => {
+    if (isEmpty(levelId)) {
+      return isNil(score.ladderLevels[0].currentLevel);
+    }
+
+    return score.ladderLevels[0].currentLevel?.id.toString() === levelId;
+  };
+};
 
 export const createExemptRulePredicate = (ruleExpression: string) => {
   return (score: ScorecardServiceScore) => {

@@ -28,7 +28,10 @@ import {
   ScorecardScoresRulesCard,
 } from './ScorecardRulesTab';
 import { Predicate } from '../../../utils/types';
-import { ScorecardStatsCard } from './ScorecardStatsCard';
+import {
+  ScorecardLadderStatsCard,
+  ScorecardScoresStatsCard,
+} from './ScorecardStatsCard';
 import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import CopyCsvButton from './CopyCsvButton';
@@ -126,10 +129,16 @@ export const ScorecardDetails = ({
         </Grid>
         <Grid item lg={7} xs={12}>
           <Box display="flex" flexDirection="column">
-            {ladder && (
-              <ScorecardStatsCard
+            {ladder ? (
+              <ScorecardLadderStatsCard
+                entityCategory={entityCategory}
                 scores={filteredScores}
                 scorecardLadder={ladder}
+              />
+            ) : (
+              <ScorecardScoresStatsCard
+                scores={filteredScores}
+                entityCategory={entityCategory}
               />
             )}
           </Box>
@@ -178,6 +187,7 @@ export const ScorecardDetails = ({
         handleClose={handleFilterDialogClose}
         scorecard={scorecard}
         setFilter={(filter: any) => setFilter(() => filter)}
+        ladder={ladder}
       />
     </Content>
   );

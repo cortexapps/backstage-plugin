@@ -46,8 +46,6 @@ export interface Rule extends RuleName {
 
 export interface RuleFilter {
   query?: string;
-  includedTags?: string[];
-  excludedTags?: string[];
 }
 
 export function ruleName(rule: RuleName): string {
@@ -130,6 +128,7 @@ export interface ScorecardScoreLadderDetails {
 }
 
 export interface ScorecardScoreLadderLevel {
+  id: number;
   name: string;
   color: string;
   rank: number;
@@ -319,9 +318,7 @@ export interface CatalogEntityMetadata extends EntityMetadata {
 }
 
 export interface Initiative {
-  creator: { email: string; name: string };
   description?: string;
-  entities: CatalogEntityMetadata[];
   entityGroups: ServiceGroup[];
   id: string;
   levels: InitiativeLadderLevel[];

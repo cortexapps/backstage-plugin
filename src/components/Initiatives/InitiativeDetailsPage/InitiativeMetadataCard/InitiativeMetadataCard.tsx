@@ -23,6 +23,8 @@ import moment from 'moment/moment';
 import { CortexInfoCard } from '../../../Common/CortexInfoCard';
 import { CaptionTypography } from '../../../Common/StatsItem';
 import InitiativeMetadataFilter from './InitiativeMetadataFilter';
+import { getTargetDateMessage } from './InitiativeMetadataCardUtils';
+import { HoverTimestamp } from '../../../Common/HoverTimestamp';
 
 interface InitiativeMetadataCardProps {
   initiative: Initiative;
@@ -59,8 +61,7 @@ export const InitiativeMetadataCard = ({
     >
       <Box display="flex" flexDirection="column" gridGap={8}>
         <Typography variant="body2">
-          Due by{' '}
-          {moment.utc(initiative.targetDate).local().format('MMMM Do, YYYY')}
+          {getTargetDateMessage(initiative)}
         </Typography>
         <Link to={scorecardRef({ id: `${initiative.scorecard.id}` })}>
           <Typography variant="body2">{initiative.scorecard.name}</Typography>

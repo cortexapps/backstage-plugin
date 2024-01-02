@@ -20,6 +20,7 @@ import { Box, makeStyles } from '@material-ui/core';
 
 interface FilterCardProps {
   filterDefinitions: FilterDefinition[];
+  title?: string;
 }
 
 const useStyles = makeStyles(() => ({
@@ -31,11 +32,12 @@ const useStyles = makeStyles(() => ({
 
 export const FilterCard: React.FC<FilterCardProps> = ({
   filterDefinitions,
+  title = 'Filter By',
 }) => {
   const classes = useStyles();
 
   return (
-    <CortexInfoCard title="Filter By" className={classes.filterCardRoot}>
+    <CortexInfoCard title={title} className={classes.filterCardRoot}>
       <Box display="flex" gridGap={16} flexDirection="column">
         {filterDefinitions.map((filterDefinition, idx) => {
           return (

@@ -74,7 +74,7 @@ export const InitiativeStatsCard = ({
           caption={'Complete'}
           percentage
           type={'PERCENTAGE'}
-          value={percentify(complete)}
+          value={complete}
         />
         <StatsItem caption={'Passing'} type={'NONE'} value={numPassing} />
         <StatsItem caption={'Failing'} type={'NONE'} value={numFailing} />

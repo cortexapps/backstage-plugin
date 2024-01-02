@@ -101,13 +101,13 @@ const InitiativeFilterDialog = ({
 
   const filtersDefinition = [
     {
-      name: 'Failing Rule',
+      name: 'Failing rules',
       filters: ruleFilterDefinitions,
       generatePredicate: (failingRule: string) =>
         createRulePredicate(failingRule, actionItems, false),
     },
     {
-      name: 'Passing Rule',
+      name: 'Passing rules',
       filters: ruleFilterDefinitions,
       generatePredicate: (passingRule: string) =>
         createRulePredicate(passingRule, actionItems, true),
@@ -153,7 +153,10 @@ const InitiativeFilterDialog = ({
         {loading ? (
           <Progress />
         ) : (
-          <FilterCard filterDefinitions={filtersDefinition} />
+          <FilterCard
+            filterDefinitions={filtersDefinition}
+            title="Filter Initiative"
+          />
         )}
       </DialogContent>
       <DialogActions>

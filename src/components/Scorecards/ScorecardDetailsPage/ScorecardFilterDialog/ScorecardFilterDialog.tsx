@@ -23,6 +23,7 @@ import {
 } from '@material-ui/core';
 import {
   Scorecard,
+  ScorecardLadder,
   ScorecardServiceScore,
   ruleName,
 } from '../../../../api/types';
@@ -40,7 +41,9 @@ import {
   createExemptRulePredicate,
   createNotEvaluatedRulePredicate,
   toPredicateFilters,
+  createLevelPredicate,
 } from './ScorecardFilterDialogUtils';
+import { FilterDefinition } from '../../../FilterCardNew/Filters';
 
 const useStyles = makeStyles(() => ({
   dialogContent: {
@@ -49,22 +52,24 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface ScorecardFilterDialogProps {
-  isOpen: boolean;
   handleClose: () => void;
+  isOpen: boolean;
+  ladder?: ScorecardLadder;
   scorecard: Scorecard;
   setFilter: Function;
 }
 
 export const ScorecardFilterDialog = ({
-  isOpen,
   handleClose,
+  isOpen,
+  ladder,
   scorecard,
   setFilter,
 }: ScorecardFilterDialogProps) => {
   const classes = useStyles();
   const { checkedFilters, oneOf } = useFilter();
 
-  const ruleFilterDefinitions = useMemo(() => {
+  const ruleFilterDefinitions: FilterDefinition['filters'] = useMemo(() => {
     return mapValues(
       mapByString(scorecard.rules, rule => rule.id.toString()),
       rule => ({
@@ -75,6 +80,32 @@ export const ScorecardFilterDialog = ({
     );
   }, [scorecard.rules]);
 
+  const levelDefinitions: FilterDefinition['filters'] = useMemo(() => {
+    if (!ladder || !ladder.levels) {
+      return {};
+    }
+
+    const sortedLevels = ladder.levels.sort(
+      (level1, level2) => level2.rank - level1.rank,
+    );
+
+    return {
+      'No level': {
+        display: 'No level',
+        value: '',
+        id: '',
+      },
+      ...mapValues(
+        mapByString(sortedLevels, level => level.id.toString()),
+        level => ({
+          display: level.name,
+          value: level.id.toString(),
+          id: level.id.toString(),
+        }),
+      ),
+    };
+  }, [ladder]);
+
   const { filterGroups, loading } = useFilters(
     (score: ScorecardServiceScore) => score.componentRef,
     {
@@ -84,25 +115,31 @@ export const ScorecardFilterDialog = ({
 
   const filtersDefinition = [
     {
-      name: 'Failing Rule',
+      name: 'Levels',
+      oneOfDisabled: true,
+      filters: levelDefinitions,
+      generatePredicate: (level: string) => createLevelPredicate(level),
+    },
+    {
+      name: 'Failing rules',
       filters: ruleFilterDefinitions,
       generatePredicate: (failingRule: string) =>
         createApplicableRulePredicate(false, failingRule),
     },
     {
-      name: 'Passing Rule',
+      name: 'Passing rules',
       filters: ruleFilterDefinitions,
       generatePredicate: (passingRule: string) =>
         createApplicableRulePredicate(true, passingRule),
     },
     {
-      name: 'Exempt Rule',
+      name: 'Exempt rules',
       filters: ruleFilterDefinitions,
       generatePredicate: (exemptRule: string) =>
         createExemptRulePredicate(exemptRule),
     },
     {
-      name: 'Rule Not Yet Evaluated',
+      name: 'Rules not yet evaluated',
       filters: ruleFilterDefinitions,
       generatePredicate: (notEvaluatedRule: string) =>
         createNotEvaluatedRulePredicate(notEvaluatedRule),
@@ -148,7 +185,10 @@ export const ScorecardFilterDialog = ({
         {loading || filterGroups === undefined ? (
           <Progress />
         ) : (
-          <FilterCard filterDefinitions={filtersDefinition} />
+          <FilterCard
+            filterDefinitions={filtersDefinition}
+            title="Filter Scorecard"
+          />
         )}
       </DialogContent>
       <DialogActions>

@@ -88,6 +88,20 @@ export const getExemptionRejectedDetailsText = (
   );
 };
 
+export const getIsExpired = (exemption: RuleExemptionResponse) => {
+  if (exemption.endDate === null) return false;
+
+  const remainingDays = daysUntil(exemption.endDate);
+  return !isNil(remainingDays) && remainingDays < 0;
+};
+
+export const getIsActive = (exemption: RuleExemptionResponse) => {
+  return (
+    !getIsExpired(exemption) &&
+    exemption.status.type !== ExemptionStatusResponseType.REJECTED
+  );
+};
+
 export const isRejectedStatus = (
   status: ExemptionStatus,
 ): status is RejectedExemptionStatus => {
