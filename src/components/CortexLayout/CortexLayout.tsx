@@ -66,12 +66,14 @@ type CortexLayoutProps = {
   title?: string;
   subtitle?: string;
   children?: React.ReactNode;
+  hideContent?: boolean;
 };
 
 export const CortexLayout = ({
   title,
   subtitle,
   children,
+  hideContent,
 }: CortexLayoutProps) => {
   const routes = createSubRoutesFromChildren(children);
 
@@ -81,7 +83,7 @@ export const CortexLayout = ({
         title={title ?? 'Explore our ecosystem'}
         subtitle={subtitle ?? 'Discover solutions available in our ecosystem'}
       />
-      <RoutedTabs routes={routes} />
+      {hideContent ? null : <RoutedTabs routes={routes} />}
     </Page>
   );
 };

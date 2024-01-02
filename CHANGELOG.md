@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.4.3
+
+- Show expiration banner when Cortex access is expiring & block access after expiration.
+
 ### 2.4.2
 
 - Add indicator explaining that grouping by level is not available for historical reports.
