@@ -30,6 +30,7 @@ import { InitiativeLevelsTab } from './InitiativeLevelsTab/InitiativeLevelsTab';
 import { InitiativeRulesTab } from './InitiativeRulesTab';
 import { isEmpty, isNil } from 'lodash';
 import { InitiativeFilterDialog } from './InitativeFilterDialog';
+import { InitiativeFilter } from './InitativeFilterDialog/InitiativeFilterDialogUtils';
 
 enum InitiativeDetailsTab {
   'Failing' = 'Failing',
@@ -195,7 +196,7 @@ export const InitiativeDetailsPage = () => {
         actionItems={actionItems}
         initiative={initiative}
         handleClose={handleFilterDialogClose}
-        setFilter={(filter: any) => setFilter(() => filter)}
+        setFilter={(filter: InitiativeFilter) => setFilter(() => filter)}
       />
     </Content>
   );

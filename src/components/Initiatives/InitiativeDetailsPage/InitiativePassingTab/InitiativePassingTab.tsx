@@ -93,7 +93,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
       {
         field: 'all',
         title: 'Service name',
-        width: '75%',
+        width: '60%',
         render: (data: InitiativePassingTabRowProps) => {
           return <ServiceNameColumn {...data} scorecardId={scorecardId} />;
         },
@@ -146,7 +146,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
         field: 'score',
         sorting: false,
         title: 'Score',
-        width: '20%',
+        width: '15%',
         render: () => {
           return (
             <Box sx={{ width: 120 }}>

@@ -60,14 +60,11 @@ export const toPredicateFilters = (
   filters: { [id: string]: boolean },
   name: string,
 ) => {
-  const predicateFilters: Record<string, boolean> = {};
-
-  Object.keys(filters)
+  return Object.keys(filters)
     .filter(key => key.includes(name))
-    .forEach(key => {
+    .reduce<Record<string, boolean>>((acc, key) => {
       const newKey = key.replace(name, '');
-      predicateFilters[newKey] = filters[key];
-    });
-
-  return predicateFilters;
+      acc[newKey] = filters[key];
+      return acc;
+    }, {});
 };

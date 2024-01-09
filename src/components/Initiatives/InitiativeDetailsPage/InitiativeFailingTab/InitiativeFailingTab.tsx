@@ -36,6 +36,7 @@ import {
   failingTabTheme,
   useInitiativeFailingTabStyle,
 } from './InitiativeFailingTabConfig';
+import { size } from 'lodash';
 
 interface InitiativeFailingTabProps {
   actionItems: InitiativeActionItem[];
@@ -84,7 +85,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
   }, [entitiesByTag, failingComponents, numRules]);
 
   const showPagination = useMemo(() => {
-    return Object.keys(failingComponents).length > defaultPageSize;
+    return size(failingComponents) > defaultPageSize;
   }, [failingComponents, defaultPageSize]);
 
   const columns: TableColumn<InitiativeFailingTabRowProps>[] = useMemo(
@@ -92,7 +93,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
       {
         field: 'all',
         title: 'Service name',
-        width: '75%',
+        width: '60%',
         render: (data: InitiativeFailingTabRowProps) => {
           return (
             <ServiceNameAndRulesColumn {...data} scorecardId={scorecardId} />
@@ -147,7 +148,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
         field: 'score',
         sorting: true,
         title: 'Score',
-        width: '20%',
+        width: '15%',
         render: (data: InitiativeFailingTabRowProps) => {
           const actionItemsLength = data.actionItems?.length ?? 0;
           return (

@@ -72,11 +72,9 @@ export const LinearProgressWithLabel: React.FC<LinearProgressWithLabelProps> =
           />
         </Box>
         <Box minWidth={45}>
-          {label ? (
-            <Typography variant="body1">{label}</Typography>
-          ) : (
-            <Typography variant="body1">{`${Math.round(value)}%`}</Typography>
-          )}
+          <Typography variant="body1">
+            {label ?? `${Math.round(value)}%`}
+          </Typography>
         </Box>
       </Box>
     );

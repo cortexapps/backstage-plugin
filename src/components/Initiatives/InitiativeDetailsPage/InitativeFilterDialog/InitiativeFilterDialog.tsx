@@ -163,9 +163,9 @@ const InitiativeFilterDialog = ({
         <Button
           onClick={handleSaveFilters}
           color="primary"
-          aria-label="Close modal"
+          aria-label="Apply filters"
         >
-          Close
+          Apply filters
         </Button>
       </DialogActions>
     </Dialog>
