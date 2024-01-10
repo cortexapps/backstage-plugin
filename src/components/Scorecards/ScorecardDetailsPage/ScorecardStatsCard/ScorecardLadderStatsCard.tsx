@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
+import {
+  CategoryFilter,
+  ScorecardLadder,
+  ScorecardServiceScore,
+} from '../../../../api/types';
 import { Box, Paper, Typography, makeStyles } from '@material-ui/core';
 import { isEmpty, isNil } from 'lodash';
 import { median } from 'simple-statistics';
@@ -23,7 +27,8 @@ import StatsItem, { CaptionTypography } from '../../../Common/StatsItem';
 import { safeDivide } from '../../../../utils/NumberUtils';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
 
-interface ScorecardStatsCardProps {
+interface ScorecardLadderStatsCardProps {
+  entityCategory: CategoryFilter;
   scorecardLadder: ScorecardLadder;
   scores: ScorecardServiceScore[];
 }
@@ -37,10 +42,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const ScorecardStatsCard = ({
+export const ScorecardLadderStatsCard = ({
+  entityCategory,
   scores,
   scorecardLadder,
-}: ScorecardStatsCardProps) => {
+}: ScorecardLadderStatsCardProps) => {
   const classes = useStyles();
   const numberOfEntities = scores.length;
 
@@ -95,7 +101,7 @@ export const ScorecardStatsCard = ({
           value={percentNoLevel}
         />
         <StatsItem
-          caption={'Entities'}
+          caption={`${entityCategory}s`}
           type={'NONE'}
           value={numberOfEntities}
         />

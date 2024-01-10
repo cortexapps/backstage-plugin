@@ -22,28 +22,22 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import {
-  Scorecard,
-  ScorecardLadder,
-  ScorecardServiceScore,
+  Initiative,
+  InitiativeActionItem,
   ruleName,
 } from '../../../../api/types';
 import { FilterProvider, useFilter } from '../../../FilterCardNew/useFilter';
 import { mapValues } from 'lodash';
 import { mapByString } from '../../../../utils/collections';
-import { useFilters } from '../../../../utils/hooks';
 import { FilterCard } from '../../../FilterCardNew';
-import { Progress } from '@backstage/core-components';
-import { combinePredicates } from '../../../../utils/types';
-import { ScorecardServiceScoreFilter } from '../ScorecardDetails';
+import { AnyEntityRef, combinePredicates } from '../../../../utils/types';
 import {
-  groupAndSystemFilters,
-  createApplicableRulePredicate,
-  createExemptRulePredicate,
-  createNotEvaluatedRulePredicate,
   toPredicateFilters,
-  createLevelPredicate,
-} from './ScorecardFilterDialogUtils';
-import { FilterDefinition } from '../../../FilterCardNew/Filters';
+  InitiativeFilter,
+  groupAndSystemFilters,
+} from './InitiativeFilterDialogUtils';
+import { useFilters } from '../../../../utils/hooks';
+import { Progress } from '@backstage/core-components';
 
 const useStyles = makeStyles(() => ({
   dialogContent: {
@@ -51,63 +45,55 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-interface ScorecardFilterDialogProps {
+const createRulePredicate = (
+  rule: string,
+  actionItems: InitiativeActionItem[],
+  pass: boolean,
+) => {
+  return (componentRef: AnyEntityRef) => {
+    const passed = !actionItems.some(
+      actionItem =>
+        actionItem.componentRef === componentRef &&
+        actionItem.rule.expression === rule,
+    );
+
+    return passed === pass;
+  };
+};
+
+interface InitiativeFilterDialogProps {
   handleClose: () => void;
+  initiative: Initiative;
+  actionItems: InitiativeActionItem[];
   isOpen: boolean;
-  ladder?: ScorecardLadder;
-  scorecard: Scorecard;
-  setFilter: Function;
+  setFilter: (filter: InitiativeFilter) => void;
 }
 
-export const ScorecardFilterDialog = ({
-  handleClose,
+const InitiativeFilterDialog = ({
+  initiative,
   isOpen,
-  ladder,
-  scorecard,
+  actionItems,
+  handleClose,
   setFilter,
-}: ScorecardFilterDialogProps) => {
+}: InitiativeFilterDialogProps) => {
   const classes = useStyles();
   const { checkedFilters, oneOf } = useFilter();
 
-  const ruleFilterDefinitions: FilterDefinition['filters'] = useMemo(() => {
+  const ruleFilterDefinitions = useMemo(() => {
     return mapValues(
-      mapByString(scorecard.rules, rule => rule.id.toString()),
-      rule => ({
-        display: ruleName(rule),
-        value: rule.expression,
-        id: rule.id.toString(),
-      }),
-    );
-  }, [scorecard.rules]);
-
-  const levelDefinitions: FilterDefinition['filters'] = useMemo(() => {
-    if (!ladder || !ladder.levels) {
-      return {};
-    }
-
-    const sortedLevels = ladder.levels.sort(
-      (level1, level2) => level2.rank - level1.rank,
-    );
-
-    return {
-      'No level': {
-        display: 'No level',
-        value: '',
-        id: '',
+      mapByString(initiative.rules, rule => `${rule.ruleId}`),
+      rule => {
+        return {
+          display: ruleName(rule),
+          value: rule.expression,
+          id: rule.ruleId.toString(),
+        };
       },
-      ...mapValues(
-        mapByString(sortedLevels, level => level.id.toString()),
-        level => ({
-          display: level.name,
-          value: level.id.toString(),
-          id: level.id.toString(),
-        }),
-      ),
-    };
-  }, [ladder]);
+    );
+  }, [initiative.rules]);
 
   const { filterGroups, loading } = useFilters(
-    (score: ScorecardServiceScore) => score.componentRef,
+    (entityRef: string) => entityRef,
     {
       baseFilters: groupAndSystemFilters,
     },
@@ -115,40 +101,22 @@ export const ScorecardFilterDialog = ({
 
   const filtersDefinition = [
     {
-      name: 'Levels',
-      oneOfDisabled: true,
-      filters: levelDefinitions,
-      generatePredicate: (level: string) => createLevelPredicate(level),
-    },
-    {
       name: 'Failing rules',
       filters: ruleFilterDefinitions,
       generatePredicate: (failingRule: string) =>
-        createApplicableRulePredicate(false, failingRule),
+        createRulePredicate(failingRule, actionItems, false),
     },
     {
       name: 'Passing rules',
       filters: ruleFilterDefinitions,
       generatePredicate: (passingRule: string) =>
-        createApplicableRulePredicate(true, passingRule),
-    },
-    {
-      name: 'Exempt rules',
-      filters: ruleFilterDefinitions,
-      generatePredicate: (exemptRule: string) =>
-        createExemptRulePredicate(exemptRule),
-    },
-    {
-      name: 'Rules not yet evaluated',
-      filters: ruleFilterDefinitions,
-      generatePredicate: (notEvaluatedRule: string) =>
-        createNotEvaluatedRulePredicate(notEvaluatedRule),
+        createRulePredicate(passingRule, actionItems, true),
     },
     ...(filterGroups ?? []),
   ];
 
   const handleSaveFilters = () => {
-    const allFilters: ScorecardServiceScoreFilter[] = [];
+    const allFilters: InitiativeFilter[] = [];
 
     filtersDefinition.forEach((filterDefinition, idx) => {
       const predicateFilters = toPredicateFilters(
@@ -157,13 +125,13 @@ export const ScorecardFilterDialog = ({
       );
       const filterOneOf = oneOf[filterDefinition.name] ?? true;
 
-      allFilters[idx] = (score: ScorecardServiceScore) => {
+      allFilters[idx] = (componentRef: string) => {
         const results = Object.keys(predicateFilters)
           .filter(id => predicateFilters[id])
           .map(id =>
             filterDefinition.generatePredicate(
               filterDefinition.filters[id].value,
-            )(score),
+            )(componentRef),
           );
 
         if (results.length === 0) {
@@ -182,12 +150,12 @@ export const ScorecardFilterDialog = ({
   return (
     <Dialog open={isOpen} onClose={handleClose}>
       <DialogContent className={classes.dialogContent}>
-        {loading || filterGroups === undefined ? (
+        {loading ? (
           <Progress />
         ) : (
           <FilterCard
             filterDefinitions={filtersDefinition}
-            title="Filter Scorecard"
+            title="Filter Initiative"
           />
         )}
       </DialogContent>
@@ -204,11 +172,11 @@ export const ScorecardFilterDialog = ({
   );
 };
 
-export const ScorecardFilterDialogWrapper: React.FC<ScorecardFilterDialogProps> =
+export const InitiativeFilterDialogWrapper: React.FC<InitiativeFilterDialogProps> =
   props => {
     return (
       <FilterProvider>
-        <ScorecardFilterDialog {...props} />
+        <InitiativeFilterDialog {...props} />
       </FilterProvider>
     );
   };

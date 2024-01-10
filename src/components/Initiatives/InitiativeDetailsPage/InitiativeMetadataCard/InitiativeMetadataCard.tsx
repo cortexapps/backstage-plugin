@@ -13,111 +13,70 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Initiative } from '../../../../api/types';
-import { useDetailCardStyles } from '../../../../styles/styles';
-import { InfoCard, MarkdownContent } from '@backstage/core-components';
-import { Chip, Grid } from '@material-ui/core';
-import { MetadataItem } from '../../../MetadataItem';
+import { Link, MarkdownContent } from '@backstage/core-components';
+import { Box, Typography, makeStyles } from '@material-ui/core';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { scorecardRouteRef } from '../../../../routes';
 import moment from 'moment/moment';
-import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
-import { ScorecardRuleRow } from './ScorecardRuleRow';
-import { sortRules } from '../../../../utils/ScorecardRules';
+import { CortexInfoCard } from '../../../Common/CortexInfoCard';
+import { CaptionTypography } from '../../../Common/StatsItem';
+import InitiativeMetadataFilter from './InitiativeMetadataFilter';
+import { getTargetDateMessage } from './InitiativeMetadataCardUtils';
+import { HoverTimestamp } from '../../../Common/HoverTimestamp';
 
 interface InitiativeMetadataCardProps {
   initiative: Initiative;
 }
 
+const useScorecardMetadataCardStyles = makeStyles(theme => ({
+  markdownBox: {
+    '& p': {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
+    '& p:first-child': {
+      marginTop: 0,
+    },
+    '& p:last-child': {
+      marginBottom: 0,
+    },
+  },
+}));
+
 export const InitiativeMetadataCard = ({
   initiative,
 }: InitiativeMetadataCardProps) => {
-  const classes = useDetailCardStyles();
+  const classes = useScorecardMetadataCardStyles();
   const scorecardRef = useRouteRef(scorecardRouteRef);
 
-  const sortedEmphasizedRules = useMemo(
-    () => sortRules(initiative.emphasizedRules),
-    [initiative],
-  );
-
-  const filteredByServiceGroups = initiative.tags.length !== 0;
-  const filteredByServices = initiative.componentRefs.length !== 0;
-  const filteredByBoth = filteredByServiceGroups && filteredByServices;
-
-  const filtersLabel = `Filtered ${
-    filteredByBoth
-      ? 'by services & groups'
-      : filteredByServices
-      ? `to ${initiative.componentRefs.length} services`
-      : 'by groups'
-  }`;
-
   return (
-    <InfoCard title="Details" className={classes.root}>
-      <Grid container>
+    <CortexInfoCard
+      title={
+        <Box display="flex" flexDirection="column">
+          <Typography variant="h6">{initiative.name}</Typography>
+        </Box>
+      }
+    >
+      <Box display="flex" flexDirection="column" gridGap={8}>
+        <Typography variant="body2">
+          {getTargetDateMessage(initiative)}
+        </Typography>
+        <Link to={scorecardRef({ id: `${initiative.scorecard.id}` })}>
+          <Typography variant="body2">{initiative.scorecard.name}</Typography>
+        </Link>
         {initiative.description && (
-          <MetadataItem gridSizes={{ xs: 12 }} label="Description">
+          <Box className={classes.markdownBox}>
+            <CaptionTypography variant="caption">Description</CaptionTypography>
             <MarkdownContent content={initiative.description} />
-          </MetadataItem>
+          </Box>
         )}
-        <MetadataItem gridSizes={{ xs: 12 }} label="Deadline">
-          {moment.utc(initiative.targetDate).local().fromNow()}
-        </MetadataItem>
-        <MetadataItem gridSizes={{ xs: 12 }} label="Scorecard">
-          <Chip
-            size="small"
-            label={initiative.scorecard.name}
-            clickable
-            component="a"
-            href={scorecardRef({ id: `${initiative.scorecard.id}` })}
-          />
-        </MetadataItem>
-        {initiative.emphasizedLevels.length !== 0 && (
-          <MetadataItem gridSizes={{ xs: 12 }} label="Prioritized Ladder Level">
-            {initiative.emphasizedLevels.map(level => (
-              <div key={`Initiative-EmphasizeLevel-${level.levelId}`}>
-                {level.levelName}
-                <ScorecardLadderLevelBadge
-                  name={level.levelName}
-                  color={level.levelColor}
-                />
-              </div>
-            ))}
-          </MetadataItem>
-        )}
-        {sortedEmphasizedRules.length !== 0 && (
-          <MetadataItem gridSizes={{ xs: 12 }} label="Prioritized Ladder Level">
-            <Grid container>
-              {sortedEmphasizedRules.map(rule => (
-                <ScorecardRuleRow
-                  key={`Initiative-EmphasizeRule-${rule.ruleId}`}
-                  rule={rule}
-                />
-              ))}
-            </Grid>
-          </MetadataItem>
-        )}
-        <MetadataItem gridSizes={{ xs: 12 }} label={filtersLabel}>
-          {(filteredByServiceGroups || !filteredByServices) && (
-            <MetadataItem
-              gridSizes={{ xs: 12 }}
-              label={filteredByBoth ? 'Groups' : 'Applies to'}
-            >
-              {initiative.tags.map(s => (
-                <Chip
-                  key={`Initiative-Filter-ServiceGroup-${s.id}`}
-                  size="small"
-                  label={s.tag}
-                />
-              ))}
-              {initiative.tags.length === 0 && (
-                <Chip size="small" label="All" />
-              )}
-            </MetadataItem>
-          )}
-        </MetadataItem>
-      </Grid>
-    </InfoCard>
+        <Box mb={2}>
+          <CaptionTypography variant="caption">Filter</CaptionTypography>
+          <InitiativeMetadataFilter initiative={initiative} />
+        </Box>
+      </Box>
+    </CortexInfoCard>
   );
 };

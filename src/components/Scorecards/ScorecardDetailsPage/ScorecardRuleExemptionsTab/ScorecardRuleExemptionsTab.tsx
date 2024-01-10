@@ -15,7 +15,6 @@
  */
 import React, { useMemo } from 'react';
 import {
-  ExemptionStatusResponseType,
   Rule,
   Scorecard,
   ScorecardRuleExemptionResult,
@@ -29,9 +28,13 @@ import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { RuleExemptionStatus } from './RuleExemptionStatus';
 import { CortexInfoCard } from '../../../Common/CortexInfoCard';
-import { getExpirationText } from './ScorecardRuleExemptionsTabUtils';
+import {
+  getExpirationText,
+  getIsActive,
+} from './ScorecardRuleExemptionsTabUtils';
 import ScorecardRuleExemptionTooltip from './ScorecardRuleExemptionTooltip';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
+import { isEmpty } from 'lodash';
 
 interface ScorecardRuleExemptionsTabProps {
   ruleExemptions: ScorecardRuleExemptionResult['scorecardRuleExemptions'];
@@ -78,74 +81,71 @@ export const ScorecardRuleExemptionsTab = ({
   return (
     <CortexInfoCard>
       <Box display="flex" flexDirection="column">
+        {isEmpty(ruleExemptions) && (
+          <Typography variant="body2">
+            No rule exemptions found for this scorecard.
+          </Typography>
+        )}
         {Object.entries(ruleExemptions).map(([id, ruleExemptionById]) => {
           return (
             <React.Fragment key={`RuleExemption-${id}`}>
-              {ruleExemptionById
-                .filter(
-                  ruleExemption =>
-                    ruleExemption.status.type !==
-                    ExemptionStatusResponseType.REJECTED,
-                )
-                .map(ruleExemption => {
-                  const serviceComponentRef = scoresMap[ruleExemption.id];
-                  const serviceName =
-                    entitiesByTag[serviceComponentRef]?.name ??
-                    humanizeAnyEntityRef(
-                      serviceComponentRef,
-                      defaultComponentRefContext,
-                    );
+              {ruleExemptionById.filter(getIsActive).map(ruleExemption => {
+                const serviceComponentRef = scoresMap[ruleExemption.id];
+                const serviceName =
+                  entitiesByTag[serviceComponentRef]?.name ??
+                  humanizeAnyEntityRef(
+                    serviceComponentRef,
+                    defaultComponentRefContext,
+                  );
 
-                  return (
-                    <Tooltip
-                      key={`RuleExemption-${id}-${ruleExemption.id}`}
-                      title={
-                        <ScorecardRuleExemptionTooltip
-                          exemption={ruleExemption}
-                        />
-                      }
-                      placement="bottom-start"
+                return (
+                  <Tooltip
+                    key={`RuleExemption-${id}-${ruleExemption.id}`}
+                    title={
+                      <ScorecardRuleExemptionTooltip
+                        exemption={ruleExemption}
+                      />
+                    }
+                    placement="bottom-start"
+                  >
+                    <Box
+                      display="flex"
+                      flexDirection="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      mb={1}
                     >
                       <Box
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
-                        justifyContent="space-between"
-                        mb={1}
                       >
-                        <Box
-                          display="flex"
-                          flexDirection="row"
-                          alignItems="center"
-                        >
-                          <RuleExemptionStatus
-                            type={ruleExemption.status.type}
-                          />
+                        <RuleExemptionStatus type={ruleExemption.status.type} />
 
-                          <Typography variant="body2">
-                            <Typography
-                              variant="body2"
-                              component="span"
-                              className={classes.text}
-                            >
-                              {rulesMap[ruleExemption.ruleId]}
-                            </Typography>{' '}
-                            for{' '}
-                            <ScorecardServiceRefLink
-                              scorecardId={scorecard.id}
-                              componentRef={serviceComponentRef}
-                            >
-                              {serviceName}
-                            </ScorecardServiceRefLink>
-                          </Typography>
-                        </Box>
                         <Typography variant="body2">
-                          {getExpirationText(ruleExemption)}
+                          <Typography
+                            variant="body2"
+                            component="span"
+                            className={classes.text}
+                          >
+                            {rulesMap[ruleExemption.ruleId]}
+                          </Typography>{' '}
+                          for{' '}
+                          <ScorecardServiceRefLink
+                            scorecardId={scorecard.id}
+                            componentRef={serviceComponentRef}
+                          >
+                            {serviceName}
+                          </ScorecardServiceRefLink>
                         </Typography>
                       </Box>
-                    </Tooltip>
-                  );
-                })}
+                      <Typography variant="body2">
+                        {getExpirationText(ruleExemption)}
+                      </Typography>
+                    </Box>
+                  </Tooltip>
+                );
+              })}
             </React.Fragment>
           );
         })}

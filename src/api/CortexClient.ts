@@ -249,7 +249,7 @@ export class CortexClient implements CortexApi {
   }
 
   async getInitiative(id: number): Promise<InitiativeWithScores> {
-    return await this.get(`/api/backstage/v1/initiatives/${id}`);
+    return await this.get(`/api/backstage/v1/initiatives/v2/${id}`);
   }
 
   async getInitiativeActionItems(id: number): Promise<InitiativeActionItem[]> {

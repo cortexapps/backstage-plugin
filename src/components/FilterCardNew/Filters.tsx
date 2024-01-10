@@ -56,12 +56,17 @@ export interface FilterValue {
 
 export interface FilterDefinition {
   name: string;
+  oneOfDisabled?: boolean;
   filters: { [id: string]: FilterValue };
 }
 
 interface FiltersProps extends FilterDefinition {}
 
-export const Filters: React.FC<FiltersProps> = ({ name, filters }) => {
+export const Filters: React.FC<FiltersProps> = ({
+  name,
+  filters,
+  oneOfDisabled,
+}) => {
   const { checkedFilters, setCheckedFilters, oneOf, setOneOf } = useFilter();
   const classes = useStyles();
   const currentOneOf = oneOf[name] ?? true;
@@ -108,15 +113,17 @@ export const Filters: React.FC<FiltersProps> = ({ name, filters }) => {
           <Typography variant="subtitle2" className={classes.name}>
             {name}:
           </Typography>
-          <Select
-            value={currentOneOf ? 'One Of' : 'All Of'}
-            onChange={() => toggleOneOf()}
-            className={classes.select}
-            aria-label={`Select and/or for ${name.toLowerCase()}`}
-          >
-            <MenuItem value="One Of">One Of</MenuItem>
-            <MenuItem value="All Of">All Of</MenuItem>
-          </Select>
+          {!oneOfDisabled && (
+            <Select
+              value={currentOneOf ? 'One Of' : 'All Of'}
+              onChange={() => toggleOneOf()}
+              className={classes.select}
+              aria-label={`Select and/or for ${name.toLowerCase()}`}
+            >
+              <MenuItem value="One Of">One Of</MenuItem>
+              <MenuItem value="All Of">All Of</MenuItem>
+            </Select>
+          )}
         </Box>
         {Object.keys(filters).length <= 10 ? (
           <FormGroup className={classes.rulesList}>

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ScorecardServiceScore } from '../../../../api/types';
 import {
   RELATION_OWNED_BY,
   parseEntityRef,
@@ -28,55 +27,9 @@ import {
   defaultGroupRefContext,
   defaultSystemRefContext,
 } from '../../../../utils/ComponentUtils';
-import {
-  isNotApplicableRuleOutcome,
-  isNotEvaluatedRuleOutcome,
-  isApplicableRuleOutcome,
-} from '../../../../utils/ScorecardRules';
-import { stringifyAnyEntityRef } from '../../../../utils/types';
-import { isEmpty, isNil } from 'lodash';
+import { Predicate, stringifyAnyEntityRef } from '../../../../utils/types';
 
-export const createLevelPredicate = (levelId: string) => {
-  return (score: ScorecardServiceScore) => {
-    if (isEmpty(levelId)) {
-      return isNil(score.ladderLevels[0].currentLevel);
-    }
-
-    return score.ladderLevels[0].currentLevel?.id.toString() === levelId;
-  };
-};
-
-export const createExemptRulePredicate = (ruleExpression: string) => {
-  return (score: ScorecardServiceScore) => {
-    return isNotApplicableRuleOutcome(
-      score.rules.find(rule => ruleExpression === rule.rule.expression),
-    );
-  };
-};
-
-export const createNotEvaluatedRulePredicate = (ruleExpression: string) => {
-  return (score: ScorecardServiceScore) => {
-    return isNotEvaluatedRuleOutcome(
-      score.rules.find(rule => ruleExpression === rule.rule.expression),
-    );
-  };
-};
-
-export const createApplicableRulePredicate = (
-  pass: boolean,
-  ruleExpression: string,
-) => {
-  return (score: ScorecardServiceScore) => {
-    const rule = score?.rules?.find(
-      rule => ruleExpression === rule.rule.expression,
-    );
-    if (isApplicableRuleOutcome(rule)) {
-      const rulePassed = rule.score > 0;
-      return rulePassed === pass;
-    }
-    return false;
-  };
-};
+export type InitiativeFilter = Predicate<string>;
 
 export const groupAndSystemFilters: EntityFilterGroup[] = [
   {
@@ -107,14 +60,11 @@ export const toPredicateFilters = (
   filters: { [id: string]: boolean },
   name: string,
 ) => {
-  const predicateFilters: Record<string, boolean> = {};
-
-  Object.keys(filters)
+  return Object.keys(filters)
     .filter(key => key.includes(name))
-    .forEach(key => {
+    .reduce<Record<string, boolean>>((acc, key) => {
       const newKey = key.replace(name, '');
-      predicateFilters[newKey] = filters[key];
-    });
-
-  return predicateFilters;
+      acc[newKey] = filters[key];
+      return acc;
+    }, {});
 };

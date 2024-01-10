@@ -46,8 +46,6 @@ export interface Rule extends RuleName {
 
 export interface RuleFilter {
   query?: string;
-  includedTags?: string[];
-  excludedTags?: string[];
 }
 
 export function ruleName(rule: RuleName): string {
@@ -130,6 +128,7 @@ export interface ScorecardScoreLadderDetails {
 }
 
 export interface ScorecardScoreLadderLevel {
+  id: number;
   name: string;
   color: string;
   rank: number;
@@ -273,19 +272,60 @@ export interface ScorecardScore {
   dateCreated?: string;
 }
 
-export interface Initiative {
-  creator: { name: string; email: string };
+export interface InitiativeLadderLevel {
+  levelColor: string;
+  levelId: string;
+  levelName: string;
+}
+
+export interface EntityIcon {
+  kind: string;
+  tag: string;
+  url: string;
+}
+
+export enum DomainOwnerInheritance {
+  Append = 'APPEND',
+  Fallback = 'FALLBACK',
+  None = 'NONE',
+}
+
+export interface EntityOwner {
   description?: string;
-  id: number;
+  email: string;
+  id: string;
+  inheritance?: DomainOwnerInheritance;
+}
+
+export interface EntityGroups {
+  all: string[];
+  defined: string[];
+}
+
+export interface EntityMetadata {
+  description?: string;
+  entityGroups: EntityGroups;
+  entityOwners: EntityOwner[];
+  icon?: EntityIcon;
+  id: string;
   name: string;
+  ownerGroups: string[];
+  tag: string;
+}
+
+export interface CatalogEntityMetadata extends EntityMetadata {
+  type: string;
+}
+
+export interface Initiative {
+  description?: string;
+  entityGroups: ServiceGroup[];
+  id: string;
+  levels: InitiativeLadderLevel[];
+  name: string;
+  rules: InitiativeRule[];
   scorecard: Scorecard;
-  emphasizedRules: InitiativeRule[];
-  emphasizedLevels: InitiativeLevel[];
   targetDate: string;
-  targetScore?: number;
-  // filters
-  tags: ServiceGroup[];
-  componentRefs: string[];
 }
 
 export interface InitiativeWithScores extends Initiative {
@@ -309,7 +349,7 @@ export interface InitiativeLevel {
 
 export interface InitiativeServiceScores {
   scorePercentage: number;
-  componentRef: string;
+  entityTag: string;
 }
 
 export interface InitiativeActionItem {

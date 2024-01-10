@@ -23,7 +23,7 @@ import { ScorecardLadderLevelBadge } from '../../Common/ScorecardLadderLevelBadg
 import { percentify } from '../../../utils/NumberUtils';
 import { quantileRankSorted } from 'simple-statistics';
 import { filterFailingRuleOutcomes } from '../../../utils/ScorecardRules';
-import { LinearProgressWithLabel } from './LinearProgressWithLabel';
+import { LinearProgressWithLabel } from '../../Common/LinearProgressWithLabel';
 
 interface ScorecardsServiceStatisticsProps {
   scores: number[];
@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
 export const ScorecardsServiceStatistics: React.FC<ScorecardsServiceStatisticsProps> =
   ({ scores, score, rules }) => {
     const classes = useStyles();
-    const currentLevel = score.ladderLevels[0].currentLevel;
+    const currentLevel = score.ladderLevels[0]?.currentLevel;
     const rank = [...scores].reverse().indexOf(score.scorePercentage) + 1;
     const percentileRank = quantileRankSorted(scores, score.scorePercentage);
     const failingRules = filterFailingRuleOutcomes(rules).length;
