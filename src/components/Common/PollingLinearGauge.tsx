@@ -32,7 +32,7 @@ const PollingLinearGauge: React.FC<PollingLinearGaugeProps> = ({
   backoffMultiplier = 1.2,
   done = false,
   initialDelay = 1000,
-  maxDelay = 1000,
+  maxDelay = 30000,
   poll,
   value,
 }) => {
