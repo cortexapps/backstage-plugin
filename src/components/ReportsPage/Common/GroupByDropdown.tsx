@@ -23,6 +23,13 @@ interface GroupByDropdownProps {
   setGroupBy: (event: React.ChangeEvent<{ value: unknown }>) => void;
 }
 
+const GroupByLabels = {
+  [GroupByOption.SERVICE]: GroupByOption.SERVICE,
+  [GroupByOption.TEAM]: GroupByOption.TEAM,
+  [GroupByOption.SERVICE_GROUP]: 'Group',
+  [GroupByOption.LEVEL]: GroupByOption.LEVEL,
+};
+
 export const GroupByDropdown = ({
   groupBy,
   setGroupBy,
@@ -31,9 +38,9 @@ export const GroupByDropdown = ({
     <FormControl>
       <InputLabel style={{ minWidth: '100px' }}>Group By</InputLabel>
       <Select value={groupBy} onChange={setGroupBy}>
-        {enumKeys(GroupByOption).map(key => (
-          <MenuItem key={`GroupByOption-${key}`} value={GroupByOption[key]}>
-            {GroupByOption[key].valueOf()}
+        {Object.values(GroupByOption).map(value => (
+          <MenuItem key={`GroupByOption-${value}`} value={value}>
+            {GroupByLabels[value]}
           </MenuItem>
         ))}
       </Select>

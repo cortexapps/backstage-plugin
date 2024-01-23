@@ -94,13 +94,7 @@ export const SingleScorecardHeatmapTable = ({
         />
       );
     case GroupByOption.SERVICE_GROUP:
-      return (
-        <HeatmapTableByGroup
-          header="Service Group"
-          rules={headers}
-          data={data}
-        />
-      );
+      return <HeatmapTableByGroup header="Group" rules={headers} data={data} />;
     case GroupByOption.TEAM:
       return <HeatmapTableByGroup header="Team" rules={headers} data={data} />;
     case GroupByOption.LEVEL:
