@@ -448,22 +448,27 @@ export class CortexClient implements CortexApi {
       displayName = profileInfo.displayName;
     }
 
-    const headers =
-      token !== undefined
-        ? {
-          ...init?.headers,
-          Authorization: `Bearer ${(token ?? '').replace(/^[Bb]earer\s+/, '').trim()}`,
-          'x-cortex-email': email ?? '',
-          'x-cortex-name': displayName ?? '',
-        }
-        : {
-          ...init?.headers,
-        };
+    const xCortexHeaders = mapValues({
+      'x-cortex-email': email ?? '',
+      'x-cortex-name': displayName ?? '',
+    }, encodeURIComponent);
 
-    return fetch(input, {
-      ...init,
-      headers: mapValues(headers, encodeURIComponent),
-    });
+    const headers = {
+      ...init?.headers,
+      Authorization: `Bearer ${(token ?? '')
+        .replace(/^[Bb]earer\s+/, '')
+        .trim()}`,
+      ...xCortexHeaders,
+    };
+
+    if (token !== undefined) {
+      return fetch(input, {
+        ...init,
+        headers: headers,
+      });
+    } else {
+      return fetch(input, init);
+    }
   }
 }
 
