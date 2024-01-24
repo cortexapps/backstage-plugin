@@ -37,6 +37,7 @@ import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 import { Buffer } from 'buffer';
 import { Moment } from 'moment/moment';
+import { chunk, mapValues } from 'lodash';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
 import { TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
 import {
@@ -49,7 +50,6 @@ import {
   GetUserInsightsResponse,
   HomepageEntityResponse,
 } from './userInsightTypes';
-import { chunk } from 'lodash';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -448,23 +448,22 @@ export class CortexClient implements CortexApi {
       displayName = profileInfo.displayName;
     }
 
-    const headers = {
-      ...init?.headers,
-      Authorization: `Bearer ${(token ?? '')
-        .replace(/^[Bb]earer\s+/, '')
-        .trim()}`,
-      'x-cortex-email': email ?? '',
-      'x-cortex-name': displayName ?? '',
-    };
+    const headers =
+      token !== undefined
+        ? {
+          ...init?.headers,
+          Authorization: `Bearer ${(token ?? '').replace(/^[Bb]earer\s+/, '').trim()}`,
+          'x-cortex-email': email ?? '',
+          'x-cortex-name': displayName ?? '',
+        }
+        : {
+          ...init?.headers,
+        };
 
-    if (token !== undefined) {
-      return fetch(input, {
-        ...init,
-        headers: headers,
-      });
-    } else {
-      return fetch(input, init);
-    }
+    return fetch(input, {
+      ...init,
+      headers: mapValues(headers, encodeURIComponent),
+    });
   }
 }
 

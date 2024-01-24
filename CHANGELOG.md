@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.4.4
+
+- Support non ISO-8859-1 characters in request headers.
+
 ### 2.4.3
 
 - Show expiration banner when Cortex access is expiring & block access after expiration.
