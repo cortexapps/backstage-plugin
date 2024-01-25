@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.4.4
+
+- Add support for non ISO-8859-1 characters in request headers to the Cortex API. This fixes authentication for users with these characters in their name.
+
 ### 2.4.3
 
 - Show expiration banner when Cortex access is expiring & block access after expiration.

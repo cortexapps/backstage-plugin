@@ -37,6 +37,7 @@ import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 import { Buffer } from 'buffer';
 import { Moment } from 'moment/moment';
+import { chunk, mapValues } from 'lodash';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
 import { TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
 import {
@@ -49,7 +50,6 @@ import {
   GetUserInsightsResponse,
   HomepageEntityResponse,
 } from './userInsightTypes';
-import { chunk } from 'lodash';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -448,13 +448,17 @@ export class CortexClient implements CortexApi {
       displayName = profileInfo.displayName;
     }
 
+    const xCortexHeaders = mapValues({
+      'x-cortex-email': email ?? '',
+      'x-cortex-name': displayName ?? '',
+    }, encodeURIComponent);
+
     const headers = {
       ...init?.headers,
       Authorization: `Bearer ${(token ?? '')
         .replace(/^[Bb]earer\s+/, '')
         .trim()}`,
-      'x-cortex-email': email ?? '',
-      'x-cortex-name': displayName ?? '',
+      ...xCortexHeaders,
     };
 
     if (token !== undefined) {
