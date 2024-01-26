@@ -27,11 +27,11 @@ import {
   ScorecardServiceScore,
   ruleName,
 } from '../../../../api/types';
-import { FilterProvider, useFilter } from '../../../FilterCardNew/useFilter';
+import { FilterProvider, useFilter } from '../../../FilterCard/useFilter';
 import { mapValues } from 'lodash';
 import { mapByString } from '../../../../utils/collections';
 import { useFilters } from '../../../../utils/hooks';
-import { FilterCard } from '../../../FilterCardNew';
+import { FilterCard } from '../../../FilterCard';
 import { Progress } from '@backstage/core-components';
 import { combinePredicates } from '../../../../utils/types';
 import { ScorecardServiceScoreFilter } from '../ScorecardDetails';
@@ -43,7 +43,7 @@ import {
   toPredicateFilters,
   createLevelPredicate,
 } from './ScorecardFilterDialogUtils';
-import { FilterDefinition } from '../../../FilterCardNew/Filters';
+import { FilterDefinition } from '../../../FilterCard/Filters';
 
 const useStyles = makeStyles(() => ({
   dialogContent: {

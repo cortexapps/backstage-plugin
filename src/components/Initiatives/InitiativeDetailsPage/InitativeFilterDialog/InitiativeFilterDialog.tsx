@@ -26,10 +26,10 @@ import {
   InitiativeActionItem,
   ruleName,
 } from '../../../../api/types';
-import { FilterProvider, useFilter } from '../../../FilterCardNew/useFilter';
+import { FilterProvider, useFilter } from '../../../FilterCard/useFilter';
 import { mapValues } from 'lodash';
 import { mapByString } from '../../../../utils/collections';
-import { FilterCard } from '../../../FilterCardNew';
+import { FilterCard } from '../../../FilterCard';
 import { AnyEntityRef, combinePredicates } from '../../../../utils/types';
 import {
   toPredicateFilters,
