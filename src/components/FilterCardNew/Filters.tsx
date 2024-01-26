@@ -107,65 +107,63 @@ export const Filters: React.FC<FiltersProps> = ({
   };
 
   return (
-    <>
-      <Box display="flex" flexDirection="column">
-        <Box display="flex" flexDirection="row" justifyContent="space-between">
-          <Typography variant="subtitle2" className={classes.name}>
-            {name}:
-          </Typography>
-          {!oneOfDisabled && (
-            <Select
-              value={currentOneOf ? 'One Of' : 'All Of'}
-              onChange={() => toggleOneOf()}
-              className={classes.select}
-              aria-label={`Select and/or for ${name.toLowerCase()}`}
-            >
-              <MenuItem value="One Of">One Of</MenuItem>
-              <MenuItem value="All Of">All Of</MenuItem>
-            </Select>
-          )}
-        </Box>
-        {Object.keys(filters).length <= 10 ? (
-          <FormGroup className={classes.rulesList}>
-            {Object.keys(filters).map(id => (
-              <FormControlLabel
-                key={`Filter-${name}-${id}`}
-                control={
-                  <Checkbox
-                    checked={checkedFilters[`${name}${id}`] ?? false}
-                    onChange={() => toggleFilter(id)}
-                    color="primary"
-                    inputProps={{
-                      'aria-label': `Filter ${name.toLowerCase()} by ${
-                        filters[id].display
-                      }`,
-                    }}
-                  />
-                }
-                label={
-                  <Typography variant={'subtitle2'}>
-                    {filters[id].display}
-                  </Typography>
-                }
-              />
-            ))}
-          </FormGroup>
-        ) : (
-          <Autocomplete
-            defaultValue={Object.values(filters).filter(
-              filter => checkedFilters[`${name}${filter.id}`],
-            )}
-            aria-label={`Filter ${name.toLowerCase()}`}
-            options={Object.values(filters)}
-            getOptionLabel={filter => filter.display}
-            multiple
-            onChange={(_event, values) => {
-              toggleAllFilters(values);
-            }}
-            renderInput={params => <TextField {...params} variant="standard" />}
-          />
+    <Box display="flex" flexDirection="column">
+      <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Typography variant="subtitle2" className={classes.name}>
+          {name}:
+        </Typography>
+        {!oneOfDisabled && (
+          <Select
+            value={currentOneOf ? 'One Of' : 'All Of'}
+            onChange={() => toggleOneOf()}
+            className={classes.select}
+            aria-label={`Select and/or for ${name.toLowerCase()}`}
+          >
+            <MenuItem value="One Of">One Of</MenuItem>
+            <MenuItem value="All Of">All Of</MenuItem>
+          </Select>
         )}
       </Box>
-    </>
+      {Object.keys(filters).length <= 10 ? (
+        <FormGroup className={classes.rulesList}>
+          {Object.keys(filters).map(id => (
+            <FormControlLabel
+              key={`Filter-${name}-${id}`}
+              control={
+                <Checkbox
+                  checked={checkedFilters[`${name}${id}`] ?? false}
+                  onChange={() => toggleFilter(id)}
+                  color="primary"
+                  inputProps={{
+                    'aria-label': `Filter ${name.toLowerCase()} by ${
+                      filters[id].display
+                    }`,
+                  }}
+                />
+              }
+              label={
+                <Typography variant={'subtitle2'}>
+                  {filters[id].display}
+                </Typography>
+              }
+            />
+          ))}
+        </FormGroup>
+      ) : (
+        <Autocomplete
+          defaultValue={Object.values(filters).filter(
+            filter => checkedFilters[`${name}${filter.id}`],
+          )}
+          aria-label={`Filter ${name.toLowerCase()}`}
+          options={Object.values(filters)}
+          getOptionLabel={filter => filter.display}
+          multiple
+          onChange={(_event, values) => {
+            toggleAllFilters(values);
+          }}
+          renderInput={params => <TextField {...params} variant="standard" />}
+        />
+      )}
+    </Box>
   );
 };

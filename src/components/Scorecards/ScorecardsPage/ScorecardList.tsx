@@ -108,9 +108,7 @@ export const ScorecardList = () => {
       return (
         hasText(scorecard, 'name', searchQuery) ||
         hasText(scorecard, 'description', searchQuery) ||
-        hasText(scorecard, 'filterQuery', searchQuery) ||
-        hasTags(scorecard.tags, searchQuery) ||
-        hasTags(scorecard.excludedTags, searchQuery)
+        hasText(scorecard, 'filterQuery', searchQuery)
       );
     });
 
