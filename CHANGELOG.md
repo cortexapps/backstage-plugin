@@ -2,7 +2,9 @@
 
 ### 2.5.0
 
+- Scorecard details page revamp
 - Scorecard service page revamp
+- Initiative page revamp
 
 ### 2.4.1
 
