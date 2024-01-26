@@ -27,6 +27,8 @@ import { cortexApiRef } from '../../api';
 import { Permission } from '../../api/types';
 import { extensionApiRef } from '../../api/ExtensionApi';
 import { HelpPage } from '../HelpPage';
+import { isBeforeShutdownDate, shouldShowExpirationBanner } from '../Entitlements/ExpirationUtils';
+import { ExpirationBanner } from '../Entitlements/ExpirationBanner';
 
 export const CortexPage = ({
   title = 'Cortex',
@@ -53,35 +55,47 @@ export const CortexPage = ({
   const canEditSettings =
     permissions && permissions?.permissions.includes(Permission.EDIT_SETTINGS);
 
-  if (loadingPermissions || loadingHelpPage) {
+  const {
+    value: expiration,
+    loading: loadingExpiration,
+  } = useAsync(async () => {
+    return await cortexApi.getExpiration();
+  }, []);
+
+  if (loadingPermissions || loadingHelpPage || loadingExpiration || isNil(expiration)) {
     return <Progress />;
   }
 
   return (
-    <CortexLayout title={title} subtitle={subtitle}>
-      <CortexLayout.Route path="scorecards" title="Scorecards">
-        <ScorecardsPage />
-      </CortexLayout.Route>
-      <CortexLayout.Route path="reports" title="Reports">
-        <ReportsPage />
-      </CortexLayout.Route>
-      <CortexLayout.Route path="initiatives" title="Initiatives">
-        <InitiativesPage />
-      </CortexLayout.Route>
-      {/*
-      Show the settings page if there is an error (will occur when email header authorization returns an error, which is a valid use case)
-      or if the user has the EDIT_SETTINGS permission
-       */}
-      {!hideSettings && (!isNil(permissionsError) || canEditSettings) && (
-        <CortexLayout.Route path="settings" title="Settings">
-          <SettingsPage />
-        </CortexLayout.Route>
+    <>
+      {shouldShowExpirationBanner(expiration) && (
+        <ExpirationBanner {...expiration} />
       )}
-      {!isNil(helpPage) && (
-        <CortexLayout.Route path="help" title="Help">
-          <HelpPage helpPage={helpPage} />
+      <CortexLayout title={title} subtitle={subtitle} hideContent={!isBeforeShutdownDate(expiration)}>
+        <CortexLayout.Route path="scorecards" title="Scorecards">
+          <ScorecardsPage />
         </CortexLayout.Route>
-      )}
-    </CortexLayout>
+        <CortexLayout.Route path="reports" title="Reports">
+          <ReportsPage />
+        </CortexLayout.Route>
+        <CortexLayout.Route path="initiatives" title="Initiatives">
+          <InitiativesPage />
+        </CortexLayout.Route>
+        {/*
+        Show the settings page if there is an error (will occur when email header authorization returns an error, which is a valid use case)
+        or if the user has the EDIT_SETTINGS permission
+         */}
+        {!hideSettings && (!isNil(permissionsError) || canEditSettings) && (
+          <CortexLayout.Route path="settings" title="Settings">
+            <SettingsPage />
+          </CortexLayout.Route>
+        )}
+        {!isNil(helpPage) && (
+          <CortexLayout.Route path="help" title="Help">
+            <HelpPage helpPage={helpPage} />
+          </CortexLayout.Route>
+        )}
+      </CortexLayout>
+    </>
   );
 };

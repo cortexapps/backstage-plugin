@@ -15,6 +15,7 @@
  */
 import {
   EntitySyncProgress,
+  ExpirationResponse,
   GroupByOption,
   Initiative,
   InitiativeActionItem,
@@ -110,4 +111,6 @@ export interface CortexApi {
   getUserPermissions(): Promise<UserPermissionsResponse>;
 
   getSyncJobs(): Promise<JobsResponse>;
+
+  getExpiration(): Promise<ExpirationResponse>;
 }

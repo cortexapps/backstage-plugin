@@ -80,6 +80,14 @@ export const ProgressPage = () => {
     [selectedScorecardId],
   );
 
+  if (groupBy === GroupByOption.LEVEL) {
+    return (
+        <WarningPanel severity="error" title="Functionality not supported.">
+          Group by for levels is not supported yet.
+        </WarningPanel>
+    );
+  }
+
   if (error) {
     return (
       <WarningPanel severity="error" title="Could not load Scorecard.">

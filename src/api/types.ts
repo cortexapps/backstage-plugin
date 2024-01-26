@@ -419,6 +419,17 @@ export enum JobStatus {
   TimedOut = 'TIMED_OUT',
 }
 
+export enum ContractType {
+  Production = 'PRODUCTION',
+  Trial = 'TRIAL',
+}
+
+export interface ExpirationResponse {
+  contractType: ContractType;
+  expirationDate: string | null;
+  shutdownDate: string | null;
+}
+
 // Entity Filter
 export enum CategoryFilter {
   Domain = 'Domain',
