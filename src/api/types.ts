@@ -82,6 +82,8 @@ export type ExemptionStatus =
 
 export interface RuleExemptionResponse {
   id: number;
+  entityId: number;
+  entityName: string;
   ruleId: number;
   requestingReason: string;
   requestedBy: string;

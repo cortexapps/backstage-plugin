@@ -24,8 +24,6 @@ import { Box, Tooltip, Typography, makeStyles } from '@material-ui/core';
 import { getRuleTitle } from '../../../../utils/ScorecardRules';
 import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
-import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { RuleExemptionStatus } from './RuleExemptionStatus';
 import { CortexInfoCard } from '../../../Common/CortexInfoCard';
 import {
@@ -40,7 +38,6 @@ interface ScorecardRuleExemptionsTabProps {
   ruleExemptions: ScorecardRuleExemptionResult['scorecardRuleExemptions'];
   scorecard: Scorecard;
   scores: ScorecardServiceScore[];
-  entitiesByTag: StringIndexable<HomepageEntity>;
 }
 
 const useRuleExemptionsTabStyles = makeStyles(() => ({
@@ -53,7 +50,6 @@ export const ScorecardRuleExemptionsTab = ({
   ruleExemptions = {},
   scorecard,
   scores,
-  entitiesByTag,
 }: ScorecardRuleExemptionsTabProps) => {
   const classes = useRuleExemptionsTabStyles();
 
@@ -81,74 +77,76 @@ export const ScorecardRuleExemptionsTab = ({
   return (
     <CortexInfoCard>
       <Box display="flex" flexDirection="column">
-        {isEmpty(ruleExemptions) && (
+        {isEmpty(ruleExemptions) ? (
           <Typography variant="body2">
-            No rule exemptions found for this scorecard.
+            No rule exemptions found for this Scorecard.
           </Typography>
-        )}
-        {Object.entries(ruleExemptions).map(([id, ruleExemptionById]) => {
-          return (
-            <React.Fragment key={`RuleExemption-${id}`}>
-              {ruleExemptionById.filter(getIsActive).map(ruleExemption => {
-                const serviceComponentRef = scoresMap[ruleExemption.id];
-                const serviceName =
-                  entitiesByTag[serviceComponentRef]?.name ??
-                  humanizeAnyEntityRef(
-                    serviceComponentRef,
-                    defaultComponentRefContext,
-                  );
+        ) : (
+          Object.entries(ruleExemptions).map(([id, ruleExemptionById]) => {
+            return (
+              <React.Fragment key={`RuleExemption-${id}`}>
+                {ruleExemptionById.filter(getIsActive).map(ruleExemption => {
+                  let serviceComponentRef =
+                    scoresMap[ruleExemption.entityId] ?? '';
 
-                return (
-                  <Tooltip
-                    key={`RuleExemption-${id}-${ruleExemption.id}`}
-                    title={
-                      <ScorecardRuleExemptionTooltip
-                        exemption={ruleExemption}
-                      />
-                    }
-                    placement="bottom-start"
-                  >
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                      mb={1}
+                  return (
+                    <Tooltip
+                      key={`RuleExemption-${id}-${ruleExemption.id}`}
+                      title={
+                        <ScorecardRuleExemptionTooltip
+                          exemption={ruleExemption}
+                        />
+                      }
+                      placement="bottom-start"
                     >
                       <Box
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
+                        justifyContent="space-between"
+                        mb={1}
                       >
-                        <RuleExemptionStatus type={ruleExemption.status.type} />
+                        <Box
+                          display="flex"
+                          flexDirection="row"
+                          alignItems="center"
+                        >
+                          <RuleExemptionStatus
+                            type={ruleExemption.status.type}
+                          />
 
+                          <Typography variant="body2">
+                            <Typography
+                              variant="body2"
+                              component="span"
+                              className={classes.text}
+                            >
+                              {rulesMap[ruleExemption.ruleId]}
+                            </Typography>{' '}
+                            for{' '}
+                            {serviceComponentRef ? (
+                              <ScorecardServiceRefLink
+                                scorecardId={scorecard.id}
+                                componentRef={serviceComponentRef}
+                              >
+                                {ruleExemption.entityName}
+                              </ScorecardServiceRefLink>
+                            ) : (
+                              ruleExemption.entityName
+                            )}
+                          </Typography>
+                        </Box>
                         <Typography variant="body2">
-                          <Typography
-                            variant="body2"
-                            component="span"
-                            className={classes.text}
-                          >
-                            {rulesMap[ruleExemption.ruleId]}
-                          </Typography>{' '}
-                          for{' '}
-                          <ScorecardServiceRefLink
-                            scorecardId={scorecard.id}
-                            componentRef={serviceComponentRef}
-                          >
-                            {serviceName}
-                          </ScorecardServiceRefLink>
+                          {getExpirationText(ruleExemption)}
                         </Typography>
                       </Box>
-                      <Typography variant="body2">
-                        {getExpirationText(ruleExemption)}
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                );
-              })}
-            </React.Fragment>
-          );
-        })}
+                    </Tooltip>
+                  );
+                })}
+              </React.Fragment>
+            );
+          })
+        )}
       </Box>
     </CortexInfoCard>
   );

@@ -108,7 +108,6 @@ export const ScorecardDetails = ({
       case ScorecardDetailsTab.RuleExemptions:
         return (
           <ScorecardRuleExemptionsTab
-            entitiesByTag={entitiesByTag}
             ruleExemptions={ruleExemptions}
             scorecard={scorecard}
             scores={scores}

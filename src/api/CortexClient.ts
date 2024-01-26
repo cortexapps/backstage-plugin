@@ -240,7 +240,7 @@ export class CortexClient implements CortexApi {
     scorecardId: number,
   ): Promise<ScorecardRuleExemptionResult> {
     return await this.get(
-      `/api/backstage/v2/scorecards/${scorecardId}/rules/exemptions`,
+      `/api/backstage/v1/scorecards/${scorecardId}/rules/exemptions`,
     );
   }
 
