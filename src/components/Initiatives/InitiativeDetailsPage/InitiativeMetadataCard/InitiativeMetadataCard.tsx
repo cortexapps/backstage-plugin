@@ -19,12 +19,10 @@ import { Link, MarkdownContent } from '@backstage/core-components';
 import { Box, Typography, makeStyles } from '@material-ui/core';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { scorecardRouteRef } from '../../../../routes';
-import moment from 'moment/moment';
 import { CortexInfoCard } from '../../../Common/CortexInfoCard';
 import { CaptionTypography } from '../../../Common/StatsItem';
 import InitiativeMetadataFilter from './InitiativeMetadataFilter';
 import { getTargetDateMessage } from './InitiativeMetadataCardUtils';
-import { HoverTimestamp } from '../../../Common/HoverTimestamp';
 
 interface InitiativeMetadataCardProps {
   initiative: Initiative;

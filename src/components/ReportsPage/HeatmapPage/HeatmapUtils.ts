@@ -15,12 +15,12 @@
  */
 import {
   GroupByOption,
-  ScorecardScoreLadderResult,
   ScorecardServiceScore,
   ScoresByIdentifier,
   ruleName,
   ScorecardLevel,
   RuleOutcome,
+  ScorecardScoreNextSteps,
 } from '../../../api/types';
 import { groupBy as _groupBy, flatten as _flatten, values } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
@@ -63,7 +63,7 @@ type GroupByKeys = 'teams' | 'tags' | 'ladderLevels';
 type GroupByValues = {
   teams?: string[];
   tags?: string[];
-  ladderLevels?: ScorecardScoreLadderResult[];
+  ladderLevels?: ScorecardScoreNextSteps[];
 };
 
 const groupReportDataBy = <T extends GroupByValues>(
@@ -73,11 +73,11 @@ const groupReportDataBy = <T extends GroupByValues>(
   return scores.reduce<StringIndexable<T[]>>((data, score) => {
     const groups = score[groupBy];
 
-    groups?.forEach((group: ScorecardScoreLadderResult | string) => {
+    groups?.forEach((group: ScorecardScoreNextSteps | string) => {
       const key =
         typeof group === 'string'
           ? group
-          : group.currentLevel?.name ?? 'No Level'; // is ScorecardScoreLadderResult
+          : group.currentLevel?.name ?? 'No Level'; // is ScorecardScoreNextSteps
 
       const exists = data[key];
       if (!exists) {

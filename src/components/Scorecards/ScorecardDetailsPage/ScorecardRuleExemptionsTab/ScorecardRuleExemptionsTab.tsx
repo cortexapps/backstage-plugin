@@ -22,8 +22,6 @@ import {
 } from '../../../../api/types';
 import { Box, Tooltip, Typography, makeStyles } from '@material-ui/core';
 import { getRuleTitle } from '../../../../utils/ScorecardRules';
-import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
-import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { RuleExemptionStatus } from './RuleExemptionStatus';
 import { CortexInfoCard } from '../../../Common/CortexInfoCard';
 import {

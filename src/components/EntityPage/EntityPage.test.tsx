@@ -19,12 +19,12 @@ import { Fixtures, renderWrapped } from '../../utils/TestUtils';
 import { EntityPage } from './EntityPage';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { rootRouteRef } from '../../routes';
-import { RuleOutcomeType, Scorecard } from '../../api/types';
+import { FilterType, RuleOutcomeType, Scorecard } from '../../api/types';
 import {
   ExtensionApi,
   UiExtensions,
 } from '@cortexapps/backstage-plugin-extensions';
-import { isEmpty, isUndefined } from 'lodash';
+import { isNil } from 'lodash';
 import { extensionApiRef } from '../../api/ExtensionApi';
 
 describe('EntityPage', () => {
@@ -119,15 +119,19 @@ describe('EntityPage', () => {
           id: 1,
           name: 'Test Scorecard 1',
           description: 'Test Scorecard 1 description',
-          tags: [{ id: '2', tag: 'tag1' }],
+          filter: {
+            type: FilterType.SERVICE_FILTER,
+            entityGroupFilter: {
+              entityGroups: ['tag1'],
+              excludedEntityGroups: [],
+            },
+          },
         }),
         Fixtures.scorecard({
           id: 2,
           name: 'Test Scorecard 2',
           description: 'Test Scorecard 2 description',
-          tags: [],
-          excludedTags: [],
-          filterQuery: undefined,
+          filter: null,
         }),
       ]);
     },
@@ -203,10 +207,7 @@ describe('EntityPage', () => {
     const extensionApi: ExtensionApi = {
       // Order "global" scorecards without any filters before scorecards with active entity filters
       getUiExtensions(): Promise<UiExtensions> {
-        const isGlobal = (scorecard: Scorecard) =>
-          isEmpty(scorecard.excludedTags) &&
-          isEmpty(scorecard.tags) &&
-          isUndefined(scorecard.filterQuery);
+        const isGlobal = (scorecard: Scorecard) => isNil(scorecard.filter);
         return Promise.resolve({
           scorecards: {
             sortOrder: {
