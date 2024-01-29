@@ -21,13 +21,13 @@ interface ScorecardCreator {
 
 export interface Scorecard {
   creator: ScorecardCreator;
+  description?: string;
+  filter?: EntityFilter | null;
   id: number;
   name: string;
-  tag: string;
-  description?: string;
-  rules: Rule[];
-  filter: EntityFilter | null;
   nextUpdated?: string;
+  rules: Rule[];
+  tag: string;
 }
 
 export interface RuleName {
@@ -134,11 +134,6 @@ export interface ScorecardScoreLadderLevel {
   name: string;
   color: string;
   rank: number;
-}
-
-export interface ScorecardScoreLadderResult {
-  ladderDetails: ScorecardScoreLadderDetails;
-  currentLevel?: ScorecardScoreLadderLevel;
 }
 
 export interface ScorecardScoreNextSteps {

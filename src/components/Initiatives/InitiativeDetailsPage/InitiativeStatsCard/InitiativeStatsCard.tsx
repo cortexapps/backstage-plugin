@@ -19,7 +19,7 @@ import {
   InitiativeServiceScores,
 } from '../../../../api/types';
 import { Predicate } from '../../../../utils/types';
-import { percentify, safeDivide } from '../../../../utils/NumberUtils';
+import { safeDivide } from '../../../../utils/NumberUtils';
 import { Paper } from '@material-ui/core';
 import Stats from '../../../Common/Stats';
 import StatsItem from '../../../Common/StatsItem';

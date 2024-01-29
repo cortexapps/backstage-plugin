@@ -15,7 +15,6 @@
  */
 import React from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
-import { enumKeys } from '../../../utils/types';
 import { GroupByOption } from '../../../api/types';
 
 interface GroupByDropdownProps {

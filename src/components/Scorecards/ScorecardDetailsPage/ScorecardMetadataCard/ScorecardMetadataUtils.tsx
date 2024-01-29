@@ -28,7 +28,7 @@ export const getJoinerString = (idx: number, length: number) => {
 };
 
 export const getEntityGroupsFromFilter = (
-  filter: EntityFilter | null,
+  filter?: EntityFilter | null,
 ): { entityGroups: string[]; excludeEntityGroups: string[] } => {
   if (
     filter?.type === FilterType.DOMAIN_FILTER ||
@@ -47,7 +47,7 @@ export const getEntityGroupsFromFilter = (
 };
 
 export const getResourceTypesFromFilter = (
-  filter: EntityFilter | null,
+  filter?: EntityFilter | null,
 ): { include: boolean; types: string[] } => {
   if (filter?.type === FilterType.RESOURCE_FILTER) {
     const types = filter?.typeFilter?.types ?? [];
@@ -68,7 +68,7 @@ export const getQueryFromFilter = (
 };
 
 export const getEntityCategoryFromFilter = (
-  filter: EntityFilter | null,
+  filter?: EntityFilter | null,
 ): CategoryFilter => {
   if (filter?.type === FilterType.CQL_FILTER) {
     return filter.category;

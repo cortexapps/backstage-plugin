@@ -36,7 +36,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { ScorecardCard } from '../ScorecardCard';
 
-import { Scorecard, ServiceGroup } from '../../../api/types';
+import { EntityFilter, Scorecard, ServiceGroup } from '../../../api/types';
 import {
   useDropdown,
   useInput,
@@ -56,6 +56,16 @@ export const hasTags = (groups: ServiceGroup[], query: string) => {
   return !isEmpty(groups)
     ? groups.some(tag => tag.tag.toLowerCase().includes(query.toLowerCase()))
     : false;
+};
+
+export const hasFilter = (filter: EntityFilter | null, query: string) => {
+  if (isNil(filter) || !('entityGroupFilter' in filter)) {
+    return false;
+  }
+
+  return filter.entityGroupFilter?.entityGroups.some(group =>
+    group.toLowerCase().includes(query.toLowerCase()),
+  );
 };
 
 export const ScorecardList = () => {
@@ -108,7 +118,8 @@ export const ScorecardList = () => {
       return (
         hasText(scorecard, 'name', searchQuery) ||
         hasText(scorecard, 'description', searchQuery) ||
-        hasText(scorecard, 'filterQuery', searchQuery)
+        hasText(scorecard, 'filterQuery', searchQuery) ||
+        (!isNil(scorecard.filter) && hasFilter(scorecard.filter, searchQuery))
       );
     });
 

@@ -56,7 +56,8 @@ export const HomepageInsightCard = ({
         currEntity => currEntity.id === actionItemInsight.entityId,
       );
       const initiative = initiatives?.find(
-        currInitiative => currInitiative.id === actionItemInsight.initiativeId,
+        currInitiative =>
+          currInitiative.id === actionItemInsight.initiativeId.toString(),
       );
 
       const entityRef = {

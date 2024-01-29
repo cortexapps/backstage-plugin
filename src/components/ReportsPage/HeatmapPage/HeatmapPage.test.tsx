@@ -20,6 +20,7 @@ import { CortexApi } from '../../../api/CortexApi';
 import { cortexApiRef } from '../../../api';
 import { HeatmapPage } from './HeatmapPage';
 import { rootRouteRef } from '../../../routes';
+import { Scorecard } from '../../../api/types';
 
 describe('HeatmapPage', () => {
   const cortexApi: Partial<CortexApi> = {
@@ -31,11 +32,10 @@ describe('HeatmapPage', () => {
           name: 'My Scorecard',
           description: 'Some description',
           rules: [],
-          tags: [],
-          excludedTags: [],
-          filterQuery: undefined,
           nextUpdated: '2021-08-25T04:00:00',
-        },
+          tag: '',
+          filter: null,
+        } as Scorecard,
       ]),
   };
 

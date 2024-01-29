@@ -29,6 +29,7 @@ import { fallbackPalette } from '../../styles/styles';
 import { Autocomplete } from '@material-ui/lab';
 import { mapByString, mapValues } from '../../utils/collections';
 import { useFilter } from './useFilter';
+import { Predicate } from '../../utils/types';
 
 const useStyles = makeStyles(theme => ({
   name: {
@@ -58,6 +59,10 @@ export interface FilterDefinition {
   name: string;
   oneOfDisabled?: boolean;
   filters: { [id: string]: FilterValue };
+}
+
+export interface FilterDefinitionWithPredicate<T> extends FilterDefinition {
+  generatePredicate: (value: string) => Predicate<T>;
 }
 
 interface FiltersProps extends FilterDefinition {}

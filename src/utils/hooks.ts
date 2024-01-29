@@ -48,7 +48,7 @@ import {
 import { cortexApiRef } from '../api';
 import { CortexApi } from '../api/CortexApi';
 import { EntityFilterGroup } from '../filters';
-import { FilterDefinition } from '../components/FilterCard/Filters';
+import { FilterDefinitionWithPredicate } from '../components/FilterCard/Filters';
 import { extensionApiRef } from '../api/ExtensionApi';
 import { StringIndexable } from '../components/ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../api/userInsightTypes';
@@ -250,7 +250,11 @@ export function useFilters<T>(
     baseFilters?: EntityFilterGroup[];
     deps?: any[];
   },
-): { loading: boolean; error?: Error; filterGroups?: FilterDefinition[] } {
+): {
+  loading: boolean;
+  error?: Error;
+  filterGroups?: FilterDefinitionWithPredicate<T>[];
+} {
   const catalogApi = useApi(catalogApiRef);
   const extensionApi = useApi(extensionApiRef);
 
