@@ -2,9 +2,9 @@
 
 ### 2.5.0
 
-- Scorecard details page revamp
-- Scorecard service page revamp
-- Initiative page revamp
+- Overhaul the UI of Scorecard pages with better visualization of rules & levels
+- Overhaul the UI of Initiative pages
+- Add a "Copy to CSV" button for exporting Scorecard scores
 
 ### 2.4.4
 
