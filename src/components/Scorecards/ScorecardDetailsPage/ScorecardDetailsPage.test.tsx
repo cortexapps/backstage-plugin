@@ -186,7 +186,7 @@ describe('ScorecardDetailsPage', () => {
 
     await clickButton('Filter');
     await clickButtonByMatcher('mine');
-    await clickButton('Close modal');
+    await clickButton('Apply filters');
 
     await checkForText('foo');
     await checkNotText('bar');
@@ -194,7 +194,7 @@ describe('ScorecardDetailsPage', () => {
     await clickButton('Filter');
     await clickButtonByMatcher('mine');
     await clickButtonByMatcher('shared');
-    await clickButton('Close modal');
+    await clickButton('Apply filters');
 
     await checkForText('foo');
     await checkForText('bar');
@@ -202,7 +202,7 @@ describe('ScorecardDetailsPage', () => {
     await clickButton('Filter');
     await clickButtonByMatcher('shared');
     await clickButtonByMatcher('alsomine');
-    await clickButton('Close modal');
+    await clickButton('Apply filters');
 
     await checkNotText('foo');
     await checkForText('bar');
@@ -406,21 +406,21 @@ describe('ScorecardDetailsPage', () => {
     await checkForText('My Scorecard');
     await checkNotText(/No scores found/);
 
-    expect((await findByTestId('Entities')).textContent).toBe('4'); // Num of entities
+    expect((await findByTestId('Services')).textContent).toBe('4'); // Num of entities
 
     await clickButton('Filter');
-    await clickButtonByMatcher(/Filter failing rule by git/);
-    await clickButton('Close modal');
+    await clickButtonByMatcher(/Filter failing rules by git/);
+    await clickButton('Apply filters');
 
-    expect((await findByTestId('Entities')).textContent).toBe('0'); // Num of entities
+    expect((await findByTestId('Services')).textContent).toBe('0'); // Num of entities
     await checkForText(/No scores found/);
 
     await clickButton('Filter');
-    await clickButtonByMatcher(/Filter failing rule by git/);
-    await clickButtonByMatcher(/Filter failing rule by oncall/);
-    await clickButton('Close modal');
+    await clickButtonByMatcher(/Filter failing rules by git/);
+    await clickButtonByMatcher(/Filter failing rules by oncall/);
+    await clickButton('Apply filters');
 
-    expect((await findByTestId('Entities')).textContent).toBe('2'); // Num of entities
+    expect((await findByTestId('Services')).textContent).toBe('2'); // Num of entities
     await checkNotText(/No scores found/);
     await checkForText(/lorem/, 0);
     await checkForText(/ipsum/, 0);
@@ -428,11 +428,11 @@ describe('ScorecardDetailsPage', () => {
 
     // Clear the filters for failed rule and check exempt rules
     await clickButton('Filter');
-    await clickButtonByMatcher(/Filter failing rule by oncall/);
-    await clickButtonByMatcher(/Filter exempt rule by k8s/);
-    await clickButton('Close modal');
+    await clickButtonByMatcher(/Filter failing rules by oncall/);
+    await clickButtonByMatcher(/Filter exempt rules by k8s/);
+    await clickButton('Apply filters');
 
-    expect((await findByTestId('Entities')).textContent).toBe('1'); // Num of entities
+    expect((await findByTestId('Services')).textContent).toBe('1'); // Num of entities
     await checkForText(/foo/, 0);
     await checkNotText(/lorem/);
     await checkNotText(/ipsum/);
@@ -472,8 +472,8 @@ describe('ScorecardDetailsPage', () => {
     const { checkForText, clickButton } = render(mockCortexApi);
 
     await clickButton('Filter');
-    await checkForText(/Failing Rule/);
-    await clickButton('Filter failing rule');
+    await checkForText(/Failing rules/);
+    await clickButton('Filter failing rules');
     const dropdownOption = await screen.findByText(/documentation.count/, {
       selector: 'li',
     });
@@ -482,7 +482,7 @@ describe('ScorecardDetailsPage', () => {
       fireEvent.click(dropdownOption);
     });
 
-    await checkForText(/Failing Rule/);
+    await checkForText(/Failing rules/);
     expect(
       await screen.queryByText(/custom\("cow"\).length/, { selector: 'li' }),
     ).not.toBeInTheDocument();
