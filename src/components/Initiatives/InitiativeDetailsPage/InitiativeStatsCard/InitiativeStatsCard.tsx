@@ -19,9 +19,10 @@ import {
   InitiativeServiceScores,
 } from '../../../../api/types';
 import { Predicate } from '../../../../utils/types';
-import { percentageToStatus, Status } from '../../../../styles/styles';
-import { StatsCard } from '../../../StatsCard';
-import { percentify, safeDivide } from '../../../../utils/NumberUtils';
+import { safeDivide } from '../../../../utils/NumberUtils';
+import { Paper } from '@material-ui/core';
+import Stats from '../../../Common/Stats';
+import StatsItem from '../../../Common/StatsItem';
 
 export interface InitiativeStatsCardProps {
   scores: InitiativeServiceScores[];
@@ -37,7 +38,7 @@ export const InitiativeStatsCard = ({
   const numFailing = useMemo(() => {
     return (
       scores
-        ?.map(score => score.componentRef)
+        ?.map(score => score.entityTag)
         ?.filter(filter)
         ?.filter(componentRef =>
           actionItems?.some(
@@ -50,7 +51,7 @@ export const InitiativeStatsCard = ({
   const numPassing = useMemo(() => {
     return (
       scores
-        ?.map(score => score.componentRef)
+        ?.map(score => score.entityTag)
         ?.filter(filter)
         ?.filter(
           componentRef =>
@@ -67,17 +68,17 @@ export const InitiativeStatsCard = ({
   );
 
   return (
-    <StatsCard
-      stats={[
-        {
-          label: 'Complete',
-          status: percentageToStatus(complete),
-          value: percentify(complete),
-          type: 'PERCENTAGE',
-        },
-        { label: 'Passing', status: Status.OKAY, value: numPassing },
-        { label: 'Failing', status: Status.ERROR, value: numFailing },
-      ]}
-    />
+    <Paper elevation={0} style={{ marginBottom: 8 }}>
+      <Stats>
+        <StatsItem
+          caption={'Complete'}
+          percentage
+          type={'PERCENTAGE'}
+          value={complete}
+        />
+        <StatsItem caption={'Passing'} type={'NONE'} value={numPassing} />
+        <StatsItem caption={'Failing'} type={'NONE'} value={numFailing} />
+      </Stats>
+    </Paper>
   );
 };

@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import React from 'react';
 import {
+  Box,
   Checkbox,
-  Grid,
+  FormControlLabel,
+  FormGroup,
   makeStyles,
   MenuItem,
   TextField,
@@ -24,9 +26,10 @@ import {
 } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import { fallbackPalette } from '../../styles/styles';
-import { Predicate } from '../../utils/types';
 import { Autocomplete } from '@material-ui/lab';
 import { mapByString, mapValues } from '../../utils/collections';
+import { useFilter } from './useFilter';
+import { Predicate } from '../../utils/types';
 
 const useStyles = makeStyles(theme => ({
   name: {
@@ -41,6 +44,9 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette?.text?.secondary ?? fallbackPalette.text.secondary,
     fontSize: '14px',
   },
+  rulesList: {
+    padding: 0,
+  },
 }));
 
 export interface FilterValue {
@@ -49,87 +55,71 @@ export interface FilterValue {
   id: string;
 }
 
-export interface FilterDefinition<T> {
+export interface FilterDefinition {
   name: string;
+  oneOfDisabled?: boolean;
   filters: { [id: string]: FilterValue };
+}
+
+export interface FilterDefinitionWithPredicate<T> extends FilterDefinition {
   generatePredicate: (value: string) => Predicate<T>;
 }
 
-interface FiltersProps<T> extends FilterDefinition<T> {
-  setPredicate: (filter: Predicate<T>) => void;
-}
+interface FiltersProps extends FilterDefinition {}
 
-export const Filters = <T extends {}>({
+export const Filters: React.FC<FiltersProps> = ({
   name,
   filters,
-  generatePredicate,
-  setPredicate,
-}: FiltersProps<T>) => {
+  oneOfDisabled,
+}) => {
+  const { checkedFilters, setCheckedFilters, oneOf, setOneOf } = useFilter();
   const classes = useStyles();
-
-  const [oneOf, setOneOf] = useState(true);
-  const [checkedFilters, setCheckedFilters] = useState<Record<string, boolean>>(
-    {},
-  );
-
-  const updatePredicate = (
-    newCheckedFilters: Record<string, boolean>,
-    newOneOf: boolean,
-  ) => {
-    setPredicate((t: T) => {
-      const results = Object.keys(newCheckedFilters)
-        .filter(id => newCheckedFilters[id])
-        .map(id => generatePredicate(filters[id].value)(t));
-
-      if (results.length === 0) {
-        return true;
-      }
-
-      return newOneOf ? results.some(Boolean) : results.every(Boolean);
-    });
-  };
+  const currentOneOf = oneOf[name] ?? true;
 
   const toggleAllFilters = (allCheckedFilters: FilterValue[]) => {
-    setCheckedFilters(() => {
+    setCheckedFilters(oldFilters => {
       const newFilters = mapValues(
-        mapByString(allCheckedFilters, filter => filter.id),
+        mapByString(allCheckedFilters, filter => `${name}${filter.id}`),
         () => true,
       );
-      updatePredicate(newFilters, oneOf);
-      return newFilters;
+
+      return { ...oldFilters, ...newFilters };
     });
   };
 
   const toggleFilter = (filter: string) => {
     setCheckedFilters(prevFilters => {
+      const filterName = `${name}${filter}`;
+
       const newFilters = {
         ...prevFilters,
-        [filter]: !(prevFilters[filter] ?? false),
+        [filterName]: !(prevFilters[filterName] ?? false),
       };
 
-      updatePredicate(newFilters, oneOf);
       return newFilters;
     });
   };
 
   const toggleOneOf = () => {
     setOneOf(prevOneOf => {
-      updatePredicate(checkedFilters, !prevOneOf);
-      return !prevOneOf;
+      const prevValue = prevOneOf[name] ?? true;
+
+      return {
+        ...prevOneOf,
+        [name]: !prevValue,
+      };
     });
   };
 
   return (
-    <Grid container spacing={2} justify="center" alignItems="center">
-      <Grid container item xs={12} justify="space-between">
-        <Grid item>
-          <Typography variant="subtitle2" className={classes.name}>
-            {name}:
-          </Typography>
-        </Grid>
-        <Grid item>
+    <Box display="flex" flexDirection="column">
+      <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Typography variant="subtitle2" className={classes.name}>
+          {name}:
+        </Typography>
+        {!oneOfDisabled && (
           <Select
-            value={oneOf ? 'One Of' : 'All Of'}
+            value={currentOneOf ? 'One Of' : 'All Of'}
             onChange={() => toggleOneOf()}
             className={classes.select}
             aria-label={`Select and/or for ${name.toLowerCase()}`}
@@ -137,15 +127,16 @@ export const Filters = <T extends {}>({
             <MenuItem value="One Of">One Of</MenuItem>
             <MenuItem value="All Of">All Of</MenuItem>
           </Select>
-        </Grid>
-      </Grid>
+        )}
+      </Box>
       {Object.keys(filters).length <= 10 ? (
-        <React.Fragment>
+        <FormGroup className={classes.rulesList}>
           {Object.keys(filters).map(id => (
-            <React.Fragment key={`Filter-${name}-${id}`}>
-              <Grid item lg={2}>
+            <FormControlLabel
+              key={`Filter-${name}-${id}`}
+              control={
                 <Checkbox
-                  checked={checkedFilters[id] ?? false}
+                  checked={checkedFilters[`${name}${id}`] ?? false}
                   onChange={() => toggleFilter(id)}
                   color="primary"
                   inputProps={{
@@ -154,27 +145,30 @@ export const Filters = <T extends {}>({
                     }`,
                   }}
                 />
-              </Grid>
-              <Grid item lg={10}>
-                <span>{filters[id].display}</span>
-              </Grid>
-            </React.Fragment>
+              }
+              label={
+                <Typography variant={'subtitle2'}>
+                  {filters[id].display}
+                </Typography>
+              }
+            />
           ))}
-        </React.Fragment>
+        </FormGroup>
       ) : (
-        <Grid item sm={12}>
-          <Autocomplete
-            aria-label={`Filter ${name.toLowerCase()}`}
-            options={Object.values(filters)}
-            getOptionLabel={filter => filter.display}
-            multiple
-            onChange={(_event, values) => {
-              toggleAllFilters(values);
-            }}
-            renderInput={params => <TextField {...params} variant="standard" />}
-          />
-        </Grid>
+        <Autocomplete
+          defaultValue={Object.values(filters).filter(
+            filter => checkedFilters[`${name}${filter.id}`],
+          )}
+          aria-label={`Filter ${name.toLowerCase()}`}
+          options={Object.values(filters)}
+          getOptionLabel={filter => filter.display}
+          multiple
+          onChange={(_event, values) => {
+            toggleAllFilters(values);
+          }}
+          renderInput={params => <TextField {...params} variant="standard" />}
+        />
       )}
-    </Grid>
+    </Box>
   );
 };

@@ -15,13 +15,19 @@
  */
 import React from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
-import { enumKeys } from '../../../utils/types';
 import { GroupByOption } from '../../../api/types';
 
 interface GroupByDropdownProps {
   groupBy: GroupByOption | undefined;
   setGroupBy: (event: React.ChangeEvent<{ value: unknown }>) => void;
 }
+
+const GroupByLabels = {
+  [GroupByOption.SERVICE]: GroupByOption.SERVICE,
+  [GroupByOption.TEAM]: GroupByOption.TEAM,
+  [GroupByOption.SERVICE_GROUP]: 'Group',
+  [GroupByOption.LEVEL]: GroupByOption.LEVEL,
+};
 
 export const GroupByDropdown = ({
   groupBy,
@@ -31,9 +37,9 @@ export const GroupByDropdown = ({
     <FormControl>
       <InputLabel style={{ minWidth: '100px' }}>Group By</InputLabel>
       <Select value={groupBy} onChange={setGroupBy}>
-        {enumKeys(GroupByOption).map(key => (
-          <MenuItem key={`GroupByOption-${key}`} value={GroupByOption[key]}>
-            {GroupByOption[key].valueOf()}
+        {Object.values(GroupByOption).map(value => (
+          <MenuItem key={`GroupByOption-${value}`} value={value}>
+            {GroupByLabels[value]}
           </MenuItem>
         ))}
       </Select>

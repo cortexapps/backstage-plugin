@@ -21,14 +21,13 @@ interface ScorecardCreator {
 
 export interface Scorecard {
   creator: ScorecardCreator;
+  description?: string;
+  filter?: EntityFilter | null;
   id: number;
   name: string;
-  description?: string;
-  rules: Rule[];
-  tags: ServiceGroup[];
-  excludedTags: ServiceGroup[];
-  filterQuery?: string;
   nextUpdated?: string;
+  rules: Rule[];
+  tag: string;
 }
 
 export interface RuleName {
@@ -47,12 +46,54 @@ export interface Rule extends RuleName {
 
 export interface RuleFilter {
   query?: string;
-  includedTags?: string[];
-  excludedTags?: string[];
 }
 
 export function ruleName(rule: RuleName): string {
   return rule.title ?? rule.expression;
+}
+
+export enum ExemptionStatusResponseType {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+}
+
+export interface PendingExemptionStatus {
+  type: ExemptionStatusResponseType.PENDING;
+}
+
+export interface ApprovedExemptionStatus {
+  type: ExemptionStatusResponseType.APPROVED;
+  approvedBy: string;
+  approvedDate: string;
+}
+
+export interface RejectedExemptionStatus {
+  type: ExemptionStatusResponseType.REJECTED;
+  rejectedBy: string;
+  rejectedDate: string;
+  reason: string;
+}
+
+export type ExemptionStatus =
+  | PendingExemptionStatus
+  | ApprovedExemptionStatus
+  | RejectedExemptionStatus;
+
+export interface RuleExemptionResponse {
+  id: number;
+  entityId: number;
+  entityName: string;
+  ruleId: number;
+  requestingReason: string;
+  requestedBy: string;
+  requestedDate: string;
+  endDate: string | null;
+  status: ExemptionStatus;
+}
+
+export interface ScorecardRuleExemptionResult {
+  scorecardRuleExemptions: Record<number, RuleExemptionResponse[]>;
 }
 
 export interface ServiceGroup {
@@ -89,14 +130,10 @@ export interface ScorecardScoreLadderDetails {
 }
 
 export interface ScorecardScoreLadderLevel {
+  id: number;
   name: string;
   color: string;
   rank: number;
-}
-
-export interface ScorecardScoreLadderResult {
-  ladderDetails: ScorecardScoreLadderDetails;
-  currentLevel?: ScorecardScoreLadderLevel;
 }
 
 export interface ScorecardScoreNextSteps {
@@ -138,6 +175,7 @@ export interface ServiceScorecardScore {
 export interface ScorecardServiceScore {
   serviceId: number;
   componentRef: string;
+  description?: string;
   score: number;
   scorePercentage: number;
   totalPossibleScore: number;
@@ -145,7 +183,7 @@ export interface ScorecardServiceScore {
   lastUpdated: string;
   tags: string[]; // service groups
   teams: string[]; // owner groups
-  ladderLevels: ScorecardScoreLadderResult[];
+  ladderLevels: ScorecardScoreNextSteps[];
 }
 
 export type RuleOutcome =
@@ -231,19 +269,60 @@ export interface ScorecardScore {
   dateCreated?: string;
 }
 
-export interface Initiative {
-  creator: { name: string; email: string };
+export interface InitiativeLadderLevel {
+  levelColor: string;
+  levelId: string;
+  levelName: string;
+}
+
+export interface EntityIcon {
+  kind: string;
+  tag: string;
+  url: string;
+}
+
+export enum DomainOwnerInheritance {
+  Append = 'APPEND',
+  Fallback = 'FALLBACK',
+  None = 'NONE',
+}
+
+export interface EntityOwner {
   description?: string;
-  id: number;
+  email: string;
+  id: string;
+  inheritance?: DomainOwnerInheritance;
+}
+
+export interface EntityGroups {
+  all: string[];
+  defined: string[];
+}
+
+export interface EntityMetadata {
+  description?: string;
+  entityGroups: EntityGroups;
+  entityOwners: EntityOwner[];
+  icon?: EntityIcon;
+  id: string;
   name: string;
+  ownerGroups: string[];
+  tag: string;
+}
+
+export interface CatalogEntityMetadata extends EntityMetadata {
+  type: string;
+}
+
+export interface Initiative {
+  description?: string;
+  entityGroups: ServiceGroup[];
+  id: string;
+  levels: InitiativeLadderLevel[];
+  name: string;
+  rules: InitiativeRule[];
   scorecard: Scorecard;
-  emphasizedRules: InitiativeRule[];
-  emphasizedLevels: InitiativeLevel[];
   targetDate: string;
-  targetScore?: number;
-  // filters
-  tags: ServiceGroup[];
-  componentRefs: string[];
 }
 
 export interface InitiativeWithScores extends Initiative {
@@ -267,7 +346,7 @@ export interface InitiativeLevel {
 
 export interface InitiativeServiceScores {
   scorePercentage: number;
-  componentRef: string;
+  entityTag: string;
 }
 
 export interface InitiativeActionItem {
@@ -345,3 +424,64 @@ export interface ExpirationResponse {
   expirationDate: string | null;
   shutdownDate: string | null;
 }
+
+// Entity Filter
+export enum CategoryFilter {
+  Domain = 'Domain',
+  Resource = 'Resource',
+  Service = 'Service',
+  Team = 'Team',
+}
+
+export enum FilterType {
+  CQL_FILTER = 'CQL_FILTER',
+  DOMAIN_FILTER = 'DOMAIN_FILTER',
+  RESOURCE_FILTER = 'RESOURCE_FILTER',
+  SERVICE_FILTER = 'SERVICE_FILTER',
+  TEAM_FILTER = 'TEAM_FILTER',
+}
+
+export interface EntityGroupFilter {
+  entityGroups: string[];
+  excludedEntityGroups: string[];
+}
+
+export interface ResourcesTypeFilter {
+  include: boolean;
+  types: string[];
+}
+
+export interface CqlFilter {
+  category: CategoryFilter;
+  cqlVersion: string;
+  query: string;
+  type: FilterType.CQL_FILTER;
+}
+
+export interface ServiceFilter {
+  entityGroupFilter?: EntityGroupFilter;
+  type: FilterType.SERVICE_FILTER;
+}
+
+export interface DomainFilter {
+  entityGroupFilter?: EntityGroupFilter;
+  type: FilterType.DOMAIN_FILTER;
+}
+
+export interface ResourceFilter {
+  entityGroupFilter?: EntityGroupFilter;
+  type: FilterType.RESOURCE_FILTER;
+  typeFilter?: ResourcesTypeFilter;
+}
+
+export interface TeamFilter {
+  entityGroupFilter?: EntityGroupFilter;
+  type: FilterType.TEAM_FILTER;
+}
+
+export type EntityFilter =
+  | CqlFilter
+  | DomainFilter
+  | ServiceFilter
+  | ResourceFilter
+  | TeamFilter;

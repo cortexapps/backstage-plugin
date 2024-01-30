@@ -1,26 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`InitiativeStatsCard should handle divide by 0 1`] = `
-<StatsCard
-  stats={
-    [
-      {
-        "label": "Complete",
-        "status": 2,
-        "type": "PERCENTAGE",
-        "value": 0,
-      },
-      {
-        "label": "Passing",
-        "status": 0,
-        "value": 0,
-      },
-      {
-        "label": "Failing",
-        "status": 2,
-        "value": 0,
-      },
-    ]
+<WithStyles(ForwardRef(Paper))
+  elevation={0}
+  style={
+    {
+      "marginBottom": 8,
+    }
   }
-/>
+>
+  <Stats>
+    <StatsItem
+      caption="Complete"
+      percentage={true}
+      type="PERCENTAGE"
+      value={0}
+    />
+    <StatsItem
+      caption="Passing"
+      type="NONE"
+      value={0}
+    />
+    <StatsItem
+      caption="Failing"
+      type="NONE"
+      value={0}
+    />
+  </Stats>
+</WithStyles(ForwardRef(Paper))>
 `;

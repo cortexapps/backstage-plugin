@@ -15,23 +15,39 @@
  */
 import React from 'react';
 import { Scorecard, ScorecardServiceScore } from '../../../../api/types';
-import { Chip, Grid } from '@material-ui/core';
+import { Box, Typography, makeStyles } from '@material-ui/core';
 import moment from 'moment';
-import { InfoCard, MarkdownContent } from '@backstage/core-components';
-import { useDetailCardStyles } from '../../../../styles/styles';
-import { MetadataItem } from '../../../MetadataItem';
+import { MarkdownContent } from '@backstage/core-components';
+import { CortexInfoCard } from '../../../Common/CortexInfoCard';
+import { HoverTimestamp } from '../../../Common/HoverTimestamp';
+import ScorecardMetadataFilter from './ScorecardMetadataFilter';
+import { CaptionTypography } from '../../../Common/StatsItem';
 
 interface ScorecardMetadataCardProps {
   scorecard: Scorecard;
   scores: ScorecardServiceScore[];
 }
 
+const useScorecardMetadataCardStyles = makeStyles(theme => ({
+  markdownBox: {
+    '& p': {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
+    '& p:first-child': {
+      marginTop: 0,
+    },
+    '& p:last-child': {
+      marginBottom: 0,
+    },
+  },
+}));
+
 export const ScorecardMetadataCard = ({
   scorecard,
   scores,
 }: ScorecardMetadataCardProps) => {
-  const classes = useDetailCardStyles();
-
+  const classes = useScorecardMetadataCardStyles();
   const lastUpdated =
     scores.length === 0
       ? undefined
@@ -40,69 +56,41 @@ export const ScorecardMetadataCard = ({
     ? moment.utc(scorecard.nextUpdated)
     : undefined;
 
-  const filteredByQuery = !!scorecard.filterQuery;
-  const showAllTag =
-    scorecard.tags.length === 0 && scorecard.excludedTags.length === 0;
-
   return (
-    <InfoCard title="Details" className={classes.root}>
-      <Grid container>
+    <CortexInfoCard
+      title={
+        <Box display="flex" flexDirection="column">
+          <Typography variant="h6">{scorecard.name}</Typography>
+          <Typography variant="subtitle2">{scorecard.tag}</Typography>
+        </Box>
+      }
+    >
+      <Box display="flex" flexDirection="column">
         {scorecard.description && (
-          <MetadataItem gridSizes={{ xs: 12 }} label="Description">
+          <Box mb={2} className={classes.markdownBox}>
+            <CaptionTypography variant="caption">Description</CaptionTypography>
             <MarkdownContent content={scorecard.description} />
-          </MetadataItem>
+          </Box>
+        )}
+        <Box mb={2}>
+          <CaptionTypography variant="caption">Filter</CaptionTypography>
+          <ScorecardMetadataFilter scorecard={scorecard} />
+        </Box>
+
+        {(lastUpdated || nextUpdated) && (
+          <CaptionTypography variant="caption">Evaluation</CaptionTypography>
         )}
         {lastUpdated && (
-          <MetadataItem
-            gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-            label="Last Updated"
-          >
-            {lastUpdated.fromNow()}
-          </MetadataItem>
+          <Typography component="span" variant="caption">
+            Updated <HoverTimestamp ts={lastUpdated} />
+          </Typography>
         )}
         {nextUpdated && (
-          <MetadataItem
-            gridSizes={{ xs: 12, sm: 6, lg: 4 }}
-            label="Next Evaluation"
-          >
-            {nextUpdated.fromNow()}
-          </MetadataItem>
+          <Typography component="span" variant="caption">
+            Next Evaluation <HoverTimestamp ts={nextUpdated} />
+          </Typography>
         )}
-        <MetadataItem
-          gridSizes={{ xs: 12 }}
-          label={`Filtered by ${filteredByQuery ? 'query' : 'groups'}`}
-        >
-          {filteredByQuery ? (
-            <>{scorecard.filterQuery}</>
-          ) : (
-            <>
-              {(scorecard.tags.length !== 0 || showAllTag) && (
-                <MetadataItem gridSizes={{ xs: 12 }} label="Applies to">
-                  {scorecard.tags.map(s => (
-                    <Chip
-                      key={`Scorecard-Filter-IncludedServiceGroup-${s.id}`}
-                      size="small"
-                      label={s.tag}
-                    />
-                  ))}
-                  {showAllTag && <Chip size="small" label="All" />}
-                </MetadataItem>
-              )}
-              {scorecard.excludedTags.length !== 0 && (
-                <MetadataItem gridSizes={{ xs: 12 }} label="Does not apply to">
-                  {scorecard.excludedTags.map(s => (
-                    <Chip
-                      key={`Scorecard-Filter-ExcludedServiceGroup-${s.id}`}
-                      size="small"
-                      label={s.tag}
-                    />
-                  ))}
-                </MetadataItem>
-              )}
-            </>
-          )}
-        </MetadataItem>
-      </Grid>
-    </InfoCard>
+      </Box>
+    </CortexInfoCard>
   );
 };

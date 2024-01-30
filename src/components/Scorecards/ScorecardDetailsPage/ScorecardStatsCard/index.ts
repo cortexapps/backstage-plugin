@@ -13,4 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { ScorecardStatsCard } from './ScorecardStatsCard';
+export { ScorecardLadderStatsCard } from './ScorecardLadderStatsCard';
+export { ScorecardScoresStatsCard } from './ScorecardScoresStatsCard';

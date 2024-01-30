@@ -21,7 +21,7 @@ import { CortexApi } from '../../api/CortexApi';
 import { cortexApiRef } from '../../api';
 import { rootRouteRef } from '../../routes';
 import { InitiativesPage } from './InitiativesPage';
-import { Scorecard } from '../../api/types';
+import { Initiative, Scorecard } from '../../api/types';
 
 type AnyFunction = (args?: [] | [any]) => any;
 type ApiOverrides = Record<string, AnyFunction>;
@@ -34,30 +34,25 @@ describe('Initiatives Page', () => {
   const mockScorecard: Scorecard = {
     creator,
     description: 'Some description',
-    excludedTags: [],
     id: 1,
     name: 'Scorecard 1',
     rules: [],
-    tags: [],
+    tag: '',
+    filter: null,
   };
   const getCortexApi = (overrides?: ApiOverrides): Partial<CortexApi> => ({
     getInitiatives: () =>
       Promise.resolve([
         {
-          componentRefs: [],
-          creator,
+          entityGroups: [],
+          levels: [],
           description: 'Some description',
-          emphasizedLevels: [],
-          emphasizedRules: [],
-          filterQuery: undefined,
-          id: 1,
+          id: '1',
           name: 'My Initiative',
           rules: [],
           scorecard: mockScorecard,
-          tags: [],
-          targetData: [],
           targetDate: '2025-01-01T08:00:00',
-        },
+        } as Initiative,
       ]),
     getScorecards: () => Promise.resolve([mockScorecard]),
     ...overrides,

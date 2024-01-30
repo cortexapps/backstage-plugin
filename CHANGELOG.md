@@ -1,5 +1,11 @@
 # Changelog
 
+### 2.5.0
+
+- Overhaul the UI of Scorecard pages with better visualization of rules & levels
+- Overhaul the UI of Initiative pages
+- Add a "Copy to CSV" button for exporting Scorecard scores
+
 ### 2.4.4
 
 - Add support for non ISO-8859-1 characters in request headers to the Cortex API. This fixes authentication for users with these characters in their name.

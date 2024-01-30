@@ -35,16 +35,32 @@ import { GroupByOption, ruleName } from '../../../api/types';
 import { SerieFilter } from './SerieFilter';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { LookbackDropdown } from '../Common/LookbackDropdown';
+import { useLocation } from 'react-router-dom';
+
+const defaultRule = {
+  value: 'DEFAULT_RULE_AVERAGE',
+  label: 'Average',
+};
 
 export const ProgressPage = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const queryScorecardId = Number(queryParams.get('scorecardId') ?? undefined);
+  const initialScorecardId = Number.isNaN(queryScorecardId)
+    ? undefined
+    : queryScorecardId;
+
   const [selectedScorecardId, setSelectedScorecardId] = useState<
     number | undefined
-  >();
+  >(initialScorecardId);
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
     GroupByOption.SERVICE,
   );
-  const [selectedRule, setSelectedRule] = useDropdown<string>(undefined);
+  const [selectedRule, setSelectedRule] = useDropdown<string>(
+    defaultRule.value,
+  );
   const [filterOptions, setFilterOptions] = useState<string[] | undefined>();
   const [filters, setFilters] = useState<string[] | undefined>();
 
@@ -107,11 +123,10 @@ export const ProgressPage = () => {
                   <InputLabel style={{ minWidth: '200px' }}>
                     Group By Rule
                   </InputLabel>
-                  <Select
-                    value={selectedRule ?? 'Overall'}
-                    onChange={setSelectedRule}
-                  >
-                    <MenuItem value={undefined}>Overall</MenuItem>
+                  <Select value={selectedRule} onChange={setSelectedRule}>
+                    <MenuItem value={defaultRule.value}>
+                      {defaultRule.label}
+                    </MenuItem>
                     {scorecard.rules.map(rule => (
                       <MenuItem key={`Rule-${rule.id}`} value={rule.expression}>
                         {ruleName(rule)}
@@ -138,7 +153,9 @@ export const ProgressPage = () => {
               groupBy={groupBy!!}
               setFilterOptions={resetFilterOptions}
               filters={filters}
-              ruleExpression={selectedRule}
+              ruleExpression={
+                selectedRule === defaultRule.value ? undefined : selectedRule
+              }
             />
           )}
         </Grid>

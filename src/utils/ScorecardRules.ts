@@ -13,14 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { isNil } from 'lodash';
 import {
   ApplicableRuleOutcome,
   NotApplicableRuleOutcome,
   NotEvaluatedRuleOutcome,
+  Rule,
+  RuleFilter,
   ruleName,
   RuleOutcome,
   RuleOutcomeType,
+  ScorecardLevelRule,
 } from '../api/types';
+import { isNotNullOrEmpty } from './strings';
+
+export interface RuleDetail {
+  description?: string;
+  expression: string;
+  failureMessage?: string;
+  filter?: RuleFilter;
+  id: number | string;
+  score?: number;
+  title?: string;
+  weight?: number;
+}
 
 export const isApplicableRuleOutcome = (
   rule: RuleOutcome | undefined,
@@ -36,6 +52,12 @@ export const isNotEvaluatedRuleOutcome = (
 ): rule is NotEvaluatedRuleOutcome =>
   rule?.type === RuleOutcomeType.NOT_EVALUATED;
 
+export const getApplicableRules = (
+  rules: RuleOutcome[],
+): ApplicableRuleOutcome[] => {
+  return rules.filter(isApplicableRuleOutcome);
+};
+
 export function isRuleOutcomePassing(ruleOutcome: RuleOutcome): boolean {
   return isApplicableRuleOutcome(ruleOutcome) && ruleOutcome.score > 0;
 }
@@ -43,6 +65,9 @@ export function isRuleOutcomePassing(ruleOutcome: RuleOutcome): boolean {
 export function isRuleOutcomeFailing(ruleOutcome: RuleOutcome): boolean {
   return isApplicableRuleOutcome(ruleOutcome) && ruleOutcome.score === 0;
 }
+
+export const isRuleFailing = (rule: RuleDetail) =>
+  !isNil(rule.score) && (rule.score ?? 0) <= 0;
 
 export function filterPassingRuleOutcomes(
   ruleOutcomes: RuleOutcome[],
@@ -74,9 +99,17 @@ export function filterNotEvaluatedRuleOutcomes(
   );
 }
 
+export const getRuleTitle = (
+  rule: Rule | ScorecardLevelRule | RuleDetail,
+): string => {
+  return isNotNullOrEmpty(rule.title) ? rule.title : rule.expression;
+};
+
 type Comparator<T> = (a: T, b: T) => number; // -1 | 0 | 1
 
-function chainedComparator<T>(...comparators: Comparator<T>[]): Comparator<T> {
+export function chainedComparator<T>(
+  ...comparators: Comparator<T>[]
+): Comparator<T> {
   return (a: T, b: T) => {
     let order = 0;
     let i = 0;

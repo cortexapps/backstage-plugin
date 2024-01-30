@@ -13,48 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InfoCard } from '@backstage/core-components';
-import React, { useState } from 'react';
-import { useDetailCardStyles } from '../../styles/styles';
-import { combinePredicates, Predicate } from '../../utils/types';
+import React from 'react';
 import { FilterDefinition, Filters } from './Filters';
+import { CortexInfoCard } from '../Common/CortexInfoCard';
+import { Box, makeStyles } from '@material-ui/core';
 
-interface FilterCardProps<T> {
-  setFilter: (filter: Predicate<T>) => void;
-  filterDefinitions: FilterDefinition<T>[];
+interface FilterCardProps {
+  filterDefinitions: FilterDefinition[];
+  title?: string;
 }
 
-export const FilterCard = <T extends {}>({
-  setFilter,
+const useStyles = makeStyles(() => ({
+  filterCardRoot: {
+    width: 550,
+    minWidth: 550,
+  },
+}));
+
+export const FilterCard: React.FC<FilterCardProps> = ({
   filterDefinitions,
-}: FilterCardProps<T>) => {
-  const classes = useDetailCardStyles();
-
-  const [, setAllFilters] = useState<Predicate<T>[]>([]);
-
-  const updateFilter = (i: number, filter: Predicate<T>) => {
-    setAllFilters(prevFilters => {
-      const newFilters = [...prevFilters];
-      newFilters[i] = filter;
-      setFilter(combinePredicates(Object.values(newFilters)));
-      return newFilters;
-    });
-  };
+  title = 'Filter By',
+}) => {
+  const classes = useStyles();
 
   return (
-    <InfoCard title="Filter By" className={classes.root}>
-      {filterDefinitions.map((filterDefinition, idx) => {
-        const setPredicate = (filter: Predicate<T>) =>
-          updateFilter(idx, filter);
-
-        return (
-          <Filters
-            key={`Filters-${filterDefinition.name}-${idx}`}
-            setPredicate={setPredicate}
-            {...filterDefinition}
-          />
-        );
-      })}
-    </InfoCard>
+    <CortexInfoCard title={title} className={classes.filterCardRoot}>
+      <Box display="flex" gridGap={16} flexDirection="column">
+        {filterDefinitions.map((filterDefinition, idx) => {
+          return (
+            <Filters
+              key={`Filters-${filterDefinition.name}-${idx}`}
+              {...filterDefinition}
+            />
+          );
+        })}
+      </Box>
+    </CortexInfoCard>
   );
 };

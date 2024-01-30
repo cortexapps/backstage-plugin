@@ -75,7 +75,7 @@ export const InitiativesList = () => {
         hasText(initiative, 'description', searchQuery) ||
         hasText(initiative, 'scorecard.name', searchQuery) ||
         hasText(initiative, 'scorecard.description', searchQuery) ||
-        hasTags(initiative.tags, searchQuery)
+        hasTags(initiative.entityGroups, searchQuery)
       );
     });
 

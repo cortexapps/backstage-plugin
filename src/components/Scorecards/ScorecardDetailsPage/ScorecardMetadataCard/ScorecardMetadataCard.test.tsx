@@ -16,21 +16,29 @@
 import React from 'react';
 import { Fixtures, renderWrapped } from '../../../../utils/TestUtils';
 import { ScorecardMetadataCard } from './ScorecardMetadataCard';
+import { FilterType } from '../../../../api/types';
 
 describe('ScorecardMetadataCard', () => {
   it('should render metadata', async () => {
     const scorecard = Fixtures.scorecard({
       creator: { name: 'Bob Jones', email: 'bobjones@cortex.io' },
       description: 'My Description',
-      tags: [{ id: '1', tag: 'tag1' }],
-      excludedTags: [{ id: '2', tag: 'tag2' }],
+      filter: {
+        type: FilterType.SERVICE_FILTER,
+        entityGroupFilter: {
+          entityGroups: ['tag1'],
+          excludedEntityGroups: ['tag2'],
+        },
+      },
     });
     const { findByText } = renderWrapped(
       <ScorecardMetadataCard scorecard={scorecard} scores={[]} />,
     );
 
     expect(await findByText('My Description')).toBeVisible();
-    expect(await findByText('tag1')).toBeVisible();
-    expect(await findByText('tag2')).toBeVisible();
+    expect(await findByText('My Scorecard')).toBeVisible();
+    expect(await findByText('my-scorecard')).toBeVisible();
+    expect(await findByText(/tag1/)).toBeVisible();
+    expect(await findByText(/tag2/)).toBeVisible();
   });
 });

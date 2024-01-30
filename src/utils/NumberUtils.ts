@@ -16,8 +16,8 @@
 
 import { round } from 'lodash';
 
-export function percentify(value: number): number {
-  return value <= 1 ? round(value * 100) : round(value);
+export function percentify(value: number = 0, decimal: number = 0): number {
+  return value <= 1 ? round(value * 100, decimal) : round(value, decimal);
 }
 
 /**

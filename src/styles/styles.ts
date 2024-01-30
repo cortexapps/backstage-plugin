@@ -99,8 +99,40 @@ export const fallbackPalette = {
   },
   common: {
     white: '#FFFFFF',
+    black: '#000000',
+    grayDarker: '#494949',
+    grayDark: '#7A7A7A',
+    gray: '#AEAEAE',
+    grayLight: '#D9D9D9',
+    grayLighter: '#F5F5F5',
+    green: {
+      800: '#469E4F',
+    },
+    red: {
+      600: '#F1506D',
+    },
+    purple: {
+      300: '#A099B9',
+      400: '#7650E9',
+    },
+    orange: {
+      100: '#FFEFD6',
+    },
   },
 };
+
+const iconStyles = createStyles({
+  statusIcon: {
+    width: '1rem',
+    marginRight: 4,
+  },
+  passingRule: {
+    color: fallbackPalette.common.green[800],
+  },
+  failingRule: {
+    color: fallbackPalette.common.red[600],
+  },
+});
 
 export const useCortexStyles = makeStyles(cortexStyles);
 export const useDetailCardStyles = makeStyles(detailCardStyles);
@@ -109,3 +141,4 @@ export const useHomepageInsightsStyles = makeStyles(homepageInsightsStyles);
 export const useHomepageInsightsLinkStyles = makeStyles(
   homepageInsightsLinkStyles,
 );
+export const useIconsStyles = makeStyles(iconStyles);
