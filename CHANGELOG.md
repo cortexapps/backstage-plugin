@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.5.1
+
+- Fix label color (light theme)
+
 ### 2.5.0
 
 - Overhaul the UI of Scorecard pages with better visualization of rules & levels
