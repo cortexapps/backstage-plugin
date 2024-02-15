@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.5.2 (planned)
+
+- Update Backstage sync polling maximum backoff to 30s from 1s
+
 ### 2.5.1
 
 - Fix label color (light theme)
