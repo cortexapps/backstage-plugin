@@ -61,7 +61,7 @@ export const HomepageInsightCard = ({
       );
 
       const entityRef = {
-        kind: 'Component',
+        kind: entity?.definition?.kind || 'Component',
         namespace: 'default',
         name: entity?.name || '',
       };
@@ -112,7 +112,7 @@ export const HomepageInsightCard = ({
         : '';
 
       const entityRef = {
-        kind: 'Component',
+        kind: entity?.definition?.kind || 'Component',
         namespace: 'default',
         name: entity?.name || '',
       };
