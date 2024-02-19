@@ -80,7 +80,7 @@ export const ScorecardsScoresTable = ({
           <Box>
             <ScorecardServiceRefLink
               scorecardId={scorecardId}
-              componentRef={entityComponentRef(entitiesByTag[tag])}
+              componentRef={entityComponentRef(entitiesByTag, tag)}
             >
               {name}
             </ScorecardServiceRefLink>

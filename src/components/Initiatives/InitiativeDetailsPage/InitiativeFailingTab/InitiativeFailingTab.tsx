@@ -94,7 +94,8 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
             <ServiceNameAndRulesColumn
               {...data}
               componentRef={entityComponentRef(
-                entitiesByTag[data.componentRef],
+                entitiesByTag,
+                data.componentRef,
               )}
               scorecardId={scorecardId}
             />

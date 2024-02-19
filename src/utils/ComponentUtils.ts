@@ -16,8 +16,9 @@
 
 import { Entity } from '@backstage/catalog-model';
 import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
-import { merge } from 'lodash';
+import { isNil, merge } from 'lodash';
 import { HomepageEntity } from '../api/userInsightTypes';
+import { StringIndexable } from '../components/ReportsPage/HeatmapPage/HeatmapUtils';
 
 export type EntityRefContext = {
   defaultKind?: string;
@@ -57,6 +58,15 @@ export const applyCustomMappings = (
   );
 };
 
-export const entityComponentRef = ({ definition }: HomepageEntity) => {
-  return `${definition.kind}:${definition.namespace}/${definition.name}`;
+export const entityComponentRef = (
+  entitiesByTag: StringIndexable<HomepageEntity>,
+  tag: string,
+) => {
+  const entity = entitiesByTag[tag];
+  if (isNil(entity)) {
+    return tag;
+  }
+  return isNil(entity.definition)
+    ? entity.codeTag
+    : `${entity.definition.kind}:${entity.definition.namespace}/${entity.definition.name}`;
 };

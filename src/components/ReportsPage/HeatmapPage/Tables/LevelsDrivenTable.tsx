@@ -68,7 +68,8 @@ export const LevelsDrivenTable = ({
                   <EntityRefLink
                     entityRef={parseEntityRef(
                       entityComponentRef(
-                        entitiesByTag[firstScore.componentRef],
+                        entitiesByTag,
+                        firstScore.componentRef,
                       ),
                       defaultComponentRefContext,
                     )}

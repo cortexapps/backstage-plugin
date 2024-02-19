@@ -57,7 +57,7 @@ export const HeatmapTableByService = ({
               <TableCell>
                 <EntityRefLink
                   entityRef={parseEntityRef(
-                    entityComponentRef(entitiesByTag[firstScore.componentRef]),
+                    entityComponentRef(entitiesByTag, firstScore.componentRef),
                     defaultComponentRefContext,
                   )}
                   title={entitiesByTag[firstScore.componentRef]?.name}

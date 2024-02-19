@@ -94,7 +94,8 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
             <ServiceNameColumn
               {...data}
               componentRef={entityComponentRef(
-                entitiesByTag[data.componentRef],
+                entitiesByTag,
+                data.componentRef,
               )}
               scorecardId={scorecardId}
             />

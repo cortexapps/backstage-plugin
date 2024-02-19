@@ -122,7 +122,8 @@ export const ScorecardRuleExemptionsTab = ({
                               <ScorecardServiceRefLink
                                 scorecardId={scorecard.id}
                                 componentRef={entityComponentRef(
-                                  entitiesByTag[entityTag],
+                                  entitiesByTag,
+                                  entityTag,
                                 )}
                               >
                                 {ruleExemption.entityName}
