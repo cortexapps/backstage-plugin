@@ -77,7 +77,7 @@ export const InitiativeDetailsPage = () => {
         })
         ?.filter(filter) ?? []
     );
-  }, [initiative, filter]);
+  }, [initiative, filter, entitiesByTag]);
 
   const filteredActionItems = useMemo(() => {
     if (isNil(actionItems)) {
