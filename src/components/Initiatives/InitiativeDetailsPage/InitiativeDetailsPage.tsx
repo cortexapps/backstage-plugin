@@ -26,7 +26,7 @@ import { useEntitiesByTag } from '../../../utils/hooks';
 import { InitiativeMetadataCard } from './InitiativeMetadataCard';
 import { InitiativeFailingTab } from './InitiativeFailingTab';
 import { InitiativePassingTab } from './InitiativePassingTab';
-import { InitiativeLevelsTab } from './InitiativeLevelsTab/InitiativeLevelsTab';
+import { InitiativeLevelsTab } from './InitiativeLevelsTab';
 import { InitiativeRulesTab } from './InitiativeRulesTab';
 import { isEmpty, isNil, keyBy } from 'lodash';
 import { InitiativeFilterDialog } from './InitativeFilterDialog';

@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.5.2
+
+- Fix using full Entity Ref. This fixes an issue where the plugin was not resolving entity Kind and Namespace.
+
 ### 2.5.1
 
 - Fix label color (light theme)
