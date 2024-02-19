@@ -21,19 +21,10 @@ import { HeatmapTableByGroup } from './HeatmapTableByGroup';
 import { HeatmapTableByLevels } from './HeatmapTableByLevels';
 import { HeatmapTableByService } from './HeatmapTableByService';
 import { LevelsDrivenTable } from './LevelsDrivenTable';
-import {
-  getScorecardServiceScoresByGroupByOption,
-  getSortedRuleNames,
-  StringIndexable,
-} from '../HeatmapUtils';
+import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, StringIndexable, } from '../HeatmapUtils';
 import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
 
-import {
-  GroupByOption,
-  HeaderType,
-  ScorecardLadder,
-  ScorecardServiceScore,
-} from '../../../../api/types';
+import { GroupByOption, HeaderType, ScorecardLadder, ScorecardServiceScore, } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 interface SingleScorecardHeatmapTableProps {
@@ -76,7 +67,7 @@ export const SingleScorecardHeatmapTable = ({
       return (
         <LevelsDrivenTable
           data={data}
-          entititesByTag={entitiesByTag}
+          entitiesByTag={entitiesByTag}
           groupBy={groupBy}
           levels={headers}
         />

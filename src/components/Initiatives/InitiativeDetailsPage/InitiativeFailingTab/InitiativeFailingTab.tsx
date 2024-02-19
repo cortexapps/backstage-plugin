@@ -21,7 +21,7 @@ import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage
 import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, ThemeProvider, Typography } from '@material-ui/core';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
 import { groupByString } from '../../../../utils/collections';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { LinearProgressWithLabel } from '../../../Common/LinearProgressWithLabel';
@@ -36,7 +36,7 @@ import { size } from 'lodash';
 interface InitiativeFailingTabProps {
   actionItems: InitiativeActionItem[];
   defaultPageSize?: number;
-  entitiesByComponentRef: StringIndexable<HomepageEntity>;
+  entitiesByTag: StringIndexable<HomepageEntity>;
   numRules?: number;
   scorecardId: number;
 }
@@ -44,7 +44,7 @@ interface InitiativeFailingTabProps {
 export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
   actionItems,
   defaultPageSize = 15,
-  entitiesByComponentRef,
+  entitiesByTag,
   numRules = 2,
   scorecardId,
 }) => {
@@ -63,7 +63,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
           defaultComponentRefContext,
         );
 
-        const { name, description } = entitiesByComponentRef[componentRef];
+        const { name, description } = entitiesByTag[componentRef];
         const serviceActionItems = failingComponents[componentRef];
 
         return {
@@ -77,7 +77,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
       })
       .sort((left, right) => left.actionItems.length - right.actionItems.length)
       .sort((left, right) => left.tag.localeCompare(right.tag));
-  }, [entitiesByComponentRef, failingComponents, numRules]);
+  }, [entitiesByTag, failingComponents, numRules]);
 
   const showPagination = useMemo(() => {
     return size(failingComponents) > defaultPageSize;
@@ -91,7 +91,13 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
         width: '60%',
         render: (data: InitiativeFailingTabRowProps) => {
           return (
-            <ServiceNameAndRulesColumn {...data} scorecardId={scorecardId} />
+            <ServiceNameAndRulesColumn
+              {...data}
+              componentRef={entityComponentRef(
+                entitiesByTag[data.componentRef],
+              )}
+              scorecardId={scorecardId}
+            />
           );
         },
         customSort: (

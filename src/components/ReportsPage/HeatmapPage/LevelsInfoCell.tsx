@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  TableCell,
-  Typography,
-  makeStyles,
-} from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, makeStyles, TableCell, Typography, } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
@@ -31,6 +24,8 @@ import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
 
 import { ScorecardServiceScore } from '../../../api/types';
 import { BackstageTheme } from '@backstage/theme';
+import { StringIndexable } from './HeatmapUtils';
+import { HomepageEntity } from '../../../api/userInsightTypes';
 
 const useStyles = makeStyles<BackstageTheme>(_ => ({
   componentList: {
@@ -39,11 +34,16 @@ const useStyles = makeStyles<BackstageTheme>(_ => ({
 }));
 
 interface LevelsInfoCellProps {
+  entitiesByTag: StringIndexable<HomepageEntity>;
   identifier: string;
   scores: ScorecardServiceScore[];
 }
 
-export const LevelsInfoCell = ({ identifier, scores }: LevelsInfoCellProps) => {
+export const LevelsInfoCell = ({
+  identifier,
+  scores,
+  entitiesByTag,
+}: LevelsInfoCellProps) => {
   const classes = useStyles();
   return (
     <TableCell>
@@ -62,7 +62,7 @@ export const LevelsInfoCell = ({ identifier, scores }: LevelsInfoCellProps) => {
               <li key={`LevelService-${identifier}-${score.serviceId}`}>
                 <EntityRefLink
                   entityRef={parseEntityRef(
-                    score.componentRef,
+                    entitiesByTag[score.componentRef],
                     defaultComponentRefContext,
                   )}
                 />

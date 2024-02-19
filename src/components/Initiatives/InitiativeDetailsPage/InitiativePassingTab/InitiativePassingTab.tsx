@@ -19,7 +19,7 @@ import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage
 import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, ThemeProvider, Typography } from '@material-ui/core';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { LinearProgressWithLabel } from '../../../Common/LinearProgressWithLabel';
 import {
@@ -34,7 +34,7 @@ interface InitiativePassingTabProps {
   actionItems: InitiativeActionItem[];
   componentRefs: string[];
   defaultPageSize?: number;
-  entitiesByComponentRef: StringIndexable<HomepageEntity>;
+  entitiesByTag: StringIndexable<HomepageEntity>;
   numRules: number;
   scorecardId: number;
 }
@@ -43,7 +43,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
   actionItems,
   componentRefs,
   defaultPageSize = 15,
-  entitiesByComponentRef,
+  entitiesByTag,
   numRules = 2,
   scorecardId,
 }) => {
@@ -66,7 +66,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
           componentRef,
           defaultComponentRefContext,
         );
-        const { name, description } = entitiesByComponentRef[componentRef];
+        const { name, description } = entitiesByTag[componentRef];
 
         return {
           componentRef,
@@ -76,7 +76,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
         };
       })
       .sort((left, right) => left.tag.localeCompare(right.tag));
-  }, [entitiesByComponentRef, passingComponents]);
+  }, [entitiesByTag, passingComponents]);
 
   const showPagination = useMemo(
     () => componentRefs.length > defaultPageSize,
@@ -90,7 +90,15 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
         title: 'Service name',
         width: '60%',
         render: (data: InitiativePassingTabRowProps) => {
-          return <ServiceNameColumn {...data} scorecardId={scorecardId} />;
+          return (
+            <ServiceNameColumn
+              {...data}
+              componentRef={entityComponentRef(
+                entitiesByTag[data.componentRef],
+              )}
+              scorecardId={scorecardId}
+            />
+          );
         },
         customSort: (
           data1: InitiativePassingTabRowProps,

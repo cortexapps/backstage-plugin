@@ -14,32 +14,17 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import {
-  EmptyState,
-  InfoCard,
-  Table as BSTable,
-  TableColumn,
-} from '@backstage/core-components';
-import {
-  CategoryFilter,
-  ScorecardLadder,
-  ScorecardServiceScore,
-} from '../../../../api/types';
+import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage/core-components';
+import { CategoryFilter, ScorecardLadder, ScorecardServiceScore, } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
-import { Box, Typography, makeStyles } from '@material-ui/core';
+import { Box, makeStyles, Typography } from '@material-ui/core';
 import { isNil } from 'lodash';
-import {
-  levelSort,
-  scorePercentageSort,
-  levelColumn,
-  scoreColumn,
-  PAGE_SIZE,
-} from './ScorecardsScoresTableConfig';
+import { levelColumn, levelSort, PAGE_SIZE, scoreColumn, scorePercentageSort, } from './ScorecardsScoresTableConfig';
 
 interface ScorecardsScoresTableProps {
   category: CategoryFilter;
@@ -95,7 +80,7 @@ export const ScorecardsScoresTable = ({
           <Box>
             <ScorecardServiceRefLink
               scorecardId={scorecardId}
-              componentRef={tag}
+              componentRef={entityComponentRef(entitiesByTag[tag])}
             >
               {name}
             </ScorecardServiceRefLink>

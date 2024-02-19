@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import {
-  Rule,
-  Scorecard,
-  ScorecardRuleExemptionResult,
-  ScorecardServiceScore,
-} from '../../../../api/types';
-import { Box, Tooltip, Typography, makeStyles } from '@material-ui/core';
+import { Rule, Scorecard, ScorecardRuleExemptionResult, ScorecardServiceScore, } from '../../../../api/types';
+import { Box, makeStyles, Tooltip, Typography } from '@material-ui/core';
 import { getRuleTitle } from '../../../../utils/ScorecardRules';
 import { RuleExemptionStatus } from './RuleExemptionStatus';
 import { CortexInfoCard } from '../../../Common/CortexInfoCard';
-import {
-  getExpirationText,
-  getIsActive,
-} from './ScorecardRuleExemptionsTabUtils';
+import { getExpirationText, getIsActive, } from './ScorecardRuleExemptionsTabUtils';
 import ScorecardRuleExemptionTooltip from './ScorecardRuleExemptionTooltip';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 import { isEmpty } from 'lodash';
+import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { HomepageEntity } from '../../../../api/userInsightTypes';
+import { entityComponentRef } from '../../../../utils/ComponentUtils';
 
 interface ScorecardRuleExemptionsTabProps {
+  entitiesByTag: StringIndexable<HomepageEntity>;
   ruleExemptions: ScorecardRuleExemptionResult['scorecardRuleExemptions'];
   scorecard: Scorecard;
   scores: ScorecardServiceScore[];
@@ -45,6 +41,7 @@ const useRuleExemptionsTabStyles = makeStyles(() => ({
 }));
 
 export const ScorecardRuleExemptionsTab = ({
+  entitiesByTag,
   ruleExemptions = {},
   scorecard,
   scores,
@@ -84,8 +81,7 @@ export const ScorecardRuleExemptionsTab = ({
             return (
               <React.Fragment key={`RuleExemption-${id}`}>
                 {ruleExemptionById.filter(getIsActive).map(ruleExemption => {
-                  let serviceComponentRef =
-                    scoresMap[ruleExemption.entityId] ?? '';
+                  let entityTag = scoresMap[ruleExemption.entityId] ?? '';
 
                   return (
                     <Tooltip
@@ -122,10 +118,12 @@ export const ScorecardRuleExemptionsTab = ({
                               {rulesMap[ruleExemption.ruleId]}
                             </Typography>{' '}
                             for{' '}
-                            {serviceComponentRef ? (
+                            {entityTag ? (
                               <ScorecardServiceRefLink
                                 scorecardId={scorecard.id}
-                                componentRef={serviceComponentRef}
+                                componentRef={entityComponentRef(
+                                  entitiesByTag[entityTag],
+                                )}
                               >
                                 {ruleExemption.entityName}
                               </ScorecardServiceRefLink>

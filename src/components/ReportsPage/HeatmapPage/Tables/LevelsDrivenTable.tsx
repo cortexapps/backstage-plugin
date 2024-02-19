@@ -14,37 +14,28 @@
  * limitations under the License.
  */
 import React from 'react';
-import {
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  Typography,
-} from '@material-ui/core';
+import { Table, TableBody, TableCell, TableRow, Typography, } from '@material-ui/core';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
 import { LevelsInfoCell } from '../LevelsInfoCell';
-import {
-  getServicesInLevelsFromScores,
-  StringIndexable,
-} from '../HeatmapUtils';
+import { getServicesInLevelsFromScores, StringIndexable, } from '../HeatmapUtils';
 
 import { GroupByOption, ScorecardServiceScore } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 interface LevelsDrivenTableProps {
   data: StringIndexable<ScorecardServiceScore[]>;
-  entititesByTag: StringIndexable<HomepageEntity>;
+  entitiesByTag: StringIndexable<HomepageEntity>;
   groupBy: GroupByOption;
   levels: string[];
 }
 
 export const LevelsDrivenTable = ({
   data,
-  entititesByTag,
+  entitiesByTag,
   groupBy,
   levels,
 }: LevelsDrivenTableProps) => {
@@ -76,10 +67,12 @@ export const LevelsDrivenTable = ({
                 <TableCell>
                   <EntityRefLink
                     entityRef={parseEntityRef(
-                      firstScore.componentRef,
+                      entityComponentRef(
+                        entitiesByTag[firstScore.componentRef],
+                      ),
                       defaultComponentRefContext,
                     )}
-                    title={entititesByTag[firstScore.componentRef]?.name}
+                    title={entitiesByTag[firstScore.componentRef]?.name}
                   />
                 </TableCell>
               )}
@@ -93,6 +86,7 @@ export const LevelsDrivenTable = ({
               {scores.map((score, idx) => (
                 <LevelsInfoCell
                   key={`LevelsInfoCell-${key}-${idx}`}
+                  entitiesByTag={entitiesByTag}
                   identifier={key}
                   scores={score}
                 />

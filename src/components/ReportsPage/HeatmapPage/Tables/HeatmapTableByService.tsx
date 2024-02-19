@@ -21,7 +21,7 @@ import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
 import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
 import { mean as _average } from 'lodash';
@@ -57,7 +57,7 @@ export const HeatmapTableByService = ({
               <TableCell>
                 <EntityRefLink
                   entityRef={parseEntityRef(
-                    firstScore.componentRef,
+                    entityComponentRef(entitiesByTag[firstScore.componentRef]),
                     defaultComponentRefContext,
                   )}
                   title={entitiesByTag[firstScore.componentRef]?.name}
