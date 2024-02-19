@@ -17,6 +17,7 @@
 import { Entity } from '@backstage/catalog-model';
 import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
 import { merge } from 'lodash';
+import { HomepageEntity } from '../api/userInsightTypes';
 
 export type EntityRefContext = {
   defaultKind?: string;
@@ -54,4 +55,8 @@ export const applyCustomMappings = (
     },
     entity,
   );
+};
+
+export const entityComponentRef = ({ definition }: HomepageEntity) => {
+  return `${definition.kind}:${definition.namespace}/${definition.name}`;
 };

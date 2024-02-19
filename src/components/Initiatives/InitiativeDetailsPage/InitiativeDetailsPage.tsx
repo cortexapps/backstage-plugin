@@ -28,9 +28,10 @@ import { InitiativeFailingTab } from './InitiativeFailingTab';
 import { InitiativePassingTab } from './InitiativePassingTab';
 import { InitiativeLevelsTab } from './InitiativeLevelsTab/InitiativeLevelsTab';
 import { InitiativeRulesTab } from './InitiativeRulesTab';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, keyBy } from 'lodash';
 import { InitiativeFilterDialog } from './InitativeFilterDialog';
 import { InitiativeFilter } from './InitativeFilterDialog/InitiativeFilterDialogUtils';
+import { entityComponentRef } from '../../../utils/ComponentUtils';
 
 enum InitiativeDetailsTab {
   'Failing' = 'Failing',
@@ -59,12 +60,22 @@ export const InitiativeDetailsPage = () => {
   }, []);
 
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
+  const entitiesByComponentRef = useMemo(() => {
+    return keyBy(Object.values(entitiesByTag), entity =>
+      entityComponentRef(entity),
+    );
+  }, [entitiesByTag]);
 
   const [initiative, actionItems] = value ?? [undefined, undefined];
 
   const filteredComponentRefs = useMemo(() => {
     return (
-      initiative?.scores?.map(score => score.entityTag)?.filter(filter) ?? []
+      initiative?.scores
+        ?.map(score => {
+          const entity = entitiesByTag[score.entityTag];
+          return entityComponentRef(entity);
+        })
+        ?.filter(filter) ?? []
     );
   }, [initiative, filter]);
 
@@ -109,7 +120,7 @@ export const InitiativeDetailsPage = () => {
         return (
           <InitiativeFailingTab
             actionItems={filteredActionItems}
-            entitiesByTag={entitiesByTag}
+            entitiesByComponentRef={entitiesByComponentRef}
             numRules={initiative.rules.length}
             scorecardId={initiative.scorecard.id}
           />
@@ -119,7 +130,7 @@ export const InitiativeDetailsPage = () => {
           <InitiativePassingTab
             actionItems={actionItems}
             componentRefs={filteredComponentRefs}
-            entitiesByTag={entitiesByTag}
+            entitiesByComponentRef={entitiesByComponentRef}
             numRules={initiative.rules.length}
             scorecardId={initiative.scorecard.id}
           />

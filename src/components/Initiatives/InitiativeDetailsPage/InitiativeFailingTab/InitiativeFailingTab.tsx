@@ -17,12 +17,7 @@
 import React, { useMemo } from 'react';
 import { InitiativeActionItem } from '../../../../api/types';
 import { ServiceNameAndRulesColumn } from './ServiceNameAndRulesColumn';
-import {
-  TableColumn,
-  Table as BSTable,
-  EmptyState,
-  InfoCard,
-} from '@backstage/core-components';
+import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage/core-components';
 import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, ThemeProvider, Typography } from '@material-ui/core';
@@ -32,8 +27,8 @@ import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { LinearProgressWithLabel } from '../../../Common/LinearProgressWithLabel';
 import { percentify } from '../../../../utils/NumberUtils';
 import {
-  InitiativeFailingTabRowProps,
   failingTabTheme,
+  InitiativeFailingTabRowProps,
   useInitiativeFailingTabStyle,
 } from './InitiativeFailingTabConfig';
 import { size } from 'lodash';
@@ -41,7 +36,7 @@ import { size } from 'lodash';
 interface InitiativeFailingTabProps {
   actionItems: InitiativeActionItem[];
   defaultPageSize?: number;
-  entitiesByTag: StringIndexable<HomepageEntity>;
+  entitiesByComponentRef: StringIndexable<HomepageEntity>;
   numRules?: number;
   scorecardId: number;
 }
@@ -49,7 +44,7 @@ interface InitiativeFailingTabProps {
 export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
   actionItems,
   defaultPageSize = 15,
-  entitiesByTag,
+  entitiesByComponentRef,
   numRules = 2,
   scorecardId,
 }) => {
@@ -68,7 +63,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
           defaultComponentRefContext,
         );
 
-        const { name, description } = entitiesByTag[componentRef];
+        const { name, description } = entitiesByComponentRef[componentRef];
         const serviceActionItems = failingComponents[componentRef];
 
         return {
@@ -82,7 +77,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
       })
       .sort((left, right) => left.actionItems.length - right.actionItems.length)
       .sort((left, right) => left.tag.localeCompare(right.tag));
-  }, [entitiesByTag, failingComponents, numRules]);
+  }, [entitiesByComponentRef, failingComponents, numRules]);
 
   const showPagination = useMemo(() => {
     return size(failingComponents) > defaultPageSize;

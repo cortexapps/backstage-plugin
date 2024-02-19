@@ -15,12 +15,7 @@
  */
 
 import React, { useMemo } from 'react';
-import {
-  TableColumn,
-  Table as BSTable,
-  EmptyState,
-  InfoCard,
-} from '@backstage/core-components';
+import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage/core-components';
 import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, ThemeProvider, Typography } from '@material-ui/core';
@@ -39,7 +34,7 @@ interface InitiativePassingTabProps {
   actionItems: InitiativeActionItem[];
   componentRefs: string[];
   defaultPageSize?: number;
-  entitiesByTag: StringIndexable<HomepageEntity>;
+  entitiesByComponentRef: StringIndexable<HomepageEntity>;
   numRules: number;
   scorecardId: number;
 }
@@ -48,7 +43,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
   actionItems,
   componentRefs,
   defaultPageSize = 15,
-  entitiesByTag,
+  entitiesByComponentRef,
   numRules = 2,
   scorecardId,
 }) => {
@@ -71,7 +66,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
           componentRef,
           defaultComponentRefContext,
         );
-        const { name, description } = entitiesByTag[componentRef];
+        const { name, description } = entitiesByComponentRef[componentRef];
 
         return {
           componentRef,
@@ -81,7 +76,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
         };
       })
       .sort((left, right) => left.tag.localeCompare(right.tag));
-  }, [entitiesByTag, passingComponents]);
+  }, [entitiesByComponentRef, passingComponents]);
 
   const showPagination = useMemo(
     () => componentRefs.length > defaultPageSize,
