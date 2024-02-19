@@ -162,7 +162,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
         },
       },
     ],
-    [classes, numRules, scorecardId],
+    [classes, numRules, scorecardId, entitiesByTag],
   );
 
   if (data.length === 0) {

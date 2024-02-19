@@ -169,7 +169,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
         },
       },
     ],
-    [classes, numRules, scorecardId],
+    [classes, numRules, scorecardId, entitiesByTag],
   );
 
   if (data.length === 0) {

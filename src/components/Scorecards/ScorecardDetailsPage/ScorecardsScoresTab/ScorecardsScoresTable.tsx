@@ -117,7 +117,7 @@ export const ScorecardsScoresTable = ({
         ),
       },
     ],
-    [category, scorecardId, scorecardsTableCardClasses.tag],
+    [category, scorecardId, scorecardsTableCardClasses.tag, entitiesByTag],
   );
 
   const data = useMemo(() => {
