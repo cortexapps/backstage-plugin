@@ -23,12 +23,11 @@ import { getExpirationText, getIsActive, } from './ScorecardRuleExemptionsTabUti
 import ScorecardRuleExemptionTooltip from './ScorecardRuleExemptionTooltip';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 import { isEmpty } from 'lodash';
-import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { entityComponentRef } from '../../../../utils/ComponentUtils';
 
 interface ScorecardRuleExemptionsTabProps {
-  entitiesByTag: StringIndexable<HomepageEntity>;
+  entitiesByTag: Record<string, HomepageEntity>;
   ruleExemptions: ScorecardRuleExemptionResult['scorecardRuleExemptions'];
   scorecard: Scorecard;
   scores: ScorecardServiceScore[];
@@ -81,7 +80,7 @@ export const ScorecardRuleExemptionsTab = ({
             return (
               <React.Fragment key={`RuleExemption-${id}`}>
                 {ruleExemptionById.filter(getIsActive).map(ruleExemption => {
-                  let entityTag = scoresMap[ruleExemption.entityId] ?? '';
+                  const entityTag = scoresMap[ruleExemption.entityId] ?? '';
 
                   return (
                     <Tooltip

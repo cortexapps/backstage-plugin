@@ -18,7 +18,6 @@ import { Entity } from '@backstage/catalog-model';
 import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
 import { isNil, merge } from 'lodash';
 import { HomepageEntity } from '../api/userInsightTypes';
-import { StringIndexable } from '../components/ReportsPage/HeatmapPage/HeatmapUtils';
 
 export type EntityRefContext = {
   defaultKind?: string;
@@ -59,7 +58,7 @@ export const applyCustomMappings = (
 };
 
 export const entityComponentRef = (
-  entitiesByTag: StringIndexable<HomepageEntity>,
+  entitiesByTag: Record<string, HomepageEntity>,
   tag: string,
 ) => {
   const entity = entitiesByTag[tag];

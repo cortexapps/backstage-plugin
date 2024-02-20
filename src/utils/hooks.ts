@@ -13,38 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, {
-  DependencyList,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import {
-  AnyEntityRef,
-  entityEquals,
-  nullsToUndefined,
-  Predicate,
-  stringifyAnyEntityRef,
-} from './types';
+import React, { DependencyList, useCallback, useEffect, useMemo, useState, } from 'react';
+import { AnyEntityRef, entityEquals, nullsToUndefined, Predicate, stringifyAnyEntityRef, } from './types';
 import { useAsync } from 'react-use';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import {
-  catalogApiRef,
-  getEntityRelations,
-  humanizeEntityRef,
-} from '@backstage/plugin-catalog-react';
+import { catalogApiRef, getEntityRelations, humanizeEntityRef, } from '@backstage/plugin-catalog-react';
 import { groupByString, mapByString, mapValues } from './collections';
-import {
-  Entity,
-  parseEntityRef,
-  RELATION_OWNED_BY,
-  RELATION_PART_OF,
-} from '@backstage/catalog-model';
-import {
-  defaultGroupRefContext,
-  defaultSystemRefContext,
-} from './ComponentUtils';
+import { Entity, parseEntityRef, RELATION_OWNED_BY, RELATION_PART_OF, } from '@backstage/catalog-model';
+import { defaultGroupRefContext, defaultSystemRefContext, } from './ComponentUtils';
 import { cortexApiRef } from '../api';
 import { CortexApi } from '../api/CortexApi';
 import { EntityFilterGroup } from '../filters';

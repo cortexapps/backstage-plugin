@@ -24,7 +24,6 @@ import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
 
 import { ScorecardServiceScore } from '../../../api/types';
 import { BackstageTheme } from '@backstage/theme';
-import { StringIndexable } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 
 const useStyles = makeStyles<BackstageTheme>(_ => ({
@@ -34,7 +33,7 @@ const useStyles = makeStyles<BackstageTheme>(_ => ({
 }));
 
 interface LevelsInfoCellProps {
-  entitiesByTag: StringIndexable<HomepageEntity>;
+  entitiesByTag: Record<string, HomepageEntity>;
   identifier: string;
   scores: ScorecardServiceScore[];
 }

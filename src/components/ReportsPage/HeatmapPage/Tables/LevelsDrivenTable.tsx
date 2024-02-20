@@ -28,7 +28,7 @@ import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 interface LevelsDrivenTableProps {
   data: StringIndexable<ScorecardServiceScore[]>;
-  entitiesByTag: StringIndexable<HomepageEntity>;
+  entitiesByTag: Record<string, HomepageEntity>;
   groupBy: GroupByOption;
   levels: string[];
 }

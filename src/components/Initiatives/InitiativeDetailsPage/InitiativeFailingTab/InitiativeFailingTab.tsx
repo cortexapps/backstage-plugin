@@ -18,7 +18,6 @@ import React, { useMemo } from 'react';
 import { InitiativeActionItem } from '../../../../api/types';
 import { ServiceNameAndRulesColumn } from './ServiceNameAndRulesColumn';
 import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage/core-components';
-import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, ThemeProvider, Typography } from '@material-ui/core';
 import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
@@ -36,7 +35,7 @@ import { size } from 'lodash';
 interface InitiativeFailingTabProps {
   actionItems: InitiativeActionItem[];
   defaultPageSize?: number;
-  entitiesByTag: StringIndexable<HomepageEntity>;
+  entitiesByTag: Record<string, HomepageEntity>;
   numRules?: number;
   scorecardId: number;
 }
