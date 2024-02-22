@@ -16,8 +16,7 @@
 
 ### 2.4.4
 
-- Add support for non ISO-8859-1 characters in request headers to the Cortex API. This fixes authentication for users
-  with these characters in their name.
+- Add support for non ISO-8859-1 characters in request headers to the Cortex API. This fixes authentication for users with these characters in their name.
 
 ### 2.4.3
 
@@ -33,8 +32,7 @@
 
 ### 2.4.0
 
-- Adds the ability to filter which entities get sent from Backstage to Cortex (
-  via [backstage-plugin-extensions)](https://github.com/cortexapps/backstage-plugin-extensions)
+- Adds the ability to filter which entities get sent from Backstage to Cortex (via [backstage-plugin-extensions)](https://github.com/cortexapps/backstage-plugin-extensions)
 
 ### 2.3.3
 
@@ -54,8 +52,7 @@
 
 ### 2.2.0
 
-- Adds ability to add badges to Scorecards based on extension criteria (
-  via [backstage-plugin-extensions)](https://github.com/cortexapps/backstage-plugin-extensions)
+- Adds ability to add badges to Scorecards based on extension criteria (via [backstage-plugin-extensions)](https://github.com/cortexapps/backstage-plugin-extensions)
 - Adds “Back” link to the Scorecard service page
 - Adds Help Links page to Settings with a configurable set of links
 
@@ -75,8 +72,7 @@
 
 ### 2.0.4
 
-- Add support for custom Scorecard support order (
-  via [backstage-plugin-extensions](https://github.com/cortexapps/backstage-plugin-extensions))
+- Add support for custom Scorecard support order (via [backstage-plugin-extensions](https://github.com/cortexapps/backstage-plugin-extensions))
 
 ### 2.0.3
 
@@ -92,5 +88,4 @@
 
 - Copy updates
 
-**NOTE:** 2.0.0 and prior are not documented.
-See [commit history](https://github.com/cortexapps/backstage-plugin/commits/master) for details.
+**NOTE:** 2.0.0 and prior are not documented. See [commit history](https://github.com/cortexapps/backstage-plugin/commits/master) for details.
