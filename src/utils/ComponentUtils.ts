@@ -16,7 +16,8 @@
 
 import { Entity } from '@backstage/catalog-model';
 import { CustomMapping } from '@cortexapps/backstage-plugin-extensions';
-import { merge } from 'lodash';
+import { isNil, merge } from 'lodash';
+import { HomepageEntity } from '../api/userInsightTypes';
 
 export type EntityRefContext = {
   defaultKind?: string;
@@ -54,4 +55,17 @@ export const applyCustomMappings = (
     },
     entity,
   );
+};
+
+export const entityComponentRef = (
+  entitiesByTag: Record<string, HomepageEntity>,
+  tag: string,
+) => {
+  const entity = entitiesByTag[tag];
+  if (isNil(entity)) {
+    return tag;
+  }
+  return isNil(entity.definition)
+    ? entity.codeTag
+    : `${entity.definition.kind}:${entity.definition.namespace}/${entity.definition.name}`;
 };

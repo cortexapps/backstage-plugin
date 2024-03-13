@@ -17,23 +17,17 @@
 import React, { useMemo } from 'react';
 import { InitiativeActionItem } from '../../../../api/types';
 import { ServiceNameAndRulesColumn } from './ServiceNameAndRulesColumn';
-import {
-  TableColumn,
-  Table as BSTable,
-  EmptyState,
-  InfoCard,
-} from '@backstage/core-components';
-import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage/core-components';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, ThemeProvider, Typography } from '@material-ui/core';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
 import { groupByString } from '../../../../utils/collections';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { LinearProgressWithLabel } from '../../../Common/LinearProgressWithLabel';
 import { percentify } from '../../../../utils/NumberUtils';
 import {
-  InitiativeFailingTabRowProps,
   failingTabTheme,
+  InitiativeFailingTabRowProps,
   useInitiativeFailingTabStyle,
 } from './InitiativeFailingTabConfig';
 import { size } from 'lodash';
@@ -41,7 +35,7 @@ import { size } from 'lodash';
 interface InitiativeFailingTabProps {
   actionItems: InitiativeActionItem[];
   defaultPageSize?: number;
-  entitiesByTag: StringIndexable<HomepageEntity>;
+  entitiesByTag: Record<string, HomepageEntity>;
   numRules?: number;
   scorecardId: number;
 }
@@ -96,7 +90,14 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
         width: '60%',
         render: (data: InitiativeFailingTabRowProps) => {
           return (
-            <ServiceNameAndRulesColumn {...data} scorecardId={scorecardId} />
+            <ServiceNameAndRulesColumn
+              {...data}
+              componentRef={entityComponentRef(
+                entitiesByTag,
+                data.componentRef,
+              )}
+              scorecardId={scorecardId}
+            />
           );
         },
         customSort: (
@@ -168,7 +169,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
         },
       },
     ],
-    [classes, numRules, scorecardId],
+    [classes, numRules, scorecardId, entitiesByTag],
   );
 
   if (data.length === 0) {

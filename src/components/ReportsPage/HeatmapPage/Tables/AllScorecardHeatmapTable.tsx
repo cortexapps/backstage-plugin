@@ -15,7 +15,7 @@
  */
 import React, { useMemo } from 'react';
 import { mean as _average, round as _round } from 'lodash';
-import { Table, TableBody, TableRow, TableCell } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableRow } from '@material-ui/core';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 
@@ -78,7 +78,7 @@ export const AllScorecardsHeatmapTable = ({
                 ) : (
                   <EntityRefLink
                     entityRef={parseEntityRef(
-                      groupScore.identifier!!,
+                      entitiesByTag[groupScore.identifier!!]?.definition,
                       defaultComponentRefContext,
                     )}
                     title={entitiesByTag[groupScore.identifier!!]?.name}

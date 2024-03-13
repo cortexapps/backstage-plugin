@@ -15,16 +15,11 @@
  */
 
 import React, { useMemo } from 'react';
-import {
-  TableColumn,
-  Table as BSTable,
-  EmptyState,
-  InfoCard,
-} from '@backstage/core-components';
+import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage/core-components';
 import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, ThemeProvider, Typography } from '@material-ui/core';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { LinearProgressWithLabel } from '../../../Common/LinearProgressWithLabel';
 import {
@@ -95,7 +90,16 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
         title: 'Service name',
         width: '60%',
         render: (data: InitiativePassingTabRowProps) => {
-          return <ServiceNameColumn {...data} scorecardId={scorecardId} />;
+          return (
+            <ServiceNameColumn
+              {...data}
+              componentRef={entityComponentRef(
+                entitiesByTag,
+                data.componentRef,
+              )}
+              scorecardId={scorecardId}
+            />
+          );
         },
         customSort: (
           data1: InitiativePassingTabRowProps,
@@ -159,7 +163,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
         },
       },
     ],
-    [classes, numRules, scorecardId],
+    [classes, numRules, scorecardId, entitiesByTag],
   );
 
   if (data.length === 0) {

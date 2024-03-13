@@ -15,23 +15,12 @@
  */
 import { Content } from '@backstage/core-components';
 import React, { useMemo, useState } from 'react';
-import {
-  Scorecard,
-  ScorecardLadder,
-  ScorecardRuleExemptionResult,
-  ScorecardServiceScore,
-} from '../../../api/types';
+import { Scorecard, ScorecardLadder, ScorecardRuleExemptionResult, ScorecardServiceScore, } from '../../../api/types';
 import { Box, Button, Grid, Tab, Tabs } from '@material-ui/core';
 import { ScorecardMetadataCard } from './ScorecardMetadataCard';
-import {
-  ScorecardLadderRulesCard,
-  ScorecardScoresRulesCard,
-} from './ScorecardRulesTab';
+import { ScorecardLadderRulesCard, ScorecardScoresRulesCard, } from './ScorecardRulesTab';
 import { Predicate } from '../../../utils/types';
-import {
-  ScorecardLadderStatsCard,
-  ScorecardScoresStatsCard,
-} from './ScorecardStatsCard';
+import { ScorecardLadderStatsCard, ScorecardScoresStatsCard, } from './ScorecardStatsCard';
 import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import CopyCsvButton from './CopyCsvButton';
@@ -108,6 +97,7 @@ export const ScorecardDetails = ({
       case ScorecardDetailsTab.RuleExemptions:
         return (
           <ScorecardRuleExemptionsTab
+            entitiesByTag={entitiesByTag}
             ruleExemptions={ruleExemptions}
             scorecard={scorecard}
             scores={scores}

@@ -61,9 +61,9 @@ export const HomepageInsightCard = ({
       );
 
       const entityRef = {
-        kind: 'Component',
-        namespace: 'default',
-        name: entity?.name || '',
+        kind: entity?.definition?.kind || 'Component',
+        namespace: entity?.definition?.namespace || 'default',
+        name: entity?.definition?.name || entity?.codeTag,
       };
 
       return (
@@ -112,9 +112,9 @@ export const HomepageInsightCard = ({
         : '';
 
       const entityRef = {
-        kind: 'Component',
-        namespace: 'default',
-        name: entity?.name || '',
+        kind: entity?.definition?.kind || 'Component',
+        namespace: entity?.definition?.namespace || 'default',
+        name: entity?.definition?.name || entity?.codeTag,
       };
 
       return (
