@@ -50,4 +50,4 @@ export const cortexScorecardServicePageUrl = ({
   `${cortexScorecardPageUrl({
     scorecardId: scorecardId,
     cortexUrl: cortexUrl,
-  })}?service=${serviceId}`;
+  })}?entity=${serviceId}`;
