@@ -2,7 +2,7 @@
 
 ### 2.5.3
 
-- Add fallback for generating link when missing entity
+- Fix an issue where an invalid link is generated when there is insufficient information about an entity in the context
 
 ### 2.5.2
 
