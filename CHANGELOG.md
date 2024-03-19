@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.5.3
+
+- Add fallback for generating link when missing entity
+
 ### 2.5.2
 
 - Fix entity links by applying the correct `kind` instead of always assuming they are `Component`s

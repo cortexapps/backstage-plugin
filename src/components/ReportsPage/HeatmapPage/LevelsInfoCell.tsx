@@ -20,7 +20,7 @@ import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 
 import { maybePluralize } from '../../../utils/strings';
-import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
+import { defaultComponentRefContext, entityComponentRef, } from '../../../utils/ComponentUtils';
 
 import { ScorecardServiceScore } from '../../../api/types';
 import { BackstageTheme } from '@backstage/theme';
@@ -61,7 +61,7 @@ export const LevelsInfoCell = ({
               <li key={`LevelService-${identifier}-${score.serviceId}`}>
                 <EntityRefLink
                   entityRef={parseEntityRef(
-                    entitiesByTag[score.componentRef],
+                    entityComponentRef(entitiesByTag, score.componentRef),
                     defaultComponentRefContext,
                   )}
                 />

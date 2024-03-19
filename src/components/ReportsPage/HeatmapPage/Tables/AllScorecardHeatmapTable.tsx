@@ -22,7 +22,7 @@ import { parseEntityRef } from '@backstage/catalog-model';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
 import { HeatmapCell } from '../HeatmapCell';
 import { getFormattedScorecardScores, StringIndexable } from '../HeatmapUtils';
-import { defaultComponentRefContext } from '../../../../utils/ComponentUtils';
+import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
 import { filterNotUndefined } from '../../../../utils/collections';
 
 import { GroupByOption, ScoresByIdentifier } from '../../../../api/types';
@@ -78,7 +78,10 @@ export const AllScorecardsHeatmapTable = ({
                 ) : (
                   <EntityRefLink
                     entityRef={parseEntityRef(
-                      entitiesByTag[groupScore.identifier!!]?.definition,
+                      entityComponentRef(
+                        entitiesByTag,
+                        groupScore.identifier!!,
+                      ),
                       defaultComponentRefContext,
                     )}
                     title={entitiesByTag[groupScore.identifier!!]?.name}
