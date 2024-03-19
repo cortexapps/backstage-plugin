@@ -65,7 +65,7 @@ export const entityComponentRef = (
   if (isNil(entity)) {
     return tag;
   }
-  return isNil(entity.definition)
+  return isNil(entity.definition) || isNil(entity.definition.name)
     ? entity.codeTag
     : `${entity.definition.kind}:${entity.definition.namespace}/${entity.definition.name}`;
 };
