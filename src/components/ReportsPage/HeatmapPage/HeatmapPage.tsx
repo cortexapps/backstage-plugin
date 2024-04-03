@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Content, ContentHeader, EmptyState } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
@@ -22,16 +22,18 @@ import { useDropdown } from '../../../utils/hooks';
 import { GroupByOption, HeaderType } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { buildUrl } from '../../../utils/URLUtils';
 import { HeaderTypeDropdown } from '../Common/HeaderTypeDropdown';
 import { isUndefined } from 'lodash';
+import { stringifyUrl } from 'query-string';
 
 export const HeatmapPage = () => {
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const queryScorecardId = Number(queryParams.get('scorecardId') ?? undefined);
+  const queryScorecardId = Number(searchParams.get('scorecardId') ?? undefined);
   const initialScorecardId = Number.isNaN(queryScorecardId)
     ? undefined
     : queryScorecardId;
@@ -41,11 +43,23 @@ export const HeatmapPage = () => {
   >(initialScorecardId);
 
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
-    (queryParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
+    (searchParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
   );
   const [headerType, setHeaderType] = useDropdown<HeaderType>(
-    (queryParams.get('headerType') as HeaderType) ?? HeaderType.RULES,
+    (searchParams.get('headerType') as HeaderType) ?? HeaderType.RULES,
   );
+
+  useEffect(() => {
+    const targetUrl = stringifyUrl({ url: location.pathname, query: {
+      scorecardId: selectedScorecardId ? `${selectedScorecardId}` : undefined,
+      groupBy: groupBy !== GroupByOption.SERVICE ? groupBy as string : undefined,
+      headerType: headerType !== HeaderType.RULES ? headerType as string : undefined,
+    } });
+
+    if (`${location.pathname}${location.search}` !== targetUrl) {
+      navigate(targetUrl, { replace: true });
+    }
+  }, [groupBy, headerType, selectedScorecardId, location, navigate])
 
   const getShareableLink = useCallback(() => {
     const queryParamsObj = {

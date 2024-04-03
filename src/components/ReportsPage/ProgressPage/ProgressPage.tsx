@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Content,
   ContentHeader,
@@ -35,7 +35,8 @@ import { GroupByOption, ruleName } from '../../../api/types';
 import { SerieFilter } from './SerieFilter';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { LookbackDropdown } from '../Common/LookbackDropdown';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { stringifyUrl } from 'query-string';
 
 const defaultRule = {
   value: 'DEFAULT_RULE_AVERAGE',
@@ -44,9 +45,10 @@ const defaultRule = {
 
 export const ProgressPage = () => {
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const queryScorecardId = Number(queryParams.get('scorecardId') ?? undefined);
+  const queryScorecardId = Number(searchParams.get('scorecardId') ?? undefined);
   const initialScorecardId = Number.isNaN(queryScorecardId)
     ? undefined
     : queryScorecardId;
@@ -63,6 +65,16 @@ export const ProgressPage = () => {
   );
   const [filterOptions, setFilterOptions] = useState<string[] | undefined>();
   const [filters, setFilters] = useState<string[] | undefined>();
+
+  useEffect(() => {
+    const targetUrl = stringifyUrl({ url: location.pathname, query: {
+      scorecardId: selectedScorecardId ? `${selectedScorecardId}` : undefined,
+    } });
+
+    if (`${location.pathname}${location.search}` !== targetUrl) {
+      navigate(targetUrl, { replace: true });
+    }
+  }, [selectedScorecardId, location, searchParams, navigate])
 
   const resetFilterOptions = useCallback(
     (o: string[]) => {

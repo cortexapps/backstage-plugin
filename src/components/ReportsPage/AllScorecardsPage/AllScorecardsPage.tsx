@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Content, ContentHeader } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { AllScorecardsHeatmap } from './AllScorecardsHeatmap';
@@ -21,16 +21,28 @@ import { useDropdown } from '../../../utils/hooks';
 import { GroupByOption } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { buildUrl } from '../../../utils/URLUtils';
+import { stringifyUrl } from 'query-string';
 
 export const AllScorecardsPage = () => {
   const location = useLocation();
-  const queryParams = new URLSearchParams(useLocation().search);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
-    (queryParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
+    (searchParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
   );
+
+  useEffect(() => {
+    const targetUrl = stringifyUrl({ url: location.pathname, query: {
+      groupBy: groupBy !== GroupByOption.SERVICE ? groupBy as string : undefined,
+    } });
+
+    if (`${location.pathname}${location.search}` !== targetUrl) {
+      navigate(targetUrl, { replace: true });
+    }
+  }, [groupBy, location, navigate])
 
   const getShareableLink = useCallback(() => {
     const queryParamsObj = {
