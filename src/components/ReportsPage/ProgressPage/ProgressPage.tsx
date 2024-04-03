@@ -92,6 +92,8 @@ export const ProgressPage = () => {
     [selectedScorecardId],
   );
 
+  const scorecardsResult = useCortexApi(api => api.getScorecards());
+
   if (groupBy === GroupByOption.LEVEL) {
     return (
         <WarningPanel severity="error" title="Functionality not supported.">
@@ -118,6 +120,7 @@ export const ProgressPage = () => {
               <ScorecardSelector
                 onSelect={setSelectedScorecardId}
                 selectedScorecardId={selectedScorecardId}
+                scorecardsResult={scorecardsResult}
                 hideReset
               />
             </Grid>

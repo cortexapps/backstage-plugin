@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Content, ContentHeader, EmptyState } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
-import { useDropdown } from '../../../utils/hooks';
-import { GroupByOption, HeaderType } from '../../../api/types';
+import { useCortexApi, useDropdown } from '../../../utils/hooks';
+import { FilterType, GroupByOption, HeaderType } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
@@ -27,6 +27,11 @@ import { buildUrl } from '../../../utils/URLUtils';
 import { HeaderTypeDropdown } from '../Common/HeaderTypeDropdown';
 import { isUndefined } from 'lodash';
 import { stringifyUrl } from 'query-string';
+
+const defaultFilters = {
+  groupBy: GroupByOption.SERVICE,
+  headerType: HeaderType.RULES,
+}
 
 export const HeatmapPage = () => {
   const location = useLocation();
@@ -42,18 +47,18 @@ export const HeatmapPage = () => {
     number | undefined
   >(initialScorecardId);
 
-  const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
-    (searchParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
+  const [groupBy, setGroupBy] = useState<GroupByOption|undefined>(
+    (searchParams.get('groupBy') as GroupByOption) ?? defaultFilters.groupBy,
   );
   const [headerType, setHeaderType] = useDropdown<HeaderType>(
-    (searchParams.get('headerType') as HeaderType) ?? HeaderType.RULES,
+    (searchParams.get('headerType') as HeaderType) ?? defaultFilters.headerType,
   );
 
   useEffect(() => {
     const targetUrl = stringifyUrl({ url: location.pathname, query: {
       scorecardId: selectedScorecardId ? `${selectedScorecardId}` : undefined,
-      groupBy: groupBy !== GroupByOption.SERVICE ? groupBy as string : undefined,
-      headerType: headerType !== HeaderType.RULES ? headerType as string : undefined,
+      groupBy: groupBy !== defaultFilters.groupBy ? groupBy as string : undefined,
+      headerType: headerType !== defaultFilters.headerType ? headerType as string : undefined,
     } });
 
     if (`${location.pathname}${location.search}` !== targetUrl) {
@@ -70,6 +75,25 @@ export const HeatmapPage = () => {
     return buildUrl(queryParamsObj, location.pathname);
   }, [location, selectedScorecardId, groupBy, headerType]);
 
+  const scorecardsResult = useCortexApi(api => api.getScorecards());
+  const excludedGroupBys = useMemo(() => {
+    const teamBasedCardSelected = scorecardsResult.value?.some(
+      (scorecard) => scorecard.id === selectedScorecardId && scorecard.filter?.type === FilterType.TEAM_FILTER
+    );
+    return teamBasedCardSelected ? [GroupByOption.TEAM] : [];
+  }, [scorecardsResult, selectedScorecardId]);
+
+  const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) =>
+    setGroupBy(event.target.value === ''
+      ? undefined
+      : (event.target.value as GroupByOption | undefined));
+
+  useEffect(() => {
+    if (groupBy && excludedGroupBys.includes(groupBy)) {
+      setGroupBy(defaultFilters.groupBy);
+    }
+  }, [excludedGroupBys, groupBy]);
+
   return (
     <Content>
       <ContentHeader title="Bird's Eye">
@@ -82,11 +106,12 @@ export const HeatmapPage = () => {
           <ScorecardSelector
             selectedScorecardId={selectedScorecardId}
             onSelect={setSelectedScorecardId}
+            scorecardsResult={scorecardsResult}
           />
         </Grid>
         <Grid container direction="row" style={{ marginTop: '20px' }}>
           <Grid item>
-            <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupBy} />
+            <GroupByDropdown excluded={excludedGroupBys} groupBy={groupBy} setGroupBy={onGroupByChange} />
           </Grid>
           <Grid item>
             <HeaderTypeDropdown

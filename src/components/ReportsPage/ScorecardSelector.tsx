@@ -22,24 +22,27 @@ import {
   Select,
 } from '@material-ui/core';
 import { Progress, WarningPanel } from '@backstage/core-components';
-import { useCortexApi } from '../../utils/hooks';
+import { Scorecard } from '../../api/types';
+import { AsyncState } from 'react-use/lib/useAsyncFn';
 
 interface ScorecardSelectorCard {
   selectedScorecardId?: number;
   onSelect: (id?: number) => void;
   hideReset?: boolean;
+  scorecardsResult: AsyncState<Scorecard[]>
 }
 
 export const ScorecardSelector = ({
   selectedScorecardId,
   onSelect,
   hideReset,
+  scorecardsResult,
 }: ScorecardSelectorCard) => {
   const {
     value: scorecards,
     loading,
     error,
-  } = useCortexApi(api => api.getScorecards());
+  } = scorecardsResult;
 
   const sortedScorecards = useMemo(() => {
     return scorecards?.sort((a, b) => a.name.localeCompare(b.name)) ?? [];
