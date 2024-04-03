@@ -1,5 +1,11 @@
 # Changelog
 
+### 2.5.4
+
+- Reports filters determined from URL are now also persisted in URL after change
+- Fixed confusing Group By options in Bird's eye view
+- Fixes entity link to target the entity performance on the Scorecard instead of the entity detail
+
 ### 2.5.3
 
 - Fix an issue where an invalid link is generated when there is insufficient information about an entity in the context
