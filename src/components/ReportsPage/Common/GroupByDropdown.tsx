@@ -23,7 +23,7 @@ interface GroupByDropdownProps {
 }
 
 const GroupByLabels = {
-  [GroupByOption.SERVICE]: GroupByOption.SERVICE,
+  [GroupByOption.SERVICE]: 'Entity',
   [GroupByOption.TEAM]: GroupByOption.TEAM,
   [GroupByOption.SERVICE_GROUP]: 'Group',
   [GroupByOption.LEVEL]: GroupByOption.LEVEL,
