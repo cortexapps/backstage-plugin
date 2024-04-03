@@ -19,7 +19,7 @@ import TableRow from '@material-ui/core/TableRow/TableRow';
 import { TableCell } from '@material-ui/core';
 import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
-import { entityComponentRef, } from '../../../../utils/ComponentUtils';
+import { entityComponentRef } from '../../../../utils/ComponentUtils';
 import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
 import { mean as _average } from 'lodash';

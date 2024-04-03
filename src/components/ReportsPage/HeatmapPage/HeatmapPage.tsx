@@ -83,10 +83,11 @@ export const HeatmapPage = () => {
     return teamBasedCardSelected ? [GroupByOption.TEAM] : [];
   }, [scorecardsResult, selectedScorecardId]);
 
-  const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) =>
+  const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
     setGroupBy(event.target.value === ''
       ? undefined
       : (event.target.value as GroupByOption | undefined));
+  }
 
   useEffect(() => {
     if (groupBy && excludedGroupBys.includes(groupBy)) {
