@@ -28,6 +28,7 @@ import { GroupByOption, HeaderType, ScorecardLadder, ScorecardServiceScore, } fr
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 interface SingleScorecardHeatmapTableProps {
+  scorecardId: number;
   entitiesByTag: StringIndexable<HomepageEntity>;
   groupBy: GroupByOption;
   headerType: HeaderType;
@@ -36,6 +37,7 @@ interface SingleScorecardHeatmapTableProps {
 }
 
 export const SingleScorecardHeatmapTable = ({
+  scorecardId,
   entitiesByTag,
   groupBy,
   headerType,
@@ -79,6 +81,7 @@ export const SingleScorecardHeatmapTable = ({
     case GroupByOption.SERVICE:
       return (
         <HeatmapTableByService
+          scorecardId={scorecardId}
           data={data}
           entitiesByTag={entitiesByTag}
           rules={headers}

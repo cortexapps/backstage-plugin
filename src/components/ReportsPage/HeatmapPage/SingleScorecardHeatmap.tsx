@@ -65,6 +65,7 @@ export const SingleScorecardHeatmap = ({
 
   return (
     <SingleScorecardHeatmapTable
+      scorecardId={scorecardId}
       entitiesByTag={entitiesByTag}
       groupBy={groupBy}
       headerType={headerType}
