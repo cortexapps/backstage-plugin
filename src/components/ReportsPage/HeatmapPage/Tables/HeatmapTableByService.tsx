@@ -28,6 +28,7 @@ import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 
 interface HeatmapTableByServiceProps {
+  header: string;
   scorecardId: number;
   data: StringIndexable<ScorecardServiceScore[]>;
   entitiesByTag: StringIndexable<HomepageEntity>;
@@ -35,12 +36,13 @@ interface HeatmapTableByServiceProps {
 }
 
 export const HeatmapTableByService = ({
+  header,
   scorecardId,
   data,
   entitiesByTag,
   rules,
 }: HeatmapTableByServiceProps) => {
-  const headers = ['Service Details', 'Score', ...rules];
+  const headers = [header, 'Score', ...rules];
 
   return (
     <Table>

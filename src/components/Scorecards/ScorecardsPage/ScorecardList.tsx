@@ -36,7 +36,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { ScorecardCard } from '../ScorecardCard';
 
-import { EntityFilter, Scorecard, ServiceGroup } from '../../../api/types';
+import { CompoundFilter, EntityFilter, Scorecard, ServiceGroup } from '../../../api/types';
 import {
   useDropdown,
   useInput,
@@ -58,7 +58,7 @@ export const hasTags = (groups: ServiceGroup[], query: string) => {
     : false;
 };
 
-export const hasFilter = (filter: EntityFilter | null, query: string) => {
+export const hasFilter = (filter: EntityFilter | CompoundFilter | null, query: string) => {
   if (isNil(filter) || !('entityGroupFilter' in filter)) {
     return false;
   }

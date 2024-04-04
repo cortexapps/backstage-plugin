@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import {
-  CategoryFilter,
-  ScorecardLadder,
-  ScorecardServiceScore,
-} from '../../../../api/types';
+import { ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
 import { Box, Paper, Typography, makeStyles } from '@material-ui/core';
 import { isEmpty, isNil } from 'lodash';
 import { median } from 'simple-statistics';
@@ -28,7 +24,7 @@ import { safeDivide } from '../../../../utils/NumberUtils';
 import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelBadge';
 
 interface ScorecardLadderStatsCardProps {
-  entityCategory: CategoryFilter;
+  entityCategory: string;
   scorecardLadder: ScorecardLadder;
   scores: ScorecardServiceScore[];
 }
@@ -101,7 +97,7 @@ export const ScorecardLadderStatsCard = ({
           value={percentNoLevel}
         />
         <StatsItem
-          caption={`${entityCategory}s`}
+          caption={entityCategory}
           type={'NONE'}
           value={numberOfEntities}
         />

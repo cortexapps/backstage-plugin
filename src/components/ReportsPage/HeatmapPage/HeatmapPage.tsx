@@ -19,7 +19,7 @@ import { Grid } from '@material-ui/core';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
 import { useCortexApi, useDropdown } from '../../../utils/hooks';
-import { CategoryFilter, FilterType, GroupByOption, HeaderType, Scorecard } from '../../../api/types';
+import { CategoryFilter, FilterType, GroupByOption, HeaderType } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
@@ -27,6 +27,7 @@ import { buildUrl } from '../../../utils/URLUtils';
 import { HeaderTypeDropdown } from '../Common/HeaderTypeDropdown';
 import { isUndefined } from 'lodash';
 import { stringifyUrl } from 'query-string';
+import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
 
 const defaultFilters = {
   groupBy: GroupByOption.SERVICE,
@@ -77,19 +78,26 @@ export const HeatmapPage = () => {
   }, [location, selectedScorecardId, groupBy, headerType]);
 
   const scorecardsResult = useCortexApi(api => api.getScorecards());
+
+  const selectedScoreCard = useMemo(() => {
+    return scorecardsResult.value?.find((scorecard) => scorecard.id === selectedScorecardId)
+  }, [scorecardsResult, selectedScorecardId]);
+
+  const entityCategory = useMemo(() => {
+    return getEntityCategoryFromFilter(selectedScoreCard?.filter) ?? 'Entity';
+  }, [selectedScoreCard]);
+
   const excludedGroupBys = useMemo(() => {
-    const teamBasedCardSelected = scorecardsResult.value?.some(
-      (scorecard: Scorecard) => scorecard.id === selectedScorecardId && (
-        scorecard.filter?.type === FilterType.TEAM_FILTER ||
-        (scorecard.filter?.type === 'COMPOUND_FILTER' &&
-        scorecard.filter?.typeFilter?.include &&
-        scorecard.filter?.typeFilter?.types.includes('team')) ||
-        (scorecard.filter?.type === FilterType.CQL_FILTER &&
-        scorecard.filter?.category === CategoryFilter.Team)
-      )
+    const teamBasedCardSelected = selectedScoreCard && (
+      selectedScoreCard.filter?.type === FilterType.TEAM_FILTER ||
+      (selectedScoreCard.filter?.type === 'COMPOUND_FILTER' &&
+      selectedScoreCard.filter?.typeFilter?.include &&
+      selectedScoreCard.filter?.typeFilter?.types.includes('team')) ||
+      (selectedScoreCard.filter?.type === FilterType.CQL_FILTER &&
+      selectedScoreCard.filter?.category === CategoryFilter.Team)
     );
     return teamBasedCardSelected ? [GroupByOption.TEAM] : [];
-  }, [scorecardsResult, selectedScorecardId]);
+  }, [selectedScoreCard]);
 
   const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
     setGroupBy(event.target.value === ''
@@ -134,6 +142,7 @@ export const HeatmapPage = () => {
             <EmptyState title="Select a Scorecard" missing="data" />
           ) : (
             <SingleScorecardHeatmap
+              entityCategory={entityCategory}
               scorecardId={selectedScorecardId}
               groupBy={groupBy!!}
               headerType={headerType!!}
