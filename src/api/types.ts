@@ -22,7 +22,7 @@ interface ScorecardCreator {
 export interface Scorecard {
   creator: ScorecardCreator;
   description?: string;
-  filter?: EntityFilter | null;
+  filter?: EntityFilter | CompoundFilter | null;
   id: number;
   name: string;
   nextUpdated?: string;
@@ -451,6 +451,9 @@ export interface ResourcesTypeFilter {
   types: string[];
 }
 
+// NOTE: The interface is the same, only changing name to avoid confusion
+export interface CatalogPageTypeFilter extends ResourcesTypeFilter {}
+
 export interface CqlFilter {
   category: CategoryFilter;
   cqlVersion: string;
@@ -477,6 +480,18 @@ export interface ResourceFilter {
 export interface TeamFilter {
   entityGroupFilter?: EntityGroupFilter;
   type: FilterType.TEAM_FILTER;
+}
+
+// TODO(catalog-customization): merge GenericCqlFilter and CqlFilter, when we can fully support the "Generic" category app wide.
+export interface GenericCqlFilter extends Omit<CqlFilter, "category"> {
+  category: 'Generic';
+}
+
+export interface CompoundFilter {
+  cqlFilter?: GenericCqlFilter;
+  entityGroupFilter?: EntityGroupFilter;
+  type: 'COMPOUND_FILTER';
+  typeFilter: CatalogPageTypeFilter | null;
 }
 
 export type EntityFilter =
