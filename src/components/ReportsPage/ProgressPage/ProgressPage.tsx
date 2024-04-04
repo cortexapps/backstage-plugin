@@ -71,6 +71,7 @@ export const ProgressPage = () => {
       scorecardId: selectedScorecardId ? `${selectedScorecardId}` : undefined,
     } });
 
+    // Check if the new URL is different from current to avoid changing it infinitely
     if (`${location.pathname}${location.search}` !== targetUrl) {
       navigate(targetUrl, { replace: true });
     }
