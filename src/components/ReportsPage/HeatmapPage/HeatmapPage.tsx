@@ -19,7 +19,7 @@ import { Grid } from '@material-ui/core';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
 import { useCortexApi, useDropdown } from '../../../utils/hooks';
-import { FilterType, GroupByOption, HeaderType, Scorecard } from '../../../api/types';
+import { CategoryFilter, FilterType, GroupByOption, HeaderType, Scorecard } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
@@ -83,7 +83,9 @@ export const HeatmapPage = () => {
         scorecard.filter?.type === FilterType.TEAM_FILTER ||
         (scorecard.filter?.type === 'COMPOUND_FILTER' &&
         scorecard.filter?.typeFilter?.include &&
-        scorecard.filter?.typeFilter?.types.includes('team'))
+        scorecard.filter?.typeFilter?.types.includes('team')) ||
+        (scorecard.filter?.type === FilterType.CQL_FILTER &&
+        scorecard.filter?.category === CategoryFilter.Team)
       )
     );
     return teamBasedCardSelected ? [GroupByOption.TEAM] : [];
