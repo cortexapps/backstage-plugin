@@ -19,7 +19,7 @@ import { Grid } from '@material-ui/core';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
 import { useCortexApi, useDropdown } from '../../../utils/hooks';
-import { CategoryFilter, FilterType, GroupByOption, HeaderType } from '../../../api/types';
+import { GroupByOption, HeaderType } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
@@ -28,6 +28,7 @@ import { HeaderTypeDropdown } from '../Common/HeaderTypeDropdown';
 import { isUndefined } from 'lodash';
 import { stringifyUrl } from 'query-string';
 import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
+import { isScorecardTeamBased } from '../../../utils/ScorecardFilterUtils';
 
 const defaultFilters = {
   groupBy: GroupByOption.SERVICE,
@@ -79,37 +80,26 @@ export const HeatmapPage = () => {
 
   const scorecardsResult = useCortexApi(api => api.getScorecards());
 
-  const selectedScoreCard = useMemo(() => {
-    return scorecardsResult.value?.find((scorecard) => scorecard.id === selectedScorecardId)
-  }, [scorecardsResult, selectedScorecardId]);
+  const { entityCategory, excludedGroupBys } = useMemo(() => {
+    const selectedScorecard = scorecardsResult.value?.find((scorecard) => scorecard.id === selectedScorecardId);
 
-  const entityCategory = useMemo(() => {
-    return getEntityCategoryFromFilter(selectedScoreCard?.filter) ?? 'Entity';
-  }, [selectedScoreCard]);
+    const excludedGroupBys = isScorecardTeamBased(selectedScorecard) ? [GroupByOption.TEAM] : [];
 
-  const excludedGroupBys = useMemo(() => {
-    const teamBasedCardSelected = selectedScoreCard && (
-      selectedScoreCard.filter?.type === FilterType.TEAM_FILTER ||
-      (selectedScoreCard.filter?.type === 'COMPOUND_FILTER' &&
-      selectedScoreCard.filter?.typeFilter?.include &&
-      selectedScoreCard.filter?.typeFilter?.types.includes('team')) ||
-      (selectedScoreCard.filter?.type === FilterType.CQL_FILTER &&
-      selectedScoreCard.filter?.category === CategoryFilter.Team)
-    );
-    return teamBasedCardSelected ? [GroupByOption.TEAM] : [];
-  }, [selectedScoreCard]);
+    if (groupBy && excludedGroupBys.includes(groupBy)) {
+      setGroupBy(defaultFilters.groupBy);
+    }
+
+    return {
+      entityCategory: getEntityCategoryFromFilter(selectedScorecard?.filter) ?? 'Entity',
+      excludedGroupBys,
+    }
+  }, [groupBy, scorecardsResult, selectedScorecardId]);
 
   const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
     setGroupBy(event.target.value === ''
       ? undefined
       : (event.target.value as GroupByOption | undefined));
   }
-
-  useEffect(() => {
-    if (groupBy && excludedGroupBys.includes(groupBy)) {
-      setGroupBy(defaultFilters.groupBy);
-    }
-  }, [excludedGroupBys, groupBy]);
 
   return (
     <Content>
