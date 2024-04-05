@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { Scorecard } from '../../../../api/types';
+import { FilterType, Scorecard } from '../../../../api/types';
 import { Typography, makeStyles } from '@material-ui/core';
 import { isEmpty, isNil } from 'lodash';
 import { isNotNullOrEmpty, joinWithAnds } from '../../../../utils/strings';
@@ -92,7 +92,7 @@ const ScorecardMetadataFilter: React.FC<ScorecardMetadataFilterProps> = ({
   if (!isEmpty(resourceTypes)) {
     return (
       <Typography variant={'body2'}>
-        Applies to {filter?.type === 'COMPOUND_FILTER' ? 'entities' : 'resources'}{' '}
+        Applies to {filter?.type === FilterType.COMPOUND_FILTER ? 'entities' : 'resources'}{' '}
         {includingResourceTypes ? 'of type ' : 'excluding types '}
         {joinWithAnds(resourceTypes)}
         {(!isEmpty(entityGroups) || !isEmpty(excludeEntityGroups)) && (

@@ -36,7 +36,7 @@ export const getEntityGroupsFromFilter = (
     filter?.type === FilterType.SERVICE_FILTER ||
     filter?.type === FilterType.RESOURCE_FILTER ||
     filter?.type === FilterType.TEAM_FILTER ||
-    filter?.type === 'COMPOUND_FILTER'
+    filter?.type === FilterType.COMPOUND_FILTER
   ) {
     const entityGroups = filter?.entityGroupFilter?.entityGroups ?? [];
     const excludeEntityGroups =
@@ -51,7 +51,7 @@ export const getEntityGroupsFromFilter = (
 export const getResourceTypesFromFilter = (
   filter?: EntityFilter | CompoundFilter | null,
 ): { include: boolean; types: string[] } => {
-  if (filter?.type === FilterType.RESOURCE_FILTER || filter?.type === 'COMPOUND_FILTER') {
+  if (filter?.type === FilterType.RESOURCE_FILTER || filter?.type === FilterType.COMPOUND_FILTER) {
     const types = filter?.typeFilter?.types ?? [];
     const include =
       isUndefined(filter?.typeFilter) ||
@@ -69,7 +69,7 @@ export const getQueryFromFilter = (
   if (filter?.type === FilterType.CQL_FILTER) {
     return filter.query;
   }
-  if (filter?.type === 'COMPOUND_FILTER') {
+  if (filter?.type === FilterType.COMPOUND_FILTER) {
     return filter.cqlFilter?.query;
   }
   return undefined;
@@ -78,7 +78,7 @@ export const getQueryFromFilter = (
 export const getEntityCategoryFromFilter = (
   filter?: EntityFilter | CompoundFilter | null,
 ): CategoryFilter | undefined => {
-  if (filter?.type === 'COMPOUND_FILTER') {
+  if (filter?.type === FilterType.COMPOUND_FILTER) {
     return undefined;
   } else if (filter?.type === FilterType.CQL_FILTER) {
     return filter.category;

@@ -19,7 +19,7 @@ export function isScorecardTeamBased(scorecard?: Scorecard): boolean {
   return (
     !!scorecard &&
     (scorecard.filter?.type === FilterType.TEAM_FILTER ||
-      (scorecard.filter?.type === 'COMPOUND_FILTER' &&
+      (scorecard.filter?.type === FilterType.COMPOUND_FILTER &&
         scorecard.filter?.typeFilter?.include &&
         scorecard.filter?.typeFilter?.types.includes('team')) ||
       (scorecard.filter?.type === FilterType.CQL_FILTER &&

@@ -434,6 +434,7 @@ export enum CategoryFilter {
 }
 
 export enum FilterType {
+  COMPOUND_FILTER = 'COMPOUND_FILTER',
   CQL_FILTER = 'CQL_FILTER',
   DOMAIN_FILTER = 'DOMAIN_FILTER',
   RESOURCE_FILTER = 'RESOURCE_FILTER',
@@ -490,7 +491,7 @@ export interface GenericCqlFilter extends Omit<CqlFilter, "category"> {
 export interface CompoundFilter {
   cqlFilter?: GenericCqlFilter;
   entityGroupFilter?: EntityGroupFilter;
-  type: 'COMPOUND_FILTER';
+  type: FilterType.COMPOUND_FILTER;
   typeFilter: CatalogPageTypeFilter | null;
 }
 
