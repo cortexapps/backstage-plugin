@@ -61,6 +61,7 @@ export const ScorecardsServiceRulesDetails = ({
               rule={{
                 ...failingRule.rule,
                 score: failingRule.score,
+                error: failingRule.error,
               }}
               hideWeight={hideWeights}
             />

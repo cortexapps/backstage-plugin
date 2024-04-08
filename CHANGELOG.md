@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.6.3
+
+- Fixes issue where rule evaluation error was not displayed
+
 ### 2.6.2
 
 - Fixes issue where resolve hint was displayed for passing rule
