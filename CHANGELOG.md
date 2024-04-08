@@ -3,8 +3,8 @@
 ### 2.5.4
 
 - Reports filters determined from URL are now also persisted in URL after change
-- Fixed confusing Group By options in Bird's eye view
-- Fixes entity link to target the entity performance on the Scorecard instead of the entity detail
+- Fix confusing Group By options in Bird's eye view
+- Fix entity link to target the entity performance on the Scorecard instead of the entity detail
 
 ### 2.5.3
 
