@@ -15,7 +15,7 @@
  */
 import React, { useMemo } from 'react';
 import { useRouteRef, useRouteRefParams } from '@backstage/core-plugin-api';
-import { Link } from '@backstage/core-components';
+import { Link, MarkdownContent } from '@backstage/core-components';
 import { Typography } from '@material-ui/core';
 import {
   scorecardRouteRef,
@@ -87,7 +87,7 @@ export const ScorecardServiceHeader = ({
           </Box>
           {scorecard.description && (
             <Box mb={1}>
-              <Typography>{scorecard.description}</Typography>
+              <MarkdownContent content={scorecard.description} />
             </Box>
           )}
           {lastEvaluation && (

@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.6.4
+
+- Fixes issue where markdown was rendered as plain text on scorecard service page
+
 ### 2.6.3
 
 - Fixes issue where rule evaluation error was not displayed
