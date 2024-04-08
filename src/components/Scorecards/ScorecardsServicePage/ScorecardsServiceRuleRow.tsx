@@ -119,7 +119,7 @@ export const ScorecardServiceRuleRow = ({
           </Typography>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <>
-              {rule.failureMessage && (
+              {isFailing && rule.failureMessage && (
                 <MarkdownContent
                   className={classes.ruleDescription}
                   content={rule.failureMessage}
