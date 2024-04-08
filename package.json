@@ -74,7 +74,7 @@
     "@backstage/cli": "^0.22.5",
     "@backstage/dev-utils": "^1.0.13",
     "@backstage/test-utils": "^1.2.6",
-    "@cortexapps/backstage-plugin-extensions": "0.0.21",
+    "@cortexapps/backstage-plugin-extensions": "0.0.22",
     "@cortexapps/eslint-config-oss": "^0.0.3",
     "@spotify/prettier-config": "^11.0.0",
     "@types/enzyme": "^3.10.12",
