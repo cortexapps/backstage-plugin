@@ -13,7 +13,7 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: 14.17.0
+          node-version: 20.10.0
       - run: yarn install
       - name: Check Backstage versions
         id: check-versions
