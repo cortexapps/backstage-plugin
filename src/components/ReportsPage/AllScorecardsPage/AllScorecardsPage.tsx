@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useEffect } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Content, ContentHeader } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { AllScorecardsHeatmap } from './AllScorecardsHeatmap';
-import { useDropdown } from '../../../utils/hooks';
 import { GroupByOption } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
@@ -30,27 +29,26 @@ export const AllScorecardsPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
+  const [groupBy, _setGroupBy] = useState<GroupByOption|undefined>(
     (searchParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
   );
+  const setGroupBy = useCallback((event: ChangeEvent<{ value: unknown }>) => {
+    const groupBy = event.target.value === ''
+      ? undefined
+      : (event.target.value as GroupByOption | undefined)
 
-  useEffect(() => {
+    _setGroupBy(groupBy);
+
     const targetUrl = stringifyUrl({ url: location.pathname, query: {
       groupBy: groupBy !== GroupByOption.SERVICE ? groupBy as string : undefined,
     } });
 
-    // Check if the new URL is different from current to avoid changing it infinitely
-    if (`${location.pathname}${location.search}` !== targetUrl) {
-      navigate(targetUrl, { replace: true });
-    }
-  }, [groupBy, location, navigate])
+    navigate(targetUrl, { replace: true });
+  }, [location.pathname, navigate]);
 
-  const getShareableLink = useCallback(() => {
-    const queryParamsObj = {
-      groupBy,
-    };
-    return buildUrl(queryParamsObj, location.pathname);
-  }, [location, groupBy]);
+  const getShareableLink = useCallback(
+    () => buildUrl({ groupBy }, location.pathname)
+  , [location, groupBy]);
 
   return (
     <Content>
