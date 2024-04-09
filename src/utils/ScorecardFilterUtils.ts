@@ -16,13 +16,17 @@
 import { CategoryFilter, FilterType, Scorecard } from "../api/types";
 
 export function isScorecardTeamBased(scorecard?: Scorecard): boolean {
-  return (
-    !!scorecard &&
-    (scorecard.filter?.type === FilterType.TEAM_FILTER ||
-      (scorecard.filter?.type === FilterType.COMPOUND_FILTER &&
-        scorecard.filter?.typeFilter?.include &&
-        scorecard.filter?.typeFilter?.types.includes('team')) ||
-      (scorecard.filter?.type === FilterType.CQL_FILTER &&
-        scorecard.filter?.category === CategoryFilter.Team))
-  );
+  if (!scorecard) return false;
+
+  switch (scorecard.filter?.type) {
+    case FilterType.TEAM_FILTER:
+      return true;
+    case FilterType.CQL_FILTER:
+      return scorecard.filter?.category === CategoryFilter.Team;
+    case FilterType.COMPOUND_FILTER:
+      const { typeFilter } = scorecard.filter;
+      return !!typeFilter?.include && typeFilter?.types.includes('team');
+    default:
+      return false;
+  }
 }
