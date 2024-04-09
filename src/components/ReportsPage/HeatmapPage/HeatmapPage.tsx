@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { Content, ContentHeader, EmptyState } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
-import { useCortexApi, useDropdown } from '../../../utils/hooks';
+import { useCortexApi } from '../../../utils/hooks';
 import { GroupByOption, HeaderType } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
@@ -35,70 +35,74 @@ const defaultFilters = {
   headerType: HeaderType.RULES,
 }
 
+interface HeatmapPageFilters {
+  selectedScorecardId?: number;
+  groupBy: GroupByOption;
+  headerType: HeaderType;
+}
+
 export const HeatmapPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  const filtersToParams = (filters: HeatmapPageFilters) => ({
+    scorecardId: filters.selectedScorecardId,
+    groupBy: filters.groupBy !== defaultFilters.groupBy ? filters.groupBy as string : undefined,
+    headerType: filters.headerType !== defaultFilters.headerType ? filters.headerType as string : undefined,
+  });
 
   const queryScorecardId = Number(searchParams.get('scorecardId') ?? undefined);
   const initialScorecardId = Number.isNaN(queryScorecardId)
     ? undefined
     : queryScorecardId;
 
-  const [selectedScorecardId, setSelectedScorecardId] = useState<
-    number | undefined
-  >(initialScorecardId);
+  const [filters, _setFilters] = useState<HeatmapPageFilters>({
+    selectedScorecardId: initialScorecardId,
+    groupBy: (searchParams.get('groupBy') as GroupByOption) ?? defaultFilters.groupBy,
+    headerType: (searchParams.get('headerType') as HeaderType) ?? defaultFilters.headerType,
+  });
+  const setFilters = useCallback((partialFilters: Partial<HeatmapPageFilters>) => {
+    const newFilters = {
+      ...filters,
+      ...partialFilters
+    };
 
-  const [groupBy, setGroupBy] = useState<GroupByOption|undefined>(
-    (searchParams.get('groupBy') as GroupByOption) ?? defaultFilters.groupBy,
-  );
-  const [headerType, setHeaderType] = useDropdown<HeaderType>(
-    (searchParams.get('headerType') as HeaderType) ?? defaultFilters.headerType,
-  );
+    _setFilters(newFilters);
 
-  useEffect(() => {
-    const targetUrl = stringifyUrl({ url: location.pathname, query: {
-      scorecardId: selectedScorecardId ? `${selectedScorecardId}` : undefined,
-      groupBy: groupBy !== defaultFilters.groupBy ? groupBy as string : undefined,
-      headerType: headerType !== defaultFilters.headerType ? headerType as string : undefined,
-    } });
-
-    // Check if the new URL is different from current to avoid changing it infinitely
-    if (`${location.pathname}${location.search}` !== targetUrl) {
-      navigate(targetUrl, { replace: true });
-    }
-  }, [groupBy, headerType, selectedScorecardId, location, navigate])
+    navigate(
+      stringifyUrl({ url: location.pathname, query: filtersToParams(newFilters)}),
+      { replace: true }
+    );
+  }, [filters, location.pathname, navigate]);
 
   const getShareableLink = useCallback(() => {
-    const queryParamsObj = {
-      scorecardId: selectedScorecardId,
-      groupBy,
-      headerType,
-    };
-    return buildUrl(queryParamsObj, location.pathname);
-  }, [location, selectedScorecardId, groupBy, headerType]);
+    return buildUrl(filtersToParams(filters), location.pathname);
+  }, [filters, location]);
 
   const scorecardsResult = useCortexApi(api => api.getScorecards());
 
   const { entityCategory, excludedGroupBys } = useMemo(() => {
-    const selectedScorecard = scorecardsResult.value?.find((scorecard) => scorecard.id === selectedScorecardId);
+    const selectedScorecard = scorecardsResult.value?.find((scorecard) => scorecard.id === filters.selectedScorecardId);
 
     const excludedGroupBys = isScorecardTeamBased(selectedScorecard) ? [GroupByOption.TEAM] : [];
 
-    if (groupBy && excludedGroupBys.includes(groupBy)) {
-      setGroupBy(defaultFilters.groupBy);
+    if (filters.groupBy && excludedGroupBys.includes(filters.groupBy)) {
+      setFilters({ groupBy: defaultFilters.groupBy });
     }
 
     return {
       entityCategory: getEntityCategoryFromFilter(selectedScorecard?.filter) ?? 'Entity',
       excludedGroupBys,
     }
-  }, [groupBy, scorecardsResult, selectedScorecardId]);
+  }, [filters, setFilters, scorecardsResult]);
 
   const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
-    setGroupBy(event.target.value === ''
-      ? undefined
-      : (event.target.value as GroupByOption | undefined));
+    setFilters({ groupBy: event.target.value as GroupByOption });
+  }
+
+  const onHeaderTypeChange = (event: ChangeEvent<{ value: unknown }>) => {
+    setFilters({ headerType: event.target.value as HeaderType });
   }
 
   return (
@@ -111,31 +115,31 @@ export const HeatmapPage = () => {
       <Grid container direction="column">
         <Grid item lg={12}>
           <ScorecardSelector
-            selectedScorecardId={selectedScorecardId}
-            onSelect={setSelectedScorecardId}
+            selectedScorecardId={filters.selectedScorecardId}
+            onSelect={(selectedScorecardId) => setFilters({ selectedScorecardId })}
             scorecardsResult={scorecardsResult}
           />
         </Grid>
         <Grid container direction="row" style={{ marginTop: '20px' }}>
           <Grid item>
-            <GroupByDropdown excluded={excludedGroupBys} groupBy={groupBy} setGroupBy={onGroupByChange} />
+            <GroupByDropdown excluded={excludedGroupBys} groupBy={filters.groupBy} setGroupBy={onGroupByChange} />
           </Grid>
           <Grid item>
             <HeaderTypeDropdown
-              headerType={headerType}
-              setHeaderType={setHeaderType}
+              headerType={filters.headerType}
+              setHeaderType={onHeaderTypeChange}
             />
           </Grid>
         </Grid>
         <Grid item lg={12}>
-          {isUndefined(selectedScorecardId) ? (
+          {isUndefined(filters.selectedScorecardId) ? (
             <EmptyState title="Select a Scorecard" missing="data" />
           ) : (
             <SingleScorecardHeatmap
               entityCategory={entityCategory}
-              scorecardId={selectedScorecardId}
-              groupBy={groupBy!!}
-              headerType={headerType!!}
+              scorecardId={filters.selectedScorecardId}
+              groupBy={filters.groupBy}
+              headerType={filters.headerType}
             />
           )}
         </Grid>
