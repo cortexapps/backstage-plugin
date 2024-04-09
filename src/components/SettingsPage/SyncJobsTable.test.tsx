@@ -21,7 +21,7 @@ import { renderWrapped } from '../../utils/TestUtils';
 import { SyncJobsTable } from './SyncJobsTable';
 
 describe('SyncJobsTable', () => {
-  it('should render timestamps correctly', () => {
+  it('should render timestamps correctly', async () => {
     const cortexApi: Partial<CortexApi> = {
       getSyncJobs(): Promise<JobsResponse> {
         return Promise.resolve({
@@ -43,7 +43,7 @@ describe('SyncJobsTable', () => {
 
     const { checkForText } = renderWrapped(<SyncJobsTable />, cortexApi);
 
-    checkForText('a few seconds ago');
-    checkForText('a day ago');
+    await checkForText('a few seconds ago');
+    await checkForText('a day ago');
   });
 });
