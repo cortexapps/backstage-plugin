@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Content,
   ContentHeader,
@@ -53,9 +53,19 @@ export const ProgressPage = () => {
     ? undefined
     : queryScorecardId;
 
-  const [selectedScorecardId, setSelectedScorecardId] = useState<
+  const [selectedScorecardId, _setSelectedScorecardId] = useState<
     number | undefined
   >(initialScorecardId);
+  const setSelectedScorecardId = useCallback((selectedScorecardId?: number) => {
+    _setSelectedScorecardId(selectedScorecardId);
+
+    const targetUrl = stringifyUrl({ url: location.pathname, query: {
+      scorecardId: selectedScorecardId
+    }});
+
+    navigate(targetUrl, { replace: true });
+  }, [_setSelectedScorecardId, location.pathname, navigate])
+
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
     GroupByOption.SERVICE,
@@ -65,17 +75,6 @@ export const ProgressPage = () => {
   );
   const [filterOptions, setFilterOptions] = useState<string[] | undefined>();
   const [filters, setFilters] = useState<string[] | undefined>();
-
-  useEffect(() => {
-    const targetUrl = stringifyUrl({ url: location.pathname, query: {
-      scorecardId: selectedScorecardId ? `${selectedScorecardId}` : undefined,
-    } });
-
-    // Check if the new URL is different from current to avoid changing it infinitely
-    if (`${location.pathname}${location.search}` !== targetUrl) {
-      navigate(targetUrl, { replace: true });
-    }
-  }, [selectedScorecardId, location, searchParams, navigate])
 
   const resetFilterOptions = useCallback(
     (o: string[]) => {
