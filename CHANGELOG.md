@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.6.0
+
+- Backstage version update from 1.12.1 to 1.25.2
+
 ### 2.5.3
 
 - Fix an issue where an invalid link is generated when there is insufficient information about an entity in the context
