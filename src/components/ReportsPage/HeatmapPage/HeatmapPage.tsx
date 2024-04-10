@@ -57,18 +57,18 @@ export const HeatmapPage = () => {
     ? undefined
     : queryScorecardId;
 
-  const [filters, _setFilters] = useState<HeatmapPageFilters>({
+  const [filters, setFilters] = useState<HeatmapPageFilters>({
     selectedScorecardId: initialScorecardId,
     groupBy: (searchParams.get('groupBy') as GroupByOption) ?? defaultFilters.groupBy,
     headerType: (searchParams.get('headerType') as HeaderType) ?? defaultFilters.headerType,
   });
-  const setFilters = useCallback((partialFilters: Partial<HeatmapPageFilters>) => {
+  const setFiltersAndNavigate = useCallback((partialFilters: Partial<HeatmapPageFilters>) => {
     const newFilters = {
       ...filters,
       ...partialFilters
     };
 
-    _setFilters(newFilters);
+    setFilters(newFilters);
 
     navigate(
       stringifyUrl({ url: location.pathname, query: filtersToParams(newFilters)}),
@@ -88,21 +88,21 @@ export const HeatmapPage = () => {
     const excludedGroupBys = isScorecardTeamBased(selectedScorecard) ? [GroupByOption.TEAM] : [];
 
     if (filters.groupBy && excludedGroupBys.includes(filters.groupBy)) {
-      setFilters({ groupBy: defaultFilters.groupBy });
+      setFiltersAndNavigate({ groupBy: defaultFilters.groupBy });
     }
 
     return {
       entityCategory: getEntityCategoryFromFilter(selectedScorecard?.filter) ?? 'Entity',
       excludedGroupBys,
     }
-  }, [filters, setFilters, scorecardsResult]);
+  }, [filters, setFiltersAndNavigate, scorecardsResult]);
 
   const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
-    setFilters({ groupBy: event.target.value as GroupByOption });
+    setFiltersAndNavigate({ groupBy: event.target.value as GroupByOption });
   }
 
   const onHeaderTypeChange = (event: ChangeEvent<{ value: unknown }>) => {
-    setFilters({ headerType: event.target.value as HeaderType });
+    setFiltersAndNavigate({ headerType: event.target.value as HeaderType });
   }
 
   return (
@@ -116,7 +116,7 @@ export const HeatmapPage = () => {
         <Grid item lg={12}>
           <ScorecardSelector
             selectedScorecardId={filters.selectedScorecardId}
-            onSelect={(selectedScorecardId) => setFilters({ selectedScorecardId })}
+            onSelect={(selectedScorecardId) => setFiltersAndNavigate({ selectedScorecardId })}
             scorecardsResult={scorecardsResult}
           />
         </Grid>

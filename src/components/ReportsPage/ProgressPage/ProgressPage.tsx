@@ -53,18 +53,18 @@ export const ProgressPage = () => {
     ? undefined
     : queryScorecardId;
 
-  const [selectedScorecardId, _setSelectedScorecardId] = useState<
+  const [selectedScorecardId, setSelectedScorecardId] = useState<
     number | undefined
   >(initialScorecardId);
-  const setSelectedScorecardId = useCallback((selectedScorecardId?: number) => {
-    _setSelectedScorecardId(selectedScorecardId);
+  const setSelectedScorecardIdAndNavigate = useCallback((selectedScorecardId?: number) => {
+    setSelectedScorecardId(selectedScorecardId);
 
     const targetUrl = stringifyUrl({ url: location.pathname, query: {
       scorecardId: selectedScorecardId
     }});
 
     navigate(targetUrl, { replace: true });
-  }, [_setSelectedScorecardId, location.pathname, navigate])
+  }, [setSelectedScorecardId, location.pathname, navigate])
 
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
@@ -118,7 +118,7 @@ export const ProgressPage = () => {
           <Grid container direction="row">
             <Grid item lg={8}>
               <ScorecardSelector
-                onSelect={setSelectedScorecardId}
+                onSelect={setSelectedScorecardIdAndNavigate}
                 selectedScorecardId={selectedScorecardId}
                 scorecardsResult={scorecardsResult}
                 hideReset

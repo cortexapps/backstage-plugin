@@ -29,15 +29,15 @@ export const AllScorecardsPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [groupBy, _setGroupBy] = useState<GroupByOption|undefined>(
+  const [groupBy, setGroupBy] = useState<GroupByOption|undefined>(
     (searchParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
   );
-  const setGroupBy = useCallback((event: ChangeEvent<{ value: unknown }>) => {
+  const setGroupByAndNavigate = useCallback((event: ChangeEvent<{ value: unknown }>) => {
     const groupBy = event.target.value === ''
       ? undefined
       : (event.target.value as GroupByOption | undefined)
 
-    _setGroupBy(groupBy);
+    setGroupBy(groupBy);
 
     const targetUrl = stringifyUrl({ url: location.pathname, query: {
       groupBy: groupBy !== GroupByOption.SERVICE ? groupBy as string : undefined,
@@ -59,7 +59,7 @@ export const AllScorecardsPage = () => {
       </ContentHeader>
       <Grid container direction="column">
         <Grid item>
-          <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupBy} />
+          <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupByAndNavigate} />
         </Grid>
         <Grid item lg={12}>
           <AllScorecardsHeatmap groupBy={groupBy!!} />
