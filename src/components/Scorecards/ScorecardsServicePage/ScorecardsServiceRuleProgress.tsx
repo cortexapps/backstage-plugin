@@ -57,13 +57,10 @@ export const ScorecardsServiceRuleProgress: React.FC<ScorecardsServiceRuleProgre
     const mapped = useMemo(
       () =>
         apexCharts?.[expression]?.data
-          ?.map(
-            ({ x, y }) =>
-              ({
-                x: new Date(x),
-                y: Number.parseFloat(y),
-              } ?? []),
-          )
+          ?.map(({ x, y }) => ({
+            x: new Date(x),
+            y: Number.parseFloat(y),
+          }))
           ?.filter(({ y }) => !isNaN(y)),
       [apexCharts, expression],
     );
