@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.6.2
+
+- Fixes issue where resolve hint was displayed for passing rule
+
 ### 2.6.1
 
 - Reports filters determined from URL are now also persisted in URL after change
