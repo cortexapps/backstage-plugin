@@ -79,7 +79,7 @@ export const ScorecardDetails = ({
       case ScorecardDetailsTab.Scores:
         return (
           <ScorecardsScoresTable
-            category={entityCategory}
+            category={entityCategory ?? 'entity'}
             entitiesByTag={entitiesByTag}
             scorecardId={scorecard.id}
             scores={filteredScores}
@@ -120,14 +120,14 @@ export const ScorecardDetails = ({
           <Box display="flex" flexDirection="column">
             {ladder ? (
               <ScorecardLadderStatsCard
-                entityCategory={entityCategory}
+                entityCategory={entityCategory ? `${entityCategory}s` : 'Entities'}
                 scores={filteredScores}
                 scorecardLadder={ladder}
               />
             ) : (
               <ScorecardScoresStatsCard
                 scores={filteredScores}
-                entityCategory={entityCategory}
+                entityCategory={entityCategory ? `${entityCategory}s` : 'Entities'}
               />
             )}
           </Box>

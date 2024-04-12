@@ -15,7 +15,7 @@
  */
 import React, { useMemo } from 'react';
 import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage/core-components';
-import { CategoryFilter, ScorecardLadder, ScorecardServiceScore, } from '../../../../api/types';
+import { ScorecardLadder, ScorecardServiceScore, } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
@@ -27,7 +27,7 @@ import { isNil } from 'lodash';
 import { levelColumn, levelSort, PAGE_SIZE, scoreColumn, scorePercentageSort, } from './ScorecardsScoresTableConfig';
 
 interface ScorecardsScoresTableProps {
-  category: CategoryFilter;
+  category: string;
   entitiesByTag: StringIndexable<HomepageEntity>;
   ladder?: ScorecardLadder;
   scorecardId: number;

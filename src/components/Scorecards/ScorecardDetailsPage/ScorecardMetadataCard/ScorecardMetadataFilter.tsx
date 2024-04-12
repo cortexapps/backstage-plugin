@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { Scorecard } from '../../../../api/types';
+import { FilterType, Scorecard } from '../../../../api/types';
 import { Typography, makeStyles } from '@material-ui/core';
 import { isEmpty, isNil } from 'lodash';
 import { isNotNullOrEmpty, joinWithAnds } from '../../../../utils/strings';
@@ -69,7 +69,7 @@ const ScorecardMetadataFilter: React.FC<ScorecardMetadataFilterProps> = ({
   if (!hasFilter) {
     return (
       <Typography variant={'body2'}>
-        Applies to all {entityCategory.toLowerCase()}s
+        Applies to all {entityCategory?.toLowerCase() ?? 'entitie'}s
       </Typography>
     );
   }
@@ -77,7 +77,7 @@ const ScorecardMetadataFilter: React.FC<ScorecardMetadataFilterProps> = ({
   if (!isNil(cqlQuery)) {
     return (
       <Typography variant={'body2'}>
-        Applies to all {entityCategory.toLowerCase()}s matching{' '}
+        Applies to all {entityCategory?.toLowerCase() ?? 'entitie'}s matching{' '}
         <Typography
           variant="body2"
           component="span"
@@ -92,7 +92,7 @@ const ScorecardMetadataFilter: React.FC<ScorecardMetadataFilterProps> = ({
   if (!isEmpty(resourceTypes)) {
     return (
       <Typography variant={'body2'}>
-        Applies to resources{' '}
+        Applies to {filter?.type === FilterType.COMPOUND_FILTER ? 'entities' : 'resources'}{' '}
         {includingResourceTypes ? 'of type ' : 'excluding types '}
         {joinWithAnds(resourceTypes)}
         {(!isEmpty(entityGroups) || !isEmpty(excludeEntityGroups)) && (
@@ -116,10 +116,10 @@ const ScorecardMetadataFilter: React.FC<ScorecardMetadataFilterProps> = ({
       ) : (
         <>Applies to {joinWithAnds(entityGroups)}</>
       )}{' '}
-      {entityCategory.toLowerCase()}s
+      {entityCategory?.toLowerCase() ?? 'entitie'}s
       {!isEmpty(excludeEntityGroups) && (
         <>
-          , excluding {entityCategory.toLowerCase()}s in{' '}
+          , excluding {entityCategory?.toLowerCase() ?? 'entitie'}s in{' '}
           {joinWithAnds(excludeEntityGroups)}
         </>
       )}

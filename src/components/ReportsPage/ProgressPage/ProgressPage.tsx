@@ -35,7 +35,8 @@ import { GroupByOption, ruleName } from '../../../api/types';
 import { SerieFilter } from './SerieFilter';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { LookbackDropdown } from '../Common/LookbackDropdown';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { stringifyUrl } from 'query-string';
 
 const defaultRule = {
   value: 'DEFAULT_RULE_AVERAGE',
@@ -44,9 +45,10 @@ const defaultRule = {
 
 export const ProgressPage = () => {
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const queryScorecardId = Number(queryParams.get('scorecardId') ?? undefined);
+  const queryScorecardId = Number(searchParams.get('scorecardId') ?? undefined);
   const initialScorecardId = Number.isNaN(queryScorecardId)
     ? undefined
     : queryScorecardId;
@@ -54,6 +56,16 @@ export const ProgressPage = () => {
   const [selectedScorecardId, setSelectedScorecardId] = useState<
     number | undefined
   >(initialScorecardId);
+  const setSelectedScorecardIdAndNavigate = useCallback((selectedScorecardId?: number) => {
+    setSelectedScorecardId(selectedScorecardId);
+
+    const targetUrl = stringifyUrl({ url: location.pathname, query: {
+      scorecardId: selectedScorecardId
+    }});
+
+    navigate(targetUrl, { replace: true });
+  }, [setSelectedScorecardId, location.pathname, navigate])
+
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
   const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
     GroupByOption.SERVICE,
@@ -80,6 +92,8 @@ export const ProgressPage = () => {
     [selectedScorecardId],
   );
 
+  const scorecardsResult = useCortexApi(api => api.getScorecards());
+
   if (groupBy === GroupByOption.LEVEL) {
     return (
         <WarningPanel severity="error" title="Functionality not supported.">
@@ -104,8 +118,9 @@ export const ProgressPage = () => {
           <Grid container direction="row">
             <Grid item lg={8}>
               <ScorecardSelector
-                onSelect={setSelectedScorecardId}
+                onSelect={setSelectedScorecardIdAndNavigate}
                 selectedScorecardId={selectedScorecardId}
+                scorecardsResult={scorecardsResult}
                 hideReset
               />
             </Grid>

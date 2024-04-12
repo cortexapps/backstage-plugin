@@ -17,6 +17,7 @@
 import { isEmpty, isUndefined } from 'lodash';
 import {
   CategoryFilter,
+  CompoundFilter,
   EntityFilter,
   FilterType,
 } from '../../../../api/types';
@@ -28,13 +29,14 @@ export const getJoinerString = (idx: number, length: number) => {
 };
 
 export const getEntityGroupsFromFilter = (
-  filter?: EntityFilter | null,
+  filter?: EntityFilter | CompoundFilter | null,
 ): { entityGroups: string[]; excludeEntityGroups: string[] } => {
   if (
     filter?.type === FilterType.DOMAIN_FILTER ||
     filter?.type === FilterType.SERVICE_FILTER ||
     filter?.type === FilterType.RESOURCE_FILTER ||
-    filter?.type === FilterType.TEAM_FILTER
+    filter?.type === FilterType.TEAM_FILTER ||
+    filter?.type === FilterType.COMPOUND_FILTER
   ) {
     const entityGroups = filter?.entityGroupFilter?.entityGroups ?? [];
     const excludeEntityGroups =
@@ -47,9 +49,9 @@ export const getEntityGroupsFromFilter = (
 };
 
 export const getResourceTypesFromFilter = (
-  filter?: EntityFilter | null,
+  filter?: EntityFilter | CompoundFilter | null,
 ): { include: boolean; types: string[] } => {
-  if (filter?.type === FilterType.RESOURCE_FILTER) {
+  if (filter?.type === FilterType.RESOURCE_FILTER || filter?.type === FilterType.COMPOUND_FILTER) {
     const types = filter?.typeFilter?.types ?? [];
     const include =
       isUndefined(filter?.typeFilter) ||
@@ -62,15 +64,23 @@ export const getResourceTypesFromFilter = (
 };
 
 export const getQueryFromFilter = (
-  filter?: EntityFilter | null,
+  filter?: EntityFilter | CompoundFilter | null,
 ): string | null | undefined => {
-  return filter?.type === FilterType.CQL_FILTER ? filter.query : undefined;
+  if (filter?.type === FilterType.CQL_FILTER) {
+    return filter.query;
+  }
+  if (filter?.type === FilterType.COMPOUND_FILTER) {
+    return filter.cqlFilter?.query;
+  }
+  return undefined;
 };
 
 export const getEntityCategoryFromFilter = (
-  filter?: EntityFilter | null,
-): CategoryFilter => {
-  if (filter?.type === FilterType.CQL_FILTER) {
+  filter?: EntityFilter | CompoundFilter | null,
+): CategoryFilter | undefined => {
+  if (filter?.type === FilterType.COMPOUND_FILTER) {
+    return undefined;
+  } else if (filter?.type === FilterType.CQL_FILTER) {
     return filter.category;
   } else if (filter?.type === FilterType.DOMAIN_FILTER) {
     return CategoryFilter.Domain;

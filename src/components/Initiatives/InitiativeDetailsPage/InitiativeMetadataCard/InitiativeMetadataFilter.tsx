@@ -39,7 +39,7 @@ const InitiativeMetadataFilter: React.FC<InitiativeMetadataFilterProps> = ({
   return (
     <Typography variant="body2">
       Applies to {isEmpty(groups) ? 'all' : joinWithAnds(groups)}{' '}
-      {entityCategory.toLowerCase()}s
+      {entityCategory?.toLowerCase() || 'entitie'}s
     </Typography>
   );
 };

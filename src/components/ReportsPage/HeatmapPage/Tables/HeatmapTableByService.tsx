@@ -19,27 +19,30 @@ import TableRow from '@material-ui/core/TableRow/TableRow';
 import { TableCell } from '@material-ui/core';
 import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
-import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { parseEntityRef } from '@backstage/catalog-model';
-import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
+import { entityComponentRef } from '../../../../utils/ComponentUtils';
 import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
 import { mean as _average } from 'lodash';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
+import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 
 interface HeatmapTableByServiceProps {
+  header: string;
+  scorecardId: number;
   data: StringIndexable<ScorecardServiceScore[]>;
   entitiesByTag: StringIndexable<HomepageEntity>;
   rules: string[];
 }
 
 export const HeatmapTableByService = ({
+  header,
+  scorecardId,
   data,
   entitiesByTag,
   rules,
 }: HeatmapTableByServiceProps) => {
-  const headers = ['Service Details', 'Score', ...rules];
+  const headers = [header, 'Score', ...rules];
 
   return (
     <Table>
@@ -55,13 +58,12 @@ export const HeatmapTableByService = ({
           return (
             <TableRow key={`TableRow-${firstScore.componentRef}`}>
               <TableCell>
-                <EntityRefLink
-                  entityRef={parseEntityRef(
-                    entityComponentRef(entitiesByTag, firstScore.componentRef),
-                    defaultComponentRefContext,
-                  )}
-                  title={entitiesByTag[firstScore.componentRef]?.name}
-                />
+                <ScorecardServiceRefLink
+                  scorecardId={scorecardId}
+                  componentRef={entityComponentRef(entitiesByTag, entitiesByTag[firstScore.componentRef]?.codeTag)}
+                >
+                  {entitiesByTag[firstScore.componentRef]?.name}
+                </ScorecardServiceRefLink>
               </TableCell>
               <HeatmapCell score={averageScorePercentage} />
               {averageRuleScores.map((score, idx) => (

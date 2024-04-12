@@ -13,31 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Content, ContentHeader } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { AllScorecardsHeatmap } from './AllScorecardsHeatmap';
-import { useDropdown } from '../../../utils/hooks';
 import { GroupByOption } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { buildUrl } from '../../../utils/URLUtils';
+import { stringifyUrl } from 'query-string';
 
 export const AllScorecardsPage = () => {
   const location = useLocation();
-  const queryParams = new URLSearchParams(useLocation().search);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
-    (queryParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
+  const [groupBy, setGroupBy] = useState<GroupByOption|undefined>(
+    (searchParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
   );
+  const setGroupByAndNavigate = useCallback((event: ChangeEvent<{ value: unknown }>) => {
+    const groupBy = event.target.value === ''
+      ? undefined
+      : (event.target.value as GroupByOption | undefined)
 
-  const getShareableLink = useCallback(() => {
-    const queryParamsObj = {
-      groupBy,
-    };
-    return buildUrl(queryParamsObj, location.pathname);
-  }, [location, groupBy]);
+    setGroupBy(groupBy);
+
+    const targetUrl = stringifyUrl({ url: location.pathname, query: {
+      groupBy: groupBy !== GroupByOption.SERVICE ? groupBy as string : undefined,
+    } });
+
+    navigate(targetUrl, { replace: true });
+  }, [location.pathname, navigate]);
+
+  const getShareableLink = useCallback(
+    () => buildUrl({ groupBy }, location.pathname)
+  , [location, groupBy]);
 
   return (
     <Content>
@@ -48,7 +59,7 @@ export const AllScorecardsPage = () => {
       </ContentHeader>
       <Grid container direction="column">
         <Grid item>
-          <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupBy} />
+          <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupByAndNavigate} />
         </Grid>
         <Grid item lg={12}>
           <AllScorecardsHeatmap groupBy={groupBy!!} />

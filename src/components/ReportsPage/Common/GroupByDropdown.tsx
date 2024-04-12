@@ -20,10 +20,11 @@ import { GroupByOption } from '../../../api/types';
 interface GroupByDropdownProps {
   groupBy: GroupByOption | undefined;
   setGroupBy: (event: React.ChangeEvent<{ value: unknown }>) => void;
+  excluded?: GroupByOption[];
 }
 
 const GroupByLabels = {
-  [GroupByOption.SERVICE]: GroupByOption.SERVICE,
+  [GroupByOption.SERVICE]: 'Entity',
   [GroupByOption.TEAM]: GroupByOption.TEAM,
   [GroupByOption.SERVICE_GROUP]: 'Group',
   [GroupByOption.LEVEL]: GroupByOption.LEVEL,
@@ -32,12 +33,17 @@ const GroupByLabels = {
 export const GroupByDropdown = ({
   groupBy,
   setGroupBy,
+  excluded = [],
 }: GroupByDropdownProps) => {
+  const options = Object.values(GroupByOption).filter(
+    (option) => !excluded.includes(option)
+  );
+
   return (
     <FormControl>
       <InputLabel style={{ minWidth: '100px' }}>Group By</InputLabel>
       <Select value={groupBy} onChange={setGroupBy}>
-        {Object.values(GroupByOption).map(value => (
+        {options.map(value => (
           <MenuItem key={`GroupByOption-${value}`} value={value}>
             {GroupByLabels[value]}
           </MenuItem>

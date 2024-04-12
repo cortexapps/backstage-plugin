@@ -20,12 +20,14 @@ import { GroupByOption, HeaderType } from '../../../api/types';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
 
 interface SingleScorecardHeatmapProps {
+  entityCategory: string;
   scorecardId: number;
   groupBy: GroupByOption;
   headerType: HeaderType;
 }
 
 export const SingleScorecardHeatmap = ({
+  entityCategory,
   scorecardId,
   groupBy,
   headerType,
@@ -65,6 +67,8 @@ export const SingleScorecardHeatmap = ({
 
   return (
     <SingleScorecardHeatmapTable
+      entityCategory={entityCategory}
+      scorecardId={scorecardId}
       entitiesByTag={entitiesByTag}
       groupBy={groupBy}
       headerType={headerType}

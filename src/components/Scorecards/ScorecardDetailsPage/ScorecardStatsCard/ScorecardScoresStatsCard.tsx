@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { CategoryFilter, ScorecardServiceScore } from '../../../../api/types';
+import { ScorecardServiceScore } from '../../../../api/types';
 import { Paper } from '@material-ui/core';
 import { isEmpty, mean, round } from 'lodash';
 import { median, quantileSorted } from 'simple-statistics';
@@ -22,7 +22,7 @@ import Stats from '../../../Common/Stats';
 import StatsItem from '../../../Common/StatsItem';
 
 interface ScorecardScoresStatsCardProps {
-  entityCategory: CategoryFilter;
+  entityCategory: string;
   scores: ScorecardServiceScore[];
 }
 
@@ -65,7 +65,7 @@ export const ScorecardScoresStatsCard = ({
           value={percentile}
         />
         <StatsItem
-          caption={`${entityCategory}s`}
+          caption={entityCategory}
           type={'NONE'}
           value={scores.length}
         />
