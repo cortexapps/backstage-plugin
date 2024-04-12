@@ -36,6 +36,7 @@ export interface RuleDetail {
   score?: number;
   title?: string;
   weight?: number;
+  error?: string;
 }
 
 export const isApplicableRuleOutcome = (
