@@ -13,38 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import {
   Card,
   CardActions,
   CardContent,
   CardMedia,
   Chip,
-  makeStyles,
 } from '@material-ui/core';
 import {
   Button,
   ItemCardHeader,
   MarkdownContent,
 } from '@backstage/core-components';
-import { BackstageTheme } from '@backstage/theme';
-
-const useStyles = makeStyles<BackstageTheme>(styles => ({
-  linkButton: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: styles.palette.primary.main,
-    cursor: 'pointer',
-    fontSize: styles.typography.body2.fontSize,
-    padding: 0,
-  },
-}));
+import { Truncated } from '../Common/Truncated';
 
 interface ListCardProps {
   badges?: string[];
   description?: string;
   name: string;
-  truncateToCharacters?: number;
+  truncateToLines?: number;
   url: string;
 }
 
@@ -52,24 +40,9 @@ export const ListCard = ({
   badges,
   description,
   name,
-  truncateToCharacters,
+  truncateToLines,
   url,
 }: ListCardProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const classes = useStyles();
-
-  const descriptionToShow = useMemo(() => {
-    if (!description) {
-      return '';
-    }
-
-    if (truncateToCharacters && !isExpanded) {
-      return description.substring(0, truncateToCharacters) + '...';
-    }
-
-    return description;
-  }, [description, isExpanded, truncateToCharacters]);
-
   return (
     <Card>
       <CardMedia>
@@ -78,14 +51,14 @@ export const ListCard = ({
       <CardContent>
         {description && (
           <>
-            <MarkdownContent content={descriptionToShow ?? ''} />
-            {truncateToCharacters && description.length > truncateToCharacters && (
-              <button
-                className={classes.linkButton}
-                onClick={() => setIsExpanded(!isExpanded)}
-              >
-                {isExpanded ? 'Less' : 'More'}
-              </button>
+            {truncateToLines ? (
+              <Truncated
+                text={description}
+                truncateToLines={truncateToLines}
+                renderText={(text) => <MarkdownContent content={text}/>}
+              />
+            ) : (
+              <MarkdownContent content={description}/>
             )}
           </>
         )}

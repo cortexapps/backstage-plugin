@@ -32,6 +32,7 @@ import moment from 'moment';
 import { HoverTimestamp } from '../../Common/HoverTimestamp';
 import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
+import { Truncated } from '../../Common/Truncated';
 
 interface ScorecardServiceHeaderProps {
   entitiesByTag: StringIndexable<HomepageEntity>;
@@ -87,7 +88,11 @@ export const ScorecardServiceHeader = ({
           </Box>
           {scorecard.description && (
             <Box mb={1}>
-              <MarkdownContent content={scorecard.description} />
+            <Truncated
+              text={scorecard.description || ''}
+              truncateToLines={10}
+              renderText={(text) => (<MarkdownContent content={text}/>)}
+            />
             </Box>
           )}
           {lastEvaluation && (
