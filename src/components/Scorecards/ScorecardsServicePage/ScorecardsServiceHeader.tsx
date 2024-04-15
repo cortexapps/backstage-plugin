@@ -89,7 +89,7 @@ export const ScorecardServiceHeader = ({
           {scorecard.description && (
             <Box mb={1}>
             <Truncated
-              text={scorecard.description || ''}
+              text={scorecard.description}
               truncateToLines={10}
               renderText={(text) => (<MarkdownContent content={text}/>)}
             />

@@ -71,7 +71,7 @@ export const ScorecardMetadataCard = ({
           <Box mb={2} className={classes.markdownBox}>
             <CaptionTypography variant="caption">Description</CaptionTypography>
             <Truncated
-              text={scorecard.description || ''}
+              text={scorecard.description}
               truncateToLines={10}
               renderText={(text) => (<MarkdownContent content={text}/>)}
             />

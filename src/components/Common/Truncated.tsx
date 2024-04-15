@@ -29,18 +29,18 @@ const useStyles = makeStyles<BackstageTheme>(styles => ({
 }));
 
 interface TruncatedProps {
-  text: string;
+  text?: string;
   truncateToLines: number;
   renderText?: (text: string) => React.ReactElement
 }
 
-export const Truncated: React.FC<TruncatedProps> = ({ text, truncateToLines, renderText }) => {
+export const Truncated: React.FC<TruncatedProps> = ({ text = '', truncateToLines, renderText }) => {
   const classes = useStyles();
 
   const [isExpanded, setIsExpanded] = useState(false);
 
   const allEndOfLines = useMemo(() => {
-    return [...text.matchAll(/\r\n|\r|\n/g)].map(a => a.index);
+    return Array.from(text.matchAll(/\r\n|\r|\n/g)).map(a => a.index);
   }, [text]);
 
   const displayedText = useMemo(() => {
