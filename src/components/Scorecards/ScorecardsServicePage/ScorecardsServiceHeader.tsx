@@ -15,7 +15,7 @@
  */
 import React, { useMemo } from 'react';
 import { useRouteRef, useRouteRefParams } from '@backstage/core-plugin-api';
-import { Link } from '@backstage/core-components';
+import { Link, MarkdownContent } from '@backstage/core-components';
 import { Typography } from '@material-ui/core';
 import {
   scorecardRouteRef,
@@ -32,6 +32,7 @@ import moment from 'moment';
 import { HoverTimestamp } from '../../Common/HoverTimestamp';
 import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
+import { Truncated } from '../../Common/Truncated';
 
 interface ScorecardServiceHeaderProps {
   entitiesByTag: StringIndexable<HomepageEntity>;
@@ -87,7 +88,11 @@ export const ScorecardServiceHeader = ({
           </Box>
           {scorecard.description && (
             <Box mb={1}>
-              <Typography>{scorecard.description}</Typography>
+            <Truncated
+              text={scorecard.description}
+              truncateToLines={10}
+              renderText={(text) => (<MarkdownContent content={text}/>)}
+            />
             </Box>
           )}
           {lastEvaluation && (

@@ -22,6 +22,7 @@ import { CortexInfoCard } from '../../../Common/CortexInfoCard';
 import { HoverTimestamp } from '../../../Common/HoverTimestamp';
 import ScorecardMetadataFilter from './ScorecardMetadataFilter';
 import { CaptionTypography } from '../../../Common/StatsItem';
+import { Truncated } from '../../../Common/Truncated';
 
 interface ScorecardMetadataCardProps {
   scorecard: Scorecard;
@@ -69,7 +70,11 @@ export const ScorecardMetadataCard = ({
         {scorecard.description && (
           <Box mb={2} className={classes.markdownBox}>
             <CaptionTypography variant="caption">Description</CaptionTypography>
-            <MarkdownContent content={scorecard.description} />
+            <Truncated
+              text={scorecard.description}
+              truncateToLines={10}
+              renderText={(text) => (<MarkdownContent content={text}/>)}
+            />
           </Box>
         )}
         <Box mb={2}>

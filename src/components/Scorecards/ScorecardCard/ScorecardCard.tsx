@@ -35,7 +35,7 @@ export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
       badges={customCardDisplayOptions?.getBadgesFn?.(scorecard)}
       description={scorecard.description}
       name={scorecard.name}
-      truncateToCharacters={200}
+      truncateToLines={10}
       url={scorecardRef({ id: `${scorecard.id}` })}
     />
   );
