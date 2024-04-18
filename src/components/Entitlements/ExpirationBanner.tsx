@@ -29,6 +29,11 @@ export const ExpirationBanner = ({ contractType, expirationDate, shutdownDate }:
     return null;
   }
 
+  // Don't show the banner if the expiration date is more than 90 days away
+  if (daysUntilExpiration > 90) {
+    return null;
+  }
+
   const daysUntilShutdown = daysUntil(shutdownDate);
   const isTrial = contractType === 'TRIAL';
   const isExpired = daysUntilExpiration < 0;
