@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.6.5
+
+- Fixes issue with expiration banner appearing when more than 90 days are left on trail accounts.
+
 ### 2.6.4
 
 - Fixes issue where markdown was rendered as plain text on Scorecard service page
