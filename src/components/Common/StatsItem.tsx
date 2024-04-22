@@ -16,7 +16,13 @@
 import React, { useMemo } from 'react';
 import { percentify } from '../../utils/NumberUtils';
 import { ordinal } from '../../utils/strings';
-import { Box, Typography, alpha, withStyles } from '@material-ui/core';
+import {
+  Box,
+  Typography,
+  TypographyProps,
+  alpha,
+  withStyles,
+} from '@material-ui/core';
 
 export type StatNumberType = 'NTH' | 'PERCENTAGE' | 'NONE';
 
@@ -31,7 +37,7 @@ export const CaptionTypography = withStyles(theme => ({
   root: {
     color: alpha(theme.palette.text.primary, 0.7),
   },
-}))(Typography);
+}))(Typography) as React.ComponentType<TypographyProps>;
 
 const StatsItem: React.FC<StatsItemProps> = ({
   caption,

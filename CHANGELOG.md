@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.6.5-a
+
+- Backstage version downgrade from 1.25.1 to 1.22.2
+
 ### 2.6.5
 
 - Fix issue where groups filters are not rendered correctly in metadata on Initiative page
