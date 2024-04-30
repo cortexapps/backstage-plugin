@@ -46,11 +46,13 @@ const InitiativeMetadataFilter: React.FC<InitiativeMetadataFilterProps> = ({
   return (
     <Typography variant="body2">
       Applies to {!hasIncludes && !hasExcludes ? 'all' : ''}{' '}
-      {entityCategory?.toLowerCase() || 'entitie'}s{' '}
+      {entityCategory?.toLowerCase() || 'entitie'}s
       {(hasIncludes || hasExcludes) && (
         <>
-          in {!hasIncludes && ' all '} groups{' '}
-          {hasIncludes && joinWithAnds(entityGroups)}
+          {' '}
+          in {!hasIncludes && ' all '} group
+          {!hasIncludes || entityGroups.length > 1 ? 's' : ''}
+          {hasIncludes && <> {joinWithAnds(entityGroups)}</>}
           {hasExcludes && <>, excluding {joinWithAnds(excludeEntityGroups)}</>}
         </>
       )}

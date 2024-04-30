@@ -29,6 +29,8 @@ import { CortexApi } from '../api/CortexApi';
 import { ExternalRouteRef, RouteRef } from '@backstage/core-plugin-api';
 import {
   FilterType,
+  Initiative,
+  InitiativeWithScores,
   Scorecard,
   ScorecardLevel,
   ScorecardServiceScore,
@@ -236,4 +238,28 @@ export class Fixtures {
         ...partial,
       };
     };
+
+  static initiative: (partial?: Partial<Initiative>) => Initiative =
+    partial => {
+      return {
+        entityGroups: [],
+        levels: [],
+        description: 'Some description',
+        id: '1',
+        name: 'My Initiative',
+        rules: [],
+        scorecard: Fixtures.scorecard(),
+        targetDate: '2025-01-01T08:00:00',
+        ...partial,
+      };
+    };
+
+  static initiativeWithScores: (
+    partial?: Partial<InitiativeWithScores>,
+  ) => InitiativeWithScores = partial => {
+    return {
+      scores: [],
+      ...Fixtures.initiative(partial),
+    };
+  };
 }
