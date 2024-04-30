@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.6.5
+
+- Fixes issue where groups filters were not rendered correctly in metadata on Initiative page
+
 ### 2.6.4
 
 - Fixes issue where markdown was rendered as plain text on Scorecard service page
