@@ -17,7 +17,10 @@ import React, { useMemo } from 'react';
 import { Initiative } from '../../../../api/types';
 import { Typography } from '@material-ui/core';
 import { isEmpty } from 'lodash';
-import { getEntityCategoryFromFilter } from '../../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
+import {
+  getEntityCategoryFromFilter,
+  getEntityGroupsFromFilter,
+} from '../../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
 import { joinWithAnds } from '../../../../utils/strings';
 
 interface InitiativeMetadataFilterProps {
@@ -32,14 +35,27 @@ const InitiativeMetadataFilter: React.FC<InitiativeMetadataFilterProps> = ({
     [initiative],
   );
 
-  const groups = useMemo(() => {
-    return initiative.entityGroups.map(group => group.tag);
-  }, [initiative]);
+  const { entityGroups, excludeEntityGroups } = useMemo(
+    () => getEntityGroupsFromFilter(initiative.filter),
+    [initiative.filter],
+  );
+
+  const hasIncludes = !isEmpty(entityGroups);
+  const hasExcludes = !isEmpty(excludeEntityGroups);
 
   return (
     <Typography variant="body2">
-      Applies to {isEmpty(groups) ? 'all' : joinWithAnds(groups)}{' '}
+      Applies to {!hasIncludes && !hasExcludes ? 'all' : ''}{' '}
       {entityCategory?.toLowerCase() || 'entitie'}s
+      {(hasIncludes || hasExcludes) && (
+        <>
+          {' '}
+          in {!hasIncludes && ' all '} group
+          {!hasIncludes || entityGroups.length > 1 ? 's' : ''}
+          {hasIncludes && <> {joinWithAnds(entityGroups)}</>}
+          {hasExcludes && <>, excluding {joinWithAnds(excludeEntityGroups)}</>}
+        </>
+      )}
     </Typography>
   );
 };
