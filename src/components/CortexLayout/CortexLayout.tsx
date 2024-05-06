@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-import { TabProps } from '@material-ui/core';
 import { Children, default as React, Fragment, isValidElement } from 'react';
 
 import { attachComponentData } from '@backstage/core-plugin-api';
 import { Header, Page, RoutedTabs } from '@backstage/core-components';
 
-type SubRoute = {
-  path: string;
-  title: string;
-  children: JSX.Element;
-  tabProps?: TabProps<React.ElementType, { component?: React.ElementType }>;
-};
+type SubRoute = React.ComponentProps<typeof RoutedTabs>['routes'][number];
 
 const Route: (props: SubRoute) => null = () => null;
 
