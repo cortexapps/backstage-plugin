@@ -316,7 +316,7 @@ export interface CatalogEntityMetadata extends EntityMetadata {
 
 export interface Initiative {
   description?: string;
-  entityGroups: ServiceGroup[];
+  filter?: EntityFilter | CompoundFilter | null;
   id: string;
   levels: InitiativeLadderLevel[];
   name: string;
@@ -484,7 +484,7 @@ export interface TeamFilter {
 }
 
 // TODO(catalog-customization): merge GenericCqlFilter and CqlFilter, when we can fully support the "Generic" category app wide.
-export interface GenericCqlFilter extends Omit<CqlFilter, "category"> {
+export interface GenericCqlFilter extends Omit<CqlFilter, 'category'> {
   category: 'Generic';
 }
 

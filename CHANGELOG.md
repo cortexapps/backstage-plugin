@@ -1,16 +1,20 @@
 # Changelog
 
+### 2.6.5
+
+- Fix issue where groups filters are not rendered correctly in metadata on Initiative page
+
 ### 2.6.4
 
-- Fixes issue where markdown was rendered as plain text on Scorecard service page
+- Fix issue where markdown is rendered as plain text on Scorecard service page
 
 ### 2.6.3
 
-- Fixes issue where rule evaluation error was not displayed
+- Fix issue where rule evaluation error is not displayed
 
 ### 2.6.2
 
-- Fixes issue where resolve hint was displayed for passing rule
+- Fix issue where resolve hint is displayed for passing rule
 
 ### 2.6.1
 

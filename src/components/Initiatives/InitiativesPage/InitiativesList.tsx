@@ -37,7 +37,6 @@ import { isEmpty, isNil, isUndefined } from 'lodash';
 import { useDropdown, useInput } from '../../../utils/hooks';
 import { hasText } from '../../../utils/SearchUtils';
 import { Initiative } from '../../../api/types';
-import { hasTags } from '../../Scorecards/ScorecardsPage/ScorecardList';
 import { SortDropdown, SortMethods } from '../../Common/SortDropdown';
 import moment from 'moment';
 
@@ -74,8 +73,7 @@ export const InitiativesList = () => {
         hasText(initiative, 'name', searchQuery) ||
         hasText(initiative, 'description', searchQuery) ||
         hasText(initiative, 'scorecard.name', searchQuery) ||
-        hasText(initiative, 'scorecard.description', searchQuery) ||
-        hasTags(initiative.entityGroups, searchQuery)
+        hasText(initiative, 'scorecard.description', searchQuery)
       );
     });
 
