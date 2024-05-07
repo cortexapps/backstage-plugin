@@ -21,6 +21,15 @@ import { renderWrapped } from '../../utils/TestUtils';
 import { SyncJobsTable } from './SyncJobsTable';
 
 describe('SyncJobsTable', () => {
+  beforeEach(() => {
+    jest.useFakeTimers('modern');
+    jest.setSystemTime(new Date(2024, 4, 7, 14, 24, 33))
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('should render timestamps correctly', async () => {
     const cortexApi: Partial<CortexApi> = {
       getSyncJobs(): Promise<JobsResponse> {
@@ -43,7 +52,7 @@ describe('SyncJobsTable', () => {
 
     const { checkForText } = renderWrapped(<SyncJobsTable />, cortexApi);
 
-    await checkForText('a few seconds ago');
-    await checkForText('a day ago');
+    await checkForText('May 7th 2024, 2:24:33 pm');
+    await checkForText('May 6th 2024, 2:24:33 pm');
   });
 });
