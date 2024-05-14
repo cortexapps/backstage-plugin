@@ -154,17 +154,29 @@ proxy:
 
 13. (Optional) Customize appearance of the Cortex plugin
 
-Set custom page header
+Set custom page header:
 
 ```yaml
 cortex:
   page:
-    title: '' # default "Cortex"
+    title: 'My custom title' # default "Cortex"
     subtitle: '' # default "Understand and improve your services."
+```
+
+Hide links targeting Cortex app:
+
+```yaml
+cortex:
   hideCortexLinks: true # default `false`
+```
+
+Set custom name for Initiative(s):
+
+```yaml
+cortex:
   initiativeNameOverride:
-    singular: 'initiative' # default 'initiative'
-    plural: 'initiatives' # default 'initiatives'
+    singular: 'enhancement target' # default 'initiative'
+    plural: 'enhancement targets' # default 'initiatives'
 ```
 
 14. (Optional) Customize Backstage homepage as the Cortex homepage:
