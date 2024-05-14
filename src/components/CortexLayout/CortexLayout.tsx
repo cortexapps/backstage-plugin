@@ -63,11 +63,15 @@ function createSubRoutesFromChildren(
 }
 
 type CortexLayoutProps = {
+  title?: string;
+  subtitle?: string;
   children?: React.ReactNode;
   hideContent?: boolean;
 };
 
 export const CortexLayout = ({
+  title,
+  subtitle,
   children,
   hideContent,
 }: CortexLayoutProps) => {
@@ -80,17 +84,20 @@ export const CortexLayout = ({
   return (
     <Page themeId="home">
       <Header
-        title={customTitle
-          ? (
-          <>
-            {customTitle}
-            <Typography variant='subtitle1'>Powered by Cortex</Typography>
-          </>
+        title={title
+          ?? (
+            customTitle
+            ? (
+            <>
+              {customTitle}
+              <Typography variant='subtitle1'>Powered by Cortex</Typography>
+            </>
+            )
+            : 'Cortex'
           )
-          : 'Cortex'
         }
         pageTitleOverride='Cortex'
-        subtitle={pageConfig?.getOptionalString('subtitle') ?? 'Understand and improve your services.'}
+        subtitle={subtitle ?? pageConfig?.getOptionalString('subtitle') ?? 'Understand and improve your services.'}
       />
       {hideContent ? null : <RoutedTabs routes={routes} />}
     </Page>
