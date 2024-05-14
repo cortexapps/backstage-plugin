@@ -37,6 +37,7 @@ export const CortexPage = ({
   const cortexApi = useApi(cortexApiRef);
   const extensionApi = useApi(extensionApiRef);
   const config = useApi(configApiRef);
+  const pageConfig = config.getOptionalConfig('cortex.page');
 
   const {
     value: permissions,
@@ -71,7 +72,7 @@ export const CortexPage = ({
       {shouldShowExpirationBanner(expiration) && (
         <ExpirationBanner {...expiration} />
       )}
-      <CortexLayout title={title} subtitle={subtitle} hideContent={!isBeforeShutdownDate(expiration)}>
+      <CortexLayout title={pageConfig?.getOptionalString('title') ?? title} subtitle={pageConfig?.getOptionalString('subtitle') ?? subtitle} hideContent={!isBeforeShutdownDate(expiration)}>
         <CortexLayout.Route path="scorecards" title="Scorecards">
           <ScorecardsPage />
         </CortexLayout.Route>

@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.6.7
+
+- Cortex page title and subtitle are now customizable
+
 ### 2.6.6
 
 - Fix rule description and rule query text colors
