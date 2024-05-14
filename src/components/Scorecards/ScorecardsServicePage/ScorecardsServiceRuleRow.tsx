@@ -48,12 +48,12 @@ const useStyles = makeStyles(theme => ({
   },
   ruleDescription: {
     margin: theme.spacing(1, 0),
-    color: fallbackPalette.common.gray,
     '& p': {
       margin: 0,
     },
   },
   ruleQuery: {
+    color: fallbackPalette.common.gray,
     fontFamily: 'Monospace',
     fontSize: 12,
   },

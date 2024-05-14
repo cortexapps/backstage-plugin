@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.6.6
+
+- Fix rule description and rule query text colors
+
 ### 2.6.5
 
 - Fix issue where groups filters are not rendered correctly in metadata on Initiative page
