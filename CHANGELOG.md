@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.6.7
+
+- Fix timestamp format on Settings page
+
 ### 2.6.6
 
 - Fix rule description and rule query text colors
