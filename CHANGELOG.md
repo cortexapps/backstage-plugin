@@ -2,9 +2,9 @@
 
 ### 2.6.7
 
-- Cortex page title and subtitle are now customizable
-- Adds `hideCortexLinks` flag to hide all links to Cortex app
-- Adds `initiativeNameOverride` config to override "Initiative" name
+- Adds `page.title` and `page.subtitle` YAML config to customize Cortex page title and subtitle
+- Adds `hideCortexLinks` YAML flag to hide all links to Cortex app
+- Adds `initiativeNameOverride` YAML config to override "Initiative" name
 
 ### 2.6.6
 
