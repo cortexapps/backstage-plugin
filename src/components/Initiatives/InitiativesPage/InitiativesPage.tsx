@@ -21,6 +21,8 @@ import { useApi } from '@backstage/core-plugin-api';
 import { Route, Routes } from 'react-router-dom';
 import { InitiativeDetailsPage } from '../InitiativeDetailsPage';
 import { InitiativesList } from './InitiativesList';
+import { useInitiativesCustomName } from '../../../utils/hooks';
+import { capitalize } from 'lodash';
 
 export const InitiativesPage = () => {
   const cortexApi = useApi(cortexApiRef);
@@ -32,6 +34,8 @@ export const InitiativesPage = () => {
   } = useAsync(async () => {
     return await cortexApi.getScorecards();
   }, []);
+  
+  const { plural: initiativesName } = useInitiativesCustomName();
 
   if (loading) {
     return <Progress />;
@@ -39,7 +43,7 @@ export const InitiativesPage = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not load Initiatives.">
+      <WarningPanel severity="error" title={`Could not load ${capitalize(initiativesName)}.`}>
         {error.message}
       </WarningPanel>
     );
@@ -49,7 +53,7 @@ export const InitiativesPage = () => {
     return (
       <EmptyState
         missing="info"
-        title="No initiatives to display"
+        title={`No ${initiativesName} to display`}
         description="You haven't added any scorecards yet."
       />
     );

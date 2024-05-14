@@ -24,7 +24,7 @@ import {
 import { Link } from '@backstage/core-components';
 import { maybePluralize } from '../../utils/strings';
 import moment from 'moment';
-import { isNil } from 'lodash';
+import { capitalize, isNil } from 'lodash';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { initiativeRouteRef } from '../../routes';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
@@ -32,6 +32,7 @@ import { ScorecardRefLink } from '../ScorecardRefLink';
 import { useHomepageInsightsLinkStyles } from '../../styles/styles';
 import InsightCard from './InsightCard';
 import { Initiative, Scorecard } from '../../api/types';
+import { useInitiativesCustomName } from '../../utils/hooks';
 
 interface HomepageInsightCardProps {
   entities: HomepageEntity[];
@@ -48,6 +49,8 @@ export const HomepageInsightCard = ({
 }: HomepageInsightCardProps) => {
   const initiativeRef = useRouteRef(initiativeRouteRef);
   const linkClasses = useHomepageInsightsLinkStyles();
+
+  const { singular: initiativeName } = useInitiativesCustomName();
 
   switch (insight.type) {
     case UserInsightType.ACTION_ITEM: {
@@ -92,7 +95,7 @@ export const HomepageInsightCard = ({
               >
                 {initiative.name}
               </Link>{' '}
-              Initiative
+              {capitalize(initiativeName)}
             </>
           )}
         </InsightCard>

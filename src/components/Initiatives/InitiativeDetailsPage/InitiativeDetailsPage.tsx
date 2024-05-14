@@ -22,13 +22,13 @@ import { Box, Button, Grid, Tab, Tabs } from '@material-ui/core';
 import { initiativeRouteRef } from '../../../routes';
 import { Predicate } from '../../../utils/types';
 import { InitiativeStatsCard } from './InitiativeStatsCard';
-import { useEntitiesByTag } from '../../../utils/hooks';
+import { useEntitiesByTag, useInitiativesCustomName } from '../../../utils/hooks';
 import { InitiativeMetadataCard } from './InitiativeMetadataCard';
 import { InitiativeFailingTab } from './InitiativeFailingTab';
 import { InitiativePassingTab } from './InitiativePassingTab';
 import { InitiativeLevelsTab } from './InitiativeLevelsTab';
 import { InitiativeRulesTab } from './InitiativeRulesTab';
-import { isEmpty, isNil } from 'lodash';
+import { capitalize, isEmpty, isNil } from 'lodash';
 import { InitiativeFilterDialog } from './InitativeFilterDialog';
 import { InitiativeFilter } from './InitativeFilterDialog/InitiativeFilterDialogUtils';
 
@@ -91,13 +91,15 @@ export const InitiativeDetailsPage = () => {
     setIsFilterDialogOpen(false);
   };
 
+  const { singular: initiativeName } = useInitiativesCustomName();
+
   if (loading || loadingEntities) {
     return <Progress />;
   }
 
   if (error || initiative === undefined || filteredActionItems === undefined) {
     return (
-      <WarningPanel severity="error" title="Could not load Initiative.">
+      <WarningPanel severity="error" title={`Could not load ${capitalize(initiativeName)}.`}>
         {error?.message ?? ''}
       </WarningPanel>
     );

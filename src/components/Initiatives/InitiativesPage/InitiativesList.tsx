@@ -33,8 +33,8 @@ import {
   TextField,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import { isEmpty, isNil, isUndefined } from 'lodash';
-import { useDropdown, useInput } from '../../../utils/hooks';
+import { capitalize, isEmpty, isNil, isUndefined } from 'lodash';
+import { useDropdown, useInitiativesCustomName, useInput } from '../../../utils/hooks';
 import { hasText } from '../../../utils/SearchUtils';
 import { Initiative } from '../../../api/types';
 import { SortDropdown, SortMethods } from '../../Common/SortDropdown';
@@ -83,6 +83,8 @@ export const InitiativesList = () => {
 
     return initiativesToDisplay;
   }, [initiatives, searchQuery, sortBy]);
+  
+  const { plural: initiativesName } = useInitiativesCustomName();
 
   if (loading || isUndefined(initiativesToDisplay)) {
     return <Progress />;
@@ -90,7 +92,7 @@ export const InitiativesList = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not load Initiatives.">
+      <WarningPanel severity="error" title={`Could not load ${capitalize(initiativesName)}.`}>
         {error.message}
       </WarningPanel>
     );
@@ -100,15 +102,15 @@ export const InitiativesList = () => {
     return (
       <EmptyState
         missing="info"
-        title="No initiatives to display"
-        description="You haven't added any initiatives yet."
+        title={`No ${initiativesName} to display`}
+        description={`You haven't added any ${initiativesName} yet.`}
       />
     );
   }
 
   return (
     <Content>
-      <ContentHeader title="Initiatives" />
+      <ContentHeader title={capitalize(initiativesName)} />
       <Grid container direction="column">
         <Grid
           container
@@ -144,7 +146,7 @@ export const InitiativesList = () => {
         <Grid item lg={12}>
           {isEmpty(initiativesToDisplay) && !isNil(searchQuery) && (
             <EmptyState
-              title="No Initiatives matching search query"
+              title={`No ${capitalize(initiativesName)} matching search query`}
               missing="data"
             />
           )}

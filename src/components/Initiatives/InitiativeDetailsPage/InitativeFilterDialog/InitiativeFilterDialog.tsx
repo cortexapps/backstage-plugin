@@ -27,7 +27,7 @@ import {
   ruleName,
 } from '../../../../api/types';
 import { FilterProvider, useFilter } from '../../../FilterCard/useFilter';
-import { mapValues } from 'lodash';
+import { capitalize, mapValues } from 'lodash';
 import { mapByString } from '../../../../utils/collections';
 import { FilterCard } from '../../../FilterCard';
 import { AnyEntityRef, combinePredicates } from '../../../../utils/types';
@@ -36,7 +36,7 @@ import {
   InitiativeFilter,
   groupAndSystemFilters,
 } from './InitiativeFilterDialogUtils';
-import { useFilters } from '../../../../utils/hooks';
+import { useFilters, useInitiativesCustomName } from '../../../../utils/hooks';
 import { Progress } from '@backstage/core-components';
 
 const useStyles = makeStyles(() => ({
@@ -147,6 +147,8 @@ const InitiativeFilterDialog = ({
     handleClose();
   };
 
+  const { singular: initiativeName } = useInitiativesCustomName();
+
   return (
     <Dialog open={isOpen} onClose={handleClose}>
       <DialogContent className={classes.dialogContent}>
@@ -155,7 +157,7 @@ const InitiativeFilterDialog = ({
         ) : (
           <FilterCard
             filterDefinitions={filtersDefinition}
-            title="Filter Initiative"
+            title={`Filter ${capitalize(initiativeName)}`}
           />
         )}
       </DialogContent>

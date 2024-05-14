@@ -22,6 +22,8 @@ import { initiativeRouteRef } from '../../routes';
 import { MetadataItem } from '../MetadataItem';
 import { Link } from '@backstage/core-components';
 import React from 'react';
+import { useInitiativesCustomName } from '../../utils/hooks';
+import { capitalize } from 'lodash';
 
 const useStyles = makeStyles<BackstageTheme>(_ => ({
   initiativeInfo: {
@@ -40,6 +42,8 @@ export const GroupComponentRuleInitiativeInfo = ({
   const initiativeRef = useRouteRef(initiativeRouteRef);
   const classes = useStyles();
 
+  const { singular: initiativeNameLabel } = useInitiativesCustomName();
+
   return (
     <Link
       to={initiativeRef({
@@ -47,7 +51,7 @@ export const GroupComponentRuleInitiativeInfo = ({
       })}
     >
       <Grid container direction={'row'} className={classes.initiativeInfo}>
-        <MetadataItem gridSizes={{ lg: 6 }} label={'Initiative'}>
+        <MetadataItem gridSizes={{ lg: 6 }} label={capitalize(initiativeNameLabel)}>
           {initiativeActionItem.initiative.name}
         </MetadataItem>
         <MetadataItem gridSizes={{ lg: 6 }} label={'Deadline'}>

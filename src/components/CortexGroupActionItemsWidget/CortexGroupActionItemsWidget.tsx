@@ -15,7 +15,7 @@
  */
 
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
-import { useCortexApi } from '../../utils/hooks';
+import { useCortexApi, useInitiativesCustomName } from '../../utils/hooks';
 import { stringifyAnyEntityRef } from '../../utils/types';
 import {
   EmptyState,
@@ -53,6 +53,8 @@ export const CortexGroupActionItemsWidget = () => {
     [entity],
   );
 
+  const { plural: initiativesName } = useInitiativesCustomName();
+
   if (entityLoading || actionItemsLoading) {
     return <Progress />;
   }
@@ -78,7 +80,7 @@ export const CortexGroupActionItemsWidget = () => {
       <EmptyState
         missing="info"
         title="No group action items to display"
-        description="The group does not have any action items for the initiatives it is part of."
+        description={`The group does not have any action items for the ${initiativesName} it is part of.`}
       />
     );
   }

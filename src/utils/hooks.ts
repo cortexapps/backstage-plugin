@@ -337,6 +337,15 @@ export function useUiExtensions() {
   };
 }
 
+export function useInitiativesCustomName() {
+  const config = useApi(configApiRef);
+
+  const singular = config.getOptionalString('cortex.initiativeNameOverride.singular') ?? 'initiative';
+  const plural = config.getOptionalString('cortex.initiativeNameOverride.plural') ?? `${singular}s`;
+
+  return { singular, plural };
+}
+
 const defaultCompareFn = (a: Scorecard, b: Scorecard) =>
   a.name.localeCompare(b.name);
 

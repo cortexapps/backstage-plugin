@@ -37,6 +37,17 @@ export interface Config {
     hideSettings?: boolean;
 
     /**
+     * The 'initiativeNameOverride' attribute. All lowercase override name for "Initiative".
+     * Use nested `singular` and `plural` to define each value on your own.
+     * If `plural` is not defined, `singular` is pluralized by appending "s",
+     * @deepVisibility frontend
+     */
+    initiativeNameOverride?: {
+      singular: string;
+      plural?: string;
+    };
+
+    /**
      * The 'syncWithGzip' attribute. If true, the Cortex Backstage entity sync will use gzip.
      * If not provided, the Cortex Backstage entity sync will not use gzip.
      * @visibility frontend
