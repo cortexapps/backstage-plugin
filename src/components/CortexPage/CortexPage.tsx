@@ -31,14 +31,10 @@ import { isBeforeShutdownDate, shouldShowExpirationBanner } from '../Entitlement
 import { ExpirationBanner } from '../Entitlements/ExpirationBanner';
 import { useInitiativesCustomName } from '../../utils/hooks';
 
-export const CortexPage = ({
-  title = 'Cortex',
-  subtitle = 'Understand and improve your services.',
-}) => {
+export const CortexPage = () => {
   const cortexApi = useApi(cortexApiRef);
   const extensionApi = useApi(extensionApiRef);
   const config = useApi(configApiRef);
-  const pageConfig = config.getOptionalConfig('cortex.page');
 
   const {
     value: permissions,
@@ -75,7 +71,7 @@ export const CortexPage = ({
       {shouldShowExpirationBanner(expiration) && (
         <ExpirationBanner {...expiration} />
       )}
-      <CortexLayout title={pageConfig?.getOptionalString('title') ?? title} subtitle={pageConfig?.getOptionalString('subtitle') ?? subtitle} hideContent={!isBeforeShutdownDate(expiration)}>
+      <CortexLayout hideContent={!isBeforeShutdownDate(expiration)}>
         <CortexLayout.Route path="scorecards" title="Scorecards">
           <ScorecardsPage />
         </CortexLayout.Route>
