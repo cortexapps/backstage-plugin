@@ -39,7 +39,7 @@ export interface Config {
     /**
      * The 'initiativeNameOverride' attribute. All lowercase override name for "Initiative".
      * Use nested `singular` and `plural` to define each value on your own.
-     * If `plural` is not defined, `singular` is pluralized by appending "s",
+     * If `plural` is not defined, `singular` is pluralized by appending "s".
      * @deepVisibility frontend
      */
     initiativeNameOverride?: {
@@ -54,6 +54,9 @@ export interface Config {
      */
     syncWithGzip?: boolean;
 
+    /**
+     * @deepVisibility frontend
+     */
     page?: {
       /**
        * The `cortex.page.title` attribute. Sets custom title for Cortex page.
