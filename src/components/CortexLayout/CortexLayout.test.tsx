@@ -39,9 +39,9 @@ describe('<ExploreLayout />', () => {
     );
 
     await waitFor(() => {
-      expect(getByText('Explore our ecosystem')).toBeVisible();
+      expect(getByText('Cortex')).toBeVisible();
       expect(
-        getByText('Discover solutions available in our ecosystem'),
+        getByText('Understand and improve your services'),
       ).toBeVisible();
     });
   });
