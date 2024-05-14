@@ -78,8 +78,8 @@ export const CortexLayout = ({
   const routes = createSubRoutesFromChildren(children);
 
   const config = useApi(configApiRef);
-  const pageConfig = config.getOptionalConfig('cortex.page');
-  const customTitle = pageConfig?.getOptionalString('title');
+  const headerConfig = config.getOptionalConfig('cortex.header');
+  const customTitle = headerConfig?.getOptionalString('title');
 
   return (
     <Page themeId="home">
@@ -97,7 +97,7 @@ export const CortexLayout = ({
           )
         }
         pageTitleOverride='Cortex'
-        subtitle={subtitle ?? pageConfig?.getOptionalString('subtitle') ?? 'Understand and improve your services.'}
+        subtitle={subtitle ?? headerConfig?.getOptionalString('subtitle') ?? 'Understand and improve your services.'}
       />
       {hideContent ? null : <RoutedTabs routes={routes} />}
     </Page>

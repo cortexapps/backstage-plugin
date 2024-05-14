@@ -154,11 +154,11 @@ proxy:
 
 13. (Optional) Customize the appearance of the Cortex plugin
 
-Set custom page header:
+Set custom Cortex page header:
 
 ```yaml
 cortex:
-  page:
+  header:
     title: 'My custom title' # defaults to "Cortex"
     subtitle: '' # defaults to "Understand and improve your services."
 ```

@@ -57,16 +57,16 @@ export interface Config {
     /**
      * @deepVisibility frontend
      */
-    page?: {
+    header?: {
       /**
-       * The `cortex.page.title` attribute. Sets custom title for Cortex page.
+       * The `cortex.header.title` attribute. Sets custom title for Cortex page.
        * If not provided, "Cortex" is used.
        * @visibility frontend
        */
       title?: string;
 
       /**
-       * The `cortex.page.subtitle` attribute. Sets custom subtitle for Cortex page.
+       * The `cortex.header.subtitle` attribute. Sets custom subtitle for Cortex page.
        * If not provided, "Understand and improve your services." is used.
        * @visibility frontend
        */

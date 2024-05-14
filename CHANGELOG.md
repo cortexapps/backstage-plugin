@@ -2,7 +2,7 @@
 
 ### 2.6.7
 
-- Adds `page.title` and `page.subtitle` YAML config to customize Cortex page title and subtitle
+- Adds `header.title` and `header.subtitle` YAML config to customize Cortex page title and subtitle
 - Adds `hideCortexLinks` YAML flag to hide all links to Cortex app
 - Adds `initiativeNameOverride` YAML config to override "Initiative" name
 
