@@ -3,6 +3,7 @@
 ### 2.6.7
 
 - Cortex page title and subtitle are now customizable
+- Adds `hideCortexLinks` flag to hide all links to Cortex app
 
 ### 2.6.6
 

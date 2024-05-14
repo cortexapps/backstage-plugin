@@ -24,6 +24,13 @@ export interface Config {
     frontendBaseUrl?: string;
 
     /**
+     * The 'hideCortexLinks' attribute. If true, links to Cortex app will be hidden.
+     * Defaults to `false`.
+     * @visibility frontend
+     */
+    hideCortexLinks?: boolean;
+
+    /**
      * The 'hideSettings' attribute. If true, settings tab + sync button will be hidden from all users, including admins.
      * @visibility frontend
      */

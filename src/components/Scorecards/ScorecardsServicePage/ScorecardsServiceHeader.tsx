@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { useRouteRef, useRouteRefParams } from '@backstage/core-plugin-api';
+import { configApiRef, useApi, useRouteRef, useRouteRefParams } from '@backstage/core-plugin-api';
 import { Link, MarkdownContent } from '@backstage/core-components';
 import { Typography } from '@material-ui/core';
 import {
@@ -54,6 +54,9 @@ export const ScorecardServiceHeader = ({
   const lastEvaluation = useMemo(() => {
     return !isNil(score) ? moment.utc(score.lastUpdated) : undefined;
   }, [score]);
+
+  const config = useApi(configApiRef);
+  const hideLink = config.getOptionalBoolean('cortex.hideCortexLinks') ?? false;
 
   return (
     <Box>
@@ -101,7 +104,7 @@ export const ScorecardServiceHeader = ({
             </Typography>
           )}
         </Box>
-        <Box>
+        {!hideLink && <Box>
           <Link
             to={cortexScorecardServicePageUrl({
               scorecardId,
@@ -112,7 +115,7 @@ export const ScorecardServiceHeader = ({
           >
             <b>View in Cortex</b>
           </Link>
-        </Box>
+        </Box>}
       </Box>
     </Box>
   );

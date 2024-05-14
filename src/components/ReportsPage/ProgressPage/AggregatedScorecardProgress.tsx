@@ -24,6 +24,7 @@ import moment from 'moment';
 import { mapByString } from '../../../utils/collections';
 import { GroupByOption } from '../../../api/types';
 import { cortexScorecardPageUrl } from '../../../utils/URLUtils';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 interface AggregatedScorecardProgressProps {
   scorecardId: number;
@@ -92,6 +93,9 @@ export const AggregatedScorecardProgress = ({
 
   const cortexBaseUrl = useCortexFrontendUrl();
 
+  const config = useApi(configApiRef);
+  const hideLink = config.getOptionalBoolean('cortex.hideCortexLinks') ?? false;
+
   if (loading) {
     return <Progress />;
   }
@@ -105,23 +109,25 @@ export const AggregatedScorecardProgress = ({
   }
 
   if (Object.values(data).length === 0) {
+    const actionButton = hideLink ? undefined : (
+      <Button
+        variant="contained"
+        color="primary"
+        href={cortexScorecardPageUrl({
+          scorecardId: scorecardId,
+          cortexUrl: cortexBaseUrl,
+        })}
+      >
+        Go to Cortex
+      </Button>
+    );
+
     return (
       <EmptyState
         missing="data"
         title="Scorecard has not been evaluated yet."
         description="Wait until next Scorecard evaluation, or manually trigger from within Cortex."
-        action={
-          <Button
-            variant="contained"
-            color="primary"
-            href={cortexScorecardPageUrl({
-              scorecardId: scorecardId,
-              cortexUrl: cortexBaseUrl,
-            })}
-          >
-            Go to Cortex
-          </Button>
-        }
+        action={actionButton}
       />
     );
   }

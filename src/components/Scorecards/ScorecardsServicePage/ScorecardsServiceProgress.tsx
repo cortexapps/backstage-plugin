@@ -16,7 +16,7 @@
 import React, { useMemo, useState } from 'react';
 import { Button, Typography } from '@material-ui/core';
 import { useCortexFrontendUrl, useDropdown } from '../../../utils/hooks';
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
@@ -80,6 +80,9 @@ export const ScorecardsServiceProgress = ({
   const cortexBaseUrl = useCortexFrontendUrl();
   const rulesCardClasses = useCortexInfoCardStyles();
 
+  const config = useApi(configApiRef);
+  const hideLink = config.getOptionalBoolean('cortex.hideCortexLinks') ?? false;
+
   if (loading) {
     return <Progress />;
   }
@@ -93,24 +96,26 @@ export const ScorecardsServiceProgress = ({
   }
 
   if (data.length === 0) {
+    const actionButton = hideLink ? undefined : (
+      <Button
+        variant="contained"
+        color="primary"
+        href={cortexScorecardPageUrl({
+          scorecardId: scorecardId,
+          cortexUrl: cortexBaseUrl,
+        })}
+      >
+        Go to Cortex
+      </Button>
+    )
+
     return (
       <CortexInfoCard title="Progress">
         <EmptyState
           missing="data"
           title="Scorecard has not been evaluated yet."
           description="Wait until next Scorecard evaluation, or manually trigger from within Cortex."
-          action={
-            <Button
-              variant="contained"
-              color="primary"
-              href={cortexScorecardPageUrl({
-                scorecardId: scorecardId,
-                cortexUrl: cortexBaseUrl,
-              })}
-            >
-              Go to Cortex
-            </Button>
-          }
+          action={actionButton}
         />
       </CortexInfoCard>
     );
