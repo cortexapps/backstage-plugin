@@ -41,7 +41,7 @@ describe('<ExploreLayout />', () => {
     await waitFor(() => {
       expect(getByText('Cortex')).toBeVisible();
       expect(
-        getByText('Understand and improve your services'),
+        getByText('Understand and improve your services.'),
       ).toBeVisible();
     });
   });
