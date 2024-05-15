@@ -157,7 +157,7 @@ const InitiativeFilterDialog = ({
         ) : (
           <FilterCard
             filterDefinitions={filtersDefinition}
-            title={`Filter ${capitalize(initiativeName)}`}
+            title={`Filter ${initiativeName}`}
           />
         )}
       </DialogContent>
