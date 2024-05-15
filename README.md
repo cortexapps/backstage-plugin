@@ -152,7 +152,34 @@ proxy:
       - Content-Encoding
 ```
 
-13. (Optional) Customize Backstage homepage as the Cortex homepage:
+13. (Optional) Customize the appearance of the Cortex plugin
+
+Set custom Cortex page header:
+
+```yaml
+cortex:
+  header:
+    title: 'My custom title' # defaults to "Cortex"
+    subtitle: '' # defaults to "Understand and improve your services."
+```
+
+Hide links targeting Cortex app:
+
+```yaml
+cortex:
+  hideCortexLinks: true # defaults to `false`
+```
+
+Set custom name for Initiative(s):
+
+```yaml
+cortex:
+  initiativeNameOverride:
+    singular: 'enhancement target' # defaults to 'initiative'
+    plural: 'enhancement targets' # defaults to 'initiatives'
+```
+
+14. (Optional) Customize Backstage homepage as the Cortex homepage:
 
 ![homepage](./docs/homepage.png?raw=true)
 

@@ -22,6 +22,7 @@ import React, { useState } from 'react';
 import { MetadataItem } from '../MetadataItem';
 import { BackstageTheme } from '@backstage/theme';
 import { GroupComponentRuleInitiativeInfo } from './GroupComponentRuleInitiativeInfo';
+import { useInitiativesCustomName } from '../../utils/hooks';
 
 const useStyles = makeStyles<BackstageTheme>(_ => ({
   ruleRow: {
@@ -43,12 +44,14 @@ export const GroupComponentRuleInitiativesRow = ({
   const [open, setOpen] = useState(false);
   const classes = useStyles();
 
+  const { plural: initiativesName } = useInitiativesCustomName();
+
   return (
     <React.Fragment>
       <Grid container className={classes.ruleRow} direction={'row'}>
         <Grid item lg={1}>
           <IconButton
-            aria-label={`Show initiatives for ${componentName} with rule ${ruleExpression}`}
+            aria-label={`Show ${initiativesName} for ${componentName} with rule ${ruleExpression}`}
             size="small"
             onClick={() => setOpen(!open)}
           >

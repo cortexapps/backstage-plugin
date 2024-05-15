@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { isNil } from 'lodash';
+import { capitalize, isNil } from 'lodash';
 import { CortexLayout } from '../CortexLayout';
 import { ScorecardsPage } from '../../extensions';
 import { SettingsPage } from '../SettingsPage';
@@ -29,11 +29,9 @@ import { extensionApiRef } from '../../api/ExtensionApi';
 import { HelpPage } from '../HelpPage';
 import { isBeforeShutdownDate, shouldShowExpirationBanner } from '../Entitlements/ExpirationUtils';
 import { ExpirationBanner } from '../Entitlements/ExpirationBanner';
+import { useInitiativesCustomName } from '../../utils/hooks';
 
-export const CortexPage = ({
-  title = 'Cortex',
-  subtitle = 'Understand and improve your services.',
-}) => {
+export const CortexPage = () => {
   const cortexApi = useApi(cortexApiRef);
   const extensionApi = useApi(extensionApiRef);
   const config = useApi(configApiRef);
@@ -62,6 +60,8 @@ export const CortexPage = ({
     return await cortexApi.getExpiration();
   }, []);
 
+  const { plural: initiativesName } = useInitiativesCustomName();
+
   if (loadingPermissions || loadingHelpPage || loadingExpiration || isNil(expiration)) {
     return <Progress />;
   }
@@ -71,14 +71,14 @@ export const CortexPage = ({
       {shouldShowExpirationBanner(expiration) && (
         <ExpirationBanner {...expiration} />
       )}
-      <CortexLayout title={title} subtitle={subtitle} hideContent={!isBeforeShutdownDate(expiration)}>
+      <CortexLayout hideContent={!isBeforeShutdownDate(expiration)}>
         <CortexLayout.Route path="scorecards" title="Scorecards">
           <ScorecardsPage />
         </CortexLayout.Route>
         <CortexLayout.Route path="reports" title="Reports">
           <ReportsPage />
         </CortexLayout.Route>
-        <CortexLayout.Route path="initiatives" title="Initiatives">
+        <CortexLayout.Route path="initiatives" title={capitalize(initiativesName)}>
           <InitiativesPage />
         </CortexLayout.Route>
         {/*

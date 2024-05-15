@@ -25,7 +25,7 @@ import Box from '@material-ui/core/Box';
 import { DefaultEntityRefLink } from '../../DefaultEntityLink';
 import { Scorecard, ScorecardServiceScore } from '../../../api/types';
 import { cortexScorecardServicePageUrl } from '../../../utils/URLUtils';
-import { useCortexFrontendUrl } from '../../../utils/hooks';
+import { useCortexFrontendUrl, useHideCortexLinks } from '../../../utils/hooks';
 import { KeyboardArrowLeft } from '@material-ui/icons';
 import { isNil } from 'lodash';
 import moment from 'moment';
@@ -54,6 +54,8 @@ export const ScorecardServiceHeader = ({
   const lastEvaluation = useMemo(() => {
     return !isNil(score) ? moment.utc(score.lastUpdated) : undefined;
   }, [score]);
+
+  const hideLink = useHideCortexLinks();
 
   return (
     <Box>
@@ -101,7 +103,7 @@ export const ScorecardServiceHeader = ({
             </Typography>
           )}
         </Box>
-        <Box>
+        {!hideLink && <Box>
           <Link
             to={cortexScorecardServicePageUrl({
               scorecardId,
@@ -112,7 +114,7 @@ export const ScorecardServiceHeader = ({
           >
             <b>View in Cortex</b>
           </Link>
-        </Box>
+        </Box>}
       </Box>
     </Box>
   );

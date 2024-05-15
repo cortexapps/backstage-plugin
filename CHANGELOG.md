@@ -1,5 +1,11 @@
 # Changelog
 
+### 2.6.6-a
+
+- Adds `header.title` and `header.subtitle` YAML config to customize Cortex page title and subtitle
+- Adds `hideCortexLinks` YAML flag to hide all links to Cortex app
+- Adds `initiativeNameOverride` YAML config to override "Initiative" name
+
 ### 2.6.5-a
 
 - Backstage version downgrade from 1.25.1 to 1.22.2
