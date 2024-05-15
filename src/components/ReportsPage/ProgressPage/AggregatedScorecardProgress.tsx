@@ -15,7 +15,7 @@
  */
 import React, { useEffect, useMemo } from 'react';
 import { getLookbackRange, Lookback } from '../../../utils/lookback';
-import { useCortexApi, useCortexFrontendUrl } from '../../../utils/hooks';
+import { useCortexApi, useCortexFrontendUrl, useHideCortexLinks } from '../../../utils/hooks';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { Button, Typography } from '@material-ui/core';
 import { Timeseries } from '../../Timeseries';
@@ -24,7 +24,6 @@ import moment from 'moment';
 import { mapByString } from '../../../utils/collections';
 import { GroupByOption } from '../../../api/types';
 import { cortexScorecardPageUrl } from '../../../utils/URLUtils';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 interface AggregatedScorecardProgressProps {
   scorecardId: number;
@@ -93,8 +92,7 @@ export const AggregatedScorecardProgress = ({
 
   const cortexBaseUrl = useCortexFrontendUrl();
 
-  const config = useApi(configApiRef);
-  const hideLink = config.getOptionalBoolean('cortex.hideCortexLinks') ?? false;
+  const hideLink = useHideCortexLinks();
 
   if (loading) {
     return <Progress />;

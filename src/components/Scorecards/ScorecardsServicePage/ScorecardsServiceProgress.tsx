@@ -15,8 +15,8 @@
  */
 import React, { useMemo, useState } from 'react';
 import { Button, Typography } from '@material-ui/core';
-import { useCortexFrontendUrl, useDropdown } from '../../../utils/hooks';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useCortexFrontendUrl, useDropdown, useHideCortexLinks } from '../../../utils/hooks';
+import { useApi } from '@backstage/core-plugin-api';
 import { cortexApiRef } from '../../../api';
 import { useAsync } from 'react-use';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
@@ -80,8 +80,7 @@ export const ScorecardsServiceProgress = ({
   const cortexBaseUrl = useCortexFrontendUrl();
   const rulesCardClasses = useCortexInfoCardStyles();
 
-  const config = useApi(configApiRef);
-  const hideLink = config.getOptionalBoolean('cortex.hideCortexLinks') ?? false;
+  const hideLink = useHideCortexLinks();
 
   if (loading) {
     return <Progress />;

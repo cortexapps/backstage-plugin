@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { configApiRef, useApi, useRouteRef, useRouteRefParams } from '@backstage/core-plugin-api';
+import { useRouteRef, useRouteRefParams } from '@backstage/core-plugin-api';
 import { Link, MarkdownContent } from '@backstage/core-components';
 import { Typography } from '@material-ui/core';
 import {
@@ -25,7 +25,7 @@ import Box from '@material-ui/core/Box';
 import { DefaultEntityRefLink } from '../../DefaultEntityLink';
 import { Scorecard, ScorecardServiceScore } from '../../../api/types';
 import { cortexScorecardServicePageUrl } from '../../../utils/URLUtils';
-import { useCortexFrontendUrl } from '../../../utils/hooks';
+import { useCortexFrontendUrl, useHideCortexLinks } from '../../../utils/hooks';
 import { KeyboardArrowLeft } from '@material-ui/icons';
 import { isNil } from 'lodash';
 import moment from 'moment';
@@ -55,8 +55,7 @@ export const ScorecardServiceHeader = ({
     return !isNil(score) ? moment.utc(score.lastUpdated) : undefined;
   }, [score]);
 
-  const config = useApi(configApiRef);
-  const hideLink = config.getOptionalBoolean('cortex.hideCortexLinks') ?? false;
+  const hideLink = useHideCortexLinks();
 
   return (
     <Box>

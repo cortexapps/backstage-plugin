@@ -346,6 +346,11 @@ export function useInitiativesCustomName() {
   return { singular, plural };
 }
 
+export function useHideCortexLinks() {
+  const config = useApi(configApiRef);
+  return config.getOptionalBoolean('cortex.hideCortexLinks') ?? false;
+}
+
 const defaultCompareFn = (a: Scorecard, b: Scorecard) =>
   a.name.localeCompare(b.name);
 
