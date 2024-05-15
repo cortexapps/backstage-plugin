@@ -22,7 +22,6 @@ import { Route, Routes } from 'react-router-dom';
 import { InitiativeDetailsPage } from '../InitiativeDetailsPage';
 import { InitiativesList } from './InitiativesList';
 import { useInitiativesCustomName } from '../../../utils/hooks';
-import { capitalize } from 'lodash';
 
 export const InitiativesPage = () => {
   const cortexApi = useApi(cortexApiRef);
