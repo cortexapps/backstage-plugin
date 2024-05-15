@@ -28,7 +28,7 @@ import { InitiativeFailingTab } from './InitiativeFailingTab';
 import { InitiativePassingTab } from './InitiativePassingTab';
 import { InitiativeLevelsTab } from './InitiativeLevelsTab';
 import { InitiativeRulesTab } from './InitiativeRulesTab';
-import { capitalize, isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { InitiativeFilterDialog } from './InitativeFilterDialog';
 import { InitiativeFilter } from './InitativeFilterDialog/InitiativeFilterDialogUtils';
 
@@ -99,7 +99,7 @@ export const InitiativeDetailsPage = () => {
 
   if (error || initiative === undefined || filteredActionItems === undefined) {
     return (
-      <WarningPanel severity="error" title={`Could not load ${capitalize(initiativeName)}.`}>
+      <WarningPanel severity="error" title={`Could not load ${initiativeName}.`}>
         {error?.message ?? ''}
       </WarningPanel>
     );

@@ -43,7 +43,7 @@ export const InitiativesPage = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title={`Could not load ${capitalize(initiativesName)}.`}>
+      <WarningPanel severity="error" title={`Could not load ${initiativesName}.`}>
         {error.message}
       </WarningPanel>
     );

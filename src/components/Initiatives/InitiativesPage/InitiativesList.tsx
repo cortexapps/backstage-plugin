@@ -92,7 +92,7 @@ export const InitiativesList = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title={`Could not load ${capitalize(initiativesName)}.`}>
+      <WarningPanel severity="error" title={`Could not load ${initiativesName}.`}>
         {error.message}
       </WarningPanel>
     );
@@ -146,7 +146,7 @@ export const InitiativesList = () => {
         <Grid item lg={12}>
           {isEmpty(initiativesToDisplay) && !isNil(searchQuery) && (
             <EmptyState
-              title={`No ${capitalize(initiativesName)} matching search query`}
+              title={`No ${initiativesName} matching search query`}
               missing="data"
             />
           )}
