@@ -83,9 +83,9 @@ describe('Initiatives Page', () => {
     const { findByText } = renderWrapped(<InitiativesPage />, {
       getInitiatives: emptyGetInitiatives,
     });
-    expect(await findByText(/No initiatives to display/)).toBeVisible();
+    expect(await findByText(/No Initiatives to display/)).toBeVisible();
     expect(
-      await findByText(/You haven't added any initiatives yet/),
+      await findByText(/You haven't added any Initiatives yet/),
     ).toBeVisible();
   });
 });

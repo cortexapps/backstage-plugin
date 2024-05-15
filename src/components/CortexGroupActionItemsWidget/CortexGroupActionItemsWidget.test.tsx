@@ -132,7 +132,7 @@ describe('<CortexGroupActionItemsWidget/>', () => {
     await act(async () => {
       fireEvent.click(
         queryByLabelText(
-          'Show initiatives for component1 with rule git != null',
+          'Show Initiatives for component1 with rule git != null',
         )!!,
       );
     });
@@ -144,7 +144,7 @@ describe('<CortexGroupActionItemsWidget/>', () => {
     await act(async () => {
       fireEvent.click(
         queryByLabelText(
-          'Show initiatives for component1 with rule git != null',
+          'Show Initiatives for component1 with rule git != null',
         )!!,
       );
     });
@@ -156,7 +156,7 @@ describe('<CortexGroupActionItemsWidget/>', () => {
 
     fireEvent.click(
       queryByLabelText(
-        'Show initiatives for component2 with rule description != null',
+        'Show Initiatives for component2 with rule description != null',
       )!!,
     );
     expect(await findByText(/Basic service catalog/)).toBeVisible();

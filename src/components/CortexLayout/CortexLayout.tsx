@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { TabProps } from '@material-ui/core';
+import { TabProps, Typography } from '@material-ui/core';
 import { Children, default as React, Fragment, isValidElement } from 'react';
 
-import { attachComponentData } from '@backstage/core-plugin-api';
+import { attachComponentData, configApiRef, useApi } from '@backstage/core-plugin-api';
 import { Header, Page, RoutedTabs } from '@backstage/core-components';
 
 type SubRoute = {
@@ -77,11 +77,22 @@ export const CortexLayout = ({
 }: CortexLayoutProps) => {
   const routes = createSubRoutesFromChildren(children);
 
+  const config = useApi(configApiRef);
+  const headerConfig = config.getOptionalConfig('cortex.header');
+  const customTitle = headerConfig?.getOptionalString('title');
+  const customTitleComponent = customTitle && (
+    <>
+      {customTitle}
+      <Typography variant='subtitle1'>Powered by Cortex</Typography>
+    </>
+  );
+
   return (
     <Page themeId="home">
       <Header
-        title={title ?? 'Explore our ecosystem'}
-        subtitle={subtitle ?? 'Discover solutions available in our ecosystem'}
+        title={title ?? customTitleComponent ?? 'Cortex'}
+        pageTitleOverride='Cortex'
+        subtitle={subtitle ?? headerConfig?.getOptionalString('subtitle') ?? 'Understand and improve your services.'}
       />
       {hideContent ? null : <RoutedTabs routes={routes} />}
     </Page>
