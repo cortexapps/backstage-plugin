@@ -80,22 +80,17 @@ export const CortexLayout = ({
   const config = useApi(configApiRef);
   const headerConfig = config.getOptionalConfig('cortex.header');
   const customTitle = headerConfig?.getOptionalString('title');
+  const customTitleComponent = customTitle && (
+    <>
+      {customTitle}
+      <Typography variant='subtitle1'>Powered by Cortex</Typography>
+    </>
+  );
 
   return (
     <Page themeId="home">
       <Header
-        title={title
-          ?? (
-            customTitle
-            ? (
-            <>
-              {customTitle}
-              <Typography variant='subtitle1'>Powered by Cortex</Typography>
-            </>
-            )
-            : 'Cortex'
-          )
-        }
+        title={title ?? customTitleComponent ?? 'Cortex'}
         pageTitleOverride='Cortex'
         subtitle={subtitle ?? headerConfig?.getOptionalString('subtitle') ?? 'Understand and improve your services.'}
       />
