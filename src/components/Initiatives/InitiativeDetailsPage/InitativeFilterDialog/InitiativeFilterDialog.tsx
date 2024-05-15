@@ -27,7 +27,7 @@ import {
   ruleName,
 } from '../../../../api/types';
 import { FilterProvider, useFilter } from '../../../FilterCard/useFilter';
-import { capitalize, mapValues } from 'lodash';
+import { mapValues } from 'lodash';
 import { mapByString } from '../../../../utils/collections';
 import { FilterCard } from '../../../FilterCard';
 import { AnyEntityRef, combinePredicates } from '../../../../utils/types';
