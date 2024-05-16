@@ -15,7 +15,7 @@
  */
 import React, { useEffect, useMemo } from 'react';
 import { getLookbackRange, Lookback } from '../../../utils/lookback';
-import { useCortexApi, useCortexFrontendUrl } from '../../../utils/hooks';
+import { useCortexApi, useCortexFrontendUrl, useHideCortexLinks } from '../../../utils/hooks';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { Button, Typography } from '@material-ui/core';
 import { Timeseries } from '../../Timeseries';
@@ -92,6 +92,8 @@ export const AggregatedScorecardProgress = ({
 
   const cortexBaseUrl = useCortexFrontendUrl();
 
+  const hideLink = useHideCortexLinks();
+
   if (loading) {
     return <Progress />;
   }
@@ -105,23 +107,25 @@ export const AggregatedScorecardProgress = ({
   }
 
   if (Object.values(data).length === 0) {
+    const actionButton = hideLink ? undefined : (
+      <Button
+        variant="contained"
+        color="primary"
+        href={cortexScorecardPageUrl({
+          scorecardId: scorecardId,
+          cortexUrl: cortexBaseUrl,
+        })}
+      >
+        Go to Cortex
+      </Button>
+    );
+
     return (
       <EmptyState
         missing="data"
         title="Scorecard has not been evaluated yet."
         description="Wait until next Scorecard evaluation, or manually trigger from within Cortex."
-        action={
-          <Button
-            variant="contained"
-            color="primary"
-            href={cortexScorecardPageUrl({
-              scorecardId: scorecardId,
-              cortexUrl: cortexBaseUrl,
-            })}
-          >
-            Go to Cortex
-          </Button>
-        }
+        action={actionButton}
       />
     );
   }

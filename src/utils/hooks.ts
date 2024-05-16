@@ -337,6 +337,20 @@ export function useUiExtensions() {
   };
 }
 
+export function useInitiativesCustomName() {
+  const config = useApi(configApiRef);
+
+  const singular = config.getOptionalString('cortex.initiativeNameOverride.singular') ?? 'Initiative';
+  const plural = config.getOptionalString('cortex.initiativeNameOverride.plural') ?? `${singular}s`;
+
+  return { singular, plural };
+}
+
+export function useHideCortexLinks() {
+  const config = useApi(configApiRef);
+  return config.getOptionalBoolean('cortex.hideCortexLinks') ?? false;
+}
+
 const defaultCompareFn = (a: Scorecard, b: Scorecard) =>
   a.name.localeCompare(b.name);
 

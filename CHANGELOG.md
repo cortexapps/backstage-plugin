@@ -1,8 +1,14 @@
 # Changelog
 
-### 2.6.7
+### 2.7.1
 
 - Fix timestamp format on Settings page
+
+### 2.7.0
+
+- Adds `header.title` and `header.subtitle` YAML config to customize Cortex page title and subtitle
+- Adds `hideCortexLinks` YAML flag to hide all links to Cortex app
+- Adds `initiativeNameOverride` YAML config to override "Initiative" name
 
 ### 2.6.6
 

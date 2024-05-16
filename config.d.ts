@@ -24,10 +24,28 @@ export interface Config {
     frontendBaseUrl?: string;
 
     /**
+     * The 'hideCortexLinks' attribute. If true, links to Cortex app will be hidden.
+     * Defaults to `false`.
+     * @visibility frontend
+     */
+    hideCortexLinks?: boolean;
+
+    /**
      * The 'hideSettings' attribute. If true, settings tab + sync button will be hidden from all users, including admins.
      * @visibility frontend
      */
     hideSettings?: boolean;
+
+    /**
+     * The 'initiativeNameOverride' attribute. All lowercase override name for "Initiative".
+     * Use nested `singular` and `plural` to define each value on your own.
+     * If `plural` is not defined, `singular` is pluralized by appending "s".
+     * @deepVisibility frontend
+     */
+    initiativeNameOverride?: {
+      singular: string;
+      plural?: string;
+    };
 
     /**
      * The 'syncWithGzip' attribute. If true, the Cortex Backstage entity sync will use gzip.
@@ -35,5 +53,24 @@ export interface Config {
      * @visibility frontend
      */
     syncWithGzip?: boolean;
+
+    /**
+     * @deepVisibility frontend
+     */
+    header?: {
+      /**
+       * The `cortex.header.title` attribute. Sets custom title for Cortex page.
+       * If not provided, "Cortex" is used.
+       * @visibility frontend
+       */
+      title?: string;
+
+      /**
+       * The `cortex.header.subtitle` attribute. Sets custom subtitle for Cortex page.
+       * If not provided, "Understand and improve your services." is used.
+       * @visibility frontend
+       */
+      subtitle?: string;
+    }
   };
 }
