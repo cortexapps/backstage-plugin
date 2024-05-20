@@ -94,7 +94,7 @@ const columns: TableColumn<SyncJobRow>[] = [
           .local()
           .format('dddd, MM/DD/YYYY, HH:mm:ss')}
       >
-        <span>{moment.utc(timestamp).fromNow()}</span>
+        <span>{moment.utc(timestamp).local().format('MMM Do YYYY, h:mm:ss a')}</span>
       </Tooltip>
     ),
     defaultSort: 'desc',
