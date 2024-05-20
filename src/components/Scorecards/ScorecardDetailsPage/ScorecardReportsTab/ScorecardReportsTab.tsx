@@ -33,6 +33,11 @@ export const ScorecardReportsTab = ({
         url={`/heatmap?scorecardId=${scorecard.id}`}
       />
       <ReportsPageCard
+        name="New Bird's Eye"
+        description="Dive into your Scorecards to get insight into performance, broken down by teams, groups, and rules and visualized as a heatmap."
+        url={`/birdseye?scorecardId=${scorecard.id}`}
+      />
+      <ReportsPageCard
         name="Progress"
         description="Progress report of how Scorecards have changed over time, broken down by teams or groups."
         url={`/progress?scorecardId=${scorecard.id}`}

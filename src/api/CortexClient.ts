@@ -18,13 +18,16 @@ import {
   EntitySyncProgress,
   ExpirationResponse,
   GroupByOption,
+  HeatmapReportParams,
   Initiative,
   InitiativeActionItem,
   InitiativeWithScores,
   JobsResponse,
   LastEntitySyncTime,
   OncallsResponse,
+  PaginatedResponse,
   Scorecard,
+  HeatmapReportItem,
   ScorecardLadder,
   ScorecardResult,
   ScorecardRuleExemptionResult,
@@ -242,6 +245,21 @@ export class CortexClient implements CortexApi {
   ): Promise<ScorecardRuleExemptionResult> {
     return await this.get(
       `/api/backstage/v1/scorecards/${scorecardId}/rules/exemptions`,
+    );
+  }
+
+  async getScorecardHeatmap(scorecardId: number, params: HeatmapReportParams): Promise<PaginatedResponse<HeatmapReportItem>> {
+    return await this.get(
+      `/api/internal/v1/scorecards/reporting/${scorecardId}/heatmap`,
+      {
+        groupBy: params.groupBy,
+        page: `${params.page ?? 0}`,
+        reportType: params.reportType,
+        size: `${params.size ?? 10}`,
+        ...(params?.sort ? {
+          sort: params.sort,
+        } : {})
+      }
     );
   }
 

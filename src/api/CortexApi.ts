@@ -17,13 +17,16 @@ import {
   EntitySyncProgress,
   ExpirationResponse,
   GroupByOption,
+  HeatmapReportParams,
   Initiative,
   InitiativeActionItem,
   InitiativeWithScores,
   JobsResponse,
   LastEntitySyncTime,
   OncallsResponse,
+  PaginatedResponse,
   Scorecard,
+  HeatmapReportItem,
   ScorecardLadder,
   ScorecardResult,
   ScorecardRuleExemptionResult,
@@ -50,6 +53,10 @@ export interface CortexApi {
   getScorecardRuleExemptions(
     scorecardId: number,
   ): Promise<ScorecardRuleExemptionResult>;
+  getScorecardHeatmap(
+    scorecardId: number,
+    params: HeatmapReportParams
+  ): Promise<PaginatedResponse<HeatmapReportItem>>;
 
   getServiceScores(entityRef: AnyEntityRef): Promise<ServiceScorecardScore[]>;
   getServiceNextSteps(

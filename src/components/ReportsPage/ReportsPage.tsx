@@ -25,6 +25,7 @@ import { Card, CardActions, CardContent, CardMedia } from '@material-ui/core';
 import { HeatmapPage } from './HeatmapPage';
 import { ProgressPage } from './ProgressPage';
 import { AllScorecardsPage } from './AllScorecardsPage/AllScorecardsPage';
+import { BirdsEyePage } from './BirdsEyePage';
 
 export const ReportsPageCard = ({
   name,
@@ -59,6 +60,11 @@ const ReportsPageBody = () => {
         url="/heatmap"
       />
       <ReportsPageCard
+        name="New Bird's Eye"
+        description="Dive into your Scorecards to get insight into performance, broken down by teams, groups, and rules and visualized as a heatmap."
+        url="/birdseye"
+      />
+      <ReportsPageCard
         name="All Scorecards"
         description="See how services, teams, and groups are doing across all of your Scorecards in a single aggregated view."
         url="/all-scorecards"
@@ -77,6 +83,7 @@ export const ReportsPage = () => {
     <Routes>
       <Route path="/" element={<ReportsPageBody />} />
       <Route path="/heatmap" element={<HeatmapPage />} />
+      <Route path="/birdseye" element={<BirdsEyePage />} />
       <Route path="/all-scorecards" element={<AllScorecardsPage />} />
       <Route path="/progress" element={<ProgressPage />} />
     </Routes>

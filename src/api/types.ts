@@ -425,6 +425,75 @@ export interface ExpirationResponse {
   shutdownDate: string | null;
 }
 
+export enum HeatmapReportType {
+  Levels = 'LEVELS',
+  Rules = 'RULES',
+}
+
+export enum HeatmapReportGroupBy {
+  Entity = 'ENTITY',
+  Owner = 'OWNER',
+  Team = 'TEAM',
+  Group = 'GROUP',
+  Level = 'LEVEL',
+  Domains = 'DOMAINS',
+}
+
+export interface HeatmapReportParams {
+  groupBy: HeatmapReportGroupBy;
+  page?: number;
+  reportType: HeatmapReportType;
+  size?: number;
+  sort?: string;
+}
+
+interface HeatmapReportItemKey {
+  name: string;
+  id: number;
+  tag: string;
+}
+
+interface HeatmapReportItemValueByLevel {
+  value: {
+    [key: string]: { hasLevel: boolean };
+  };
+  ruleResult: undefined;
+  ruleScores: undefined;
+}
+
+enum HeatmapReportItemValueByRuleResultType {
+  APPLICABLE = "APPLICABLE",
+};
+
+interface HeatmapReportItemValueByRule {
+  value: undefined;
+  ruleResult: {
+    results: {
+      [key: string]: {
+        score: number;
+        type: HeatmapReportItemValueByRuleResultType;
+      };
+    };
+  };
+  ruleScores: {
+    score: number;
+    scorePercentage: number;
+  };
+}
+
+export interface HeatmapReportItem {
+  key: HeatmapReportItemKey;
+  value: HeatmapReportItemValueByLevel | HeatmapReportItemValueByRule;
+}
+
+export interface PaginatedResponse<T> {
+  total: number;
+  items: T[];
+  hasMore: boolean;
+  page: number;
+  totalPages: number;
+}
+
 // Entity Filter
 export enum CategoryFilter {
   Domain = 'Domain',
