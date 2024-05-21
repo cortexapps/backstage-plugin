@@ -16,19 +16,18 @@
 import React, { ChangeEvent } from 'react';
 import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { enumKeys } from '../../../utils/types';
-import { HeatmapReportGroupBy, HeatmapReportType } from '../../../api/types';
+import { HeatmapReportGroupBy, HeatmapReportType, Scorecard } from '../../../api/types';
 import { BirdsEyePageFilters } from './BirdsEyePage';
 import { ScorecardSelector } from '../ScorecardSelector';
-import { useCortexApi } from '../../../utils/hooks';
+import { AsyncState } from 'react-use/lib/useAsyncFn';
 
 interface BirdsEyeFiltersProps {
   filters: BirdsEyePageFilters;
   setFilters: (updatedFilters: Partial<BirdsEyePageFilters>) => void;
+  scorecardsResult: AsyncState<Scorecard[]>;
 }
 
-export const BirdsEyeFilters: React.FC<BirdsEyeFiltersProps> = ({ filters, setFilters }) => {
-  const scorecardsResult = useCortexApi(api => api.getScorecards());
-
+export const BirdsEyeFilters: React.FC<BirdsEyeFiltersProps> = ({ filters, setFilters, scorecardsResult }) => {
   const onReportTypeChange = (event: ChangeEvent<{ value: unknown }>) => {
     setFilters({ reportType: event.target.value as HeatmapReportType });
   };

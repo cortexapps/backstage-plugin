@@ -17,15 +17,19 @@ import React from 'react';
 import { HeatmapReportGroupBy, HeatmapReportType } from '../../../api/types';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { useAllScorecardHeatmapItems } from './useAllScorecardHeatmapItems';
+import { Table, TableCell, TableRow } from '@material-ui/core';
+import { BirdsEyeTableHeader } from './BirdsEyeTableHeader';
 
 export interface BirdsEyeReportProps {
+  entityCategory: string;
   scorecardId: number;
   groupBy: HeatmapReportGroupBy;
   reportType: HeatmapReportType;
 }
 
-export const BirdsEyeReport: React.FC<BirdsEyeReportProps> = ({ scorecardId, groupBy, reportType }) => {
+export const BirdsEyeReport: React.FC<BirdsEyeReportProps> = ({ entityCategory, scorecardId, groupBy, reportType }) => {
   const { values: heatmapItems, loading, error } = useAllScorecardHeatmapItems({ scorecardId, groupBy, reportType });
+  const headers = [entityCategory, "Score", "Data"];
 
   return (
     loading
@@ -36,14 +40,31 @@ export const BirdsEyeReport: React.FC<BirdsEyeReportProps> = ({ scorecardId, gro
             {error}
           </WarningPanel>
         ) : (
-          <div className='flex flex-col'>
-            {heatmapItems.map((heatmapItem) => (
-              <div key={heatmapItem.key.tag} className='flex flex-row'>
-                <div>{heatmapItem.key.name}</div>
-                <pre>{JSON.stringify(heatmapItem.value)}</pre>
-              </div>
+          <Table>
+            <BirdsEyeTableHeader headers={headers} />
+            {heatmapItems.map((item) => (
+              <TableRow key={item.key.tag}>
+                <TableCell>{item.key.name}</TableCell>
+                {item.value.value ? (
+                  <>
+                    <TableCell></TableCell>
+                    <TableCell>{JSON.stringify(item.value.value)}</TableCell>
+                  </>
+                ) : (
+                  <>
+                    <TableCell>{item.value.ruleScores.scorePercentage}%</TableCell>
+                    <TableCell>
+                      {Object.keys(item.value.ruleResult.results).map((key) => (
+                        <span key={`${item.key.tag}-${key}`} className="flex">
+                          {item.value.ruleResult!.results[key].score}
+                        </span>
+                      ))}
+                    </TableCell>
+                  </>
+                )}
+              </TableRow>
             ))}
-          </div>
+          </Table>
         )
   )
 }

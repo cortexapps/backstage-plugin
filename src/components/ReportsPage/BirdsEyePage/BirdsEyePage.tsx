@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Content, ContentHeader, EmptyState } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -24,6 +24,8 @@ import { HeatmapReportGroupBy, HeatmapReportType } from '../../../api/types';
 import { BirdsEyeFilters } from './BirdsEyeFilters';
 import { buildUrl } from '../../../utils/URLUtils';
 import { CopyButton } from '../../Common/CopyButton';
+import { useCortexApi } from '../../../utils/hooks';
+import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
 
 export interface BirdsEyePageFilters {
   selectedScorecardId?: number;
@@ -75,6 +77,13 @@ export const BirdsEyePage = () => {
     return buildUrl(filtersToParams(filters), location.pathname);
   }, [filters, location]);
 
+  const scorecardsResult = useCortexApi(api => api.getScorecards());
+
+  const entityCategory = useMemo(() => {
+    const selectedScorecard = scorecardsResult?.value?.find((scorecard) => scorecard.id === filters.selectedScorecardId);
+    return getEntityCategoryFromFilter(selectedScorecard?.filter) ?? 'Entity';
+  }, [filters.selectedScorecardId, scorecardsResult]);
+
   return (
     <Content>
       <ContentHeader title="Bird's Eye">
@@ -86,12 +95,14 @@ export const BirdsEyePage = () => {
         <BirdsEyeFilters
           filters={filters}
           setFilters={setFiltersAndNavigate}
+          scorecardsResult={scorecardsResult}
         />
         <Grid item lg={12}>
           {isUndefined(filters.selectedScorecardId) ? (
             <EmptyState title="Select a Scorecard" missing="data" />
           ) : (
             <BirdsEyeReport
+              entityCategory={entityCategory}
               groupBy={filters.groupBy}
               reportType={filters.reportType}
               scorecardId={filters.selectedScorecardId}
