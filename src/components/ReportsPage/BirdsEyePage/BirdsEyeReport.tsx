@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import React from 'react';
-import { useCortexApi } from '../../../utils/hooks';
 import { HeatmapReportGroupBy, HeatmapReportType } from '../../../api/types';
-import { Progress } from '@backstage/core-components';
+import { Progress, WarningPanel } from '@backstage/core-components';
+import { useAllScorecardHeatmapItems } from './useAllScorecardHeatmapItems';
 
 export interface BirdsEyeReportProps {
   scorecardId: number;
@@ -25,16 +25,25 @@ export interface BirdsEyeReportProps {
 }
 
 export const BirdsEyeReport: React.FC<BirdsEyeReportProps> = ({ scorecardId, groupBy, reportType }) => {
-  const { value: heatmap, loading } = useCortexApi(api => api.getScorecardHeatmap(scorecardId, {
-    groupBy,
-    reportType,
-  }), [scorecardId, groupBy, reportType]);
+  const { values: heatmapItems, loading, error } = useAllScorecardHeatmapItems({ scorecardId, groupBy, reportType });
 
   return (
-    <>
-      {loading ? <Progress /> : (
-        <pre>{JSON.stringify(heatmap?.items, null, 2)}</pre>
-      )}
-    </>
+    loading
+      ? <Progress />
+      : error
+        ? (
+          <WarningPanel severity="error" title="Could not load heatmap.">
+            {error}
+          </WarningPanel>
+        ) : (
+          <div className='flex flex-col'>
+            {heatmapItems.map((heatmapItem) => (
+              <div key={heatmapItem.key.tag} className='flex flex-row'>
+                <div>{heatmapItem.key.name}</div>
+                <pre>{JSON.stringify(heatmapItem.value)}</pre>
+              </div>
+            ))}
+          </div>
+        )
   )
 }
