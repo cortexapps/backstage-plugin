@@ -455,7 +455,7 @@ interface HeatmapReportItemKey {
 
 interface HeatmapReportItemValueByLevel {
   value: {
-    [key: string]: { hasLevel: boolean };
+    [key: string]: number;
   };
   ruleResult: undefined;
   ruleScores: undefined;

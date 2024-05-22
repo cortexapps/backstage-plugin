@@ -13,21 +13,90 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import { HeatmapReportItem } from '../../../api/types';
-import { TableCell, TableRow } from '@material-ui/core';
+import React from "react";
+import { HeatmapReportItem } from "../../../api/types";
+import { Accordion, AccordionDetails, AccordionSummary, TableCell, TableRow, Typography } from "@material-ui/core";
+import { BirdsEyeTableCell } from "./BirdsEyeTableCell";
+import { maybePluralize } from "../../../utils/strings";
+import { round } from "lodash";
+import { ExpandMore } from "@material-ui/icons";
+import { EntityRefLink } from "@backstage/plugin-catalog-react";
+import { parseEntityRef } from "@backstage/catalog-model";
+import { defaultComponentRefContext } from "../../../utils/ComponentUtils";
+
+export interface TableHeaderItem {
+  id: string;
+  title: string;
+}
 
 interface BirdsEyeTableRowProps {
   item: HeatmapReportItem;
+  headersById: TableHeaderItem[];
 }
 
-export const BirdsEyeTableRow: React.FC<BirdsEyeTableRowProps> = ({ item }) => {
+export const BirdsEyeTableRow: React.FC<BirdsEyeTableRowProps> = ({ item, headersById }) => {
   return (
-    <TableRow key={item.key.tag}>
-      <TableCell>{item.key.name}</TableCell>
+    <TableRow>
       <TableCell>
-        <div>{JSON.stringify(item.value)}</div>
+        {item.key.id === -1
+          ? <>{item.key.name}</>
+          : <EntityRefLink
+              entityRef={parseEntityRef(
+                item.key.tag,
+                defaultComponentRefContext,
+              )}
+              title={item.key.name}
+            />
+        }
       </TableCell>
+      {item.value.value ? (
+        <>
+          {headersById.map(({ id: key }) => {
+            const value = item.value.value?.[key] ?? 0;
+            return (
+              <TableCell key={`${item.key.tag}-${key}`}>
+                <Accordion>
+                  <AccordionSummary
+                    expandIcon={item.key.id !== -1 && <ExpandMore />}
+                    disabled={value === 0}
+                  >
+                    <Typography variant="h6" style={{ display: 'inline-block' }}>
+                      {maybePluralize(value, 'service')}
+                    </Typography>
+                  </AccordionSummary>
+                  {item.key.id !== -1 && (
+                    <AccordionDetails style={{ display: 'flex', flexDirection: 'column' }}>
+                      <EntityRefLink
+                        entityRef={parseEntityRef(
+                          item.key.tag,
+                          defaultComponentRefContext,
+                        )}
+                      />
+                    </AccordionDetails>
+                  )}
+                </Accordion>
+              </TableCell>
+            );
+          })}
+        </>
+      ) : (
+        <>
+          <BirdsEyeTableCell
+            score={item.value.ruleScores.scorePercentage}
+            text={`${round(item.value.ruleScores.scorePercentage * 100)}%`}
+          />
+          {headersById.map(({ id: key }) => {
+            const score = item.value.ruleResult?.results?.[key]?.score ?? 0;
+            return (
+              <BirdsEyeTableCell
+                key={`BirdsEyeCell-${item.key.tag}-${key}`}
+                score={score > 0 ? 1 : 0}
+                text={score > 0 ? '1' : '0'}
+              />
+            )
+          })}
+        </>
+      )}
     </TableRow>
   )
 }

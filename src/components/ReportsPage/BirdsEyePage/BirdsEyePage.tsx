@@ -19,7 +19,7 @@ import { Grid } from '@material-ui/core';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { stringifyUrl } from 'query-string';
 import { isUndefined } from 'lodash';
-import { BirdsEyeReport } from './BirdsEyeReport';
+import { BirdsEyeTable } from './BirdsEyeTable';
 import { HeatmapReportGroupBy, HeatmapReportType } from '../../../api/types';
 import { BirdsEyeFilters } from './BirdsEyeFilters';
 import { buildUrl } from '../../../utils/URLUtils';
@@ -101,7 +101,7 @@ export const BirdsEyePage = () => {
           {isUndefined(filters.selectedScorecardId) ? (
             <EmptyState title="Select a Scorecard" missing="data" />
           ) : (
-            <BirdsEyeReport
+            <BirdsEyeTable
               entityCategory={entityCategory}
               groupBy={filters.groupBy}
               reportType={filters.reportType}

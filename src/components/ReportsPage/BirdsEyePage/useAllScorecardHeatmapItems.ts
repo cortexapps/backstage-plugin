@@ -22,12 +22,14 @@ interface UseAllScorecardHeatmapItemsProps {
   scorecardId: number;
   groupBy: HeatmapReportGroupBy;
   reportType: HeatmapReportType;
+  sort?: string;
 }
 
 export function useAllScorecardHeatmapItems({
   scorecardId,
   groupBy,
-  reportType
+  reportType,
+  sort = "name",
 }: UseAllScorecardHeatmapItemsProps) {
   const [values, setValues] = useState<HeatmapReportItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -41,14 +43,14 @@ export function useAllScorecardHeatmapItems({
 
     const fetchAll = async () => {
       try {
-        const firstPage = await cortexApi.getScorecardHeatmap(scorecardId, { groupBy, reportType, page: 0 });
+        const firstPage = await cortexApi.getScorecardHeatmap(scorecardId, { groupBy, reportType, sort, page: 0 });
         setValues(firstPage.items);
 
         if (firstPage.hasMore) {
           const pagePromises = [];
           for (let page = 1; page < firstPage.totalPages; page++) {
             pagePromises.push(
-              cortexApi.getScorecardHeatmap(scorecardId, { groupBy, reportType, page })
+              cortexApi.getScorecardHeatmap(scorecardId, { groupBy, reportType, sort, page })
             );
           }
           const pages = await Promise.all(pagePromises);
@@ -63,7 +65,7 @@ export function useAllScorecardHeatmapItems({
     }
 
     fetchAll();
-  }, [cortexApi, groupBy, reportType, scorecardId]);
+  }, [cortexApi, groupBy, reportType, sort, scorecardId]);
 
   return { values, loading, error }
 }
