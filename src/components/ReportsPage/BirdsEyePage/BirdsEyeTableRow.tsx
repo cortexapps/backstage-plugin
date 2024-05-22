@@ -38,16 +38,18 @@ export const BirdsEyeTableRow: React.FC<BirdsEyeTableRowProps> = ({ item, header
   return (
     <TableRow>
       <TableCell>
-        {item.key.id === -1
-          ? <>{item.key.name}</>
-          : <EntityRefLink
-              entityRef={parseEntityRef(
-                item.key.tag,
-                defaultComponentRefContext,
-              )}
-              title={item.key.name}
-            />
-        }
+        <Typography variant="h6">
+          {item.key.id === -1
+            ? <>{item.key.name}</>
+            : <EntityRefLink
+                entityRef={parseEntityRef(
+                  item.key.tag,
+                  defaultComponentRefContext,
+                )}
+                title={item.key.name}
+              />
+          }
+        </Typography>
       </TableCell>
       {item.value.value ? (
         <>
