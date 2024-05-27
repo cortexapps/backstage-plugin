@@ -27,14 +27,16 @@ interface HeatmapTableByGroupProps {
   header: string;
   rules: string[];
   data: StringIndexable<ScorecardServiceScore[]>;
+  entityCategory: string;
 }
 
 export const HeatmapTableByGroup = ({
   header,
   rules,
   data,
+  entityCategory,
 }: HeatmapTableByGroupProps) => {
-  const headers = [header, 'Service Count', 'Average Score', ...rules];
+  const headers = [header, `${entityCategory} Count`, 'Average Score', ...rules];
 
   return (
     <Table>

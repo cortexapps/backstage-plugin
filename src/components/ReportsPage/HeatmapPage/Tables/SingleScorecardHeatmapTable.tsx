@@ -74,6 +74,7 @@ export const SingleScorecardHeatmapTable = ({
           entitiesByTag={entitiesByTag}
           groupBy={groupBy}
           levels={headers}
+          entityCategory={entityCategory}
         />
       );
     }
@@ -91,12 +92,12 @@ export const SingleScorecardHeatmapTable = ({
         />
       );
     case GroupByOption.SERVICE_GROUP:
-      return <HeatmapTableByGroup header="Group" rules={headers} data={data} />;
+      return <HeatmapTableByGroup header="Group" rules={headers} data={data} entityCategory={entityCategory} />;
     case GroupByOption.TEAM:
-      return <HeatmapTableByGroup header="Team" rules={headers} data={data} />;
+      return <HeatmapTableByGroup header="Team" rules={headers} data={data} entityCategory={entityCategory} />;
     case GroupByOption.LEVEL:
       return (
-        <HeatmapTableByLevels ladder={ladder} rules={headers} data={data} />
+        <HeatmapTableByLevels ladder={ladder} rules={headers} data={data} entityCategory={entityCategory} />
       );
     default:
       return <>Hi</>;

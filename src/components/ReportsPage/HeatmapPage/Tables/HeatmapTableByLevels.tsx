@@ -32,16 +32,18 @@ interface HeatmapTableByLevelsProps {
   ladder: ScorecardLadder | undefined;
   rules: string[];
   data: StringIndexable<ScorecardServiceScore[]>;
+  entityCategory: string;
 }
 
 export const HeatmapTableByLevels = ({
   ladder,
   rules,
   data,
+  entityCategory,
 }: HeatmapTableByLevelsProps) => {
   const rulesByLevels = getSortedRulesByLevels(rules, ladder?.levels);
 
-  const headers = ['Level', 'Service Count', 'Average Score', ...rulesByLevels];
+  const headers = ['Level', `${entityCategory} Count`, 'Average Score', ...rulesByLevels];
 
   if (isUndefined(ladder)) {
     return (

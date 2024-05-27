@@ -31,6 +31,7 @@ interface LevelsDrivenTableProps {
   entitiesByTag: Record<string, HomepageEntity>;
   groupBy: GroupByOption;
   levels: string[];
+  entityCategory: string;
 }
 
 export const LevelsDrivenTable = ({
@@ -38,11 +39,12 @@ export const LevelsDrivenTable = ({
   entitiesByTag,
   groupBy,
   levels,
+  entityCategory,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
   const headers = [
     groupBy,
-    ...(notGroupedByServices ? ['Service Count'] : []),
+    ...(notGroupedByServices ? [`${entityCategory} Count`] : []),
     ...levels,
   ];
 
