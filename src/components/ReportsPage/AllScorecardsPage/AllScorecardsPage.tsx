@@ -30,7 +30,7 @@ export const AllScorecardsPage = () => {
   const [searchParams] = useSearchParams();
 
   const [groupBy, setGroupBy] = useState<GroupByOption|undefined>(
-    (searchParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
+    (searchParams.get('groupBy') as GroupByOption) ?? GroupByOption.ENTITY,
   );
   const setGroupByAndNavigate = useCallback((event: ChangeEvent<{ value: unknown }>) => {
     const groupBy = event.target.value === ''
@@ -40,7 +40,7 @@ export const AllScorecardsPage = () => {
     setGroupBy(groupBy);
 
     const targetUrl = stringifyUrl({ url: location.pathname, query: {
-      groupBy: groupBy !== GroupByOption.SERVICE ? groupBy as string : undefined,
+      groupBy: groupBy !== GroupByOption.ENTITY ? groupBy as string : undefined,
     } });
 
     navigate(targetUrl, { replace: true });

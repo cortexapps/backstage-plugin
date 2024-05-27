@@ -80,7 +80,7 @@ export const SingleScorecardHeatmapTable = ({
   }
 
   switch (groupBy) {
-    case GroupByOption.SERVICE:
+    case GroupByOption.ENTITY:
       return (
         <HeatmapTableByService
           header={`${entityCategory} Details`}

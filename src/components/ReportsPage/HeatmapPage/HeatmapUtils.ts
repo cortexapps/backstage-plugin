@@ -100,7 +100,7 @@ export const getScorecardServiceScoresByGroupByOption = (
   }
 
   switch (groupBy) {
-    case GroupByOption.SERVICE:
+    case GroupByOption.ENTITY:
       return _groupBy(scores, (s: ScorecardServiceScore) => s.serviceId);
     case GroupByOption.SERVICE_GROUP:
       return groupReportDataBy(scores, 'tags');

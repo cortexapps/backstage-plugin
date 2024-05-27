@@ -251,7 +251,7 @@ export interface ScoresByIdentifier {
 }
 
 export enum GroupByOption {
-  SERVICE = 'Service',
+  ENTITY = 'Entity',
   TEAM = 'Team',
   SERVICE_GROUP = 'Service Group',
   LEVEL = 'Level',

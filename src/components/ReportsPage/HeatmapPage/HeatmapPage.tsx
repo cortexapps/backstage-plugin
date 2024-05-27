@@ -31,7 +31,7 @@ import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPa
 import { isScorecardTeamBased } from '../../../utils/ScorecardFilterUtils';
 
 const defaultFilters = {
-  groupBy: GroupByOption.SERVICE,
+  groupBy: GroupByOption.ENTITY,
   headerType: HeaderType.RULES,
 }
 

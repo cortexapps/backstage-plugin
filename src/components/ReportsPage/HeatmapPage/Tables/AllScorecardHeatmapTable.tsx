@@ -45,7 +45,7 @@ export const AllScorecardsHeatmapTable = ({
     () => getFormattedScorecardScores(scorecardNames, serviceScores),
     [scorecardNames, serviceScores],
   );
-  const isGroupedByService = groupBy === GroupByOption.SERVICE;
+  const isGroupedByService = groupBy === GroupByOption.ENTITY;
   const numberOfServicesOrEmpty = !isGroupedByService
     ? ['Number of Services']
     : [];

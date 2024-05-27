@@ -184,7 +184,7 @@ export class CortexClient implements CortexApi {
     const scores: ScoresByIdentifier[] = await this.get(
       `/api/backstage/v1/scorecards/${scorecardId}/scores/historical-average`,
       {
-        ...(groupBy !== GroupByOption.SERVICE && {
+        ...(groupBy !== GroupByOption.ENTITY && {
           groupBy: groupBy.toUpperCase().replace(' ', '_'),
         }),
         ...(ruleExpression && { ruleExpression: ruleExpression }),
@@ -212,7 +212,7 @@ export class CortexClient implements CortexApi {
     groupBy: GroupByOption,
   ): Promise<ScoresByIdentifier[]> {
     const args =
-      groupBy !== GroupByOption.SERVICE
+      groupBy !== GroupByOption.ENTITY
         ? {
             groupBy: groupBy.toUpperCase().replace(' ', '_'),
           }
