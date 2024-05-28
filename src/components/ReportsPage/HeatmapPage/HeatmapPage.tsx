@@ -120,15 +120,17 @@ export const HeatmapPage = () => {
             scorecardsResult={scorecardsResult}
           />
         </Grid>
-        <Grid container direction="row" style={{ marginTop: '20px' }}>
-          <Grid item>
-            <GroupByDropdown excluded={excludedGroupBys} groupBy={filters.groupBy} setGroupBy={onGroupByChange} />
-          </Grid>
-          <Grid item>
-            <HeaderTypeDropdown
-              headerType={filters.headerType}
-              setHeaderType={onHeaderTypeChange}
-            />
+        <Grid item direction="row" style={{ marginTop: '20px' }}>
+          <Grid container direction="row" spacing={2}>
+            <Grid item>
+              <GroupByDropdown excluded={excludedGroupBys} groupBy={filters.groupBy} setGroupBy={onGroupByChange} />
+            </Grid>
+            <Grid item>
+              <HeaderTypeDropdown
+                headerType={filters.headerType}
+                setHeaderType={onHeaderTypeChange}
+              />
+            </Grid>
           </Grid>
         </Grid>
         <Grid item lg={12}>
