@@ -205,8 +205,7 @@ Note: we rely on [Backstage's Identity API](https://backstage.io/docs/reference/
 
 ## Advanced
 
-You can configure the Cortex plugin to customize its layout. (And soon the ability to provide custom mappings to Cortex YAMLs.)
-To do this, instead of importing `cortexPlugin`, `CortexPage`, and `EntityCortexContent` directly, you can inject custom behavior into the plugin like:
+You can configure the Cortex plugin to customize its layout as well as customize how entities from Backstage are synced into entities in Cortex.
 
 ### **`cortex.ts`**
 
