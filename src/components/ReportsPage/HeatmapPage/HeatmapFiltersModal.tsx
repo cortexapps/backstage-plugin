@@ -24,12 +24,14 @@ export interface ScoreFilters {
   serviceIds: number[];
   groups: string[];
   teams: string[];
+  users: string[];
 }
 
 export const defaultFilters: ScoreFilters = {
   serviceIds: [],
   groups: [],
   teams: [],
+  users: [],
 }
 
 interface HeatmapFiltersModalProps {
@@ -86,11 +88,12 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
     setIsOpen(true);
   }
 
-  const { services, groups, teams } = useMemo(() => {
+  const { services, groups, teams, users } = useMemo(() => {
     const results = {
       services: [] as HomepageEntity[],
       groups: [] as string[],
       teams: [] as HomepageEntity[],
+      users: [] as string[],
     };
 
     Object.keys(entitiesByTag).forEach((key) => {
@@ -105,13 +108,15 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
         default:
           break;
       }
-      results.groups.push(...entity.serviceGroupTags)
+      results.groups.push(...entity.serviceGroupTags);
+      results.users.push(...entity.serviceOwnerEmails.map((owner) => owner.email));
     });
 
     return {
       services: sortBy(results.services, "name"),
       groups: sortBy(uniq(results.groups)),
       teams: sortBy(results.teams, "name"),
+      users: sortBy(uniq(results.users)),
     };
   }, [entitiesByTag]);
 
@@ -181,6 +186,20 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
                 value={team.codeTag}
               >
                 {team.codeTag}
+              </MenuItem>
+            ))}
+          />
+          <ModalSelect
+            name='Users'
+            onChange={(users) => setModalFiltersPartially({ users })}
+            onReset={() => setModalFiltersPartially({ users: defaultFilters.users })}
+            value={modalFilters.users}
+            options={users.map((usersEmail) => (
+              <MenuItem
+                key={`ScorecardOption-user-${usersEmail}`}
+                value={usersEmail}
+              >
+                {usersEmail}
               </MenuItem>
             ))}
           />
