@@ -23,11 +23,13 @@ import { Clear } from '@material-ui/icons';
 export interface ScoreFilters {
   serviceIds: number[];
   groups: string[];
+  teams: string[];
 }
 
 export const defaultFilters: ScoreFilters = {
   serviceIds: [],
   groups: [],
+  teams: [],
 }
 
 interface HeatmapFiltersModalProps {
@@ -84,10 +86,11 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
     setIsOpen(true);
   }
 
-  const { services, groups } = useMemo(() => {
+  const { services, groups, teams } = useMemo(() => {
     const results = {
       services: [] as HomepageEntity[],
       groups: [] as string[],
+      teams: [] as HomepageEntity[],
     };
 
     Object.keys(entitiesByTag).forEach((key) => {
@@ -95,6 +98,9 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
       switch (entity.type) {
         case "service":
           results.services.push(entity);
+          break;
+        case "team":
+          results.teams.push(entity);
           break;
         default:
           break;
@@ -105,6 +111,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
     return {
       services: sortBy(results.services, "name"),
       groups: sortBy(uniq(results.groups)),
+      teams: sortBy(results.teams, "name"),
     };
   }, [entitiesByTag]);
 
@@ -142,7 +149,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
             value={modalFilters.serviceIds}
             options={services.map((service) => (
               <MenuItem
-                key={`ScorecardOption-${service.id}`}
+                key={`ScorecardOption-service-${service.id}`}
                 value={service.id}
               >
                 {service.name}
@@ -156,10 +163,24 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
             value={modalFilters.groups}
             options={groups.map((groupTag) => (
               <MenuItem
-                key={`ScorecardOption-${groupTag}`}
+                key={`ScorecardOption-group-${groupTag}`}
                 value={groupTag}
               >
                 {groupTag}
+              </MenuItem>
+            ))}
+          />
+          <ModalSelect
+            name='Teams'
+            onChange={(teams) => setModalFiltersPartially({ teams })}
+            onReset={() => setModalFiltersPartially({ teams: defaultFilters.teams })}
+            value={modalFilters.teams}
+            options={teams.map((team) => (
+              <MenuItem
+                key={`ScorecardOption-team-${team.id}`}
+                value={team.codeTag}
+              >
+                {team.codeTag}
               </MenuItem>
             ))}
           />

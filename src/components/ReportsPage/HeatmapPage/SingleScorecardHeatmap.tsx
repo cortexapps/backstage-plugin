@@ -59,6 +59,9 @@ export const SingleScorecardHeatmap = ({
     if (scoreFilters.groups.length) {
       resultScores = resultScores.filter((score) => intersection(scoreFilters.groups, score.tags).length);
     }
+    if (scoreFilters.teams.length) {
+      resultScores = resultScores.filter((score) => intersection(scoreFilters.teams, score.teams).length);
+    }
 
     return resultScores;
   }, [scores, scoreFilters])
