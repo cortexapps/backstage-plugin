@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useMemo, useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { StringIndexable } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { sortBy } from 'lodash';
@@ -38,19 +38,32 @@ const ModalSelect: React.FC<{
   name: string,
   value: number[],
   onChange: (value: number[]) => void,
+  onReset: () => void,
   options: React.ReactNode
-}> = ({ name, value, onChange, options }) => {
+}> = ({ name, value, onChange, onReset, options }) => {
   return (
-    <FormControl variant="standard" fullWidth>
-      <InputLabel>{name}</InputLabel>
-      <Select
-        multiple
-        value={value}
-        onChange={event => onChange(event.target.value as number[])}
-      >
-        {options}
-      </Select>
-    </FormControl>
+    <Box display="flex" flexDirection="row">
+      <FormControl variant="standard" fullWidth>
+        <InputLabel>{name}</InputLabel>
+        <Select
+          multiple
+          value={value}
+          onChange={event => onChange(event.target.value as number[])}
+        >
+          {options}
+        </Select>
+      </FormControl>
+      {value.length > 0 && (
+        <Button
+          onClick={onReset}
+          variant="text"
+          aria-label={`Clear ${name.toLocaleLowerCase()} filter`}
+          title={`Clear ${name.toLocaleLowerCase()} filter`}
+        >
+          <Clear />
+        </Button>
+      )}
+    </Box>
   )
 }
 
@@ -116,6 +129,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
         <ModalSelect
           name='Services'
           onChange={(serviceIds) => setModalFilters({ serviceIds })}
+          onReset={() => setModalFilters({ serviceIds: defaultFilters.serviceIds })}
           value={modalFilters.serviceIds}
           options={services.map((service) => (
             <MenuItem
