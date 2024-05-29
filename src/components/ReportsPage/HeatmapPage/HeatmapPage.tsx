@@ -55,6 +55,7 @@ export const HeatmapPage = () => {
     groupBy: filters.groupBy !== defaultFilters.groupBy ? filters.groupBy as string : undefined,
     headerType: filters.headerType !== defaultFilters.headerType ? filters.headerType as string : undefined,
     serviceIds: filters.scoreFilters.serviceIds.length ? filters.scoreFilters.serviceIds.join(',') : undefined,
+    groups: filters.scoreFilters.groups.length ? filters.scoreFilters.groups.join(',') : undefined,
   });
 
   const queryScorecardId = Number(searchParams.get('scorecardId') ?? undefined);
@@ -68,6 +69,7 @@ export const HeatmapPage = () => {
     headerType: (searchParams.get('headerType') as HeaderType) ?? defaultFilters.headerType,
     scoreFilters: {
       serviceIds: searchParams.get('serviceIds')?.split(',').map((i) => parseInt(i, 10)).filter(isFinite) ?? defaultFilters.scoreFilters.serviceIds,
+      groups: searchParams.get('groups')?.split(',') ?? defaultFilters.scoreFilters.groups,
     },
   });
   const setFiltersAndNavigate = useCallback((partialFilters: Partial<HeatmapPageFilters>) => {

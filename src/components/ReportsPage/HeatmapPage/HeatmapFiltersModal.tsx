@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 import React, { useMemo, useState } from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { StringIndexable } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
-import { sortBy } from 'lodash';
+import { sortBy, uniq } from 'lodash';
 import { Clear } from '@material-ui/icons';
 
 export interface ScoreFilters {
   serviceIds: number[];
+  groups: string[];
 }
 
 export const defaultFilters: ScoreFilters = {
   serviceIds: [],
+  groups: [],
 }
 
 interface HeatmapFiltersModalProps {
@@ -34,13 +36,15 @@ interface HeatmapFiltersModalProps {
   entitiesByTag: StringIndexable<HomepageEntity>;
 }
 
-const ModalSelect: React.FC<{
+interface ModalSelectProps<T> {
   name: string,
-  value: number[],
-  onChange: (value: number[]) => void,
+  value: T[],
+  onChange: (value: T[]) => void,
   onReset: () => void,
   options: React.ReactNode
-}> = ({ name, value, onChange, onReset, options }) => {
+}
+
+const ModalSelect = <T,>({ name, value, onChange, onReset, options }: ModalSelectProps<T>) => {
   return (
     <Box display="flex" flexDirection="row">
       <FormControl variant="standard" fullWidth>
@@ -48,7 +52,7 @@ const ModalSelect: React.FC<{
         <Select
           multiple
           value={value}
-          onChange={event => onChange(event.target.value as number[])}
+          onChange={event => onChange(event.target.value as T[])}
         >
           {options}
         </Select>
@@ -70,6 +74,7 @@ const ModalSelect: React.FC<{
 export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filters, setFilters, entitiesByTag }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalFilters, setModalFilters] = useState(filters);
+  const setModalFiltersPartially = (filters: Partial<ScoreFilters>) => setModalFilters((prev) => ({ ...prev, ...filters }));
   const handleSaveFilters = () => {
     setFilters(modalFilters);
     setIsOpen(false);
@@ -79,24 +84,27 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
     setIsOpen(true);
   }
 
-  const { services } = useMemo(() => {
-    const entitiesByType = {
+  const { services, groups } = useMemo(() => {
+    const results = {
       services: [] as HomepageEntity[],
+      groups: [] as string[],
     };
 
     Object.keys(entitiesByTag).forEach((key) => {
       const entity = entitiesByTag[key];
       switch (entity.type) {
         case "service":
-          entitiesByType.services.push(entity);
+          results.services.push(entity);
           break;
         default:
           break;
       }
+      results.groups.push(...entity.serviceGroupTags)
     });
 
     return {
-      services: sortBy(entitiesByType.services, "name")
+      services: sortBy(results.services, "name"),
+      groups: sortBy(uniq(results.groups)),
     };
   }, [entitiesByTag]);
 
@@ -126,20 +134,36 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
     <Dialog open={isOpen} onClose={() => setIsOpen(false)} fullWidth>
       <DialogTitle>Filter Bird's eye report</DialogTitle>
       <DialogContent>
-        <ModalSelect
-          name='Services'
-          onChange={(serviceIds) => setModalFilters({ serviceIds })}
-          onReset={() => setModalFilters({ serviceIds: defaultFilters.serviceIds })}
-          value={modalFilters.serviceIds}
-          options={services.map((service) => (
-            <MenuItem
-              key={`ScorecardOption-${service.id}`}
-              value={service.id}
-            >
-              {service.name}
-            </MenuItem>
-          ))}
-        />
+        <Box display={"flex"} flexDirection={"column"} gridRowGap={16}>
+          <ModalSelect
+            name='Services'
+            onChange={(serviceIds) => setModalFiltersPartially({ serviceIds })}
+            onReset={() => setModalFiltersPartially({ serviceIds: defaultFilters.serviceIds })}
+            value={modalFilters.serviceIds}
+            options={services.map((service) => (
+              <MenuItem
+                key={`ScorecardOption-${service.id}`}
+                value={service.id}
+              >
+                {service.name}
+              </MenuItem>
+            ))}
+          />
+          <ModalSelect
+            name='Groups'
+            onChange={(groups) => setModalFiltersPartially({ groups })}
+            onReset={() => setModalFiltersPartially({ groups: defaultFilters.groups })}
+            value={modalFilters.groups}
+            options={groups.map((groupTag) => (
+              <MenuItem
+                key={`ScorecardOption-${groupTag}`}
+                value={groupTag}
+              >
+                {groupTag}
+              </MenuItem>
+            ))}
+          />
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button

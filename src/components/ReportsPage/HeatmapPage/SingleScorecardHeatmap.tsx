@@ -21,6 +21,7 @@ import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTabl
 import { StringIndexable } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { ScoreFilters } from './HeatmapFiltersModal';
+import { intersection } from 'lodash';
 
 interface SingleScorecardHeatmapProps {
   entityCategory: string;
@@ -46,7 +47,20 @@ export const SingleScorecardHeatmap = ({
   } = useCortexApi(api => api.getScorecardScores(scorecardId), [scorecardId]);
 
   const filteredScores = useMemo(() => {
-    return scores?.filter((score) => !scoreFilters.serviceIds.length || scoreFilters.serviceIds.includes(score.serviceId)) ?? [];
+    if (!scores?.length) {
+      return [];
+    }
+
+    let resultScores = scores;
+
+    if (scoreFilters.serviceIds.length) {
+      resultScores = resultScores.filter((score) => scoreFilters.serviceIds.includes(score.serviceId));
+    }
+    if (scoreFilters.groups.length) {
+      resultScores = resultScores.filter((score) => intersection(scoreFilters.groups, score.tags).length);
+    }
+
+    return resultScores;
   }, [scores, scoreFilters])
 
   const { value: ladders, loading: loadingLadders } = useCortexApi(
