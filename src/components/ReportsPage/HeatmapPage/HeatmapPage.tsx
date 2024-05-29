@@ -14,31 +14,35 @@
  * limitations under the License.
  */
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { Content, ContentHeader, EmptyState } from '@backstage/core-components';
+import { Content, ContentHeader, EmptyState, Progress } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
-import { useCortexApi } from '../../../utils/hooks';
+import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
 import { GroupByOption, HeaderType } from '../../../api/types';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { buildUrl } from '../../../utils/URLUtils';
 import { HeaderTypeDropdown } from '../Common/HeaderTypeDropdown';
-import { isUndefined } from 'lodash';
+import { isFinite, isUndefined } from 'lodash';
 import { stringifyUrl } from 'query-string';
 import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
 import { isScorecardTeamBased } from '../../../utils/ScorecardFilterUtils';
-
-const defaultFilters = {
-  groupBy: GroupByOption.ENTITY,
-  headerType: HeaderType.RULES,
-}
+import { HeatmapFiltersModal, ScoreFilters } from './HeatmapFiltersModal';
+import { defaultFilters as defaultScoreFilters } from './HeatmapFiltersModal';
 
 interface HeatmapPageFilters {
   selectedScorecardId?: number;
   groupBy: GroupByOption;
   headerType: HeaderType;
+  scoreFilters: ScoreFilters;
+}
+
+const defaultFilters: HeatmapPageFilters = {
+  groupBy: GroupByOption.ENTITY,
+  headerType: HeaderType.RULES,
+  scoreFilters: defaultScoreFilters,
 }
 
 export const HeatmapPage = () => {
@@ -50,6 +54,7 @@ export const HeatmapPage = () => {
     scorecardId: filters.selectedScorecardId,
     groupBy: filters.groupBy !== defaultFilters.groupBy ? filters.groupBy as string : undefined,
     headerType: filters.headerType !== defaultFilters.headerType ? filters.headerType as string : undefined,
+    serviceIds: filters.scoreFilters.serviceIds.length ? filters.scoreFilters.serviceIds.join(',') : undefined,
   });
 
   const queryScorecardId = Number(searchParams.get('scorecardId') ?? undefined);
@@ -61,6 +66,9 @@ export const HeatmapPage = () => {
     selectedScorecardId: initialScorecardId,
     groupBy: (searchParams.get('groupBy') as GroupByOption) ?? defaultFilters.groupBy,
     headerType: (searchParams.get('headerType') as HeaderType) ?? defaultFilters.headerType,
+    scoreFilters: {
+      serviceIds: searchParams.get('serviceIds')?.split(',').map((i) => parseInt(i, 10)).filter(isFinite) ?? defaultFilters.scoreFilters.serviceIds,
+    },
   });
   const setFiltersAndNavigate = useCallback((partialFilters: Partial<HeatmapPageFilters>) => {
     const newFilters = {
@@ -97,6 +105,10 @@ export const HeatmapPage = () => {
     }
   }, [filters, setFiltersAndNavigate, scorecardsResult]);
 
+  const onScorecardSelectChange = (selectedScorecardId?: number) => {
+    setFiltersAndNavigate({ selectedScorecardId, scoreFilters: defaultScoreFilters });
+  }
+
   const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
     setFiltersAndNavigate({ groupBy: event.target.value as GroupByOption });
   }
@@ -104,6 +116,8 @@ export const HeatmapPage = () => {
   const onHeaderTypeChange = (event: ChangeEvent<{ value: unknown }>) => {
     setFiltersAndNavigate({ headerType: event.target.value as HeaderType });
   }
+
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
   return (
     <Content>
@@ -116,34 +130,52 @@ export const HeatmapPage = () => {
         <Grid item lg={12}>
           <ScorecardSelector
             selectedScorecardId={filters.selectedScorecardId}
-            onSelect={(selectedScorecardId) => setFiltersAndNavigate({ selectedScorecardId })}
+            onSelect={onScorecardSelectChange}
             scorecardsResult={scorecardsResult}
           />
         </Grid>
-        <Grid item direction="row" style={{ marginTop: '20px' }}>
-          <Grid container direction="row" spacing={2}>
+        <Grid item style={{ marginTop: '20px' }}>
+          <Grid container direction="row" justifyContent="space-between">
             <Grid item>
-              <GroupByDropdown excluded={excludedGroupBys} groupBy={filters.groupBy} setGroupBy={onGroupByChange} />
+              <Grid container direction="row" spacing={2}>
+                <Grid item>
+                  <GroupByDropdown excluded={excludedGroupBys} groupBy={filters.groupBy} setGroupBy={onGroupByChange} />
+                </Grid>
+                <Grid item>
+                  <HeaderTypeDropdown
+                    headerType={filters.headerType}
+                    setHeaderType={onHeaderTypeChange}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item>
-              <HeaderTypeDropdown
-                headerType={filters.headerType}
-                setHeaderType={onHeaderTypeChange}
+              <HeatmapFiltersModal
+                filters={filters.scoreFilters}
+                setFilters={(scoreFilters: ScoreFilters) => setFiltersAndNavigate({ scoreFilters })}
+                entitiesByTag={entitiesByTag}
               />
             </Grid>
           </Grid>
         </Grid>
         <Grid item lg={12}>
-          {isUndefined(filters.selectedScorecardId) ? (
-            <EmptyState title="Select a Scorecard" missing="data" />
-          ) : (
-            <SingleScorecardHeatmap
-              entityCategory={entityCategory}
-              scorecardId={filters.selectedScorecardId}
-              groupBy={filters.groupBy}
-              headerType={filters.headerType}
-            />
-          )}
+          {isUndefined(filters.selectedScorecardId)
+            ? (
+              <EmptyState title="Select a Scorecard" missing="data" />
+            )
+            : loadingEntities
+              ? <Progress />
+              : (
+                <SingleScorecardHeatmap
+                  entityCategory={entityCategory}
+                  entitiesByTag={entitiesByTag}
+                  scorecardId={filters.selectedScorecardId}
+                  groupBy={filters.groupBy}
+                  headerType={filters.headerType}
+                  scoreFilters={filters.scoreFilters}
+                />
+              )
+          }
         </Grid>
       </Grid>
     </Content>

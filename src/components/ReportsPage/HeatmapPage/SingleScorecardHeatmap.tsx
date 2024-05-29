@@ -13,24 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
-import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
+import { useCortexApi } from '../../../utils/hooks';
 import { GroupByOption, HeaderType } from '../../../api/types';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
+import { StringIndexable } from './HeatmapUtils';
+import { HomepageEntity } from '../../../api/userInsightTypes';
+import { ScoreFilters } from './HeatmapFiltersModal';
 
 interface SingleScorecardHeatmapProps {
   entityCategory: string;
+  entitiesByTag: StringIndexable<HomepageEntity>;
   scorecardId: number;
   groupBy: GroupByOption;
   headerType: HeaderType;
+  scoreFilters: ScoreFilters;
 }
 
 export const SingleScorecardHeatmap = ({
   entityCategory,
+  entitiesByTag,
   scorecardId,
   groupBy,
   headerType,
+  scoreFilters,
 }: SingleScorecardHeatmapProps) => {
   const {
     value: scores,
@@ -38,13 +45,16 @@ export const SingleScorecardHeatmap = ({
     error: scoresError,
   } = useCortexApi(api => api.getScorecardScores(scorecardId), [scorecardId]);
 
+  const filteredScores = useMemo(() => {
+    return scores?.filter((score) => !scoreFilters.serviceIds.length || scoreFilters.serviceIds.includes(score.serviceId)) ?? [];
+  }, [scores, scoreFilters])
+
   const { value: ladders, loading: loadingLadders } = useCortexApi(
     api => api.getScorecardLadders(scorecardId),
     [scorecardId],
   );
-  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
-  if (loadingScores || loadingLadders || loadingEntities) {
+  if (loadingScores || loadingLadders) {
     return <Progress />;
   }
 
@@ -73,7 +83,7 @@ export const SingleScorecardHeatmap = ({
       groupBy={groupBy}
       headerType={headerType}
       ladder={ladders?.[0]}
-      scores={scores}
+      scores={filteredScores}
     />
   );
 };
