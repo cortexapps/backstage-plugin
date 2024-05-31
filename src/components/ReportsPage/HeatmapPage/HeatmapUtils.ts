@@ -66,6 +66,12 @@ type GroupByValues = {
   ladderLevels?: ScorecardScoreNextSteps[];
 };
 
+const groupByKeyToLabel: Record<GroupByKeys, string> = {
+  teams: 'team',
+  tags: 'group',
+  ladderLevels: 'level'
+}
+
 const groupReportDataBy = <T extends GroupByValues>(
   scores: T[],
   groupBy: GroupByKeys,
@@ -73,19 +79,27 @@ const groupReportDataBy = <T extends GroupByValues>(
   return scores.reduce<StringIndexable<T[]>>((data, score) => {
     const groups = score[groupBy];
 
-    groups?.forEach((group: ScorecardScoreNextSteps | string) => {
-      const key =
-        typeof group === 'string'
-          ? group
-          : group.currentLevel?.name ?? 'No Level'; // is ScorecardScoreNextSteps
-
-      const exists = data[key];
-      if (!exists) {
+    if (!groups?.length) {
+      const key = `No ${groupByKeyToLabel[groupBy]}`;
+      if (!data[key]) {
         Object.assign(data, { [key]: [] });
       }
-
       data?.[key].push(score);
-    });
+    } else {
+      groups?.forEach((group: ScorecardScoreNextSteps | string) => {
+        const key =
+          typeof group === 'string'
+            ? group
+            : group.currentLevel?.name ?? 'No Level'; // is ScorecardScoreNextSteps
+
+        const exists = data[key];
+        if (!exists) {
+          Object.assign(data, { [key]: [] });
+        }
+
+        data?.[key].push(score);
+      });
+    }
 
     return data;
   }, {});
