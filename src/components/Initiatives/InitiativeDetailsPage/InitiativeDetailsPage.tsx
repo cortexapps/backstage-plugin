@@ -22,7 +22,10 @@ import { Box, Button, Grid, Tab, Tabs } from '@material-ui/core';
 import { initiativeRouteRef } from '../../../routes';
 import { Predicate } from '../../../utils/types';
 import { InitiativeStatsCard } from './InitiativeStatsCard';
-import { useEntitiesByTag, useInitiativesCustomName } from '../../../utils/hooks';
+import {
+  useEntitiesByTag,
+  useInitiativesCustomName,
+} from '../../../utils/hooks';
 import { InitiativeMetadataCard } from './InitiativeMetadataCard';
 import { InitiativeFailingTab } from './InitiativeFailingTab';
 import { InitiativePassingTab } from './InitiativePassingTab';
@@ -99,7 +102,10 @@ export const InitiativeDetailsPage = () => {
 
   if (error || initiative === undefined || filteredActionItems === undefined) {
     return (
-      <WarningPanel severity="error" title={`Could not load ${initiativeName}.`}>
+      <WarningPanel
+        severity="error"
+        title={`Could not load ${initiativeName}.`}
+      >
         {error?.message ?? ''}
       </WarningPanel>
     );
