@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import {
+  DomainHierarchiesResponse,
   EntitySyncProgress,
   ExpirationResponse,
   GroupByOption,
@@ -31,6 +32,7 @@ import {
   ScorecardServiceScore,
   ScoresByIdentifier,
   ServiceScorecardScore,
+  TeamHierarchiesResponse,
   UserPermissionsResponse,
 } from './types';
 import { Entity } from '@backstage/catalog-model';
@@ -113,4 +115,8 @@ export interface CortexApi {
   getSyncJobs(): Promise<JobsResponse>;
 
   getExpiration(): Promise<ExpirationResponse>;
+
+  getDomainHierarchies(): Promise<DomainHierarchiesResponse>;
+
+  getTeamHierarchies(): Promise<TeamHierarchiesResponse>;
 }

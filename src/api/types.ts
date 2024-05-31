@@ -425,6 +425,44 @@ export interface ExpirationResponse {
   shutdownDate: string | null;
 }
 
+interface DomainHierarchyNode {
+  node: {
+    id: number;
+    cid: string;
+    tag: string;
+    name: string;
+    type: string;
+    description: string | null;
+    isArchived: boolean;
+    definition: string | null;
+  },
+  orderedChildren: DomainHierarchyNode[];
+}
+
+export interface DomainHierarchiesResponse {
+  orderedTree: DomainHierarchyNode[];
+}
+
+interface TeamHierarchyNode {
+  node: {
+    id: number;
+    cid: string;
+    tag: string;
+    name: string;
+    description: string | null;
+    isArchived: boolean;
+    parentRelationshipProviders: string[];
+    ownerGroup:  string;
+    ownerGroupType:  string;
+    type:  string;
+  },
+  orderedChildren: TeamHierarchyNode[]
+}
+
+export interface TeamHierarchiesResponse {
+  orderedParents: TeamHierarchyNode[]
+}
+
 // Entity Filter
 export enum CategoryFilter {
   Domain = 'Domain',

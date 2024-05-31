@@ -15,6 +15,7 @@
  */
 
 import {
+  DomainHierarchiesResponse,
   EntitySyncProgress,
   ExpirationResponse,
   GroupByOption,
@@ -32,6 +33,7 @@ import {
   ScorecardServiceScore,
   ScoresByIdentifier,
   ServiceScorecardScore,
+  TeamHierarchiesResponse,
   UserPermissionsResponse,
 } from './types';
 import { CortexApi } from './CortexApi';
@@ -321,6 +323,14 @@ export class CortexClient implements CortexApi {
 
   async getExpiration(): Promise<ExpirationResponse> {
     return this.get(`/api/backstage/v1/entitlements/expiration-date`);
+  }
+
+  async getDomainHierarchies(): Promise<DomainHierarchiesResponse> {
+    return await this.get(`/api/backstage/v1/domains/hierarchies/tree`);
+  }
+
+  async getTeamHierarchies(): Promise<TeamHierarchiesResponse> {
+    return await this.get(`/api/backstage/v1/teams/hierarchies`);
   }
 
   private async getBasePath(): Promise<string> {
