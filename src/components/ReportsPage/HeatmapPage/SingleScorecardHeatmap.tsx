@@ -46,21 +46,33 @@ export const SingleScorecardHeatmap = ({
     error: scoresError,
   } = useCortexApi(api => api.getScorecardScores(scorecardId), [scorecardId]);
 
-  const ownerEmailByServiceId = useMemo(() => {
-    const result = {} as Record<string, string[]>;
+  const { ownerEmailByServiceId, groupTagByServiceId } = useMemo(() => {
+    const ownerEmailByServiceId = {} as Record<string, string[]>;
+    const groupTagByServiceId = {} as Record<string, string[]>;
 
     Object.values(entitiesByTag).forEach((entity) => {
       if (entity.serviceOwnerEmails.length) {
         const ownerEmails = entity.serviceOwnerEmails.map(({ email }) => email);
-        if (result[entity.id]) {
-          result[entity.id] = uniq([ ...ownerEmails, ...result[entity.id] ]);
+        if (ownerEmailByServiceId[entity.id]) {
+          ownerEmailByServiceId[entity.id] = uniq([...ownerEmails, ...ownerEmailByServiceId[entity.id]]);
         } else {
-          result[entity.id] = ownerEmails;
+          ownerEmailByServiceId[entity.id] = ownerEmails;
+        }
+      }
+
+      if (entity.serviceGroupTags) {
+        if (groupTagByServiceId[entity.id]) {
+          groupTagByServiceId[entity.id] = uniq([...entity.serviceGroupTags, ...groupTagByServiceId[entity.id]]);
+        } else {
+          groupTagByServiceId[entity.id] = entity.serviceGroupTags;
         }
       }
     });
 
-    return result;
+    return {
+      ownerEmailByServiceId,
+      groupTagByServiceId
+    };
   }, [entitiesByTag]);
 
   const filteredScores = useMemo(() => {
@@ -74,17 +86,21 @@ export const SingleScorecardHeatmap = ({
       resultScores = resultScores.filter((score) => scoreFilters.serviceIds.includes(score.serviceId));
     }
     if (scoreFilters.groups.length) {
-      resultScores = resultScores.filter((score) => intersection(scoreFilters.groups, score.tags).length);
+      resultScores = resultScores.filter(
+        (score) => intersection(scoreFilters.groups, groupTagByServiceId?.[score.serviceId]).length
+      );
     }
     if (scoreFilters.teams.length) {
       resultScores = resultScores.filter((score) => intersection(scoreFilters.teams, score.teams).length);
     }
     if (scoreFilters.users.length) {
-      resultScores = resultScores.filter((score) => intersection(scoreFilters.users, ownerEmailByServiceId?.[score.serviceId]).length);
+      resultScores = resultScores.filter(
+        (score) => intersection(scoreFilters.users, ownerEmailByServiceId?.[score.serviceId]).length
+      );
     }
 
     return resultScores;
-  }, [scores, scoreFilters, ownerEmailByServiceId])
+  }, [scores, scoreFilters, ownerEmailByServiceId, groupTagByServiceId])
 
   const { value: ladders, loading: loadingLadders } = useCortexApi(
     api => api.getScorecardLadders(scorecardId),
