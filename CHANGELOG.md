@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.7.2
+
+- Display initiatives notification schedule
+
 ### 2.7.1
 
 - Fix timestamp format on Settings page
