@@ -13,33 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Content, ContentHeader, EmptyState, Progress } from '@backstage/core-components';
-import { Checkbox, FormControlLabel, Grid, InputLabel } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
 import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
 import { GroupByOption, HeaderType } from '../../../api/types';
-import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { CopyButton } from '../../Common/CopyButton';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { buildUrl } from '../../../utils/URLUtils';
-import { HeaderTypeDropdown } from '../Common/HeaderTypeDropdown';
 import { isFinite, isUndefined } from 'lodash';
 import { stringifyUrl } from 'query-string';
 import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
 import { isScorecardTeamBased } from '../../../utils/ScorecardFilterUtils';
-import { HeatmapFiltersModal, ScoreFilters } from './HeatmapFiltersModal';
 import { defaultFilters as defaultScoreFilters } from './HeatmapFiltersModal';
-
-interface HeatmapPageFilters {
-  selectedScorecardId?: number;
-  groupBy: GroupByOption;
-  headerType: HeaderType;
-  scoreFilters: ScoreFilters;
-  useHierarchy: boolean;
-  hideWithoutChildren: boolean;
-}
+import { HeatmapFilters, HeatmapPageFilters } from './HeatmapFilters';
 
 const defaultFilters: HeatmapPageFilters = {
   groupBy: GroupByOption.ENTITY,
@@ -123,15 +112,6 @@ export const HeatmapPage = () => {
     setFiltersAndNavigate({ selectedScorecardId, scoreFilters: defaultScoreFilters });
   }
 
-  const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
-    const groupBy = event.target.value as GroupByOption;
-    setFiltersAndNavigate({ groupBy, useHierarchy: groupBy === GroupByOption.TEAM ? filters.useHierarchy : false });
-  }
-
-  const onHeaderTypeChange = (event: ChangeEvent<{ value: unknown }>) => {
-    setFiltersAndNavigate({ headerType: event.target.value as HeaderType });
-  }
-
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
   return (
@@ -150,64 +130,12 @@ export const HeatmapPage = () => {
           />
         </Grid>
         <Grid item style={{ marginTop: '20px' }}>
-          <Grid container direction="row" justifyContent="space-between">
-            <Grid item>
-              <Grid container direction="row" spacing={2} alignItems="center">
-                <Grid item>
-                  <GroupByDropdown excluded={excludedGroupBys} groupBy={filters.groupBy} setGroupBy={onGroupByChange} />
-                </Grid>
-                <Grid item>
-                  <HeaderTypeDropdown
-                    headerType={filters.headerType}
-                    setHeaderType={onHeaderTypeChange}
-                  />
-                </Grid>
-                {filters.groupBy === GroupByOption.TEAM && (
-                  <Grid item>
-                    <Grid container direction="row" alignItems="center">
-                      <FormControlLabel
-                        aria-label='Use Team hierarchy'
-                        control={
-                          <Checkbox
-                            checked={filters.useHierarchy}
-                            onChange={() => setFiltersAndNavigate({ useHierarchy: !filters.useHierarchy, hideWithoutChildren: true })}
-                          />
-                        }
-                        label={
-                          <InputLabel>
-                            Use Team hierarchy
-                          </InputLabel>
-                        }
-                      />
-                      {filters.useHierarchy && (
-                        <FormControlLabel
-                          aria-label='Hide Teams with 0 entities'
-                          control={
-                            <Checkbox
-                              checked={filters.hideWithoutChildren}
-                              onChange={() => setFiltersAndNavigate({ hideWithoutChildren: !filters.hideWithoutChildren })}
-                            />
-                          }
-                          label={
-                            <InputLabel>
-                              Hide Teams with 0 entities
-                            </InputLabel>
-                          }
-                        />
-                      )}
-                    </Grid>
-                  </Grid>
-                )}
-              </Grid>
-            </Grid>
-            <Grid item>
-              <HeatmapFiltersModal
-                filters={filters.scoreFilters}
-                setFilters={(scoreFilters: ScoreFilters) => setFiltersAndNavigate({ scoreFilters })}
-                entitiesByTag={entitiesByTag}
-              />
-            </Grid>
-          </Grid>
+          <HeatmapFilters
+            filters={filters}
+            setFilters={setFiltersAndNavigate}
+            excludedGroupBys={excludedGroupBys}
+            entitiesByTag={entitiesByTag}
+          />
         </Grid>
         <Grid item lg={12}>
           {isUndefined(filters.selectedScorecardId)
