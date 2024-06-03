@@ -16,33 +16,30 @@
 import React, { useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../../utils/hooks';
-import { GroupByOption, HeaderType } from '../../../api/types';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
 import { StringIndexable } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
-import { ScoreFilters } from './HeatmapFiltersModal';
 import { intersection, uniq } from 'lodash';
+import { HeatmapPageFilters } from './HeatmapFilters';
 
 interface SingleScorecardHeatmapProps {
   entityCategory: string;
   entitiesByTag: StringIndexable<HomepageEntity>;
   scorecardId: number;
-  groupBy: GroupByOption;
-  headerType: HeaderType;
-  scoreFilters: ScoreFilters;
-  useHierarchy: boolean;
-  hideWithoutChildren: boolean;
+  filters: HeatmapPageFilters;
 }
 
 export const SingleScorecardHeatmap = ({
   entityCategory,
   entitiesByTag,
   scorecardId,
-  groupBy,
-  headerType,
-  scoreFilters,
-  useHierarchy,
-  hideWithoutChildren,
+  filters: {
+    groupBy,
+    headerType,
+    scoreFilters,
+    useHierarchy,
+    hideWithoutChildren,
+  }
 }: SingleScorecardHeatmapProps) => {
   const {
     value: scores,

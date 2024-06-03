@@ -149,11 +149,7 @@ export const HeatmapPage = () => {
                   entityCategory={entityCategory}
                   entitiesByTag={entitiesByTag}
                   scorecardId={filters.selectedScorecardId}
-                  groupBy={filters.groupBy}
-                  headerType={filters.headerType}
-                  scoreFilters={filters.scoreFilters}
-                  useHierarchy={filters.useHierarchy}
-                  hideWithoutChildren={filters.hideWithoutChildren}
+                  filters={filters}
                 />
               )
           }
