@@ -21,6 +21,7 @@ import {
   ScorecardLevel,
   RuleOutcome,
   ScorecardScoreNextSteps,
+  TeamHierarchyNode,
 } from '../../../api/types';
 import { groupBy as _groupBy, flatten as _flatten, values } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
@@ -198,3 +199,7 @@ export const getFormattedScorecardScores = (
     };
   });
 };
+
+export const teamHierarchyNodeFlatChildren = (node: TeamHierarchyNode): string[] => {
+  return node.orderedChildren.map((child) => [child.node.tag, ...teamHierarchyNodeFlatChildren(child)]).flat();
+}

@@ -15,7 +15,7 @@
  */
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { Content, ContentHeader, EmptyState, Progress } from '@backstage/core-components';
-import { Grid } from '@material-ui/core';
+import { Checkbox, FormControlLabel, Grid, InputLabel } from '@material-ui/core';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
 import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
@@ -37,12 +37,14 @@ interface HeatmapPageFilters {
   groupBy: GroupByOption;
   headerType: HeaderType;
   scoreFilters: ScoreFilters;
+  useHierarchy: boolean;
 }
 
 const defaultFilters: HeatmapPageFilters = {
   groupBy: GroupByOption.ENTITY,
   headerType: HeaderType.RULES,
   scoreFilters: defaultScoreFilters,
+  useHierarchy: false,
 }
 
 export const HeatmapPage = () => {
@@ -58,6 +60,7 @@ export const HeatmapPage = () => {
     groups: filters.scoreFilters.groups.length ? filters.scoreFilters.groups.join(',') : undefined,
     teams: filters.scoreFilters.teams.length ? filters.scoreFilters.teams.join(',') : undefined,
     users: filters.scoreFilters.users.length ? filters.scoreFilters.users.join(',') : undefined,
+    hierarchy: filters.useHierarchy ? 'true' : undefined,
   });
 
   const queryScorecardId = Number(searchParams.get('scorecardId') ?? undefined);
@@ -69,6 +72,7 @@ export const HeatmapPage = () => {
     selectedScorecardId: initialScorecardId,
     groupBy: (searchParams.get('groupBy') as GroupByOption) ?? defaultFilters.groupBy,
     headerType: (searchParams.get('headerType') as HeaderType) ?? defaultFilters.headerType,
+    useHierarchy: (searchParams.has('hierarchy')) ?? defaultFilters.useHierarchy,
     scoreFilters: {
       serviceIds: searchParams.get('serviceIds')?.split(',').map((i) => parseInt(i, 10)).filter(isFinite) ?? defaultFilters.scoreFilters.serviceIds,
       groups: searchParams.get('groups')?.split(',') ?? defaultFilters.scoreFilters.groups,
@@ -116,7 +120,8 @@ export const HeatmapPage = () => {
   }
 
   const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
-    setFiltersAndNavigate({ groupBy: event.target.value as GroupByOption });
+    const groupBy = event.target.value as GroupByOption;
+    setFiltersAndNavigate({ groupBy, useHierarchy: groupBy === GroupByOption.TEAM ? filters.useHierarchy : false });
   }
 
   const onHeaderTypeChange = (event: ChangeEvent<{ value: unknown }>) => {
@@ -143,7 +148,7 @@ export const HeatmapPage = () => {
         <Grid item style={{ marginTop: '20px' }}>
           <Grid container direction="row" justifyContent="space-between">
             <Grid item>
-              <Grid container direction="row" spacing={2}>
+              <Grid container direction="row" spacing={2} alignItems="center">
                 <Grid item>
                   <GroupByDropdown excluded={excludedGroupBys} groupBy={filters.groupBy} setGroupBy={onGroupByChange} />
                 </Grid>
@@ -153,6 +158,26 @@ export const HeatmapPage = () => {
                     setHeaderType={onHeaderTypeChange}
                   />
                 </Grid>
+                {filters.groupBy === GroupByOption.TEAM && (
+                  <Grid item>
+                    <Grid container direction="row" alignItems="center">
+                      <FormControlLabel
+                        aria-label='Use Team hierarchy'
+                        control={
+                          <Checkbox
+                            checked={filters.useHierarchy}
+                            onChange={() => setFiltersAndNavigate({ useHierarchy: !filters.useHierarchy })}
+                          />
+                        }
+                        label={
+                          <InputLabel>
+                            Use Team hierarchy
+                          </InputLabel>
+                        }
+                      />
+                    </Grid>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
             <Grid item>
@@ -179,6 +204,7 @@ export const HeatmapPage = () => {
                   groupBy={filters.groupBy}
                   headerType={filters.headerType}
                   scoreFilters={filters.scoreFilters}
+                  useHierarchy={filters.useHierarchy}
                 />
               )
           }

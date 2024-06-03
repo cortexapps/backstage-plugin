@@ -443,7 +443,7 @@ export interface DomainHierarchiesResponse {
   orderedTree: DomainHierarchyNode[];
 }
 
-interface TeamHierarchyNode {
+export interface TeamHierarchyNode {
   node: {
     id: number;
     cid: string;

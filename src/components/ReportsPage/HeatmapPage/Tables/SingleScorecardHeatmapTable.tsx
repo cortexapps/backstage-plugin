@@ -15,17 +15,18 @@
  */
 import React, { useMemo } from 'react';
 import { isUndefined } from 'lodash';
-import { WarningPanel } from '@backstage/core-components';
+import { Progress, WarningPanel } from '@backstage/core-components';
 
 import { HeatmapTableByGroup } from './HeatmapTableByGroup';
 import { HeatmapTableByLevels } from './HeatmapTableByLevels';
 import { HeatmapTableByService } from './HeatmapTableByService';
 import { LevelsDrivenTable } from './LevelsDrivenTable';
-import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, StringIndexable, } from '../HeatmapUtils';
+import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, StringIndexable, teamHierarchyNodeFlatChildren, } from '../HeatmapUtils';
 import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
 
 import { GroupByOption, HeaderType, ScorecardLadder, ScorecardServiceScore, } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
+import { useCortexApi } from '../../../../utils/hooks';
 
 interface SingleScorecardHeatmapTableProps {
   entityCategory: string;
@@ -35,6 +36,7 @@ interface SingleScorecardHeatmapTableProps {
   headerType: HeaderType;
   ladder: ScorecardLadder | undefined;
   scores: ScorecardServiceScore[];
+  useHierarchy: boolean;
 }
 
 export const SingleScorecardHeatmapTable = ({
@@ -45,6 +47,7 @@ export const SingleScorecardHeatmapTable = ({
   headerType,
   ladder,
   scores,
+  useHierarchy,
 }: SingleScorecardHeatmapTableProps) => {
   const levelsDriven = headerType === HeaderType.LEVELS;
   const headers = useMemo(
@@ -55,9 +58,35 @@ export const SingleScorecardHeatmapTable = ({
     [levelsDriven, ladder, scores],
   );
 
+  const { value: teamHierarchies, loading: loadingTeamHierarchies } = useCortexApi(api => api.getTeamHierarchies());
+
   const data = useMemo(() => {
-    return getScorecardServiceScoresByGroupByOption(scores, groupBy);
-  }, [scores, groupBy]);
+    const groupedData = getScorecardServiceScoresByGroupByOption(scores, groupBy);
+
+    if (useHierarchy && groupBy === GroupByOption.TEAM && teamHierarchies) {
+      const hierarchyGroupedData = {} as Record<string, ScorecardServiceScore[]>;
+
+      teamHierarchies.orderedParents.forEach((parent) => {
+        hierarchyGroupedData[parent.node.tag] = groupedData[parent.node.tag] ?? [];
+
+        teamHierarchyNodeFlatChildren(parent).forEach((childTag) => {
+          (groupedData[childTag] ?? []).forEach((score) => {
+            if (!hierarchyGroupedData[parent.node.tag].find((existingScore) => existingScore.componentRef === score.componentRef)) {
+              hierarchyGroupedData[parent.node.tag].push(score);
+            }
+          });
+        });
+      });
+
+      return hierarchyGroupedData;
+    }
+
+    return groupedData;
+  }, [scores, groupBy, useHierarchy, teamHierarchies]);
+
+  if (useHierarchy && groupBy === GroupByOption.TEAM && loadingTeamHierarchies) {
+    return <Progress />
+  }
 
   if (headerType === HeaderType.LEVELS) {
     if (isUndefined(ladder)) {

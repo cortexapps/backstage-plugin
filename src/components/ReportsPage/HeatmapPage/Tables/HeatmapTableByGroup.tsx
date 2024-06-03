@@ -43,7 +43,6 @@ export const HeatmapTableByGroup = ({
       <HeatmapTableHeader headers={headers} />
       <TableBody>
         {Object.entries(data).map(([identifier, values]) => {
-          const firstScore = values[0];
           const serviceCount = values.length;
           const averageScore = _average(
             values.map(score => score.scorePercentage),
@@ -51,16 +50,24 @@ export const HeatmapTableByGroup = ({
           const averageRuleScores = getAverageRuleScores(values);
 
           return (
-            <TableRow key={`TableRow-${firstScore.componentRef}`}>
+            <TableRow key={`TableRow-${identifier}`}>
               <HeatmapCell text={identifier} />
               <HeatmapCell text={serviceCount.toString()} />
-              <HeatmapCell score={averageScore} />
-              {averageRuleScores.map((score, idx) => (
-                <HeatmapCell
-                  key={`HeatmapCell-${identifier}-${idx}`}
-                  score={score}
-                />
-              ))}
+              {isNaN(averageScore) ? <HeatmapCell text="N/A" /> : <HeatmapCell score={averageScore} />}
+              {averageRuleScores.length
+                ? averageRuleScores.map((score, idx) => (
+                  <HeatmapCell
+                    key={`HeatmapCell-${identifier}-${idx}`}
+                    score={score}
+                  />
+                ))
+                : rules.map((_, idx) => (
+                  <HeatmapCell
+                    key={`HeatmapCell-${identifier}-${idx}`}
+                    text="N/A"
+                  />
+                ))
+              }
             </TableRow>
           );
         })}
