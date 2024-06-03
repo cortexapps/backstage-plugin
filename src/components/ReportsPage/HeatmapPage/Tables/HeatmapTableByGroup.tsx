@@ -28,6 +28,7 @@ interface HeatmapTableByGroupProps {
   rules: string[];
   data: StringIndexable<ScorecardServiceScore[]>;
   entityCategory: string;
+  hideWithoutChildren?: boolean;
 }
 
 export const HeatmapTableByGroup = ({
@@ -35,6 +36,7 @@ export const HeatmapTableByGroup = ({
   rules,
   data,
   entityCategory,
+  hideWithoutChildren = false,
 }: HeatmapTableByGroupProps) => {
   const headers = [header, `${entityCategory} Count`, 'Average Score', ...rules];
 
@@ -44,6 +46,11 @@ export const HeatmapTableByGroup = ({
       <TableBody>
         {Object.entries(data).map(([identifier, values]) => {
           const serviceCount = values.length;
+
+          if (serviceCount < 1 && hideWithoutChildren) {
+            return undefined;
+          }
+
           const averageScore = _average(
             values.map(score => score.scorePercentage),
           );

@@ -38,6 +38,7 @@ interface HeatmapPageFilters {
   headerType: HeaderType;
   scoreFilters: ScoreFilters;
   useHierarchy: boolean;
+  hideWithoutChildren: boolean;
 }
 
 const defaultFilters: HeatmapPageFilters = {
@@ -45,6 +46,7 @@ const defaultFilters: HeatmapPageFilters = {
   headerType: HeaderType.RULES,
   scoreFilters: defaultScoreFilters,
   useHierarchy: false,
+  hideWithoutChildren: true,
 }
 
 export const HeatmapPage = () => {
@@ -61,6 +63,7 @@ export const HeatmapPage = () => {
     teams: filters.scoreFilters.teams.length ? filters.scoreFilters.teams.join(',') : undefined,
     users: filters.scoreFilters.users.length ? filters.scoreFilters.users.join(',') : undefined,
     hierarchy: filters.useHierarchy ? 'true' : undefined,
+    hideWithoutChildren: !filters.hideWithoutChildren ? 'false' : undefined,
   });
 
   const queryScorecardId = Number(searchParams.get('scorecardId') ?? undefined);
@@ -72,7 +75,8 @@ export const HeatmapPage = () => {
     selectedScorecardId: initialScorecardId,
     groupBy: (searchParams.get('groupBy') as GroupByOption) ?? defaultFilters.groupBy,
     headerType: (searchParams.get('headerType') as HeaderType) ?? defaultFilters.headerType,
-    useHierarchy: (searchParams.has('hierarchy')) ?? defaultFilters.useHierarchy,
+    useHierarchy: !!searchParams.has('hierarchy'),
+    hideWithoutChildren: !searchParams.has('hideWithoutChildren'),
     scoreFilters: {
       serviceIds: searchParams.get('serviceIds')?.split(',').map((i) => parseInt(i, 10)).filter(isFinite) ?? defaultFilters.scoreFilters.serviceIds,
       groups: searchParams.get('groups')?.split(',') ?? defaultFilters.scoreFilters.groups,
@@ -166,7 +170,7 @@ export const HeatmapPage = () => {
                         control={
                           <Checkbox
                             checked={filters.useHierarchy}
-                            onChange={() => setFiltersAndNavigate({ useHierarchy: !filters.useHierarchy })}
+                            onChange={() => setFiltersAndNavigate({ useHierarchy: !filters.useHierarchy, hideWithoutChildren: true })}
                           />
                         }
                         label={
@@ -175,6 +179,22 @@ export const HeatmapPage = () => {
                           </InputLabel>
                         }
                       />
+                      {filters.useHierarchy && (
+                        <FormControlLabel
+                          aria-label='Hide Teams with 0 entities'
+                          control={
+                            <Checkbox
+                              checked={filters.hideWithoutChildren}
+                              onChange={() => setFiltersAndNavigate({ hideWithoutChildren: !filters.hideWithoutChildren })}
+                            />
+                          }
+                          label={
+                            <InputLabel>
+                              Hide Teams with 0 entities
+                            </InputLabel>
+                          }
+                        />
+                      )}
                     </Grid>
                   </Grid>
                 )}
@@ -205,6 +225,7 @@ export const HeatmapPage = () => {
                   headerType={filters.headerType}
                   scoreFilters={filters.scoreFilters}
                   useHierarchy={filters.useHierarchy}
+                  hideWithoutChildren={filters.hideWithoutChildren}
                 />
               )
           }

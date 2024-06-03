@@ -31,6 +31,7 @@ interface SingleScorecardHeatmapProps {
   headerType: HeaderType;
   scoreFilters: ScoreFilters;
   useHierarchy: boolean;
+  hideWithoutChildren: boolean;
 }
 
 export const SingleScorecardHeatmap = ({
@@ -41,6 +42,7 @@ export const SingleScorecardHeatmap = ({
   headerType,
   scoreFilters,
   useHierarchy,
+  hideWithoutChildren,
 }: SingleScorecardHeatmapProps) => {
   const {
     value: scores,
@@ -140,6 +142,7 @@ export const SingleScorecardHeatmap = ({
       ladder={ladders?.[0]}
       scores={filteredScores}
       useHierarchy={useHierarchy}
+      hideWithoutChildren={hideWithoutChildren}
     />
   );
 };

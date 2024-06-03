@@ -37,6 +37,7 @@ interface SingleScorecardHeatmapTableProps {
   ladder: ScorecardLadder | undefined;
   scores: ScorecardServiceScore[];
   useHierarchy: boolean;
+  hideWithoutChildren: boolean;
 }
 
 export const SingleScorecardHeatmapTable = ({
@@ -48,6 +49,7 @@ export const SingleScorecardHeatmapTable = ({
   ladder,
   scores,
   useHierarchy,
+  hideWithoutChildren,
 }: SingleScorecardHeatmapTableProps) => {
   const levelsDriven = headerType === HeaderType.LEVELS;
   const headers = useMemo(
@@ -123,7 +125,7 @@ export const SingleScorecardHeatmapTable = ({
     case GroupByOption.SERVICE_GROUP:
       return <HeatmapTableByGroup header="Group" rules={headers} data={data} entityCategory={entityCategory} />;
     case GroupByOption.TEAM:
-      return <HeatmapTableByGroup header="Team" rules={headers} data={data} entityCategory={entityCategory} />;
+      return <HeatmapTableByGroup header="Team" rules={headers} data={data} entityCategory={entityCategory} hideWithoutChildren={hideWithoutChildren} />;
     case GroupByOption.LEVEL:
       return (
         <HeatmapTableByLevels ladder={ladder} rules={headers} data={data} entityCategory={entityCategory} />
