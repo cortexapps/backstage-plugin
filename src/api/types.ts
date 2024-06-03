@@ -314,6 +314,19 @@ export interface CatalogEntityMetadata extends EntityMetadata {
   type: string;
 }
 
+export enum InitiativeScheduleTimeUnit {
+  Day = 'DAY',
+  Month = 'MONTH',
+  Week = 'WEEK',
+}
+
+export interface InitiativeNotificationSchedule {
+  timeUnit: InitiativeScheduleTimeUnit;
+  timeInterval: number;
+  replyToEmails: string[];
+  isDisabled: boolean;
+}
+
 export interface Initiative {
   description?: string;
   filter?: EntityFilter | CompoundFilter | null;
@@ -323,6 +336,7 @@ export interface Initiative {
   rules: InitiativeRule[];
   scorecard: Scorecard;
   targetDate: string;
+  notificationSchedule?: InitiativeNotificationSchedule;
 }
 
 export interface InitiativeWithScores extends Initiative {

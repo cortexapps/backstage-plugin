@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.8.0
+
+- Display Initiatives notification schedule
+
 ### 2.7.2
 
 - Fix incorrect re-rendering of Bird's eye report by levels
