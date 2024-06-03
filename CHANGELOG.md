@@ -1,6 +1,6 @@
 # Changelog
 
-### 2.7.2
+### 2.8.0
 
 - Display initiatives notification schedule
 
