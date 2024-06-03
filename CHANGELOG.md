@@ -2,7 +2,7 @@
 
 ### 2.8.0
 
-- Display initiatives notification schedule
+- Display Initiatives notification schedule
 
 ### 2.7.2
 
