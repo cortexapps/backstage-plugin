@@ -56,13 +56,20 @@ export const LevelsDrivenTable = ({
           const firstScore = values?.[0];
 
           return (
-            <TableRow key={`TableRow-${firstScore.componentRef}`}>
+            <TableRow key={`TableRow-${key}`}>
               {notGroupedByServices ? (
-                <TableCell>
-                  <Typography variant="h6" style={{ display: 'inline-block' }}>
-                    {key}
-                  </Typography>
-                </TableCell>
+                <>
+                  <TableCell>
+                    <Typography variant="h6" style={{ display: 'inline-block' }}>
+                      {key}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h6" style={{ display: 'inline-block' }}>
+                      {serviceCount}
+                    </Typography>
+                  </TableCell>
+                </>
               ) : (
                 <TableCell>
                   <EntityRefLink
@@ -75,13 +82,6 @@ export const LevelsDrivenTable = ({
                     )}
                     title={entitiesByTag[firstScore.componentRef]?.name}
                   />
-                </TableCell>
-              )}
-              {notGroupedByServices && (
-                <TableCell>
-                  <Typography variant="h6" style={{ display: 'inline-block' }}>
-                    {serviceCount}
-                  </Typography>
                 </TableCell>
               )}
               {scores.map((score, idx) => (
