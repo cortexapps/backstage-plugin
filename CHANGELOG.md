@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.7.2
+
+- Fix incorrect re-rendering of Bird's eye report by levels
+
 ### 2.7.1
 
 - Fix timestamp format on Settings page
