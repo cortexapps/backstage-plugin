@@ -326,6 +326,7 @@ export interface InitiativeNotificationSchedule {
   replyToEmails: string[];
   isDisabled: boolean;
 }
+
 export interface Initiative {
   description?: string;
   filter?: EntityFilter | CompoundFilter | null;
