@@ -1,5 +1,11 @@
 # Changelog
 
+### 2.8.0
+
+- Add filters to the Bird's eye report
+- Add team and domain hierarchies to the Bird's eye report
+- Add option to group by domain to the Bird's eye report
+
 ### 2.7.2
 
 - Fix incorrect re-rendering of Bird's eye report by levels
