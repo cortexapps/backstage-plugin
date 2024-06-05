@@ -19,7 +19,6 @@ import { useCortexApi } from '../../../utils/hooks';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
 import { StringIndexable, applyScoreFilters, catalogToRelationsByEntityId } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
-import { intersection, uniq } from 'lodash';
 import { HeatmapPageFilters } from './HeatmapFilters';
 
 interface SingleScorecardHeatmapProps {
