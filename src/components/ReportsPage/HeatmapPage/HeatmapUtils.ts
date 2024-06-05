@@ -22,10 +22,13 @@ import {
   RuleOutcome,
   ScorecardScoreNextSteps,
   TeamHierarchyNode,
+  TeamHierarchiesResponse,
 } from '../../../api/types';
-import { groupBy as _groupBy, flatten as _flatten, values } from 'lodash';
+import { groupBy as _groupBy, flatten as _flatten, values, uniq, intersection } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
 import { isApplicableRuleOutcome } from '../../../utils/ScorecardRules';
+import { HomepageEntity } from '../../../api/userInsightTypes';
+import { ScoreFilters } from './HeatmapFiltersModal';
 
 export type StringIndexable<T> = { [index: string]: T };
 
@@ -128,6 +131,81 @@ export const getScorecardServiceScoresByGroupByOption = (
   }
 };
 
+export const groupScoresByTeamHierarchies = (groupedScores: StringIndexable<ScorecardServiceScore[]>, teamHierarchies: TeamHierarchiesResponse) => {
+  const hierarchyGroupedData = {} as Record<string, ScorecardServiceScore[]>;
+
+  teamHierarchies.orderedParents.forEach((parent) => {
+    hierarchyGroupedData[parent.node.tag] = groupedScores[parent.node.tag] ?? [];
+
+    teamHierarchyNodeFlatChildren(parent).forEach((childTag) => {
+      (groupedScores[childTag] ?? []).forEach((score) => {
+        if (!hierarchyGroupedData[parent.node.tag].find((existingScore) => existingScore.componentRef === score.componentRef)) {
+          hierarchyGroupedData[parent.node.tag].push(score);
+        }
+      });
+    });
+  });
+
+  return hierarchyGroupedData;
+}
+
+export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<HomepageEntity>) => {
+  const ownerEmailByEntityId = {} as Record<string, string[]>;
+  const groupTagByEntityId = {} as Record<string, string[]>;
+
+  Object.values(entitiesByTag).forEach((entity) => {
+    if (entity.serviceOwnerEmails.length) {
+      const ownerEmails = entity.serviceOwnerEmails.map(({ email }) => email);
+      if (ownerEmailByEntityId[entity.id]) {
+        ownerEmailByEntityId[entity.id] = uniq([...ownerEmails, ...ownerEmailByEntityId[entity.id]]);
+      } else {
+        ownerEmailByEntityId[entity.id] = ownerEmails;
+      }
+    }
+
+    if (entity.serviceGroupTags) {
+      if (groupTagByEntityId[entity.id]) {
+        groupTagByEntityId[entity.id] = uniq([...entity.serviceGroupTags, ...groupTagByEntityId[entity.id]]);
+      } else {
+        groupTagByEntityId[entity.id] = entity.serviceGroupTags;
+      }
+    }
+  });
+
+  return {
+    ownerEmailByEntityId,
+    groupTagByEntityId
+  };
+}
+
+export const applyScoreFilters = (
+  scores: ScorecardServiceScore[],
+  scoreFilters: ScoreFilters,
+  ownerEmailByEntityId: StringIndexable<string[]>,
+  groupTagByEntityId: StringIndexable<string[]>
+) => {
+  let resultScores = scores;
+
+  if (scoreFilters.serviceIds.length) {
+    resultScores = resultScores.filter((score) => scoreFilters.serviceIds.includes(score.serviceId));
+  }
+  if (scoreFilters.groups.length) {
+    resultScores = resultScores.filter(
+      (score) => intersection(scoreFilters.groups, groupTagByEntityId?.[score.serviceId]).length
+    );
+  }
+  if (scoreFilters.teams.length) {
+    resultScores = resultScores.filter((score) => intersection(scoreFilters.teams, score.teams).length);
+  }
+  if (scoreFilters.users.length) {
+    resultScores = resultScores.filter(
+      (score) => intersection(scoreFilters.users, ownerEmailByEntityId?.[score.serviceId]).length
+    );
+  }
+
+  return resultScores;
+}
+
 interface ScorecardRuleMetadata {
   ruleName: string;
   totalServicesScore: number;
@@ -201,5 +279,5 @@ export const getFormattedScorecardScores = (
 };
 
 export const teamHierarchyNodeFlatChildren = (node: TeamHierarchyNode): string[] => {
-  return node.orderedChildren.map((child) => [child.node.tag, ...teamHierarchyNodeFlatChildren(child)]).flat();
+  return node.orderedChildren.flatMap((child) => [child.node.tag, ...teamHierarchyNodeFlatChildren(child)]);
 }

@@ -21,7 +21,7 @@ import { HeatmapTableByGroup } from './HeatmapTableByGroup';
 import { HeatmapTableByLevels } from './HeatmapTableByLevels';
 import { HeatmapTableByService } from './HeatmapTableByService';
 import { LevelsDrivenTable } from './LevelsDrivenTable';
-import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, StringIndexable, teamHierarchyNodeFlatChildren, } from '../HeatmapUtils';
+import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, groupScoresByTeamHierarchies, StringIndexable } from '../HeatmapUtils';
 import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
 
 import { GroupByOption, HeaderType, ScorecardLadder, ScorecardServiceScore, } from '../../../../api/types';
@@ -66,21 +66,7 @@ export const SingleScorecardHeatmapTable = ({
     const groupedData = getScorecardServiceScoresByGroupByOption(scores, groupBy);
 
     if (useHierarchy && groupBy === GroupByOption.TEAM && teamHierarchies) {
-      const hierarchyGroupedData = {} as Record<string, ScorecardServiceScore[]>;
-
-      teamHierarchies.orderedParents.forEach((parent) => {
-        hierarchyGroupedData[parent.node.tag] = groupedData[parent.node.tag] ?? [];
-
-        teamHierarchyNodeFlatChildren(parent).forEach((childTag) => {
-          (groupedData[childTag] ?? []).forEach((score) => {
-            if (!hierarchyGroupedData[parent.node.tag].find((existingScore) => existingScore.componentRef === score.componentRef)) {
-              hierarchyGroupedData[parent.node.tag].push(score);
-            }
-          });
-        });
-      });
-
-      return hierarchyGroupedData;
+      return groupScoresByTeamHierarchies(groupedData, teamHierarchies);
     }
 
     return groupedData;
