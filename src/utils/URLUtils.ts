@@ -26,6 +26,11 @@ interface CortexScorecardPageURLProperties {
   cortexUrl: string;
 }
 
+interface CortexInitiativePageURLProperties {
+  initiativeId: string | number;
+  cortexUrl: string;
+}
+
 export const buildUrl = (
   queryParamsObj: StringifiableRecord,
   pathname: string,
@@ -51,3 +56,9 @@ export const cortexScorecardServicePageUrl = ({
     scorecardId: scorecardId,
     cortexUrl: cortexUrl,
   })}?service=${serviceId}`;
+
+export const cortexInitiativePageUrl = ({
+  initiativeId,
+  cortexUrl,
+}: CortexInitiativePageURLProperties) =>
+  `${cortexUrl}/admin/initiatives/${initiativeId}`;

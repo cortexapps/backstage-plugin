@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Initiative } from '../../../../api/types';
+import { Initiative, InitiativeScheduleTimeUnit } from '../../../../api/types';
 import { Link, MarkdownContent } from '@backstage/core-components';
 import { Box, Typography, makeStyles } from '@material-ui/core';
 import { useRouteRef } from '@backstage/core-plugin-api';
@@ -23,10 +23,33 @@ import { CortexInfoCard } from '../../../Common/CortexInfoCard';
 import { CaptionTypography } from '../../../Common/StatsItem';
 import InitiativeMetadataFilter from './InitiativeMetadataFilter';
 import { getTargetDateMessage } from './InitiativeMetadataCardUtils';
+import {
+  useCortexFrontendUrl,
+  useHideCortexLinks,
+} from '../../../../utils/hooks';
+import { cortexInitiativePageUrl } from '../../../../utils/URLUtils';
+import { isNil } from 'lodash';
+import {
+  maybePluralize,
+  maybePluralizeOnlyNoun,
+} from '../../../../utils/strings';
 
 interface InitiativeMetadataCardProps {
   initiative: Initiative;
 }
+
+const timeUnitToDisplayName: Record<InitiativeScheduleTimeUnit, string> = {
+  [InitiativeScheduleTimeUnit.Day]: 'Day',
+  [InitiativeScheduleTimeUnit.Week]: 'Week',
+  [InitiativeScheduleTimeUnit.Month]: 'Month',
+};
+
+export const getTimeUnitDisplayName = (
+  timeUnit: InitiativeScheduleTimeUnit,
+  count: number,
+) => {
+  return maybePluralizeOnlyNoun(count, timeUnitToDisplayName[timeUnit]);
+};
 
 const useScorecardMetadataCardStyles = makeStyles(theme => ({
   markdownBox: {
@@ -43,12 +66,29 @@ const useScorecardMetadataCardStyles = makeStyles(theme => ({
   },
 }));
 
+const getNotificationDisplayText = (initiative: Initiative) => {
+  const notificationSchedule = initiative.notificationSchedule;
+  const isDisabled =
+    isNil(notificationSchedule) || notificationSchedule?.isDisabled;
+
+  if (isDisabled) {
+    return 'Custom notifications are disabled for this Initiative';
+  }
+
+  return `Notifications are configured to be sent every 
+  ${maybePluralize(
+    notificationSchedule.timeInterval,
+    timeUnitToDisplayName[notificationSchedule.timeUnit].toLowerCase(),
+  )}`;
+};
+
 export const InitiativeMetadataCard = ({
   initiative,
 }: InitiativeMetadataCardProps) => {
   const classes = useScorecardMetadataCardStyles();
   const scorecardRef = useRouteRef(scorecardRouteRef);
-
+  const hideLink = useHideCortexLinks();
+  const cortexBaseUrl = useCortexFrontendUrl();
   return (
     <CortexInfoCard
       title={
@@ -70,6 +110,26 @@ export const InitiativeMetadataCard = ({
             <MarkdownContent content={initiative.description} />
           </Box>
         )}
+        <Box className={classes.markdownBox}>
+          <CaptionTypography variant="caption">
+            Notification Schedule
+          </CaptionTypography>
+          <MarkdownContent content={getNotificationDisplayText(initiative)} />
+          {!hideLink && (
+            <Box>
+              <Link
+                to={cortexInitiativePageUrl({
+                  initiativeId: initiative.id,
+                  cortexUrl: cortexBaseUrl,
+                })}
+                target="_blank"
+              >
+                <b>Edit notification settings</b>
+              </Link>
+            </Box>
+          )}
+        </Box>
+
         <Box mb={2}>
           <CaptionTypography variant="caption">Filter</CaptionTypography>
           <InitiativeMetadataFilter initiative={initiative} />
