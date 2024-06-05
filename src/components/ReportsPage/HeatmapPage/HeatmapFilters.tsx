@@ -33,19 +33,19 @@ export interface HeatmapPageFilters {
 
 interface HeatmapFiltersProps {
   filters: HeatmapPageFilters;
-  setFilters: (partialFilters: Partial<HeatmapPageFilters>) => void;
+  setFiltersAndNavigate: (partialFilters: Partial<HeatmapPageFilters>) => void;
   entitiesByTag: StringIndexable<HomepageEntity>;
   excludedGroupBys: GroupByOption[];
 }
 
-export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilters, entitiesByTag, excludedGroupBys }) => {
+export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFiltersAndNavigate, entitiesByTag, excludedGroupBys }) => {
   const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
     const groupBy = event.target.value as GroupByOption;
-    setFilters({ groupBy, useHierarchy: groupBy === GroupByOption.TEAM ? filters.useHierarchy : false });
+    setFiltersAndNavigate({ groupBy, useHierarchy: groupBy === GroupByOption.TEAM ? filters.useHierarchy : false });
   }
 
   const onHeaderTypeChange = (event: ChangeEvent<{ value: unknown }>) => {
-    setFilters({ headerType: event.target.value as HeaderType });
+    setFiltersAndNavigate({ headerType: event.target.value as HeaderType });
   }
 
   return (
@@ -69,7 +69,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
                   control={
                     <Checkbox
                       checked={filters.useHierarchy}
-                      onChange={() => setFilters({ useHierarchy: !filters.useHierarchy, hideWithoutChildren: true })}
+                      onChange={() => setFiltersAndNavigate({ useHierarchy: !filters.useHierarchy, hideWithoutChildren: true })}
                     />
                   }
                   label={
@@ -84,7 +84,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
                     control={
                       <Checkbox
                         checked={filters.hideWithoutChildren}
-                        onChange={() => setFilters({ hideWithoutChildren: !filters.hideWithoutChildren })}
+                        onChange={() => setFiltersAndNavigate({ hideWithoutChildren: !filters.hideWithoutChildren })}
                       />
                     }
                     label={
@@ -102,7 +102,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
       <Grid item>
         <HeatmapFiltersModal
           filters={filters.scoreFilters}
-          setFilters={(scoreFilters) => setFilters({ scoreFilters })}
+          setFilters={(scoreFilters) => setFiltersAndNavigate({ scoreFilters })}
           entitiesByTag={entitiesByTag}
         />
       </Grid>
