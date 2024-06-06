@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { isUndefined } from 'lodash';
+import { isUndefined, uniq } from 'lodash';
 import { Progress, WarningPanel } from '@backstage/core-components';
 
 import { HeatmapTableByGroup } from './HeatmapTableByGroup';
 import { HeatmapTableByLevels } from './HeatmapTableByLevels';
 import { HeatmapTableByService } from './HeatmapTableByService';
 import { LevelsDrivenTable } from './LevelsDrivenTable';
-import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, groupScoresByHierarchies, StringIndexable } from '../HeatmapUtils';
+import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, groupScoresByHierarchies, hierarchyNodeFlatAllChildren, StringIndexable } from '../HeatmapUtils';
 import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
 
-import { GroupByOption, HeaderType, ScorecardLadder, ScorecardServiceScore, } from '../../../../api/types';
+import { GroupByOption, HeaderType, ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { useCortexApi } from '../../../../utils/hooks';
 
@@ -66,6 +66,19 @@ export const SingleScorecardHeatmapTable = ({
   const { value: domainHierarchies, loading: loadingDomainHierarchies } = useCortexApi(api => api.getDomainHierarchies());
 
   const data = useMemo(() => {
+    if (groupBy === GroupByOption.DOMAIN && domainHierarchies) {
+      const flatAllChildren = hierarchyNodeFlatAllChildren(domainHierarchies.orderedTree);
+
+      Object.keys(domainTagByEntityId).forEach((entityId) => {
+        Object.keys(flatAllChildren).forEach((parentTag) => {
+          const haveCommonChild = domainTagByEntityId[entityId].some((item) => flatAllChildren[parentTag].includes(item));
+          if (haveCommonChild) {
+            domainTagByEntityId[entityId] = uniq([...domainTagByEntityId[entityId], parentTag]);
+          }
+        });
+      });
+    }
+
     const groupedData = getScorecardServiceScoresByGroupByOption(scores, groupBy, domainTagByEntityId);
 
     if (useHierarchy) {
