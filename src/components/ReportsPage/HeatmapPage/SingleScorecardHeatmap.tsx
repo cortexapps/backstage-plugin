@@ -20,11 +20,13 @@ import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTabl
 import { StringIndexable, applyScoreFilters, catalogToRelationsByEntityId } from './HeatmapUtils';
 import { HomepageEntityWithDomains } from '../../../api/userInsightTypes';
 import { HeatmapPageFilters } from './HeatmapFilters';
+import { ScorecardLadder } from '../../../api/types';
 
 interface SingleScorecardHeatmapProps {
   entityCategory: string;
   entitiesByTag: StringIndexable<HomepageEntityWithDomains>;
   scorecardId: number;
+  ladder: ScorecardLadder | undefined;
   filters: HeatmapPageFilters;
 }
 
@@ -32,6 +34,7 @@ export const SingleScorecardHeatmap = ({
   entityCategory,
   entitiesByTag,
   scorecardId,
+  ladder,
   filters: {
     groupBy,
     headerType,
@@ -54,12 +57,7 @@ export const SingleScorecardHeatmap = ({
     return applyScoreFilters(scores ?? [], scoreFilters, domainTagByEntityId, ownerEmailByEntityId, groupTagByEntityId);
   }, [scores, scoreFilters, domainTagByEntityId, ownerEmailByEntityId, groupTagByEntityId])
 
-  const { value: ladders, loading: loadingLadders } = useCortexApi(
-    api => api.getScorecardLadders(scorecardId),
-    [scorecardId],
-  );
-
-  if (loadingScores || loadingLadders) {
+  if (loadingScores) {
     return <Progress />;
   }
 
@@ -87,7 +85,7 @@ export const SingleScorecardHeatmap = ({
       entitiesByTag={entitiesByTag}
       groupBy={groupBy}
       headerType={headerType}
-      ladder={ladders?.[0]}
+      ladder={ladder}
       scores={filteredScores}
       useHierarchy={useHierarchy}
       hideWithoutChildren={hideWithoutChildren}

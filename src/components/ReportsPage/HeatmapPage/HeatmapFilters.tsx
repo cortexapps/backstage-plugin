@@ -18,7 +18,7 @@ import React, { ChangeEvent } from "react";
 import { GroupByDropdown } from "../Common/GroupByDropdown";
 import { HeaderTypeDropdown } from "../Common/HeaderTypeDropdown";
 import { HeatmapFiltersModal, ScoreFilters } from "./HeatmapFiltersModal";
-import { GroupByOption, HeaderType } from "../../../api/types";
+import { GroupByOption, HeaderType, ScorecardLadder } from "../../../api/types";
 import { StringIndexable } from "./HeatmapUtils";
 import { HomepageEntity } from "../../../api/userInsightTypes";
 
@@ -36,9 +36,10 @@ interface HeatmapFiltersProps {
   setFiltersAndNavigate: (partialFilters: Partial<HeatmapPageFilters>) => void;
   entitiesByTag: StringIndexable<HomepageEntity>;
   excludedGroupBys: GroupByOption[];
+  ladder: ScorecardLadder | undefined;
 }
 
-export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFiltersAndNavigate, entitiesByTag, excludedGroupBys }) => {
+export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFiltersAndNavigate, entitiesByTag, excludedGroupBys, ladder }) => {
   const isHierarchyToggleAllowed = [GroupByOption.TEAM, GroupByOption.DOMAIN].includes(filters.groupBy);
 
   const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
@@ -106,6 +107,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
           filters={filters.scoreFilters}
           setFilters={(scoreFilters) => setFiltersAndNavigate({ scoreFilters })}
           entitiesByTag={entitiesByTag}
+          ladder={ladder}
         />
       </Grid>
     </Grid>

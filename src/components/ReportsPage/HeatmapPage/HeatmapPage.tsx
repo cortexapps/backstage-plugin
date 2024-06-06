@@ -52,6 +52,7 @@ export const HeatmapPage = () => {
     teams: filters.scoreFilters.teams.length ? filters.scoreFilters.teams.join(',') : undefined,
     users: filters.scoreFilters.users.length ? filters.scoreFilters.users.join(',') : undefined,
     domains: filters.scoreFilters.domains.length ? filters.scoreFilters.domains.join(',') : undefined,
+    levels: filters.scoreFilters.levels.length ? filters.scoreFilters.levels.join(',') : undefined,
     hierarchy: filters.useHierarchy ? 'true' : undefined,
     hideWithoutChildren: !filters.hideWithoutChildren ? 'false' : undefined,
   });
@@ -73,6 +74,7 @@ export const HeatmapPage = () => {
       teams: searchParams.get('teams')?.split(',') ?? defaultFilters.scoreFilters.teams,
       users: searchParams.get('users')?.split(',') ?? defaultFilters.scoreFilters.users,
       domains: searchParams.get('domains')?.split(',') ?? defaultFilters.scoreFilters.domains,
+      levels: searchParams.get('levels')?.split(',') ?? defaultFilters.scoreFilters.levels,
     },
   });
   const setFiltersAndNavigate = useCallback((partialFilters: Partial<HeatmapPageFilters>) => {
@@ -117,6 +119,13 @@ export const HeatmapPage = () => {
 
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
+  const { value: ladders, loading: loadingLadders } = useCortexApi(
+    async (api) => {
+      return filters.selectedScorecardId ? api.getScorecardLadders(filters.selectedScorecardId) : undefined
+    },
+    [filters.selectedScorecardId],
+  );
+
   return (
     <Content>
       <ContentHeader title="Bird's Eye">
@@ -138,6 +147,7 @@ export const HeatmapPage = () => {
             setFiltersAndNavigate={setFiltersAndNavigate}
             excludedGroupBys={excludedGroupBys}
             entitiesByTag={entitiesByTag}
+            ladder={ladders?.[0]}
           />
         </Grid>
         <Grid item lg={12}>
@@ -145,7 +155,7 @@ export const HeatmapPage = () => {
             ? (
               <EmptyState title="Select a Scorecard" missing="data" />
             )
-            : loadingEntities
+            : (loadingEntities || loadingLadders)
               ? <Progress />
               : (
                 <SingleScorecardHeatmap
@@ -153,6 +163,7 @@ export const HeatmapPage = () => {
                   entitiesByTag={entitiesByTag}
                   scorecardId={filters.selectedScorecardId}
                   filters={filters}
+                  ladder={ladders?.[0]}
                 />
               )
           }

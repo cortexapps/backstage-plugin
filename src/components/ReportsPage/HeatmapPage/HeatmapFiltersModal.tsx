@@ -20,6 +20,7 @@ import { HomepageEntity } from '../../../api/userInsightTypes';
 import { sortBy, uniq } from 'lodash';
 import { Clear } from '@material-ui/icons';
 import { ModalSelect } from './HeatmapFiltersSelect';
+import { ScorecardLadder } from '../../../api/types';
 
 export interface ScoreFilters {
   serviceIds: number[];
@@ -27,6 +28,7 @@ export interface ScoreFilters {
   teams: string[];
   users: string[];
   domains: string[];
+  levels: string[];
 }
 
 export const defaultFilters: ScoreFilters = {
@@ -35,15 +37,17 @@ export const defaultFilters: ScoreFilters = {
   teams: [],
   users: [],
   domains: [],
+  levels: [],
 }
 
 interface HeatmapFiltersModalProps {
   filters: ScoreFilters;
   setFilters: (scoreFilters: ScoreFilters) => void;
   entitiesByTag: StringIndexable<HomepageEntity>;
+  ladder: ScorecardLadder | undefined;
 }
 
-export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filters, setFilters, entitiesByTag }) => {
+export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filters, setFilters, entitiesByTag, ladder }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalFilters, setModalFilters] = useState(filters);
   const setModalFiltersPartially = (filters: Partial<ScoreFilters>) => setModalFilters((prev) => ({ ...prev, ...filters }));
@@ -92,6 +96,8 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
       domains: sortBy(results.domains, "name"),
     };
   }, [entitiesByTag]);
+
+  const levels = useMemo(() => [...ladder?.levels.map(({ name }) => name) ?? [], 'No Level'], [ladder])
 
   const filtersCount = useMemo(() => {
     return Object.values(filters).reduce((total, item) => total + item.length, 0)
@@ -190,6 +196,22 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
               </MenuItem>
             ))}
           />
+          {levels?.length && (
+            <ModalSelect
+              name='Levels'
+              onChange={(levels) => setModalFiltersPartially({ levels })}
+              onReset={() => setModalFiltersPartially({ levels: defaultFilters.levels })}
+              value={modalFilters.levels}
+              options={levels.map((level) => (
+                <MenuItem
+                  key={`ScorecardOption-user-${level}`}
+                  value={level}
+                >
+                  {level}
+                </MenuItem>
+              ))}
+            />
+          )}
         </Box>
       </DialogContent>
       <DialogActions>

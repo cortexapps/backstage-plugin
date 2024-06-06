@@ -246,6 +246,13 @@ export const applyScoreFilters = (
       (score) => intersection(scoreFilters.users, ownerEmailByEntityId?.[score.serviceId]).length
     );
   }
+  if (scoreFilters.levels.length) {
+    resultScores = resultScores.filter(
+      (score) => score.ladderLevels.find((ladderLevel) => {
+        return scoreFilters.levels.includes(ladderLevel.currentLevel?.name ?? "No Level")
+      })
+    );
+  }
 
   return resultScores;
 }
