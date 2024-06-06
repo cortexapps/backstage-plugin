@@ -440,7 +440,7 @@ export interface ExpirationResponse {
   shutdownDate: string | null;
 }
 
-interface DomainHierarchyNode {
+export interface DomainHierarchyNode {
   node: {
     id: number;
     cid: string;

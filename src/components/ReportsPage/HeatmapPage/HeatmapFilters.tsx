@@ -39,9 +39,11 @@ interface HeatmapFiltersProps {
 }
 
 export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFiltersAndNavigate, entitiesByTag, excludedGroupBys }) => {
+  const isHierarchyToggleAllowed = [GroupByOption.TEAM, GroupByOption.DOMAIN].includes(filters.groupBy);
+
   const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
     const groupBy = event.target.value as GroupByOption;
-    setFiltersAndNavigate({ groupBy, useHierarchy: groupBy === GroupByOption.TEAM ? filters.useHierarchy : false });
+    setFiltersAndNavigate({ groupBy, useHierarchy: isHierarchyToggleAllowed ? filters.useHierarchy : false });
   }
 
   const onHeaderTypeChange = (event: ChangeEvent<{ value: unknown }>) => {
@@ -61,11 +63,11 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
               setHeaderType={onHeaderTypeChange}
             />
           </Grid>
-          {filters.groupBy === GroupByOption.TEAM && (
+          {isHierarchyToggleAllowed && (
             <Grid item>
               <Grid container direction="row" alignItems="center">
                 <FormControlLabel
-                  aria-label='Use Team hierarchy'
+                  aria-label={`Use ${filters.groupBy} hierarchy`}
                   control={
                     <Checkbox
                       checked={filters.useHierarchy}
@@ -74,13 +76,13 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
                   }
                   label={
                     <InputLabel>
-                      Use Team hierarchy
+                      Use {filters.groupBy} hierarchy
                     </InputLabel>
                   }
                 />
                 {filters.useHierarchy && (
                   <FormControlLabel
-                    aria-label='Hide Teams with 0 entities'
+                    aria-label={`Hide ${filters.groupBy}s with 0 entities`}
                     control={
                       <Checkbox
                         checked={filters.hideWithoutChildren}
@@ -89,7 +91,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
                     }
                     label={
                       <InputLabel>
-                        Hide Teams with 0 entities
+                        Hide {filters.groupBy}s with 0 entities
                       </InputLabel>
                     }
                   />

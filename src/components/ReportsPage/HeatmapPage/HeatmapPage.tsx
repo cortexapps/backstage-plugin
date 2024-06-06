@@ -19,7 +19,7 @@ import { Grid } from '@material-ui/core';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
 import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
-import { GroupByOption, HeaderType } from '../../../api/types';
+import { FilterType, GroupByOption, HeaderType } from '../../../api/types';
 import { CopyButton } from '../../Common/CopyButton';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { buildUrl } from '../../../utils/URLUtils';
@@ -98,9 +98,8 @@ export const HeatmapPage = () => {
   const { entityCategory, excludedGroupBys } = useMemo(() => {
     const selectedScorecard = scorecardsResult.value?.find((scorecard) => scorecard.id === filters.selectedScorecardId);
 
-    const excludedGroupBys = isScorecardTeamBased(selectedScorecard)
-      ? [GroupByOption.TEAM, GroupByOption.DOMAIN]
-      : [];
+    const excludedGroupBys = isScorecardTeamBased(selectedScorecard) ? [GroupByOption.TEAM] : [];
+    if (selectedScorecard?.filter?.type === FilterType.DOMAIN_FILTER) excludedGroupBys.push(GroupByOption.DOMAIN);
 
     if (filters.groupBy && excludedGroupBys.includes(filters.groupBy)) {
       setFiltersAndNavigate({ groupBy: defaultFilters.groupBy });

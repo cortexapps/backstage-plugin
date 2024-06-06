@@ -23,6 +23,8 @@ import {
   ScorecardScoreNextSteps,
   TeamHierarchyNode,
   TeamHierarchiesResponse,
+  DomainHierarchiesResponse,
+  DomainHierarchyNode,
 } from '../../../api/types';
 import { groupBy as _groupBy, flatten as _flatten, values, uniq, intersection } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
@@ -146,13 +148,31 @@ export const groupScoresByTeamHierarchies = (groupedScores: StringIndexable<Scor
   teamHierarchies.orderedParents.forEach((parent) => {
     hierarchyGroupedData[parent.node.tag] = groupedScores[parent.node.tag] ?? [];
 
-    teamHierarchyNodeFlatChildren(parent).forEach((childTag) => {
+    hierarchyNodeFlatChildren(parent).forEach((childTag) => {
       (groupedScores[childTag] ?? []).forEach((score) => {
         if (!hierarchyGroupedData[parent.node.tag].find((existingScore) => existingScore.componentRef === score.componentRef)) {
           hierarchyGroupedData[parent.node.tag].push(score);
         }
       });
     });
+  });
+
+  return hierarchyGroupedData;
+}
+
+export const groupScoresByDomainHierarchies = (groupedScores: StringIndexable<ScorecardServiceScore[]>, domainHierarchies: DomainHierarchiesResponse) => {
+  const hierarchyGroupedData = {} as Record<string, ScorecardServiceScore[]>;
+
+  domainHierarchies.orderedTree.forEach((parent) => {
+    hierarchyGroupedData[parent.node.tag] = groupedScores[parent.node.tag] ?? [];
+
+    hierarchyNodeFlatChildren(parent).forEach((childTag) => {
+      (groupedScores[childTag] ?? []).forEach((score) => {
+        if (!hierarchyGroupedData[parent.node.tag].find((existingScore) => existingScore.componentRef === score.componentRef)) {
+          hierarchyGroupedData[parent.node.tag].push(score);
+        }
+      });
+    })
   });
 
   return hierarchyGroupedData;
@@ -303,6 +323,13 @@ export const getFormattedScorecardScores = (
   });
 };
 
-export const teamHierarchyNodeFlatChildren = (node: TeamHierarchyNode): string[] => {
-  return node.orderedChildren.flatMap((child) => [child.node.tag, ...teamHierarchyNodeFlatChildren(child)]);
+interface HierarchyNode {
+  node: {
+    tag: string;
+  }
+  orderedChildren: HierarchyNode[];
+}
+
+export const hierarchyNodeFlatChildren = (node: HierarchyNode): string[] => {
+  return node.orderedChildren.flatMap((child) => [child.node.tag, ...hierarchyNodeFlatChildren(child)]);
 }
