@@ -71,8 +71,7 @@ export const HeatmapTableByLevels = ({
               {averageRuleScores.map((score, idx) => (
                 <HeatmapCell
                   key={`HeatmapCell-${identifier}-${idx}`}
-                  score={score > 0 ? 1 : 0}
-                  text={score > 0 ? '1' : '0'}
+                  score={score}
                 />
               ))}
             </TableRow>
