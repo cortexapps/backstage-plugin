@@ -28,6 +28,7 @@ const GroupByLabels = {
   [GroupByOption.TEAM]: GroupByOption.TEAM,
   [GroupByOption.SERVICE_GROUP]: 'Group',
   [GroupByOption.LEVEL]: GroupByOption.LEVEL,
+  [GroupByOption.DOMAIN]: GroupByOption.DOMAIN,
 };
 
 export const GroupByDropdown = ({
@@ -45,7 +46,7 @@ export const GroupByDropdown = ({
       <Select value={groupBy} onChange={setGroupBy}>
         {options.map(value => (
           <MenuItem key={`GroupByOption-${value}`} value={value}>
-            {GroupByLabels[value]}
+            {GroupByLabels?.[value] ?? value}
           </MenuItem>
         ))}
       </Select>

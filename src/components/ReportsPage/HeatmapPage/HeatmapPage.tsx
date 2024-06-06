@@ -98,7 +98,9 @@ export const HeatmapPage = () => {
   const { entityCategory, excludedGroupBys } = useMemo(() => {
     const selectedScorecard = scorecardsResult.value?.find((scorecard) => scorecard.id === filters.selectedScorecardId);
 
-    const excludedGroupBys = isScorecardTeamBased(selectedScorecard) ? [GroupByOption.TEAM] : [];
+    const excludedGroupBys = isScorecardTeamBased(selectedScorecard)
+      ? [GroupByOption.TEAM, GroupByOption.DOMAIN]
+      : [];
 
     if (filters.groupBy && excludedGroupBys.includes(filters.groupBy)) {
       setFiltersAndNavigate({ groupBy: defaultFilters.groupBy });

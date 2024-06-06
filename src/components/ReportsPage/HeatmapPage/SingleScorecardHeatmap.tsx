@@ -91,6 +91,7 @@ export const SingleScorecardHeatmap = ({
       scores={filteredScores}
       useHierarchy={useHierarchy}
       hideWithoutChildren={hideWithoutChildren}
+      domainTagByEntityId={domainTagByEntityId}
     />
   );
 };

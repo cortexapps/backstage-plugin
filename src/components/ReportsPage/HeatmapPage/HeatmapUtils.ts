@@ -27,7 +27,7 @@ import {
 import { groupBy as _groupBy, flatten as _flatten, values, uniq, intersection } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
 import { isApplicableRuleOutcome } from '../../../utils/ScorecardRules';
-import { HomepageEntityWithDomains } from '../../../api/userInsightTypes';
+import { HomepageEntity, HomepageEntityWithDomains } from '../../../api/userInsightTypes';
 import { ScoreFilters } from './HeatmapFiltersModal';
 
 export type StringIndexable<T> = { [index: string]: T };
@@ -63,25 +63,31 @@ export const getSortedRulesByLevelsFromScores = (
     ),
   );
 
-type GroupByKeys = 'teams' | 'tags' | 'ladderLevels';
+type GroupByKeys = 'teams' | 'tags' | 'ladderLevels' | 'domains';
 type GroupByValues = {
+  serviceId: number;
   teams?: string[];
   tags?: string[];
   ladderLevels?: ScorecardScoreNextSteps[];
+  domains?: string[];
 };
 
 const groupByKeyToLabel: Record<GroupByKeys, string> = {
   teams: 'team',
   tags: 'group',
-  ladderLevels: 'level'
+  ladderLevels: 'level',
+  domains: 'domain',
 }
 
 const groupReportDataBy = <T extends GroupByValues>(
   scores: T[],
   groupBy: GroupByKeys,
+  domainTagByEntityId?: StringIndexable<string[]>,
 ): StringIndexable<T[]> => {
   return scores.reduce<StringIndexable<T[]>>((data, score) => {
-    const groups = score[groupBy];
+    const groups = groupBy !== "domains"
+      ? score[groupBy]
+      : domainTagByEntityId?.[score.serviceId] ?? [];
 
     if (!groups?.length) {
       const key = `No ${groupByKeyToLabel[groupBy]}`;
@@ -112,6 +118,7 @@ const groupReportDataBy = <T extends GroupByValues>(
 export const getScorecardServiceScoresByGroupByOption = (
   scores: ScorecardServiceScore[] | undefined,
   groupBy: GroupByOption | undefined,
+  domainTagByEntityId: StringIndexable<string[]>,
 ): StringIndexable<ScorecardServiceScore[]> => {
   if (scores === undefined || scores.length === 0) {
     return {};
@@ -126,6 +133,8 @@ export const getScorecardServiceScoresByGroupByOption = (
       return groupReportDataBy(scores, 'teams');
     case GroupByOption.LEVEL:
       return groupReportDataBy(scores, 'ladderLevels');
+    case GroupByOption.DOMAIN:
+      return groupReportDataBy(scores, 'domains', domainTagByEntityId);
     default:
       return {};
   }

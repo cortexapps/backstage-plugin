@@ -255,6 +255,7 @@ export enum GroupByOption {
   TEAM = 'Team',
   SERVICE_GROUP = 'Service Group',
   LEVEL = 'Level',
+  DOMAIN = 'Domain',
 }
 
 export enum HeaderType {

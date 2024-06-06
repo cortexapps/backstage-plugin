@@ -38,6 +38,7 @@ interface SingleScorecardHeatmapTableProps {
   scores: ScorecardServiceScore[];
   useHierarchy: boolean;
   hideWithoutChildren: boolean;
+  domainTagByEntityId: StringIndexable<string[]>;
 }
 
 export const SingleScorecardHeatmapTable = ({
@@ -50,6 +51,7 @@ export const SingleScorecardHeatmapTable = ({
   scores,
   useHierarchy,
   hideWithoutChildren,
+  domainTagByEntityId,
 }: SingleScorecardHeatmapTableProps) => {
   const levelsDriven = headerType === HeaderType.LEVELS;
   const headers = useMemo(
@@ -63,14 +65,14 @@ export const SingleScorecardHeatmapTable = ({
   const { value: teamHierarchies, loading: loadingTeamHierarchies } = useCortexApi(api => api.getTeamHierarchies());
 
   const data = useMemo(() => {
-    const groupedData = getScorecardServiceScoresByGroupByOption(scores, groupBy);
+    const groupedData = getScorecardServiceScoresByGroupByOption(scores, groupBy, domainTagByEntityId);
 
     if (useHierarchy && groupBy === GroupByOption.TEAM && teamHierarchies) {
       return groupScoresByTeamHierarchies(groupedData, teamHierarchies);
     }
 
     return groupedData;
-  }, [scores, groupBy, useHierarchy, teamHierarchies]);
+  }, [scores, groupBy, useHierarchy, domainTagByEntityId, teamHierarchies]);
 
   if (useHierarchy && groupBy === GroupByOption.TEAM && loadingTeamHierarchies) {
     return <Progress />
@@ -116,6 +118,8 @@ export const SingleScorecardHeatmapTable = ({
       return (
         <HeatmapTableByLevels ladder={ladder} rules={headers} data={data} entityCategory={entityCategory} />
       );
+    case GroupByOption.DOMAIN:
+      return <HeatmapTableByGroup header="Domain" rules={headers} data={data} entityCategory={entityCategory} />;
     default:
       return <>Hi</>;
   }
