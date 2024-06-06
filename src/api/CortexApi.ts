@@ -42,6 +42,7 @@ import { TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
 import {
   GetUserInsightsResponse,
   HomepageEntityResponse,
+  HomepageEntityWithDomainsResponse,
 } from './userInsightTypes';
 
 export interface CortexApi {
@@ -109,6 +110,8 @@ export interface CortexApi {
   getInsightsByEmail(): Promise<GetUserInsightsResponse>;
 
   getCatalogEntities(): Promise<HomepageEntityResponse>;
+
+  getCatalogEntitiesWithDomains(): Promise<HomepageEntityWithDomainsResponse>;
 
   getUserPermissions(): Promise<UserPermissionsResponse>;
 

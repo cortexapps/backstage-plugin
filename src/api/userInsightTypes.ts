@@ -86,3 +86,11 @@ export interface HomepageEntity {
 export interface HomepageEntityResponse {
   entities: HomepageEntity[];
 }
+
+export interface HomepageEntityWithDomains extends HomepageEntity {
+  parentDomainTags: string[];
+}
+
+export interface HomepageEntityWithDomainsResponse {
+  entities: HomepageEntityWithDomains[];
+}

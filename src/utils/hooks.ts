@@ -27,7 +27,7 @@ import { EntityFilterGroup } from '../filters';
 import { FilterDefinitionWithPredicate } from '../components/FilterCard/Filters';
 import { extensionApiRef } from '../api/ExtensionApi';
 import { StringIndexable } from '../components/ReportsPage/HeatmapPage/HeatmapUtils';
-import { HomepageEntity } from '../api/userInsightTypes';
+import { HomepageEntityWithDomains } from '../api/userInsightTypes';
 import { isNil, keyBy } from 'lodash';
 import { Scorecard } from '../api/types';
 
@@ -413,15 +413,15 @@ export function usePartialScorecardCompareFn() {
 }
 
 export function useEntitiesByTag(): {
-  entitiesByTag: StringIndexable<HomepageEntity>;
+  entitiesByTag: StringIndexable<HomepageEntityWithDomains>;
   loading: boolean;
 } {
   const { value: entities, loading } = useCortexApi(
-    api => api.getCatalogEntities(),
+    api => api.getCatalogEntitiesWithDomains(),
     [],
   );
 
-  const entitiesByTag: StringIndexable<HomepageEntity> = useMemo(
+  const entitiesByTag: StringIndexable<HomepageEntityWithDomains> = useMemo(
     () =>
       !isNil(entities) && !isNil(entities.entities)
         ? keyBy(Object.values(entities.entities), entity => entity.codeTag)

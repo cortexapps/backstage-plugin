@@ -26,6 +26,7 @@ export interface ScoreFilters {
   groups: string[];
   teams: string[];
   users: string[];
+  domains: string[];
 }
 
 export const defaultFilters: ScoreFilters = {
@@ -33,6 +34,7 @@ export const defaultFilters: ScoreFilters = {
   groups: [],
   teams: [],
   users: [],
+  domains: [],
 }
 
 interface HeatmapFiltersModalProps {
@@ -54,12 +56,13 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
     setIsOpen(true);
   }
 
-  const { services, groups, teams, users } = useMemo(() => {
+  const { services, groups, teams, users, domains } = useMemo(() => {
     const results = {
       services: [] as HomepageEntity[],
       groups: [] as string[],
       teams: [] as HomepageEntity[],
       users: [] as string[],
+      domains: [] as HomepageEntity[]
     };
 
     Object.keys(entitiesByTag).forEach((key) => {
@@ -70,6 +73,9 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
           break;
         case "team":
           results.teams.push(entity);
+          break;
+        case "domain":
+          results.domains.push(entity);
           break;
         default:
           break;
@@ -83,6 +89,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
       groups: sortBy(uniq(results.groups)),
       teams: sortBy(results.teams, "name"),
       users: sortBy(uniq(results.users)),
+      domains: sortBy(results.domains, "name"),
     };
   }, [entitiesByTag]);
 
@@ -124,6 +131,20 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
                 value={service.id}
               >
                 {service.name}
+              </MenuItem>
+            ))}
+          />
+          <ModalSelect
+            name='Domains'
+            onChange={(domains) => setModalFiltersPartially({ domains })}
+            onReset={() => setModalFiltersPartially({ domains: defaultFilters.domains })}
+            value={modalFilters.domains}
+            options={domains.map((domain) => (
+              <MenuItem
+                key={`ScorecardOption-service-${domain.id}`}
+                value={domain.codeTag}
+              >
+                {domain.name}
               </MenuItem>
             ))}
           />

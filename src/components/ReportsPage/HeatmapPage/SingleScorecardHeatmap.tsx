@@ -18,12 +18,12 @@ import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../../utils/hooks';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
 import { StringIndexable, applyScoreFilters, catalogToRelationsByEntityId } from './HeatmapUtils';
-import { HomepageEntity } from '../../../api/userInsightTypes';
+import { HomepageEntityWithDomains } from '../../../api/userInsightTypes';
 import { HeatmapPageFilters } from './HeatmapFilters';
 
 interface SingleScorecardHeatmapProps {
   entityCategory: string;
-  entitiesByTag: StringIndexable<HomepageEntity>;
+  entitiesByTag: StringIndexable<HomepageEntityWithDomains>;
   scorecardId: number;
   filters: HeatmapPageFilters;
 }
@@ -46,13 +46,13 @@ export const SingleScorecardHeatmap = ({
     error: scoresError,
   } = useCortexApi(api => api.getScorecardScores(scorecardId), [scorecardId]);
 
-  const { ownerEmailByEntityId, groupTagByEntityId } = useMemo(() => {
+  const { domainTagByEntityId, ownerEmailByEntityId, groupTagByEntityId } = useMemo(() => {
     return catalogToRelationsByEntityId(entitiesByTag);
   }, [entitiesByTag]);
 
   const filteredScores = useMemo(() => {
-    return applyScoreFilters(scores ?? [], scoreFilters, ownerEmailByEntityId, groupTagByEntityId);
-  }, [scores, scoreFilters, ownerEmailByEntityId, groupTagByEntityId])
+    return applyScoreFilters(scores ?? [], scoreFilters, domainTagByEntityId, ownerEmailByEntityId, groupTagByEntityId);
+  }, [scores, scoreFilters, domainTagByEntityId, ownerEmailByEntityId, groupTagByEntityId])
 
   const { value: ladders, loading: loadingLadders } = useCortexApi(
     api => api.getScorecardLadders(scorecardId),

@@ -27,7 +27,7 @@ import {
 import { groupBy as _groupBy, flatten as _flatten, values, uniq, intersection } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
 import { isApplicableRuleOutcome } from '../../../utils/ScorecardRules';
-import { HomepageEntity } from '../../../api/userInsightTypes';
+import { HomepageEntityWithDomains } from '../../../api/userInsightTypes';
 import { ScoreFilters } from './HeatmapFiltersModal';
 
 export type StringIndexable<T> = { [index: string]: T };
@@ -149,11 +149,20 @@ export const groupScoresByTeamHierarchies = (groupedScores: StringIndexable<Scor
   return hierarchyGroupedData;
 }
 
-export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<HomepageEntity>) => {
+export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<HomepageEntityWithDomains>) => {
+  const domainTagByEntityId = {} as Record<string, string[]>;
   const ownerEmailByEntityId = {} as Record<string, string[]>;
   const groupTagByEntityId = {} as Record<string, string[]>;
 
   Object.values(entitiesByTag).forEach((entity) => {
+    if (entity.parentDomainTags.length) {
+      if (domainTagByEntityId[entity.id]) {
+        domainTagByEntityId[entity.id] = uniq([...entity.parentDomainTags, ...domainTagByEntityId[entity.id]]);
+      } else {
+        domainTagByEntityId[entity.id] = entity.parentDomainTags;
+      }
+    }
+
     if (entity.serviceOwnerEmails.length) {
       const ownerEmails = entity.serviceOwnerEmails.map(({ email }) => email);
       if (ownerEmailByEntityId[entity.id]) {
@@ -173,6 +182,7 @@ export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<Home
   });
 
   return {
+    domainTagByEntityId,
     ownerEmailByEntityId,
     groupTagByEntityId
   };
@@ -181,6 +191,7 @@ export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<Home
 export const applyScoreFilters = (
   scores: ScorecardServiceScore[],
   scoreFilters: ScoreFilters,
+  domainTagByEntityId: StringIndexable<string[]>,
   ownerEmailByEntityId: StringIndexable<string[]>,
   groupTagByEntityId: StringIndexable<string[]>
 ) => {
@@ -188,6 +199,11 @@ export const applyScoreFilters = (
 
   if (scoreFilters.serviceIds.length) {
     resultScores = resultScores.filter((score) => scoreFilters.serviceIds.includes(score.serviceId));
+  }
+  if (scoreFilters.domains.length) {
+    resultScores = resultScores.filter(
+      (score) => intersection(scoreFilters.domains, domainTagByEntityId?.[score.serviceId]).length
+    );
   }
   if (scoreFilters.groups.length) {
     resultScores = resultScores.filter(

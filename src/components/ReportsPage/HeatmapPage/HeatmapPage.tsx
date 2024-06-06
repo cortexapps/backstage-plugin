@@ -51,6 +51,7 @@ export const HeatmapPage = () => {
     groups: filters.scoreFilters.groups.length ? filters.scoreFilters.groups.join(',') : undefined,
     teams: filters.scoreFilters.teams.length ? filters.scoreFilters.teams.join(',') : undefined,
     users: filters.scoreFilters.users.length ? filters.scoreFilters.users.join(',') : undefined,
+    domains: filters.scoreFilters.domains.length ? filters.scoreFilters.domains.join(',') : undefined,
     hierarchy: filters.useHierarchy ? 'true' : undefined,
     hideWithoutChildren: !filters.hideWithoutChildren ? 'false' : undefined,
   });
@@ -71,6 +72,7 @@ export const HeatmapPage = () => {
       groups: searchParams.get('groups')?.split(',') ?? defaultFilters.scoreFilters.groups,
       teams: searchParams.get('teams')?.split(',') ?? defaultFilters.scoreFilters.teams,
       users: searchParams.get('users')?.split(',') ?? defaultFilters.scoreFilters.users,
+      domains: searchParams.get('domains')?.split(',') ?? defaultFilters.scoreFilters.domains,
     },
   });
   const setFiltersAndNavigate = useCallback((partialFilters: Partial<HeatmapPageFilters>) => {

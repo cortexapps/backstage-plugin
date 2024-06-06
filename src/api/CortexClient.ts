@@ -52,6 +52,7 @@ import { gzipSync } from 'zlib';
 import {
   GetUserInsightsResponse,
   HomepageEntityResponse,
+  HomepageEntityWithDomainsResponse,
 } from './userInsightTypes';
 
 export const cortexApiRef = createApiRef<CortexApi>({
@@ -311,6 +312,10 @@ export class CortexClient implements CortexApi {
 
   async getCatalogEntities(): Promise<HomepageEntityResponse> {
     return this.get(`/api/backstage/v1/homepage/catalog`);
+  }
+
+  async getCatalogEntitiesWithDomains(): Promise<HomepageEntityWithDomainsResponse> {
+    return this.get(`/api/backstage/v1/homepage/catalogWithParentDomains`);
   }
 
   async getUserPermissions(): Promise<UserPermissionsResponse> {
