@@ -21,15 +21,11 @@ import {
   ScorecardLevel,
   RuleOutcome,
   ScorecardScoreNextSteps,
-  TeamHierarchyNode,
-  TeamHierarchiesResponse,
-  DomainHierarchiesResponse,
-  DomainHierarchyNode,
 } from '../../../api/types';
 import { groupBy as _groupBy, flatten as _flatten, values, uniq, intersection } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
 import { isApplicableRuleOutcome } from '../../../utils/ScorecardRules';
-import { HomepageEntity, HomepageEntityWithDomains } from '../../../api/userInsightTypes';
+import { HomepageEntityWithDomains } from '../../../api/userInsightTypes';
 import { ScoreFilters } from './HeatmapFiltersModal';
 
 export type StringIndexable<T> = { [index: string]: T };
@@ -142,10 +138,22 @@ export const getScorecardServiceScoresByGroupByOption = (
   }
 };
 
-export const groupScoresByTeamHierarchies = (groupedScores: StringIndexable<ScorecardServiceScore[]>, teamHierarchies: TeamHierarchiesResponse) => {
+
+interface HierarchyNode {
+  node: {
+    tag: string;
+  }
+  orderedChildren: HierarchyNode[];
+}
+
+export const hierarchyNodeFlatChildren = (node: HierarchyNode): string[] => {
+  return node.orderedChildren.flatMap((child) => [child.node.tag, ...hierarchyNodeFlatChildren(child)]);
+}
+
+export const groupScoresByHierarchies = (groupedScores: StringIndexable<ScorecardServiceScore[]>, nodes: HierarchyNode[]) => {
   const hierarchyGroupedData = {} as Record<string, ScorecardServiceScore[]>;
 
-  teamHierarchies.orderedParents.forEach((parent) => {
+  nodes.forEach((parent) => {
     hierarchyGroupedData[parent.node.tag] = groupedScores[parent.node.tag] ?? [];
 
     hierarchyNodeFlatChildren(parent).forEach((childTag) => {
@@ -155,24 +163,6 @@ export const groupScoresByTeamHierarchies = (groupedScores: StringIndexable<Scor
         }
       });
     });
-  });
-
-  return hierarchyGroupedData;
-}
-
-export const groupScoresByDomainHierarchies = (groupedScores: StringIndexable<ScorecardServiceScore[]>, domainHierarchies: DomainHierarchiesResponse) => {
-  const hierarchyGroupedData = {} as Record<string, ScorecardServiceScore[]>;
-
-  domainHierarchies.orderedTree.forEach((parent) => {
-    hierarchyGroupedData[parent.node.tag] = groupedScores[parent.node.tag] ?? [];
-
-    hierarchyNodeFlatChildren(parent).forEach((childTag) => {
-      (groupedScores[childTag] ?? []).forEach((score) => {
-        if (!hierarchyGroupedData[parent.node.tag].find((existingScore) => existingScore.componentRef === score.componentRef)) {
-          hierarchyGroupedData[parent.node.tag].push(score);
-        }
-      });
-    })
   });
 
   return hierarchyGroupedData;
@@ -322,14 +312,3 @@ export const getFormattedScorecardScores = (
     };
   });
 };
-
-interface HierarchyNode {
-  node: {
-    tag: string;
-  }
-  orderedChildren: HierarchyNode[];
-}
-
-export const hierarchyNodeFlatChildren = (node: HierarchyNode): string[] => {
-  return node.orderedChildren.flatMap((child) => [child.node.tag, ...hierarchyNodeFlatChildren(child)]);
-}

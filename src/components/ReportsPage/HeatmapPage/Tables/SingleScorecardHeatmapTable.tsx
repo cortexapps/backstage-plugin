@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { isUndefined, uniq } from 'lodash';
+import { isUndefined } from 'lodash';
 import { Progress, WarningPanel } from '@backstage/core-components';
 
 import { HeatmapTableByGroup } from './HeatmapTableByGroup';
 import { HeatmapTableByLevels } from './HeatmapTableByLevels';
 import { HeatmapTableByService } from './HeatmapTableByService';
 import { LevelsDrivenTable } from './LevelsDrivenTable';
-import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, groupScoresByDomainHierarchies, groupScoresByTeamHierarchies, StringIndexable } from '../HeatmapUtils';
+import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, groupScoresByHierarchies, StringIndexable } from '../HeatmapUtils';
 import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
 
 import { GroupByOption, HeaderType, ScorecardLadder, ScorecardServiceScore, } from '../../../../api/types';
@@ -70,9 +70,9 @@ export const SingleScorecardHeatmapTable = ({
 
     if (useHierarchy) {
       if (groupBy === GroupByOption.TEAM && teamHierarchies) {
-        return groupScoresByTeamHierarchies(groupedData, teamHierarchies);
+        return groupScoresByHierarchies(groupedData, teamHierarchies.orderedParents);
       } else if (groupBy === GroupByOption.DOMAIN && domainHierarchies) {
-        return groupScoresByDomainHierarchies(groupedData, domainHierarchies);
+        return groupScoresByHierarchies(groupedData, domainHierarchies.orderedTree);
       }
     }
 
