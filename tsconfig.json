@@ -3,7 +3,7 @@
   "include": ["src", "dev"],
   "files": ["custom.d.ts"],
   "compilerOptions": {
-    "outDir": "dist-types",
+    "outDir": "./dist-types",
     "incremental": false,
     "sourceMap": true,
     "jsx": "react"
