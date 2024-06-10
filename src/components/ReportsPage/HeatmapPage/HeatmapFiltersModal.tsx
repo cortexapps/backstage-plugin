@@ -123,7 +123,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
       </Button>
     )}
     <Dialog open={isOpen} onClose={() => setIsOpen(false)} fullWidth>
-      <DialogTitle>Filter Bird's eye report</DialogTitle>
+      <DialogTitle>Filter Bird's Eye Report</DialogTitle>
       <DialogContent>
         <Box display={"flex"} flexDirection={"column"} gridRowGap={16}>
           <ModalSelect
@@ -147,7 +147,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
             value={modalFilters.domainIds}
             options={domains.map((domain) => (
               <MenuItem
-                key={`ScorecardOption-service-${domain.id}`}
+                key={`ScorecardOption-domain-${domain.id}`}
                 value={domain.id}
               >
                 {domain.name}
@@ -204,7 +204,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
               value={modalFilters.levels}
               options={levels.map((level) => (
                 <MenuItem
-                  key={`ScorecardOption-user-${level}`}
+                  key={`ScorecardOption-level-${level}`}
                   value={level}
                 >
                   {level}

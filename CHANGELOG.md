@@ -2,9 +2,9 @@
 
 ### 2.9.0
 
-- Add filters to the Bird's eye report
-- Add team and domain hierarchies to the Bird's eye report
-- Add option to group by domain to the Bird's eye report
+- Add filters to the Bird's Eye Report
+- Add team and domain hierarchies to the Bird's Eye Report
+- Add option to group by domain to the Bird's Eye Report
 
 ### 2.8.0
 

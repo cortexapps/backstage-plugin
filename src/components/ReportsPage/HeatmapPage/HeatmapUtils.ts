@@ -150,15 +150,6 @@ export const hierarchyNodeFlatChildren = (node: HierarchyNode): string[] => {
   return node.orderedChildren.flatMap((child) => [child.node.tag, ...hierarchyNodeFlatChildren(child)]);
 }
 
-export const hierarchyNodeFlatAllChildren = (node: HierarchyNode[], result: Record<string, string[]> = {}): Record<string, string[]> => {
-  node.forEach((parent) => {
-    result[parent.node.tag] = hierarchyNodeFlatChildren(parent);
-    hierarchyNodeFlatAllChildren(parent.orderedChildren, result)
-  });
-
-  return result;
-}
-
 export const groupScoresByHierarchies = (groupedScores: StringIndexable<ScorecardServiceScore[]>, nodes: HierarchyNode[]) => {
   const hierarchyGroupedData = {} as Record<string, ScorecardServiceScore[]>;
 
