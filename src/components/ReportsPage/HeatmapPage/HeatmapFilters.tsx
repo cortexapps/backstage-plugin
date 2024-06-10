@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Checkbox, FormControlLabel, Grid, InputLabel } from "@material-ui/core";
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { GroupByDropdown } from "../Common/GroupByDropdown";
 import { HeaderTypeDropdown } from "../Common/HeaderTypeDropdown";
 import { HeatmapFiltersModal, ScoreFilters } from "./HeatmapFiltersModal";
@@ -42,13 +42,12 @@ interface HeatmapFiltersProps {
 export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFiltersAndNavigate, entitiesByTag, excludedGroupBys, ladder }) => {
   const isHierarchyToggleAllowed = [GroupByOption.TEAM, GroupByOption.DOMAIN].includes(filters.groupBy);
 
-  const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
-    const groupBy = event.target.value as GroupByOption;
+  const onGroupByChange = (groupBy: GroupByOption) => {
     setFiltersAndNavigate({ groupBy, useHierarchy: isHierarchyToggleAllowed ? filters.useHierarchy : false });
   }
 
-  const onHeaderTypeChange = (event: ChangeEvent<{ value: unknown }>) => {
-    setFiltersAndNavigate({ headerType: event.target.value as HeaderType });
+  const onHeaderTypeChange = (headerType: HeaderType) => {
+    setFiltersAndNavigate({ headerType });
   }
 
   return (
