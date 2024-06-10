@@ -18,13 +18,14 @@ import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../../utils/hooks';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
 import { StringIndexable, applyScoreFilters, catalogToRelationsByEntityId } from './HeatmapUtils';
-import { HomepageEntityWithDomains } from '../../../api/userInsightTypes';
+import { HomepageEntity } from '../../../api/userInsightTypes';
 import { HeatmapPageFilters } from './HeatmapFilters';
 import { ScorecardLadder } from '../../../api/types';
+import { keyBy } from 'lodash';
 
 interface SingleScorecardHeatmapProps {
   entityCategory: string;
-  entitiesByTag: StringIndexable<HomepageEntityWithDomains>;
+  entitiesByTag: StringIndexable<HomepageEntity>;
   scorecardId: number;
   ladder: ScorecardLadder | undefined;
   filters: HeatmapPageFilters;
@@ -49,15 +50,37 @@ export const SingleScorecardHeatmap = ({
     error: scoresError,
   } = useCortexApi(api => api.getScorecardScores(scorecardId), [scorecardId]);
 
-  const { domainTagByEntityId, ownerEmailByEntityId, groupTagByEntityId } = useMemo(() => {
+  const { ownerEmailByEntityId, groupTagByEntityId } = useMemo(() => {
     return catalogToRelationsByEntityId(entitiesByTag);
   }, [entitiesByTag]);
 
-  const filteredScores = useMemo(() => {
-    return applyScoreFilters(scores ?? [], scoreFilters, domainTagByEntityId, ownerEmailByEntityId, groupTagByEntityId);
-  }, [scores, scoreFilters, domainTagByEntityId, ownerEmailByEntityId, groupTagByEntityId])
+  const { value: domainIdByEntityId, error: domainByEntityError, loading: isLoadingDomainByEntity } = useCortexApi(api => api.getEntityDomainAncestors());
+  const domainTagByEntityId = useMemo(() => {
+    if (!domainIdByEntityId) {
+      return {};
+    }
 
-  if (loadingScores) {
+    const map = {} as Record<string, string[]>;
+    const domainsById = keyBy(Object.values(entitiesByTag).filter((entity) => entity.type === "domain"), "id");
+
+    Object.keys(domainIdByEntityId.entitiesToAncestors).forEach((entityId) => {
+      map[entityId] = domainIdByEntityId.entitiesToAncestors[parseInt(entityId, 10)].map(
+        (parentId) => domainsById[parentId].codeTag
+      )
+    });
+
+    return map;
+  }, [entitiesByTag, domainIdByEntityId]);
+
+  const filteredScores = useMemo(() => {
+    if (!domainIdByEntityId) {
+      return [];
+    }
+
+    return applyScoreFilters(scores ?? [], scoreFilters, ownerEmailByEntityId, groupTagByEntityId, domainIdByEntityId.entitiesToAncestors);
+  }, [scores, scoreFilters, ownerEmailByEntityId, groupTagByEntityId, domainIdByEntityId]);
+
+  if (loadingScores || isLoadingDomainByEntity) {
     return <Progress />;
   }
 
@@ -65,6 +88,14 @@ export const SingleScorecardHeatmap = ({
     return (
       <WarningPanel severity="error" title="Could not load Scorecard scores.">
         {scoresError?.message}
+      </WarningPanel>
+    );
+  }
+
+  if (!domainIdByEntityId || domainByEntityError) {
+    return (
+      <WarningPanel severity="error" title="Could not load Domain hierarchies.">
+        {domainByEntityError?.message}
       </WarningPanel>
     );
   }

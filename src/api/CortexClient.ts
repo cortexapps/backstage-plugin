@@ -50,9 +50,9 @@ import {
 } from '@backstage/core-plugin-api';
 import { gzipSync } from 'zlib';
 import {
+  EntityDomainAncestorsResponse,
   GetUserInsightsResponse,
   HomepageEntityResponse,
-  HomepageEntityWithDomainsResponse,
 } from './userInsightTypes';
 
 export const cortexApiRef = createApiRef<CortexApi>({
@@ -314,10 +314,6 @@ export class CortexClient implements CortexApi {
     return this.get(`/api/backstage/v1/homepage/catalog`);
   }
 
-  async getCatalogEntitiesWithDomains(): Promise<HomepageEntityWithDomainsResponse> {
-    return this.get(`/api/backstage/v1/homepage/catalogWithParentDomains`);
-  }
-
   async getUserPermissions(): Promise<UserPermissionsResponse> {
     return this.get(`/api/backstage/v2/permissions`);
   }
@@ -328,6 +324,10 @@ export class CortexClient implements CortexApi {
 
   async getExpiration(): Promise<ExpirationResponse> {
     return this.get(`/api/backstage/v1/entitlements/expiration-date`);
+  }
+
+  async getEntityDomainAncestors(): Promise<EntityDomainAncestorsResponse> {
+    return this.get(`/api/backstage/v1/domains/hierarchies/ancestors`);
   }
 
   async getDomainHierarchies(): Promise<DomainHierarchiesResponse> {

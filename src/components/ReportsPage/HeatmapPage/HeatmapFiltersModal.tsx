@@ -27,7 +27,7 @@ export interface ScoreFilters {
   groups: string[];
   teams: string[];
   users: string[];
-  domains: string[];
+  domainIds: number[];
   levels: string[];
 }
 
@@ -36,7 +36,7 @@ export const defaultFilters: ScoreFilters = {
   groups: [],
   teams: [],
   users: [],
-  domains: [],
+  domainIds: [],
   levels: [],
 }
 
@@ -142,13 +142,13 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
           />
           <ModalSelect
             name='Domains'
-            onChange={(domains) => setModalFiltersPartially({ domains })}
-            onReset={() => setModalFiltersPartially({ domains: defaultFilters.domains })}
-            value={modalFilters.domains}
+            onChange={(domainIds) => setModalFiltersPartially({ domainIds })}
+            onReset={() => setModalFiltersPartially({ domainIds: defaultFilters.domainIds })}
+            value={modalFilters.domainIds}
             options={domains.map((domain) => (
               <MenuItem
                 key={`ScorecardOption-service-${domain.id}`}
-                value={domain.codeTag}
+                value={domain.id}
               >
                 {domain.name}
               </MenuItem>

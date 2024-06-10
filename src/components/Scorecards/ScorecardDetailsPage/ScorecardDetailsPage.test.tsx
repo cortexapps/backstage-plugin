@@ -34,7 +34,7 @@ import {
 import { EntityFilterGroup } from '../../../filters';
 import { extensionApiRef } from '../../../api/ExtensionApi';
 import { act } from 'react-dom/test-utils';
-import { HomepageEntityWithDomainsResponse } from '../../../api/userInsightTypes';
+import { HomepageEntityResponse } from '../../../api/userInsightTypes';
 
 describe('ScorecardDetailsPage', () => {
   const emptyExtensionApi: ExtensionApi = {
@@ -100,7 +100,7 @@ describe('ScorecardDetailsPage', () => {
       ];
     },
 
-    async getCatalogEntitiesWithDomains(): Promise<HomepageEntityWithDomainsResponse> {
+    async getCatalogEntities(): Promise<HomepageEntityResponse> {
       return {
         entities: [
           {
@@ -108,7 +108,6 @@ describe('ScorecardDetailsPage', () => {
             groupNames: [],
             id: 1,
             name: 'foo',
-            parentDomainTags: [],
             serviceGroupTags: [],
             serviceOwnerEmails: [],
             type: 'service',
@@ -118,7 +117,6 @@ describe('ScorecardDetailsPage', () => {
             groupNames: [],
             id: 2,
             name: 'bar',
-            parentDomainTags: [],
             serviceGroupTags: [],
             serviceOwnerEmails: [],
             type: 'service',

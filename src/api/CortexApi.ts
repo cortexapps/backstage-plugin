@@ -40,9 +40,9 @@ import { Moment } from 'moment/moment';
 import { AnyEntityRef } from '../utils/types';
 import { TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
 import {
+  EntityDomainAncestorsResponse,
   GetUserInsightsResponse,
   HomepageEntityResponse,
-  HomepageEntityWithDomainsResponse,
 } from './userInsightTypes';
 
 export interface CortexApi {
@@ -111,13 +111,13 @@ export interface CortexApi {
 
   getCatalogEntities(): Promise<HomepageEntityResponse>;
 
-  getCatalogEntitiesWithDomains(): Promise<HomepageEntityWithDomainsResponse>;
-
   getUserPermissions(): Promise<UserPermissionsResponse>;
 
   getSyncJobs(): Promise<JobsResponse>;
 
   getExpiration(): Promise<ExpirationResponse>;
+
+  getEntityDomainAncestors(): Promise<EntityDomainAncestorsResponse>;
 
   getDomainHierarchies(): Promise<DomainHierarchiesResponse>;
 

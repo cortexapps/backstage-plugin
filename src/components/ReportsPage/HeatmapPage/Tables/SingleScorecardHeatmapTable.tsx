@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { isUndefined, uniq } from 'lodash';
+import { isUndefined } from 'lodash';
 import { Progress, WarningPanel } from '@backstage/core-components';
 
 import { HeatmapTableByGroup } from './HeatmapTableByGroup';
 import { HeatmapTableByLevels } from './HeatmapTableByLevels';
 import { HeatmapTableByService } from './HeatmapTableByService';
 import { LevelsDrivenTable } from './LevelsDrivenTable';
-import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, groupScoresByHierarchies, hierarchyNodeFlatAllChildren, StringIndexable } from '../HeatmapUtils';
+import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, groupScoresByHierarchies, StringIndexable } from '../HeatmapUtils';
 import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
 
 import { GroupByOption, HeaderType, ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
@@ -38,7 +38,7 @@ interface SingleScorecardHeatmapTableProps {
   scores: ScorecardServiceScore[];
   useHierarchy: boolean;
   hideWithoutChildren: boolean;
-  domainTagByEntityId: StringIndexable<string[]>;
+  domainTagByEntityId: Record<string, string[]>;
 }
 
 export const SingleScorecardHeatmapTable = ({
@@ -66,19 +66,6 @@ export const SingleScorecardHeatmapTable = ({
   const { value: domainHierarchies, loading: loadingDomainHierarchies } = useCortexApi(api => api.getDomainHierarchies());
 
   const data = useMemo(() => {
-    if (groupBy === GroupByOption.DOMAIN && domainHierarchies) {
-      const flatAllChildren = hierarchyNodeFlatAllChildren(domainHierarchies.orderedTree);
-
-      Object.keys(domainTagByEntityId).forEach((entityId) => {
-        Object.keys(flatAllChildren).forEach((parentTag) => {
-          const haveCommonChild = domainTagByEntityId[entityId].some((item) => flatAllChildren[parentTag].includes(item));
-          if (haveCommonChild) {
-            domainTagByEntityId[entityId] = uniq([...domainTagByEntityId[entityId], parentTag]);
-          }
-        });
-      });
-    }
-
     const groupedData = getScorecardServiceScoresByGroupByOption(scores, groupBy, domainTagByEntityId);
 
     if (useHierarchy) {
@@ -90,7 +77,7 @@ export const SingleScorecardHeatmapTable = ({
     }
 
     return groupedData;
-  }, [scores, groupBy, useHierarchy, domainTagByEntityId, teamHierarchies, domainHierarchies]);
+  }, [scores, groupBy, useHierarchy, teamHierarchies, domainHierarchies, domainTagByEntityId]);
 
   if (useHierarchy && ((groupBy === GroupByOption.TEAM && loadingTeamHierarchies) || (groupBy === GroupByOption.DOMAIN && loadingDomainHierarchies))) {
     return <Progress />

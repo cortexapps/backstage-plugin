@@ -51,7 +51,7 @@ export const HeatmapPage = () => {
     groups: filters.scoreFilters.groups.length ? filters.scoreFilters.groups.join(',') : undefined,
     teams: filters.scoreFilters.teams.length ? filters.scoreFilters.teams.join(',') : undefined,
     users: filters.scoreFilters.users.length ? filters.scoreFilters.users.join(',') : undefined,
-    domains: filters.scoreFilters.domains.length ? filters.scoreFilters.domains.join(',') : undefined,
+    domainIds: filters.scoreFilters.domainIds.length ? filters.scoreFilters.domainIds.join(',') : undefined,
     levels: filters.scoreFilters.levels.length ? filters.scoreFilters.levels.join(',') : undefined,
     hierarchy: filters.useHierarchy ? 'true' : undefined,
     hideWithoutChildren: !filters.hideWithoutChildren ? 'false' : undefined,
@@ -73,7 +73,7 @@ export const HeatmapPage = () => {
       groups: searchParams.get('groups')?.split(',') ?? defaultFilters.scoreFilters.groups,
       teams: searchParams.get('teams')?.split(',') ?? defaultFilters.scoreFilters.teams,
       users: searchParams.get('users')?.split(',') ?? defaultFilters.scoreFilters.users,
-      domains: searchParams.get('domains')?.split(',') ?? defaultFilters.scoreFilters.domains,
+      domainIds: searchParams.get('domainIds')?.split(',').map((i) => parseInt(i, 10)).filter(isFinite) ?? defaultFilters.scoreFilters.domainIds,
       levels: searchParams.get('levels')?.split(',') ?? defaultFilters.scoreFilters.levels,
     },
   });

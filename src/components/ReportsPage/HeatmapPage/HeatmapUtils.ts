@@ -25,7 +25,7 @@ import {
 import { groupBy as _groupBy, flatten as _flatten, values, uniq, intersection } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
 import { isApplicableRuleOutcome } from '../../../utils/ScorecardRules';
-import { HomepageEntityWithDomains } from '../../../api/userInsightTypes';
+import { HomepageEntity } from '../../../api/userInsightTypes';
 import { ScoreFilters } from './HeatmapFiltersModal';
 
 export type StringIndexable<T> = { [index: string]: T };
@@ -80,7 +80,7 @@ const groupByKeyToLabel: Record<GroupByKeys, string> = {
 const groupReportDataBy = <T extends GroupByValues>(
   scores: T[],
   groupBy: GroupByKeys,
-  domainTagByEntityId?: StringIndexable<string[]>,
+  domainTagByEntityId?: Record<string, string[]>,
 ): StringIndexable<T[]> => {
   return scores.reduce<StringIndexable<T[]>>((data, score) => {
     const groups = groupBy !== "domains"
@@ -116,7 +116,7 @@ const groupReportDataBy = <T extends GroupByValues>(
 export const getScorecardServiceScoresByGroupByOption = (
   scores: ScorecardServiceScore[] | undefined,
   groupBy: GroupByOption | undefined,
-  domainTagByEntityId: StringIndexable<string[]>,
+  domainTagByEntityId?: Record<string, string[]>,
 ): StringIndexable<ScorecardServiceScore[]> => {
   if (scores === undefined || scores.length === 0) {
     return {};
@@ -177,20 +177,11 @@ export const groupScoresByHierarchies = (groupedScores: StringIndexable<Scorecar
   return hierarchyGroupedData;
 }
 
-export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<HomepageEntityWithDomains>) => {
-  const domainTagByEntityId = {} as Record<string, string[]>;
+export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<HomepageEntity>) => {
   const ownerEmailByEntityId = {} as Record<string, string[]>;
   const groupTagByEntityId = {} as Record<string, string[]>;
 
   Object.values(entitiesByTag).forEach((entity) => {
-    if (entity.parentDomainTags.length) {
-      if (domainTagByEntityId[entity.id]) {
-        domainTagByEntityId[entity.id] = uniq([...entity.parentDomainTags, ...domainTagByEntityId[entity.id]]);
-      } else {
-        domainTagByEntityId[entity.id] = entity.parentDomainTags;
-      }
-    }
-
     if (entity.serviceOwnerEmails.length) {
       const ownerEmails = entity.serviceOwnerEmails.map(({ email }) => email);
       if (ownerEmailByEntityId[entity.id]) {
@@ -210,7 +201,6 @@ export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<Home
   });
 
   return {
-    domainTagByEntityId,
     ownerEmailByEntityId,
     groupTagByEntityId
   };
@@ -219,19 +209,14 @@ export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<Home
 export const applyScoreFilters = (
   scores: ScorecardServiceScore[],
   scoreFilters: ScoreFilters,
-  domainTagByEntityId: StringIndexable<string[]>,
   ownerEmailByEntityId: StringIndexable<string[]>,
-  groupTagByEntityId: StringIndexable<string[]>
+  groupTagByEntityId: StringIndexable<string[]>,
+  domainIdByEntityId: Record<number, number[]>,
 ) => {
   let resultScores = scores;
 
   if (scoreFilters.serviceIds.length) {
     resultScores = resultScores.filter((score) => scoreFilters.serviceIds.includes(score.serviceId));
-  }
-  if (scoreFilters.domains.length) {
-    resultScores = resultScores.filter(
-      (score) => intersection(scoreFilters.domains, domainTagByEntityId?.[score.serviceId]).length
-    );
   }
   if (scoreFilters.groups.length) {
     resultScores = resultScores.filter(
@@ -251,6 +236,11 @@ export const applyScoreFilters = (
       (score) => score.ladderLevels.find((ladderLevel) => {
         return scoreFilters.levels.includes(ladderLevel.currentLevel?.name ?? "No Level")
       })
+    );
+  }
+  if (scoreFilters.domainIds.length) {
+    resultScores = resultScores.filter(
+      (score) => intersection(domainIdByEntityId?.[score.serviceId], scoreFilters.domainIds).length
     );
   }
 
