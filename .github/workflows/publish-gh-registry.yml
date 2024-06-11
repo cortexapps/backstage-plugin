@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    if: contains(github.event.pull_request.labels.*.name, 'internal-test')
+    if: contains(github.event.pull_request.labels.*.name, 'internal-build')
     name: publish
     runs-on: ubuntu-latest
     steps:
