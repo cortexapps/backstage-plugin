@@ -1,8 +1,8 @@
 {
   "name": "@cortexapps/backstage-plugin",
   "version": "2.8.0",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "license": "Apache-2.0",
   "repository": "github:cortexapps/backstage-plugin",
   "publishConfig": {
