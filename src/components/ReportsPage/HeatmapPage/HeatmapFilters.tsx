@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Checkbox, FormControlLabel, Grid, InputLabel } from "@material-ui/core";
-import React from "react";
+import React, { Dispatch } from "react";
 import { GroupByDropdown } from "../Common/GroupByDropdown";
 import { HeaderTypeDropdown } from "../Common/HeaderTypeDropdown";
 import { HeatmapFiltersModal, ScoreFilters } from "./HeatmapFiltersModal";
@@ -33,7 +33,7 @@ export interface HeatmapPageFilters {
 
 interface HeatmapFiltersProps {
   filters: HeatmapPageFilters;
-  setFiltersAndNavigate: (partialFilters: Partial<HeatmapPageFilters>) => void;
+  setFiltersAndNavigate: Dispatch<React.SetStateAction<HeatmapPageFilters>>;
   entitiesByTag: StringIndexable<HomepageEntity>;
   excludedGroupBys: GroupByOption[];
   ladder: ScorecardLadder | undefined;
@@ -43,11 +43,11 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
   const isHierarchyToggleAllowed = [GroupByOption.TEAM, GroupByOption.DOMAIN].includes(filters.groupBy);
 
   const onGroupByChange = (groupBy: GroupByOption) => {
-    setFiltersAndNavigate({ groupBy, useHierarchy: isHierarchyToggleAllowed ? filters.useHierarchy : false });
+    setFiltersAndNavigate((prev) => ({ ...prev, groupBy, useHierarchy: isHierarchyToggleAllowed ? filters.useHierarchy : false }));
   }
 
   const onHeaderTypeChange = (headerType: HeaderType) => {
-    setFiltersAndNavigate({ headerType });
+    setFiltersAndNavigate((prev) => ({ ...prev, headerType }));
   }
 
   return (
@@ -73,7 +73,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
                   control={
                     <Checkbox
                       checked={filters.useHierarchy}
-                      onChange={() => setFiltersAndNavigate({ useHierarchy: !filters.useHierarchy, hideWithoutChildren: true })}
+                      onChange={() => setFiltersAndNavigate((prev) => ({ ...prev, useHierarchy: !filters.useHierarchy, hideWithoutChildren: true }))}
                     />
                   }
                   label={
@@ -88,7 +88,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
                     control={
                       <Checkbox
                         checked={filters.hideWithoutChildren}
-                        onChange={() => setFiltersAndNavigate({ hideWithoutChildren: !filters.hideWithoutChildren })}
+                        onChange={() => setFiltersAndNavigate((prev) => ({ ...prev, hideWithoutChildren: !filters.hideWithoutChildren }))}
                       />
                     }
                     label={
@@ -106,7 +106,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
       <Grid item>
         <HeatmapFiltersModal
           filters={filters.scoreFilters}
-          setFilters={(scoreFilters) => setFiltersAndNavigate({ scoreFilters })}
+          setFilters={(scoreFilters) => setFiltersAndNavigate((prev) => ({ ...prev, scoreFilters }))}
           entitiesByTag={entitiesByTag}
           ladder={ladder}
         />

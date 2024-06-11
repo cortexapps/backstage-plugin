@@ -23,7 +23,7 @@ import { FilterType, GroupByOption, HeaderType } from '../../../api/types';
 import { CopyButton } from '../../Common/CopyButton';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { buildUrl } from '../../../utils/URLUtils';
-import { isEmpty, isFinite, isUndefined } from 'lodash';
+import { isEmpty, isFinite, isFunction, isUndefined } from 'lodash';
 import { stringifyUrl } from 'query-string';
 import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
 import { isScorecardTeamBased } from '../../../utils/ScorecardFilterUtils';
@@ -77,19 +77,18 @@ export const HeatmapPage = () => {
       levels: searchParams.get('levels')?.split(',') ?? defaultFilters.scoreFilters.levels,
     },
   });
-  const setFiltersAndNavigate = useCallback((partialFilters: Partial<HeatmapPageFilters>) => {
-    const newFilters = {
-      ...filters,
-      ...partialFilters
-    };
+  const setFiltersAndNavigate = useCallback((value: React.SetStateAction<HeatmapPageFilters>) => 
+    setFilters((prev) => {
+      const newFilters = isFunction(value) ? value(prev) : prev;
 
-    setFilters(newFilters);
+      navigate(
+        stringifyUrl({ url: location.pathname, query: filtersToParams(newFilters)}),
+        { replace: true }
+      );
 
-    navigate(
-      stringifyUrl({ url: location.pathname, query: filtersToParams(newFilters)}),
-      { replace: true }
-    );
-  }, [filters, location.pathname, navigate]);
+      return newFilters;
+    })
+  , [location.pathname, navigate]);
 
   const { value: ladders, loading: loadingLadders } = useCortexApi(
     async (api) => {
@@ -100,7 +99,7 @@ export const HeatmapPage = () => {
       const ladders = api.getScorecardLadders(filters.selectedScorecardId);
 
       if (isEmpty(ladders)) {
-        setFiltersAndNavigate({ headerType: HeaderType.RULES });
+        setFiltersAndNavigate((prev) => ({ ...prev, headerType: HeaderType.RULES }));
       }
 
       return ladders;
@@ -122,7 +121,7 @@ export const HeatmapPage = () => {
     if (isEmpty(ladders)) excludedGroupBys.push(GroupByOption.LEVEL);
 
     if (filters.groupBy && excludedGroupBys.includes(filters.groupBy)) {
-      setFiltersAndNavigate({ groupBy: defaultFilters.groupBy });
+      setFiltersAndNavigate((prev) => ({ ...prev, groupBy: defaultFilters.groupBy }));
     }
 
     return {
@@ -132,7 +131,7 @@ export const HeatmapPage = () => {
   }, [filters, setFiltersAndNavigate, scorecardsResult, ladders]);
 
   const onScorecardSelectChange = (selectedScorecardId?: number) => {
-    setFiltersAndNavigate({ selectedScorecardId, scoreFilters: defaultScoreFilters });
+    setFiltersAndNavigate((prev) => ({ ...prev, selectedScorecardId, scoreFilters: defaultScoreFilters }));
   }
 
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
