@@ -2,11 +2,12 @@ name: publish to github registry
 env:
   GITHUB_PASSWORD: ${{secrets.GITHUB_TOKEN}}
 on:
-  push:
-    branches:
-      - publish-to-private-github-registry
+  pull_request:
+    types: [labeled, opened, synchronize, reopened]
+
 jobs:
   publish:
+    if: contains(github.event.pull_request.labels.*.name, 'internal-test')
     name: publish
     runs-on: ubuntu-latest
     steps:
@@ -26,6 +27,6 @@ jobs:
       - run: yarn build
       - run: ./scripts/add_publish_to_github_config.sh
       - run: |
-          yarn version --new-version $(jq -r .version < package.json)-${GITHUB_SHA}
+          yarn version --new-version $(jq -r .version < package.json)-pr.{{ github.event.pull_request.number }}-sha.${GITHUB_SHA}
           yarn publish --non-interactive
 
