@@ -80,7 +80,7 @@ export const SingleScorecardHeatmapTable = ({
   }, [scores, groupBy, useHierarchy, teamHierarchies, domainHierarchies, domainTagByEntityId]);
 
   if (useHierarchy && ((groupBy === GroupByOption.TEAM && loadingTeamHierarchies) || (groupBy === GroupByOption.DOMAIN && loadingDomainHierarchies))) {
-    return <Progress />
+    return <Progress />;
   }
 
   if (headerType === HeaderType.LEVELS) {
