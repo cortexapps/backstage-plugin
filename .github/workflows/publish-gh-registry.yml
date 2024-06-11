@@ -17,6 +17,10 @@ jobs:
         with:
           node-version: 20.10.0
           registry-url: 'https://registry.npmjs.org'
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
       - run: yarn --frozen-lockfile
       - run: yarn tsc
       - run: yarn build
