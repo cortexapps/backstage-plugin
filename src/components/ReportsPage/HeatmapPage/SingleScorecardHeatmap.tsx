@@ -61,7 +61,7 @@ export const SingleScorecardHeatmap = ({
     }
 
     const map = {} as Record<string, string[]>;
-    const domainsById = keyBy(Object.values(entitiesByTag).filter((entity) => entity.type === "domain"), "id");
+    const domainsById = keyBy(Object.values(entitiesByTag).filter((entity) => entity.type === "domain"), (domain) => domain.id);
 
     Object.keys(domainIdByEntityId.entitiesToAncestors).forEach((entityId) => {
       map[entityId] = domainIdByEntityId.entitiesToAncestors[parseInt(entityId, 10)].map(
