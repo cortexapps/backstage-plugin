@@ -75,8 +75,11 @@ export const LevelsDrivenTable = ({
                       ),
                       defaultComponentRefContext,
                     )}
-                    title={entitiesByTag[firstScore.componentRef]?.name}
-                  />
+                  >
+                    <Typography variant="h6">
+                      {entitiesByTag[firstScore.componentRef]?.name}
+                    </Typography>
+                  </EntityRefLink>
                 </TableCell>
               )}
               {notGroupedByServices && (
