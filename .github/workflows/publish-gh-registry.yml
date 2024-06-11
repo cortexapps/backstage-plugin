@@ -1,4 +1,4 @@
-name: publish
+name: publish to github registry
 env:
   GITHUB_PASSWORD: ${{secrets.GITHUB_TOKEN}}
 on:
@@ -21,4 +21,7 @@ jobs:
       - run: yarn tsc
       - run: yarn build
       - run: ./scripts/add_publish_to_github_config.sh
-      - run: yarn publish
+      - run: |
+          yarn version --new-version $(jq -r .version < package.json)-${{ env.GITHUB_SHA }}
+          yarn publish --non-interactive
+
