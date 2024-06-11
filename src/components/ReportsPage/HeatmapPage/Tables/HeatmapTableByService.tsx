@@ -16,7 +16,7 @@
 import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow/TableRow';
-import { TableCell } from '@material-ui/core';
+import { TableCell, Typography } from '@material-ui/core';
 import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
 import { entityComponentRef } from '../../../../utils/ComponentUtils';
@@ -62,7 +62,9 @@ export const HeatmapTableByService = ({
                   scorecardId={scorecardId}
                   componentRef={entityComponentRef(entitiesByTag, entitiesByTag[firstScore.componentRef]?.codeTag)}
                 >
-                  {entitiesByTag[firstScore.componentRef]?.name}
+                  <Typography variant="h6">
+                    {entitiesByTag[firstScore.componentRef]?.name}
+                  </Typography>
                 </ScorecardServiceRefLink>
               </TableCell>
               <HeatmapCell score={averageScorePercentage} text={`${firstScore.score}`} />
