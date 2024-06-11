@@ -57,12 +57,14 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
           <Grid item>
             <GroupByDropdown excluded={excludedGroupBys} groupBy={filters.groupBy} setGroupBy={onGroupByChange} />
           </Grid>
-          <Grid item>
-            <HeaderTypeDropdown
-              headerType={filters.headerType}
-              setHeaderType={onHeaderTypeChange}
-            />
-          </Grid>
+          {ladder && (
+            <Grid item>
+              <HeaderTypeDropdown
+                headerType={filters.headerType}
+                setHeaderType={onHeaderTypeChange}
+              />
+            </Grid>
+          )}
           {isHierarchyToggleAllowed && (
             <Grid item>
               <Grid container direction="row" alignItems="center">

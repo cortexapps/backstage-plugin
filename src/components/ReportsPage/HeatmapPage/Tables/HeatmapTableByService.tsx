@@ -42,7 +42,7 @@ export const HeatmapTableByService = ({
   entitiesByTag,
   rules,
 }: HeatmapTableByServiceProps) => {
-  const headers = [header, 'Score', ...rules];
+  const headers = [header, 'Score', 'Score percentage', ...rules];
 
   return (
     <Table>
@@ -65,6 +65,7 @@ export const HeatmapTableByService = ({
                   {entitiesByTag[firstScore.componentRef]?.name}
                 </ScorecardServiceRefLink>
               </TableCell>
+              <HeatmapCell score={averageScorePercentage} text={`${firstScore.score}`} />
               <HeatmapCell score={averageScorePercentage} />
               {averageRuleScores.map((score, idx) => (
                 <HeatmapCell

@@ -23,7 +23,7 @@ import { FilterType, GroupByOption, HeaderType } from '../../../api/types';
 import { CopyButton } from '../../Common/CopyButton';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { buildUrl } from '../../../utils/URLUtils';
-import { isFinite, isUndefined } from 'lodash';
+import { isEmpty, isFinite, isUndefined } from 'lodash';
 import { stringifyUrl } from 'query-string';
 import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
 import { isScorecardTeamBased } from '../../../utils/ScorecardFilterUtils';
@@ -91,6 +91,23 @@ export const HeatmapPage = () => {
     );
   }, [filters, location.pathname, navigate]);
 
+  const { value: ladders, loading: loadingLadders } = useCortexApi(
+    async (api) => {
+      if (!filters.selectedScorecardId) {
+        return undefined;
+      }
+      
+      const ladders = api.getScorecardLadders(filters.selectedScorecardId);
+
+      if (isEmpty(ladders)) {
+        setFiltersAndNavigate({ headerType: HeaderType.RULES });
+      }
+
+      return ladders;
+    },
+    [filters.selectedScorecardId],
+  );
+
   const getShareableLink = useCallback(() => {
     return buildUrl(filtersToParams(filters), location.pathname);
   }, [filters, location]);
@@ -102,6 +119,7 @@ export const HeatmapPage = () => {
 
     const excludedGroupBys = isScorecardTeamBased(selectedScorecard) ? [GroupByOption.TEAM] : [];
     if (selectedScorecard?.filter?.type === FilterType.DOMAIN_FILTER) excludedGroupBys.push(GroupByOption.DOMAIN);
+    if (isEmpty(ladders)) excludedGroupBys.push(GroupByOption.LEVEL);
 
     if (filters.groupBy && excludedGroupBys.includes(filters.groupBy)) {
       setFiltersAndNavigate({ groupBy: defaultFilters.groupBy });
@@ -111,20 +129,13 @@ export const HeatmapPage = () => {
       entityCategory: getEntityCategoryFromFilter(selectedScorecard?.filter) ?? 'Entity',
       excludedGroupBys,
     }
-  }, [filters, setFiltersAndNavigate, scorecardsResult]);
+  }, [filters, setFiltersAndNavigate, scorecardsResult, ladders]);
 
   const onScorecardSelectChange = (selectedScorecardId?: number) => {
     setFiltersAndNavigate({ selectedScorecardId, scoreFilters: defaultScoreFilters });
   }
 
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
-
-  const { value: ladders, loading: loadingLadders } = useCortexApi(
-    async (api) => {
-      return filters.selectedScorecardId ? api.getScorecardLadders(filters.selectedScorecardId) : undefined
-    },
-    [filters.selectedScorecardId],
-  );
 
   return (
     <Content>

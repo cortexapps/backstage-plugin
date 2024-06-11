@@ -22,7 +22,7 @@ import {
   RuleOutcome,
   ScorecardScoreNextSteps,
 } from '../../../api/types';
-import { groupBy as _groupBy, flatten as _flatten, values, uniq, intersection } from 'lodash';
+import { groupBy as _groupBy, flatten as _flatten, values, uniq, intersection, isEmpty } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
 import { isApplicableRuleOutcome } from '../../../utils/ScorecardRules';
 import { HomepageEntity } from '../../../api/userInsightTypes';
@@ -61,6 +61,7 @@ export const getSortedRulesByLevelsFromScores = (
     ),
   );
 
+// Keys of entity object used for grouping, not used when grouping by entity
 type GroupByKeys = 'teams' | 'tags' | 'ladderLevels' | 'domains';
 type GroupByValues = {
   serviceId: number;
@@ -204,38 +205,16 @@ export const applyScoreFilters = (
   groupTagByEntityId: StringIndexable<string[]>,
   domainIdByEntityId: Record<number, number[]>,
 ) => {
-  let resultScores = scores;
-
-  if (scoreFilters.serviceIds.length) {
-    resultScores = resultScores.filter((score) => scoreFilters.serviceIds.includes(score.serviceId));
-  }
-  if (scoreFilters.groups.length) {
-    resultScores = resultScores.filter(
-      (score) => intersection(scoreFilters.groups, groupTagByEntityId?.[score.serviceId]).length
+  return scores.filter((score) => {
+    return (
+      (isEmpty(scoreFilters.serviceIds) || scoreFilters.serviceIds.includes(score.serviceId)) &&
+      (isEmpty(scoreFilters.groups) || intersection(scoreFilters.groups, groupTagByEntityId?.[score.serviceId] || []).length) &&
+      (isEmpty(scoreFilters.teams) || intersection(scoreFilters.teams, score.teams || []).length) &&
+      (isEmpty(scoreFilters.users) || intersection(scoreFilters.users, ownerEmailByEntityId?.[score.serviceId] || []).length) &&
+      (isEmpty(scoreFilters.levels) || score.ladderLevels.some((ladderLevel) => scoreFilters.levels.includes(ladderLevel.currentLevel?.name ?? "No Level"))) &&
+      (isEmpty(scoreFilters.domainIds) || intersection(domainIdByEntityId?.[score.serviceId] || [], scoreFilters.domainIds).length)
     );
-  }
-  if (scoreFilters.teams.length) {
-    resultScores = resultScores.filter((score) => intersection(scoreFilters.teams, score.teams).length);
-  }
-  if (scoreFilters.users.length) {
-    resultScores = resultScores.filter(
-      (score) => intersection(scoreFilters.users, ownerEmailByEntityId?.[score.serviceId]).length
-    );
-  }
-  if (scoreFilters.levels.length) {
-    resultScores = resultScores.filter(
-      (score) => score.ladderLevels.find((ladderLevel) => {
-        return scoreFilters.levels.includes(ladderLevel.currentLevel?.name ?? "No Level")
-      })
-    );
-  }
-  if (scoreFilters.domainIds.length) {
-    resultScores = resultScores.filter(
-      (score) => intersection(domainIdByEntityId?.[score.serviceId], scoreFilters.domainIds).length
-    );
-  }
-
-  return resultScores;
+  });
 }
 
 interface ScorecardRuleMetadata {

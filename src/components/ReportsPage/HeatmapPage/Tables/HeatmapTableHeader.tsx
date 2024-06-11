@@ -40,7 +40,7 @@ export const HeatmapTableHeader = ({ headers }: HeatmapTableHeaderProps) => {
         {headers.map((headerText, idx) => {
           // first column set to 10% so that names don't get squished
           const style =
-            idx === 0 ? { width: `15%` } : { width: `${cellWidth}%` };
+            idx === 0 ? { width: `15%`, minWidth: '108px' } : { width: `${cellWidth}%` };
 
           return (
             <TableCell
