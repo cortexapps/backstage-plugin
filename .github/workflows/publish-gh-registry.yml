@@ -27,6 +27,6 @@ jobs:
       - run: yarn build
       - run: ./scripts/add_publish_to_github_config.sh
       - run: |
-          yarn version --new-version $(jq -r .version < package.json)-pr.{{ github.event.pull_request.number }}-sha.${GITHUB_SHA}
+          yarn version --new-version $(jq -r .version < package.json)-{{ github.event.pull_request.number }}-${GITHUB_SHA}
           yarn publish --non-interactive
 
