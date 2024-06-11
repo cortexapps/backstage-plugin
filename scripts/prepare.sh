@@ -1,2 +1,2 @@
-yarn tsc
-yarn build
+DEBUG=* yarn tsc --verbose
+DEBUG=* yarn build --verbose
