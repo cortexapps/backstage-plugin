@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { isUndefined, mean as _average } from 'lodash';
-import { Table, TableBody, TableRow } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableRow, Typography } from '@material-ui/core';
 import { WarningPanel } from '@backstage/core-components';
 
 import { HeatmapTableHeader } from './HeatmapTableHeader';
@@ -65,7 +65,11 @@ export const HeatmapTableByLevels = ({
 
           return (
             <TableRow key={`TableRow-${firstScore.componentRef}`}>
-              <HeatmapCell text={identifier} />
+              <TableCell>
+                <Typography variant='subtitle1'>
+                  {identifier}
+                </Typography>
+              </TableCell>
               <HeatmapCell text={serviceCount.toString()} />
               <HeatmapCell score={averageScorePercentage} />
               {averageRuleScores.map((score, idx) => (

@@ -22,6 +22,7 @@ import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
 import { mean as _average } from 'lodash';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
+import { TableCell, Typography } from '@material-ui/core';
 
 interface HeatmapTableByGroupProps {
   header: string;
@@ -58,7 +59,11 @@ export const HeatmapTableByGroup = ({
 
           return (
             <TableRow key={`TableRow-${identifier}`}>
-              <HeatmapCell text={identifier} />
+              <TableCell>
+                <Typography variant='subtitle1'>
+                  {identifier}
+                </Typography>
+              </TableCell>
               <HeatmapCell text={serviceCount.toString()} />
               {isNaN(averageScore) ? <HeatmapCell text="N/A" /> : <HeatmapCell score={averageScore} />}
               {averageRuleScores.length

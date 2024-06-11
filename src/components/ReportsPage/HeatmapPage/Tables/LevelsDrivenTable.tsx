@@ -84,7 +84,7 @@ export const LevelsDrivenTable = ({
               )}
               {notGroupedByServices && (
                 <TableCell>
-                  <Typography variant="h6" style={{ display: 'inline-block' }}>
+                  <Typography variant="subtitle1" style={{ display: 'inline-block' }}>
                     {serviceCount}
                   </Typography>
                 </TableCell>
