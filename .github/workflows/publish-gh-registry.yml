@@ -1,0 +1,24 @@
+name: publish
+env:
+  GITHUB_PASSWORD: ${{secrets.GITHUB_TOKEN}}
+on:
+  push:
+    branches:
+      - publish-to-private-github-registry
+jobs:
+  publish:
+    name: publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+      - name: Set up Node.js
+        uses: actions/setup-node@main
+        with:
+          node-version: 20.10.0
+          registry-url: 'https://registry.npmjs.org'
+      - run: yarn --frozen-lockfile
+      - run: yarn tsc
+      - run: yarn build
+      - run: ./scripts/add_publish_to_github_config.sh
+      - run: yarn publish
