@@ -62,7 +62,7 @@ export const HeatmapTableByService = ({
                   scorecardId={scorecardId}
                   componentRef={entityComponentRef(entitiesByTag, entitiesByTag[firstScore.componentRef]?.codeTag)}
                 >
-                  <Typography variant="h6">
+                  <Typography variant="subtitle1">
                     {entitiesByTag[firstScore.componentRef]?.name}
                   </Typography>
                 </ScorecardServiceRefLink>

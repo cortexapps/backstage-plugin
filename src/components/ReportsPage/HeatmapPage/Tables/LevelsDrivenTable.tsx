@@ -61,7 +61,7 @@ export const LevelsDrivenTable = ({
             <TableRow key={`TableRow-${key}`}>
               {notGroupedByServices || !firstScore.componentRef ? (
                 <TableCell>
-                  <Typography variant="h6" style={{ display: 'inline-block' }}>
+                  <Typography variant="subtitle1" style={{ display: 'inline-block' }}>
                     {key}
                   </Typography>
                 </TableCell>
@@ -76,7 +76,7 @@ export const LevelsDrivenTable = ({
                       defaultComponentRefContext,
                     )}
                   >
-                    <Typography variant="h6">
+                    <Typography variant="subtitle1">
                       {entitiesByTag[firstScore.componentRef]?.name}
                     </Typography>
                   </EntityRefLink>
