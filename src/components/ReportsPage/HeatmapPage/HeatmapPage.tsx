@@ -79,7 +79,7 @@ export const HeatmapPage = () => {
   });
   const setFiltersAndNavigate = useCallback((value: React.SetStateAction<HeatmapPageFilters>) => 
     setFilters((prev) => {
-      const newFilters = isFunction(value) ? value(prev) : prev;
+      const newFilters = isFunction(value) ? value(prev) : value;
 
       navigate(
         stringifyUrl({ url: location.pathname, query: filtersToParams(newFilters)}),
