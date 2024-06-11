@@ -91,19 +91,7 @@ export const HeatmapPage = () => {
   , [location.pathname, navigate]);
 
   const { value: ladders, loading: loadingLadders } = useCortexApi(
-    async (api) => {
-      if (!filters.selectedScorecardId) {
-        return undefined;
-      }
-      
-      const ladders = api.getScorecardLadders(filters.selectedScorecardId);
-
-      if (isEmpty(ladders)) {
-        setFiltersAndNavigate((prev) => ({ ...prev, headerType: HeaderType.RULES }));
-      }
-
-      return ladders;
-    },
+    async (api) => filters.selectedScorecardId ? api.getScorecardLadders(filters.selectedScorecardId) : undefined,
     [filters.selectedScorecardId],
   );
 
@@ -131,7 +119,7 @@ export const HeatmapPage = () => {
   }, [filters, setFiltersAndNavigate, scorecardsResult, ladders]);
 
   const onScorecardSelectChange = (selectedScorecardId?: number) => {
-    setFiltersAndNavigate((prev) => ({ ...prev, selectedScorecardId, scoreFilters: defaultScoreFilters }));
+    setFiltersAndNavigate({ ...defaultFilters, selectedScorecardId });
   }
 
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
