@@ -1,0 +1,2 @@
+yarn tsc
+yarn build
