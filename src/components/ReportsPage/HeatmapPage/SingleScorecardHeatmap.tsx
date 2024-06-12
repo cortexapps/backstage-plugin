@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import React, { Dispatch, useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../../utils/hooks';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
@@ -29,6 +29,7 @@ interface SingleScorecardHeatmapProps {
   scorecardId: number;
   ladder: ScorecardLadder | undefined;
   filters: HeatmapPageFilters;
+  setFiltersAndNavigate: Dispatch<React.SetStateAction<HeatmapPageFilters>>;
 }
 
 export const SingleScorecardHeatmap = ({
@@ -36,14 +37,16 @@ export const SingleScorecardHeatmap = ({
   entitiesByTag,
   scorecardId,
   ladder,
-  filters: {
+  setFiltersAndNavigate,
+  filters
+}: SingleScorecardHeatmapProps) => {
+  const {
     groupBy,
     headerType,
     scoreFilters,
     useHierarchy,
     hideWithoutChildren,
-  }
-}: SingleScorecardHeatmapProps) => {
+  } = filters
   const {
     value: scores,
     loading: loadingScores,
@@ -121,6 +124,8 @@ export const SingleScorecardHeatmap = ({
       useHierarchy={useHierarchy}
       hideWithoutChildren={hideWithoutChildren}
       domainTagByEntityId={domainTagByEntityId}
+      setFiltersAndNavigate={setFiltersAndNavigate}
+      filters={filters}
     />
   );
 };

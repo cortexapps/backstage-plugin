@@ -22,7 +22,7 @@ import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
 import { mean as _average } from 'lodash';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
-import { TableCell, Typography } from '@material-ui/core';
+import { TableCell, Typography, Link } from '@material-ui/core';
 
 interface HeatmapTableByGroupProps {
   header: string;
@@ -30,6 +30,8 @@ interface HeatmapTableByGroupProps {
   data: StringIndexable<ScorecardServiceScore[]>;
   entityCategory: string;
   hideWithoutChildren?: boolean;
+  onSelect: (identifier: string) => void;
+  useHierarchy: boolean;
 }
 
 export const HeatmapTableByGroup = ({
@@ -38,8 +40,15 @@ export const HeatmapTableByGroup = ({
   data,
   entityCategory,
   hideWithoutChildren = false,
+  onSelect,
+  useHierarchy,
 }: HeatmapTableByGroupProps) => {
-  const headers = [header, `${entityCategory} Count`, 'Average Score', ...rules];
+  const headers = [
+    header,
+    `${entityCategory} Count`,
+    'Average Score',
+    ...rules,
+  ];
 
   return (
     <Table>
@@ -60,26 +69,39 @@ export const HeatmapTableByGroup = ({
           return (
             <TableRow key={`TableRow-${identifier}`}>
               <TableCell>
-                <Typography variant='subtitle1'>
-                  {identifier}
-                </Typography>
+                {useHierarchy ? (
+                  <Link
+                    component="button"
+                    color="primary"
+                    onClick={() => {
+                      onSelect(identifier);
+                    }}
+                  >
+                    {identifier}
+                  </Link>
+                ) : (
+                  <Typography variant={'subtitle1'}>{identifier}</Typography>
+                )}
               </TableCell>
               <HeatmapCell text={serviceCount.toString()} />
-              {isNaN(averageScore) ? <HeatmapCell text="N/A" /> : <HeatmapCell score={averageScore} />}
+              {isNaN(averageScore) ? (
+                <HeatmapCell text="N/A" />
+              ) : (
+                <HeatmapCell score={averageScore} />
+              )}
               {averageRuleScores.length
                 ? averageRuleScores.map((score, idx) => (
-                  <HeatmapCell
-                    key={`HeatmapCell-${identifier}-${idx}`}
-                    score={score}
-                  />
-                ))
+                    <HeatmapCell
+                      key={`HeatmapCell-${identifier}-${idx}`}
+                      score={score}
+                    />
+                  ))
                 : rules.map((_, idx) => (
-                  <HeatmapCell
-                    key={`HeatmapCell-${identifier}-${idx}`}
-                    text="N/A"
-                  />
-                ))
-              }
+                    <HeatmapCell
+                      key={`HeatmapCell-${identifier}-${idx}`}
+                      text="N/A"
+                    />
+                  ))}
             </TableRow>
           );
         })}

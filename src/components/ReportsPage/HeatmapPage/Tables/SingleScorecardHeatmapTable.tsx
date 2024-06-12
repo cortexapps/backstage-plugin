@@ -13,20 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
-import { isUndefined } from 'lodash';
+import React, { Dispatch, useMemo } from 'react';
+import { isUndefined, last } from 'lodash';
 import { Progress, WarningPanel } from '@backstage/core-components';
 
 import { HeatmapTableByGroup } from './HeatmapTableByGroup';
 import { HeatmapTableByLevels } from './HeatmapTableByLevels';
 import { HeatmapTableByService } from './HeatmapTableByService';
 import { LevelsDrivenTable } from './LevelsDrivenTable';
-import { getScorecardServiceScoresByGroupByOption, getSortedRuleNames, groupScoresByHierarchies, StringIndexable } from '../HeatmapUtils';
+import {
+  getScorecardServiceScoresByGroupByOption,
+  getSortedRuleNames,
+  groupScoresByHierarchies,
+  StringIndexable,
+} from '../HeatmapUtils';
 import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
 
-import { GroupByOption, HeaderType, ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
+import {
+  DomainHierarchyNode,
+  GroupByOption,
+  HeaderType,
+  ScorecardLadder,
+  ScorecardServiceScore,
+  TeamHierarchyNode,
+} from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { useCortexApi } from '../../../../utils/hooks';
+import { HeatmapPageFilters } from '../HeatmapFilters';
 
 interface SingleScorecardHeatmapTableProps {
   entityCategory: string;
@@ -39,7 +52,33 @@ interface SingleScorecardHeatmapTableProps {
   useHierarchy: boolean;
   hideWithoutChildren: boolean;
   domainTagByEntityId: Record<string, string[]>;
+  setFiltersAndNavigate: Dispatch<React.SetStateAction<HeatmapPageFilters>>;
+  filters: HeatmapPageFilters;
 }
+
+type HierarchyNode = DomainHierarchyNode | TeamHierarchyNode;
+type HierarchyNodeList = HierarchyNode[];
+
+const findItem = (
+  nodes: HierarchyNodeList,
+  lastItemIdentifier: string,
+): HierarchyNode | undefined => {
+  let item = nodes.find((item: HierarchyNode) => {
+    return item.node.tag === lastItemIdentifier;
+  });
+
+  if (!item) {
+    for (const nodeItem of nodes) {
+      const childItem = findItem(nodeItem.orderedChildren, lastItemIdentifier);
+      if (childItem) {
+        item = childItem;
+        break;
+      }
+    }
+  }
+
+  return item;
+};
 
 export const SingleScorecardHeatmapTable = ({
   entityCategory,
@@ -52,6 +91,8 @@ export const SingleScorecardHeatmapTable = ({
   useHierarchy,
   hideWithoutChildren,
   domainTagByEntityId,
+  setFiltersAndNavigate,
+  filters,
 }: SingleScorecardHeatmapTableProps) => {
   const levelsDriven = headerType === HeaderType.LEVELS;
   const headers = useMemo(
@@ -62,26 +103,96 @@ export const SingleScorecardHeatmapTable = ({
     [levelsDriven, ladder, scores],
   );
 
-  const { value: teamHierarchies, loading: loadingTeamHierarchies } = useCortexApi(api => api.getTeamHierarchies());
-  const { value: domainHierarchies, loading: loadingDomainHierarchies } = useCortexApi(api => api.getDomainHierarchies());
+  const { value: teamHierarchies, loading: loadingTeamHierarchies } =
+    useCortexApi(api => api.getTeamHierarchies());
+  const { value: domainHierarchies, loading: loadingDomainHierarchies } =
+    useCortexApi(api => api.getDomainHierarchies());
 
-  const data = useMemo(() => {
-    const groupedData = getScorecardServiceScoresByGroupByOption(scores, groupBy, domainTagByEntityId);
+  const lastPathItem = last(filters.path);
+
+  const { data, hierarchyItem } = useMemo(() => {
+    const groupedData = getScorecardServiceScoresByGroupByOption(
+      scores,
+      groupBy,
+      domainTagByEntityId,
+    );
 
     if (useHierarchy) {
       if (groupBy === GroupByOption.TEAM && teamHierarchies) {
-        return groupScoresByHierarchies(groupedData, teamHierarchies.orderedParents);
+        let items = teamHierarchies.orderedParents;
+        let foundHierarchyItem: TeamHierarchyNode | undefined;
+
+        if (lastPathItem) {
+          foundHierarchyItem = findItem(
+            teamHierarchies.orderedParents,
+            lastPathItem,
+          ) as TeamHierarchyNode;
+
+          if (foundHierarchyItem) {
+            items = foundHierarchyItem.orderedChildren;
+          }
+        }
+
+        return {
+          data: groupScoresByHierarchies(groupedData, items),
+          hierarchyItem: undefined,
+        };
       } else if (groupBy === GroupByOption.DOMAIN && domainHierarchies) {
-        return groupScoresByHierarchies(groupedData, domainHierarchies.orderedTree);
+        let items = domainHierarchies.orderedTree;
+        let foundHierarchyItem: DomainHierarchyNode | undefined;
+
+        if (lastPathItem) {
+          foundHierarchyItem = findItem(
+            domainHierarchies.orderedTree,
+            lastPathItem,
+          ) as DomainHierarchyNode;
+          if (foundHierarchyItem) {
+            items = foundHierarchyItem.orderedChildren;
+          }
+        }
+        return {
+          data: groupScoresByHierarchies(groupedData, items),
+          hierarchyItem: foundHierarchyItem,
+        };
       }
     }
 
-    return groupedData;
-  }, [scores, groupBy, useHierarchy, teamHierarchies, domainHierarchies, domainTagByEntityId]);
+    return {
+      data: groupedData,
+    };
+  }, [
+    scores,
+    groupBy,
+    useHierarchy,
+    teamHierarchies,
+    domainHierarchies,
+    domainTagByEntityId,
+    lastPathItem,
+  ]);
 
-  if (useHierarchy && ((groupBy === GroupByOption.TEAM && loadingTeamHierarchies) || (groupBy === GroupByOption.DOMAIN && loadingDomainHierarchies))) {
+  if (
+    useHierarchy &&
+    ((groupBy === GroupByOption.TEAM && loadingTeamHierarchies) ||
+      (groupBy === GroupByOption.DOMAIN && loadingDomainHierarchies))
+  ) {
     return <Progress />;
   }
+
+  const onSelect = (identifier: string) => {
+    if (!useHierarchy) return;
+
+    if (hierarchyItem?.orderedChildren.length === 0) {
+      return;
+    }
+
+    setFiltersAndNavigate(prev => {
+      const nextPath = [...(prev.path ?? []), identifier];
+      return {
+        ...prev,
+        path: nextPath,
+      };
+    });
+  };
 
   if (headerType === HeaderType.LEVELS) {
     if (isUndefined(ladder)) {
@@ -99,6 +210,7 @@ export const SingleScorecardHeatmapTable = ({
           groupBy={groupBy}
           levels={headers}
           entityCategory={entityCategory}
+          onSelect={onSelect}
         />
       );
     }
@@ -116,14 +228,48 @@ export const SingleScorecardHeatmapTable = ({
         />
       );
     case GroupByOption.SERVICE_GROUP:
-      return <HeatmapTableByGroup header="Group" rules={headers} data={data} entityCategory={entityCategory} />;
+      return (
+        <HeatmapTableByGroup
+          header="Group"
+          rules={headers}
+          data={data}
+          entityCategory={entityCategory}
+          onSelect={onSelect}
+          useHierarchy={useHierarchy}
+        />
+      );
     case GroupByOption.TEAM:
-      return <HeatmapTableByGroup header="Team" rules={headers} data={data} entityCategory={entityCategory} hideWithoutChildren={hideWithoutChildren} />;
+      return (
+        <HeatmapTableByGroup
+          header="Team"
+          rules={headers}
+          data={data}
+          entityCategory={entityCategory}
+          hideWithoutChildren={hideWithoutChildren}
+          onSelect={onSelect}
+          useHierarchy={useHierarchy}
+        />
+      );
     case GroupByOption.LEVEL:
       return (
-        <HeatmapTableByLevels ladder={ladder} rules={headers} data={data} entityCategory={entityCategory} />
+        <HeatmapTableByLevels
+          ladder={ladder}
+          rules={headers}
+          data={data}
+          entityCategory={entityCategory}
+        />
       );
     case GroupByOption.DOMAIN:
-      return <HeatmapTableByGroup header="Domain" rules={headers} data={data} entityCategory={entityCategory} hideWithoutChildren={hideWithoutChildren} />;
+      return (
+        <HeatmapTableByGroup
+          header="Domain"
+          rules={headers}
+          data={data}
+          entityCategory={entityCategory}
+          hideWithoutChildren={hideWithoutChildren}
+          onSelect={onSelect}
+          useHierarchy={useHierarchy}
+        />
+      );
   }
 };

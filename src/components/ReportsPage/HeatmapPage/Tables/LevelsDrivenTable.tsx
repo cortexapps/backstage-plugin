@@ -14,14 +14,26 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Table, TableBody, TableCell, TableRow, Typography, } from '@material-ui/core';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography,
+} from '@material-ui/core';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 
-import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
+import {
+  defaultComponentRefContext,
+  entityComponentRef,
+} from '../../../../utils/ComponentUtils';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
 import { LevelsInfoCell } from '../LevelsInfoCell';
-import { getServicesInLevelsFromScores, StringIndexable, } from '../HeatmapUtils';
+import {
+  getServicesInLevelsFromScores,
+  StringIndexable,
+} from '../HeatmapUtils';
 
 import { GroupByOption, ScorecardServiceScore } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
@@ -32,6 +44,7 @@ interface LevelsDrivenTableProps {
   groupBy: GroupByOption;
   levels: string[];
   entityCategory: string;
+  onSelect: (identifier: string) => void;
 }
 
 export const LevelsDrivenTable = ({
@@ -40,6 +53,7 @@ export const LevelsDrivenTable = ({
   groupBy,
   levels,
   entityCategory,
+  onSelect,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
   const headers = [
@@ -61,7 +75,11 @@ export const LevelsDrivenTable = ({
             <TableRow key={`TableRow-${key}`}>
               {notGroupedByServices || !firstScore.componentRef ? (
                 <TableCell>
-                  <Typography variant="subtitle1" style={{ display: 'inline-block' }}>
+                  <Typography
+                    variant="subtitle1"
+                    style={{ display: 'inline-block' }}
+                    onClick={() => onSelect(key)}
+                  >
                     {key}
                   </Typography>
                 </TableCell>
@@ -84,7 +102,10 @@ export const LevelsDrivenTable = ({
               )}
               {notGroupedByServices && (
                 <TableCell>
-                  <Typography variant="subtitle1" style={{ display: 'inline-block' }}>
+                  <Typography
+                    variant="subtitle1"
+                    style={{ display: 'inline-block' }}
+                  >
                     {serviceCount}
                   </Typography>
                 </TableCell>
