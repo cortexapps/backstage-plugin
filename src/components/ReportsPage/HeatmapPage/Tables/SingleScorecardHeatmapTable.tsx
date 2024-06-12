@@ -179,11 +179,6 @@ export const SingleScorecardHeatmapTable = ({
   }
 
   const onSelect = (identifier: string) => {
-    // if ordered children for the thing is empty
-    // then we should toggle to group by entity
-    // and disable
-
-    debugger;
     if (hierarchyItem?.orderedChildren.length === 0) {
       return;
     }
