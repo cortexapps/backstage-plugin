@@ -43,19 +43,22 @@ export const HeatmapPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const filtersToParams = (filters: HeatmapPageFilters) => ({
-    scorecardId: filters.selectedScorecardId,
-    groupBy: filters.groupBy !== defaultFilters.groupBy ? filters.groupBy as string : undefined,
-    headerType: filters.headerType !== defaultFilters.headerType ? filters.headerType as string : undefined,
-    serviceIds: filters.scoreFilters.serviceIds.length ? filters.scoreFilters.serviceIds.join(',') : undefined,
-    groups: filters.scoreFilters.groups.length ? filters.scoreFilters.groups.join(',') : undefined,
-    teams: filters.scoreFilters.teams.length ? filters.scoreFilters.teams.join(',') : undefined,
-    users: filters.scoreFilters.users.length ? filters.scoreFilters.users.join(',') : undefined,
-    domainIds: filters.scoreFilters.domainIds.length ? filters.scoreFilters.domainIds.join(',') : undefined,
-    levels: filters.scoreFilters.levels.length ? filters.scoreFilters.levels.join(',') : undefined,
-    hierarchy: filters.useHierarchy ? 'true' : undefined,
-    hideWithoutChildren: !filters.hideWithoutChildren ? 'false' : undefined,
-  });
+  const filtersToParams = (filters: HeatmapPageFilters) => {
+    return {
+      scorecardId: filters.selectedScorecardId,
+      groupBy: filters.groupBy !== defaultFilters.groupBy ? filters.groupBy as string : undefined,
+      headerType: filters.headerType !== defaultFilters.headerType ? filters.headerType as string : undefined,
+      serviceIds: filters.scoreFilters.serviceIds.length ? filters.scoreFilters.serviceIds : undefined,
+      groups: filters.scoreFilters.groups.length ? filters.scoreFilters.groups : undefined,
+      teams: filters.scoreFilters.teams.length ? filters.scoreFilters.teams : undefined,
+      users: filters.scoreFilters.users.length ? filters.scoreFilters.users : undefined,
+      domainIds: filters.scoreFilters.domainIds.length ? filters.scoreFilters.domainIds : undefined,
+      levels: filters.scoreFilters.levels.length ? filters.scoreFilters.levels : undefined,
+      hierarchy: filters.useHierarchy ? 'true' : undefined,
+      hideWithoutChildren: !filters.hideWithoutChildren ? 'false' : undefined,
+      path: filters.path
+    }
+  };
 
   const queryScorecardId = Number(searchParams.get('scorecardId') ?? undefined);
   const initialScorecardId = Number.isNaN(queryScorecardId)
@@ -69,13 +72,14 @@ export const HeatmapPage = () => {
     useHierarchy: !!searchParams.has('hierarchy'),
     hideWithoutChildren: !searchParams.has('hideWithoutChildren'),
     scoreFilters: {
-      serviceIds: searchParams.get('serviceIds')?.split(',').map((i) => parseInt(i, 10)).filter(isFinite) ?? defaultFilters.scoreFilters.serviceIds,
-      groups: searchParams.get('groups')?.split(',') ?? defaultFilters.scoreFilters.groups,
-      teams: searchParams.get('teams')?.split(',') ?? defaultFilters.scoreFilters.teams,
-      users: searchParams.get('users')?.split(',') ?? defaultFilters.scoreFilters.users,
-      domainIds: searchParams.get('domainIds')?.split(',').map((i) => parseInt(i, 10)).filter(isFinite) ?? defaultFilters.scoreFilters.domainIds,
-      levels: searchParams.get('levels')?.split(',') ?? defaultFilters.scoreFilters.levels,
+      serviceIds: searchParams.getAll('serviceIds').map((i) => parseInt(i, 10)).filter(isFinite) ?? defaultFilters.scoreFilters.serviceIds,
+      groups: searchParams.getAll('groups') ?? defaultFilters.scoreFilters.groups,
+      teams: searchParams.getAll('teams') ?? defaultFilters.scoreFilters.teams,
+      users: searchParams.getAll('users') ?? defaultFilters.scoreFilters.users,
+      domainIds: searchParams.getAll('domainIds').map((i) => parseInt(i, 10)).filter(isFinite) ?? defaultFilters.scoreFilters.domainIds,
+      levels: searchParams.getAll('levels') ?? defaultFilters.scoreFilters.levels,
     },
+    path: searchParams.getAll('path'),
   });
   const setFiltersAndNavigate = useCallback((value: React.SetStateAction<HeatmapPageFilters>) => 
     setFilters((prev) => {
@@ -162,6 +166,7 @@ export const HeatmapPage = () => {
                   scorecardId={filters.selectedScorecardId}
                   filters={filters}
                   ladder={ladders?.[0]}
+                  setFiltersAndNavigate={setFiltersAndNavigate}
                 />
               )
           }

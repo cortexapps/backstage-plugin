@@ -30,6 +30,7 @@ interface HeatmapTableByGroupProps {
   data: StringIndexable<ScorecardServiceScore[]>;
   entityCategory: string;
   hideWithoutChildren?: boolean;
+  onSelect: (identifier: string) => void;
 }
 
 export const HeatmapTableByGroup = ({
@@ -38,8 +39,14 @@ export const HeatmapTableByGroup = ({
   data,
   entityCategory,
   hideWithoutChildren = false,
+  onSelect,
 }: HeatmapTableByGroupProps) => {
-  const headers = [header, `${entityCategory} Count`, 'Average Score', ...rules];
+  const headers = [
+    header,
+    `${entityCategory} Count`,
+    'Average Score',
+    ...rules,
+  ];
 
   return (
     <Table>
@@ -60,26 +67,34 @@ export const HeatmapTableByGroup = ({
           return (
             <TableRow key={`TableRow-${identifier}`}>
               <TableCell>
-                <Typography variant='subtitle1'>
+                <Typography
+                  variant="subtitle1"
+                  onClick={() => {
+                    onSelect(identifier);
+                  }}
+                >
                   {identifier}
                 </Typography>
               </TableCell>
               <HeatmapCell text={serviceCount.toString()} />
-              {isNaN(averageScore) ? <HeatmapCell text="N/A" /> : <HeatmapCell score={averageScore} />}
+              {isNaN(averageScore) ? (
+                <HeatmapCell text="N/A" />
+              ) : (
+                <HeatmapCell score={averageScore} />
+              )}
               {averageRuleScores.length
                 ? averageRuleScores.map((score, idx) => (
-                  <HeatmapCell
-                    key={`HeatmapCell-${identifier}-${idx}`}
-                    score={score}
-                  />
-                ))
+                    <HeatmapCell
+                      key={`HeatmapCell-${identifier}-${idx}`}
+                      score={score}
+                    />
+                  ))
                 : rules.map((_, idx) => (
-                  <HeatmapCell
-                    key={`HeatmapCell-${identifier}-${idx}`}
-                    text="N/A"
-                  />
-                ))
-              }
+                    <HeatmapCell
+                      key={`HeatmapCell-${identifier}-${idx}`}
+                      text="N/A"
+                    />
+                  ))}
             </TableRow>
           );
         })}
