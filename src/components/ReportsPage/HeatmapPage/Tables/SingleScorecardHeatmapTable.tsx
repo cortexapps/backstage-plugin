@@ -179,6 +179,8 @@ export const SingleScorecardHeatmapTable = ({
   }
 
   const onSelect = (identifier: string) => {
+    if (!useHierarchy) return;
+
     if (hierarchyItem?.orderedChildren.length === 0) {
       return;
     }
