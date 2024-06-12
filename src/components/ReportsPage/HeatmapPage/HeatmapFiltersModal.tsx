@@ -127,7 +127,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
       <DialogContent>
         <Box display={"flex"} flexDirection={"column"} gridRowGap={16}>
           <ModalSelect
-            name='Services'
+            name='Entities'
             onChange={(serviceIds) => setModalFiltersPartially({ serviceIds })}
             onReset={() => setModalFiltersPartially({ serviceIds: defaultFilters.serviceIds })}
             value={modalFilters.serviceIds}

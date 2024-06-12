@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Checkbox, FormControlLabel, Grid, InputLabel } from "@material-ui/core";
+import { Checkbox, FormControlLabel, Grid, Typography } from "@material-ui/core";
 import React, { Dispatch } from "react";
 import { GroupByDropdown } from "../Common/GroupByDropdown";
 import { HeaderTypeDropdown } from "../Common/HeaderTypeDropdown";
@@ -77,9 +77,9 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
                     />
                   }
                   label={
-                    <InputLabel>
+                    <Typography variant={'subtitle2'}>
                       Use {filters.groupBy} hierarchy
-                    </InputLabel>
+                    </Typography>
                   }
                 />
                 {filters.useHierarchy && (
@@ -92,9 +92,9 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({ filters, setFilt
                       />
                     }
                     label={
-                      <InputLabel>
+                      <Typography variant={'subtitle2'}>
                         Hide {filters.groupBy}s with 0 entities
-                      </InputLabel>
+                      </Typography>
                     }
                   />
                 )}

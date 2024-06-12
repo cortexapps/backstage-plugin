@@ -125,7 +125,5 @@ export const SingleScorecardHeatmapTable = ({
       );
     case GroupByOption.DOMAIN:
       return <HeatmapTableByGroup header="Domain" rules={headers} data={data} entityCategory={entityCategory} hideWithoutChildren={hideWithoutChildren} />;
-    default:
-      return <>Hi</>;
   }
 };
