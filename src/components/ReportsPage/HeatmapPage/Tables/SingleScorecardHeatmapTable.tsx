@@ -235,6 +235,7 @@ export const SingleScorecardHeatmapTable = ({
           data={data}
           entityCategory={entityCategory}
           onSelect={onSelect}
+          useHierarchy={useHierarchy}
         />
       );
     case GroupByOption.TEAM:
@@ -246,6 +247,7 @@ export const SingleScorecardHeatmapTable = ({
           entityCategory={entityCategory}
           hideWithoutChildren={hideWithoutChildren}
           onSelect={onSelect}
+          useHierarchy={useHierarchy}
         />
       );
     case GroupByOption.LEVEL:
@@ -266,6 +268,7 @@ export const SingleScorecardHeatmapTable = ({
           entityCategory={entityCategory}
           hideWithoutChildren={hideWithoutChildren}
           onSelect={onSelect}
+          useHierarchy={useHierarchy}
         />
       );
   }

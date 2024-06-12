@@ -22,7 +22,7 @@ import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
 import { mean as _average } from 'lodash';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
-import { TableCell, Typography } from '@material-ui/core';
+import { TableCell, Typography, Link } from '@material-ui/core';
 
 interface HeatmapTableByGroupProps {
   header: string;
@@ -31,6 +31,7 @@ interface HeatmapTableByGroupProps {
   entityCategory: string;
   hideWithoutChildren?: boolean;
   onSelect: (identifier: string) => void;
+  useHierarchy: boolean;
 }
 
 export const HeatmapTableByGroup = ({
@@ -40,6 +41,7 @@ export const HeatmapTableByGroup = ({
   entityCategory,
   hideWithoutChildren = false,
   onSelect,
+  useHierarchy,
 }: HeatmapTableByGroupProps) => {
   const headers = [
     header,
@@ -67,14 +69,19 @@ export const HeatmapTableByGroup = ({
           return (
             <TableRow key={`TableRow-${identifier}`}>
               <TableCell>
-                <Typography
-                  variant="subtitle1"
-                  onClick={() => {
-                    onSelect(identifier);
-                  }}
-                >
-                  {identifier}
-                </Typography>
+                {useHierarchy ? (
+                  <Link
+                    component="button"
+                    color="primary"
+                    onClick={() => {
+                      onSelect(identifier);
+                    }}
+                  >
+                    {identifier}
+                  </Link>
+                ) : (
+                  <Typography variant={'subtitle1'}>{identifier}</Typography>
+                )}
               </TableCell>
               <HeatmapCell text={serviceCount.toString()} />
               {isNaN(averageScore) ? (
