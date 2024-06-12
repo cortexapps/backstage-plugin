@@ -56,7 +56,7 @@ interface SingleScorecardHeatmapTableProps {
   filters: HeatmapPageFilters;
 }
 
-type HierarchNode = DomainHierarchyNode | TeamHierarchyNode;
+type HierarchyNode = DomainHierarchyNode | TeamHierarchyNode;
 type HierarchyNodeList = HierarchNode[];
 
 const findItem = (
