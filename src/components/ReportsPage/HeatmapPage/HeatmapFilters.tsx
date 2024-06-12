@@ -61,6 +61,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
     setFiltersAndNavigate(prev => ({
       ...prev,
       groupBy,
+      path: undefined,
       useHierarchy: isHierarchyToggleAllowed ? filters.useHierarchy : false,
     }));
   };
