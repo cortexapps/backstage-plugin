@@ -72,6 +72,7 @@ export const HeatmapTableByGroup = ({
                 {useHierarchy ? (
                   <Link
                     component="button"
+                    variant="subtitle1"
                     color="primary"
                     onClick={() => {
                       onSelect(identifier);
