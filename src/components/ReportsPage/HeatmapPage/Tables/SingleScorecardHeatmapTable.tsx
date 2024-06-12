@@ -57,13 +57,13 @@ interface SingleScorecardHeatmapTableProps {
 }
 
 type HierarchyNode = DomainHierarchyNode | TeamHierarchyNode;
-type HierarchyNodeList = HierarchNode[];
+type HierarchyNodeList = HierarchyNode[];
 
 const findItem = (
   nodes: HierarchyNodeList,
   lastItemIdentifier: string,
-): HierarchNode | undefined => {
-  let item = nodes.find((item: HierarchNode) => {
+): HierarchyNode | undefined => {
+  let item = nodes.find((item: HierarchyNode) => {
     return item.node.tag === lastItemIdentifier;
   });
 
