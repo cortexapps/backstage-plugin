@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.10.0
+
+- Backstage version update from 1.25.2 to 1.26.5
+
 ### 2.8.0
 
 - Display Initiatives notification schedule
