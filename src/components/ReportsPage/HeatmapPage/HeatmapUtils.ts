@@ -151,7 +151,7 @@ export const hierarchyNodeFlatChildren = (node: HierarchyNode): string[] => {
   return node.orderedChildren.flatMap((child) => [child.node.tag, ...hierarchyNodeFlatChildren(child)]);
 }
 
-export const groupScoresByHierarchies = (groupedScores: StringIndexable<ScorecardServiceScore[]>, nodes: HierarchyNode[]) => {
+export const groupScoresByHierarchies = (groupedScores: StringIndexable<ScorecardServiceScore[]>, nodes: HierarchyNode[], currentHierarchyItemTag?: string) => {
   const hierarchyGroupedData = {} as Record<string, ScorecardServiceScore[]>;
 
   nodes.forEach((parent) => {
@@ -165,6 +165,10 @@ export const groupScoresByHierarchies = (groupedScores: StringIndexable<Scorecar
       });
     });
   });
+
+  if (currentHierarchyItemTag && groupedScores[currentHierarchyItemTag]?.length) {
+    hierarchyGroupedData[currentHierarchyItemTag] = groupedScores[currentHierarchyItemTag];
+  }
 
   return hierarchyGroupedData;
 }

@@ -174,7 +174,7 @@ export const SingleScorecardHeatmapTable = ({
           }
         }
 
-        return groupScoresByHierarchies(groupedData, items);
+        return groupScoresByHierarchies(groupedData, items, lastPathItem);
       } else if (groupBy === GroupByOption.DOMAIN && domainHierarchies) {
         let items = domainHierarchies.orderedTree;
         let foundHierarchyItem: DomainHierarchyNode | undefined;
@@ -188,7 +188,8 @@ export const SingleScorecardHeatmapTable = ({
             items = foundHierarchyItem.orderedChildren;
           }
         }
-        return groupScoresByHierarchies(groupedData, items);
+
+        return groupScoresByHierarchies(groupedData, items, lastPathItem);
       }
     }
 
@@ -223,7 +224,7 @@ export const SingleScorecardHeatmapTable = ({
 
     // If an empty item is clicked we have no more navigation to do
     // So we should apply our filters and navigate to the entity view
-    if (isEmpty(hierarchyItem?.orderedChildren)) {
+    if (isEmpty(hierarchyItem?.orderedChildren) || identifier === lastPathItem) {
       const selectedFilter =
         groupBy === GroupByOption.DOMAIN
           ? {
@@ -276,6 +277,7 @@ export const SingleScorecardHeatmapTable = ({
           onSelect={onSelect}
           useHierarchy={useHierarchy}
           hideWithoutChildren={hideWithoutChildren}
+          lastPathItem={lastPathItem}
         />
       );
     }
@@ -313,6 +315,7 @@ export const SingleScorecardHeatmapTable = ({
           hideWithoutChildren={hideWithoutChildren}
           onSelect={onSelect}
           useHierarchy={useHierarchy}
+          lastPathItem={lastPathItem}
         />
       );
     case GroupByOption.LEVEL:
@@ -334,6 +337,7 @@ export const SingleScorecardHeatmapTable = ({
           hideWithoutChildren={hideWithoutChildren}
           onSelect={onSelect}
           useHierarchy={useHierarchy}
+          lastPathItem={lastPathItem}
         />
       );
   }
