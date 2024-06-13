@@ -201,6 +201,7 @@ export const HeatmapPage = () => {
         <Grid item style={{ marginTop: '20px' }}>
           <HeatmapFilters
             filters={filters}
+            setSortBy={setSortBy}
             setFiltersAndNavigate={setFiltersAndNavigate}
             excludedGroupBys={excludedGroupBys}
             entitiesByTag={entitiesByTag}

@@ -16,9 +16,10 @@
 import React, { Dispatch } from 'react';
 import TableHead from '@material-ui/core/TableHead/TableHead';
 import TableRow from '@material-ui/core/TableRow/TableRow';
-import { makeStyles, TableCell } from '@material-ui/core';
+import { IconButton, makeStyles, TableCell } from '@material-ui/core';
 import { BackstageTheme } from '@backstage/theme';
 import { SortBy } from '../HeatmapFilters';
+import { ArrowDropDown, ArrowDropUp } from '@material-ui/icons';
 
 const useHeatmapStyles = makeStyles<BackstageTheme>({
   root: {
@@ -37,9 +38,58 @@ interface HeatmapTableHeaderProps {
   setSortBy?: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
+const Sorter = ({
+  sortBy,
+  sortKey,
+  setSortBy,
+}: {
+  sortBy?: SortBy;
+  sortKey: SortBy['column'];
+  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
+}) => {
+  const isSelected = sortBy?.column === sortKey;
+  const isDescending = isSelected && sortBy?.desc;
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <IconButton
+        onClick={() => {
+          setSortBy({
+            column: sortKey,
+            desc: true,
+          });
+        }}
+      >
+        <ArrowDropUp
+          color={!isDescending && isSelected ? 'primary' : 'action'}
+        />
+      </IconButton>
+      <IconButton
+        onClick={() => {
+          setSortBy({
+            column: sortKey,
+            desc: false,
+          });
+        }}
+      >
+        <ArrowDropDown
+          color={isDescending && isSelected ? 'primary' : 'action'}
+        />
+      </IconButton>
+    </div>
+  );
+};
+
+const firstColumn = { width: `15%`, minWidth: '108px' };
+const secondaryColumns = { width: `10%`, minWidth: '108px' };
+
 export const HeatmapTableHeader = ({
   headers,
-  // sortBy,
+  sortBy,
   setSortBy,
 }: HeatmapTableHeaderProps) => {
   const classes = useHeatmapStyles();
@@ -53,7 +103,9 @@ export const HeatmapTableHeader = ({
           // first column set to 10% so that names don't get squished
           const style =
             idx === 0
-              ? { width: `15%`, minWidth: '108px' }
+              ? firstColumn
+              : [1, 2].includes(idx)
+              ? secondaryColumns
               : { width: `${cellWidth}%` };
 
           return (
@@ -72,7 +124,21 @@ export const HeatmapTableHeader = ({
                 }
               }}
             >
-              {label}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <span>{label}</span>
+                {sortKey && setSortBy && (
+                  <Sorter
+                    sortBy={sortBy}
+                    sortKey={sortKey}
+                    setSortBy={setSortBy}
+                  />
+                )}
+              </div>
             </TableCell>
           );
         })}
