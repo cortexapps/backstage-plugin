@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Dispatch, useMemo } from 'react';
+import React, { Dispatch, useMemo, useRef } from 'react';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow/TableRow';
 import { ScorecardServiceScore } from '../../../../api/types';
@@ -25,6 +25,7 @@ import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { TableCell, Link } from '@material-ui/core';
 import { SortBy } from '../HeatmapFilters';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 interface HeatmapTableByGroupProps {
   header: string;
@@ -39,6 +40,8 @@ interface HeatmapTableByGroupProps {
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
   entitiesByTag: StringIndexable<HomepageEntity>;
 }
+
+const heightEstimator = () => 82;
 
 export const HeatmapTableByGroup = ({
   header,
@@ -90,6 +93,23 @@ export const HeatmapTableByGroup = ({
       sortBy.desc ? 'desc' : 'asc',
     );
   }, [data, sortBy]);
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const virtualizer = useVirtualizer({
+    count: dataValues.length,
+    estimateSize: heightEstimator,
+    overscan: 10,
+    getScrollElement: () => parentRef.current,
+  });
+
+  const totalSize = virtualizer.getTotalSize();
+  const virtualRows = virtualizer.getVirtualItems();
+
+  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
+  const paddingBottom =
+    virtualRows.length > 0
+      ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
+      : 0;
 
   return (
     <Table>
@@ -99,7 +119,9 @@ export const HeatmapTableByGroup = ({
         setSortBy={setSortBy}
       />
       <TableBody>
-        {dataValues.map(([identifier, values = []]) => {
+        {paddingTop > 0 && <tr style={{ height: paddingTop }} />}
+        {virtualizer.getVirtualItems().map(item => {
+          const [identifier, values = []] = dataValues[item.index];
           const serviceCount = values.length;
 
           if (serviceCount < 1 && hideWithoutChildren) {
@@ -160,6 +182,7 @@ export const HeatmapTableByGroup = ({
             </TableRow>
           );
         })}
+        {paddingBottom > 0 && <tr style={{ height: paddingBottom }} />}
       </TableBody>
     </Table>
   );

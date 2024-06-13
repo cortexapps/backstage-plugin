@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Dispatch, useMemo } from 'react';
+import React, { Dispatch, useMemo, useRef } from 'react';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow/TableRow';
 import { TableCell, Typography } from '@material-ui/core';
@@ -27,6 +27,7 @@ import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 import { SortBy } from '../HeatmapFilters';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 interface HeatmapTableByServiceProps {
   header: string;
@@ -37,6 +38,8 @@ interface HeatmapTableByServiceProps {
   sortBy?: SortBy;
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
+
+const heightEstimator = () => 82;
 
 export const HeatmapTableByService = ({
   header,
@@ -84,6 +87,24 @@ export const HeatmapTableByService = ({
     );
   }, [data, sortBy, entitiesByTag]);
 
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const virtualizer = useVirtualizer({
+    count: dataValues.length,
+    estimateSize: heightEstimator,
+    overscan: 10,
+    getScrollElement: () => parentRef.current,
+  });
+
+  const totalSize = virtualizer.getTotalSize();
+  const virtualRows = virtualizer.getVirtualItems();
+
+  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
+  const paddingBottom =
+    virtualRows.length > 0
+      ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
+      : 0;
+
   return (
     <Table>
       <HeatmapTableHeader
@@ -92,7 +113,9 @@ export const HeatmapTableByService = ({
         setSortBy={setSortBy}
       />
       <TableBody>
-        {dataValues.map(([key, values]) => {
+        {paddingTop > 0 && <tr style={{ height: paddingTop }} />}
+        {virtualizer.getVirtualItems().map(item => {
+          const [key, values = []] = dataValues[item.index];
           const firstScore = values[0];
           const averageScorePercentage = _average(
             values.map(score => score.scorePercentage),
@@ -129,6 +152,7 @@ export const HeatmapTableByService = ({
             </TableRow>
           );
         })}
+        {paddingBottom > 0 && <tr style={{ height: paddingBottom }} />}
       </TableBody>
     </Table>
   );
