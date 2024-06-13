@@ -93,7 +93,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
             <Grid item>
               <Grid container direction="row" alignItems="center">
                 <FormControlLabel
-                  aria-label={`Use ${filters.groupBy} hierarchy`}
+                  aria-label={`Use ${filters.groupBy.toLowerCase()} hierarchy`}
                   control={
                     <Checkbox
                       checked={filters.useHierarchy}
@@ -109,13 +109,13 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
                   }
                   label={
                     <Typography variant={'subtitle2'}>
-                      Use {filters.groupBy} hierarchy
+                      Use {filters.groupBy.toLowerCase()} hierarchy
                     </Typography>
                   }
                 />
                 {filters.useHierarchy && (
                   <FormControlLabel
-                    aria-label={`Hide ${filters.groupBy}s with 0 entities`}
+                    aria-label={`Hide ${filters.groupBy.toLowerCase()}s with 0 entities`}
                     control={
                       <Checkbox
                         checked={filters.hideWithoutChildren}
@@ -129,7 +129,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
                     }
                     label={
                       <Typography variant={'subtitle2'}>
-                        Hide {filters.groupBy}s with 0 entities
+                        Hide {filters.groupBy.toLowerCase()}s with 0 entities
                       </Typography>
                     }
                   />
