@@ -36,6 +36,7 @@ interface SingleScorecardHeatmapProps {
   setFiltersAndNavigate: Dispatch<React.SetStateAction<HeatmapPageFilters>>;
   sortBy?: SortBy;
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
+  tableHeight: number;
 }
 
 export const SingleScorecardHeatmap = ({
@@ -47,6 +48,7 @@ export const SingleScorecardHeatmap = ({
   filters,
   sortBy,
   setSortBy,
+  tableHeight,
 }: SingleScorecardHeatmapProps) => {
   const {
     groupBy,
@@ -155,6 +157,7 @@ export const SingleScorecardHeatmap = ({
       filters={filters}
       sortBy={sortBy}
       setSortBy={setSortBy}
+      tableHeight={tableHeight}
     />
   );
 };

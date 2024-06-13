@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Content,
   ContentHeader,
@@ -28,7 +34,7 @@ import { FilterType, GroupByOption, HeaderType } from '../../../api/types';
 import { CopyButton } from '../../Common/CopyButton';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { buildUrl } from '../../../utils/URLUtils';
-import { isEmpty, isFinite, isFunction, isUndefined } from 'lodash';
+import { isEmpty, isFinite, isFunction, isUndefined, debounce } from 'lodash';
 import { stringifyUrl } from 'query-string';
 import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
 import { isScorecardTeamBased } from '../../../utils/ScorecardFilterUtils';
@@ -43,12 +49,24 @@ const defaultFilters: HeatmapPageFilters = {
   hideWithoutChildren: true,
 };
 
+const MISC_ELEMENT_PADDING = 56;
+const getTableHeight = (filterElement: HTMLDivElement) => {
+  return (
+    window.innerHeight -
+    filterElement.clientHeight -
+    filterElement.offsetTop -
+    MISC_ELEMENT_PADDING
+  );
+};
+
 export const HeatmapPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const [sortBy, setSortBy] = useState<SortBy | undefined>(undefined);
+  const filterRef = useRef<HTMLDivElement>(null);
+  const [tableHeight, setTableHeight] = useState<number>(0);
 
   const filtersToParams = (filters: HeatmapPageFilters) => {
     return {
@@ -183,6 +201,30 @@ export const HeatmapPage = () => {
 
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
+  useEffect(() => {
+    // Measure once we have all elements on the page so we can calculate the table height
+    if (
+      filterRef.current &&
+      !scorecardsResult.loading &&
+      filters.selectedScorecardId
+    ) {
+      setTableHeight(getTableHeight(filterRef.current));
+    }
+  }, [scorecardsResult.loading, filters.selectedScorecardId]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (filterRef.current) {
+        setTableHeight(getTableHeight(filterRef.current));
+      }
+    };
+    const handleResizeDebounced = debounce(handleResize, 150);
+
+    window.addEventListener('resize', handleResizeDebounced);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResizeDebounced);
+  }, []);
+
   return (
     <Content>
       <ContentHeader title="Bird's Eye">
@@ -198,7 +240,7 @@ export const HeatmapPage = () => {
             scorecardsResult={scorecardsResult}
           />
         </Grid>
-        <Grid item style={{ marginTop: '20px' }}>
+        <Grid item style={{ marginTop: '20px' }} ref={filterRef}>
           <HeatmapFilters
             filters={filters}
             setSortBy={setSortBy}
@@ -223,6 +265,7 @@ export const HeatmapPage = () => {
               setFiltersAndNavigate={setFiltersAndNavigate}
               sortBy={sortBy}
               setSortBy={setSortBy}
+              tableHeight={tableHeight}
             />
           )}
         </Grid>

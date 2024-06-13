@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Dispatch, useMemo } from 'react';
+import React, { Dispatch, useMemo, useRef } from 'react';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow/TableRow';
 import { ScorecardServiceScore } from '../../../../api/types';
@@ -25,6 +25,7 @@ import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { TableCell, Link } from '@material-ui/core';
 import { SortBy } from '../HeatmapFilters';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 interface HeatmapTableByGroupProps {
   header: string;
@@ -38,7 +39,10 @@ interface HeatmapTableByGroupProps {
   sortBy?: SortBy;
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
   entitiesByTag: StringIndexable<HomepageEntity>;
+  tableHeight: number;
 }
+
+const heightEstimator = () => 82;
 
 export const HeatmapTableByGroup = ({
   header,
@@ -52,6 +56,7 @@ export const HeatmapTableByGroup = ({
   lastPathItem,
   sortBy,
   setSortBy,
+  tableHeight,
 }: HeatmapTableByGroupProps) => {
   const headers: HeaderItem[] = [
     {
@@ -91,76 +96,104 @@ export const HeatmapTableByGroup = ({
     );
   }, [data, sortBy]);
 
+  const parentRef = useRef(null);
+
+  const virtualizer = useVirtualizer({
+    count: dataValues.length,
+    estimateSize: heightEstimator,
+    getScrollElement: () => parentRef.current!,
+    overscan: 10,
+  });
+  const totalSize = virtualizer.getTotalSize();
+  const virtualRows = virtualizer.getVirtualItems();
+
+  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
+  const paddingBottom =
+    virtualRows.length > 0
+      ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
+      : 0;
+
   return (
-    <Table>
-      <HeatmapTableHeader
-        headers={headers}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
-      <TableBody>
-        {dataValues.map(([identifier, values = []]) => {
-          const serviceCount = values.length;
+    <div
+      style={{
+        height: `${tableHeight}px`,
+        overflow: 'auto',
+      }}
+      ref={parentRef}
+    >
+      <Table>
+        <HeatmapTableHeader
+          headers={headers}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
+        <TableBody>
+          {paddingTop > 0 && <tr style={{ height: paddingTop }} />}
+          {virtualizer.getVirtualItems().map(item => {
+            const [identifier, values = []] = dataValues[item.index];
+            const serviceCount = values.length;
 
-          if (serviceCount < 1 && hideWithoutChildren) {
-            return undefined;
-          }
+            if (serviceCount < 1 && hideWithoutChildren) {
+              return undefined;
+            }
 
-          const averageScore = _average(
-            values.map(score => score.scorePercentage),
-          );
-          const averageRuleScores = getAverageRuleScores(values);
+            const averageScore = _average(
+              values.map(score => score.scorePercentage),
+            );
+            const averageRuleScores = getAverageRuleScores(values);
 
-          return (
-            <TableRow key={`TableRow-${identifier}`}>
-              <TableCell>
-                {useHierarchy ? (
-                  <Link
-                    variant="subtitle1"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => {
-                      onSelect(identifier);
-                    }}
-                  >
-                    {identifier === lastPathItem
-                      ? `Everything owned by ${lastPathItem}`
-                      : identifier}
-                  </Link>
+            return (
+              <TableRow key={`TableRow-${identifier}`}>
+                <TableCell>
+                  {useHierarchy ? (
+                    <Link
+                      variant="subtitle1"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        onSelect(identifier);
+                      }}
+                    >
+                      {identifier === lastPathItem
+                        ? `Everything owned by ${lastPathItem}`
+                        : identifier}
+                    </Link>
+                  ) : (
+                    <Link
+                      variant="subtitle1"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        onSelect(identifier);
+                      }}
+                    >
+                      {identifier}
+                    </Link>
+                  )}
+                </TableCell>
+                <HeatmapCell text={serviceCount.toString()} />
+                {isNaN(averageScore) ? (
+                  <HeatmapCell text="N/A" />
                 ) : (
-                  <Link
-                    variant="subtitle1"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => {
-                      onSelect(identifier);
-                    }}
-                  >
-                    {identifier}
-                  </Link>
+                  <HeatmapCell score={averageScore} />
                 )}
-              </TableCell>
-              <HeatmapCell text={serviceCount.toString()} />
-              {isNaN(averageScore) ? (
-                <HeatmapCell text="N/A" />
-              ) : (
-                <HeatmapCell score={averageScore} />
-              )}
-              {averageRuleScores.length
-                ? averageRuleScores.map((score, idx) => (
-                    <HeatmapCell
-                      key={`HeatmapCell-${identifier}-${idx}`}
-                      score={score}
-                    />
-                  ))
-                : rules.map((_, idx) => (
-                    <HeatmapCell
-                      key={`HeatmapCell-${identifier}-${idx}`}
-                      text="N/A"
-                    />
-                  ))}
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+                {averageRuleScores.length
+                  ? averageRuleScores.map((score, idx) => (
+                      <HeatmapCell
+                        key={`HeatmapCell-${identifier}-${idx}`}
+                        score={score}
+                      />
+                    ))
+                  : rules.map((_, idx) => (
+                      <HeatmapCell
+                        key={`HeatmapCell-${identifier}-${idx}`}
+                        text="N/A"
+                      />
+                    ))}
+              </TableRow>
+            );
+          })}
+          {paddingBottom > 0 && <tr style={{ height: paddingBottom }} />}
+        </TableBody>
+      </Table>
+    </div>
   );
 };

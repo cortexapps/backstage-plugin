@@ -58,6 +58,7 @@ interface SingleScorecardHeatmapTableProps {
   filters: HeatmapPageFilters;
   sortBy?: SortBy;
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
+  tableHeight: number;
 }
 
 export const SingleScorecardHeatmapTable = ({
@@ -75,6 +76,7 @@ export const SingleScorecardHeatmapTable = ({
   filters,
   sortBy,
   setSortBy,
+  tableHeight,
 }: SingleScorecardHeatmapTableProps) => {
   const levelsDriven = headerType === HeaderType.LEVELS;
   const headers = useMemo(
@@ -273,6 +275,7 @@ export const SingleScorecardHeatmapTable = ({
           lastPathItem={lastPathItem}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          tableHeight={tableHeight}
         />
       );
     }
@@ -289,6 +292,7 @@ export const SingleScorecardHeatmapTable = ({
           rules={headers}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          tableHeight={tableHeight}
         />
       );
     case GroupByOption.SERVICE_GROUP:
@@ -303,6 +307,7 @@ export const SingleScorecardHeatmapTable = ({
           sortBy={sortBy}
           setSortBy={setSortBy}
           entitiesByTag={entitiesByTag}
+          tableHeight={tableHeight}
         />
       );
     case GroupByOption.TEAM:
@@ -319,6 +324,7 @@ export const SingleScorecardHeatmapTable = ({
           sortBy={sortBy}
           setSortBy={setSortBy}
           entitiesByTag={entitiesByTag}
+          tableHeight={tableHeight}
         />
       );
     case GroupByOption.LEVEL:
@@ -331,6 +337,7 @@ export const SingleScorecardHeatmapTable = ({
           entityCategory={entityCategory}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          tableHeight={tableHeight}
         />
       );
     case GroupByOption.DOMAIN:
@@ -347,6 +354,7 @@ export const SingleScorecardHeatmapTable = ({
           sortBy={sortBy}
           setSortBy={setSortBy}
           entitiesByTag={entitiesByTag}
+          tableHeight={tableHeight}
         />
       );
   }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Dispatch, useMemo } from 'react';
+import React, { Dispatch, useMemo, useRef } from 'react';
 import {
   Link,
   Table,
@@ -22,6 +22,8 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
+import { useVirtualizer } from '@tanstack/react-virtual';
+
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 
@@ -54,7 +56,10 @@ interface LevelsDrivenTableProps {
   lastPathItem?: string;
   sortBy?: SortBy;
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
+  tableHeight: number;
 }
+
+const heightEstimator = () => 106;
 
 export const LevelsDrivenTable = ({
   data,
@@ -69,6 +74,7 @@ export const LevelsDrivenTable = ({
   lastPathItem,
   sortBy,
   setSortBy,
+  tableHeight,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
   const headers: HeaderItem[] = [
@@ -102,91 +108,119 @@ export const LevelsDrivenTable = ({
     );
   }, [data, sortBy]);
 
+  const parentRef = useRef(null);
+
+  const virtualizer = useVirtualizer({
+    count: dataValues.length,
+    estimateSize: heightEstimator,
+    getScrollElement: () => parentRef.current!,
+    overscan: 10,
+  });
+  const totalSize = virtualizer.getTotalSize();
+  const virtualRows = virtualizer.getVirtualItems();
+
+  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
+  const paddingBottom =
+    virtualRows.length > 0
+      ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
+      : 0;
+
   return (
-    <Table>
-      <HeatmapTableHeader
-        headers={headers}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
-      <TableBody>
-        {dataValues.map(([key, values = []]) => {
-          const serviceCount = values.length;
+    <div
+      style={{
+        height: `${tableHeight}px`,
+        overflow: 'auto',
+      }}
+      ref={parentRef}
+    >
+      <Table>
+        <HeatmapTableHeader
+          headers={headers}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
+        <TableBody>
+          {paddingTop > 0 && <tr style={{ height: paddingTop }} />}
+          {virtualizer.getVirtualItems().map(item => {
+            const [key, values = []] = dataValues[item.index];
+            const serviceCount = values.length;
 
-          if (serviceCount < 1 && hideWithoutChildren) {
-            return undefined;
-          }
+            if (serviceCount < 1 && hideWithoutChildren) {
+              return undefined;
+            }
 
-          const scores = getServicesInLevelsFromScores(levels, values);
-          const firstScore = values?.[0];
+            const scores = getServicesInLevelsFromScores(levels, values);
+            const firstScore = values?.[0];
 
-          return (
-            <TableRow key={`TableRow-${key}`}>
-              {notGroupedByServices || !firstScore.componentRef ? (
-                <TableCell>
-                  {useHierarchy ? (
-                    <Link
-                      variant="subtitle1"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        onSelect(key);
-                      }}
-                    >
-                      {key === lastPathItem
-                        ? `Everything owned by ${lastPathItem}`
-                        : key}
-                    </Link>
-                  ) : (
-                    <Link
-                      variant="subtitle1"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        onSelect(key);
-                      }}
-                    >
-                      {key}
-                    </Link>
-                  )}
-                </TableCell>
-              ) : (
-                <TableCell>
-                  <EntityRefLink
-                    entityRef={parseEntityRef(
-                      entityComponentRef(
-                        entitiesByTag,
-                        firstScore.componentRef,
-                      ),
-                      defaultComponentRefContext,
+            return (
+              <TableRow key={`TableRow-${key}`}>
+                {notGroupedByServices || !firstScore.componentRef ? (
+                  <TableCell>
+                    {useHierarchy ? (
+                      <Link
+                        variant="subtitle1"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          onSelect(key);
+                        }}
+                      >
+                        {key === lastPathItem
+                          ? `Everything owned by ${lastPathItem}`
+                          : key}
+                      </Link>
+                    ) : (
+                      <Link
+                        variant="subtitle1"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          onSelect(key);
+                        }}
+                      >
+                        {key}
+                      </Link>
                     )}
-                  >
-                    <Typography variant="subtitle1">
-                      {entitiesByTag[firstScore.componentRef]?.name}
+                  </TableCell>
+                ) : (
+                  <TableCell>
+                    <EntityRefLink
+                      entityRef={parseEntityRef(
+                        entityComponentRef(
+                          entitiesByTag,
+                          firstScore.componentRef,
+                        ),
+                        defaultComponentRefContext,
+                      )}
+                    >
+                      <Typography variant="subtitle1">
+                        {entitiesByTag[firstScore.componentRef]?.name}
+                      </Typography>
+                    </EntityRefLink>
+                  </TableCell>
+                )}
+                {notGroupedByServices && (
+                  <TableCell>
+                    <Typography
+                      variant="subtitle1"
+                      style={{ display: 'inline-block' }}
+                    >
+                      {serviceCount}
                     </Typography>
-                  </EntityRefLink>
-                </TableCell>
-              )}
-              {notGroupedByServices && (
-                <TableCell>
-                  <Typography
-                    variant="subtitle1"
-                    style={{ display: 'inline-block' }}
-                  >
-                    {serviceCount}
-                  </Typography>
-                </TableCell>
-              )}
-              {scores.map((score, idx) => (
-                <LevelsInfoCell
-                  key={`LevelsInfoCell-${key}-${idx}`}
-                  entitiesByTag={entitiesByTag}
-                  identifier={key}
-                  scores={score}
-                />
-              ))}
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+                  </TableCell>
+                )}
+                {scores.map((score, idx) => (
+                  <LevelsInfoCell
+                    key={`LevelsInfoCell-${key}-${idx}`}
+                    entitiesByTag={entitiesByTag}
+                    identifier={key}
+                    scores={score}
+                  />
+                ))}
+              </TableRow>
+            );
+          })}
+          {paddingBottom > 0 && <tr style={{ height: paddingBottom }} />}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
