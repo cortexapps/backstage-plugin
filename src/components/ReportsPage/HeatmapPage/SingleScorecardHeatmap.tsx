@@ -63,8 +63,6 @@ export const SingleScorecardHeatmap = ({
     error: scoresError,
   } = useCortexApi(api => api.getScorecardScores(scorecardId), [scorecardId]);
 
-  console.log(scores);
-
   const { ownerEmailByEntityId, groupTagByEntityId } = useMemo(() => {
     return catalogToRelationsByEntityId(entitiesByTag);
   }, [entitiesByTag]);
