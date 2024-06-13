@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, makeStyles, TableCell, Typography, } from '@material-ui/core';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  makeStyles,
+  TableCell,
+  Typography,
+} from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 
 import { maybePluralize } from '../../../utils/strings';
-import { defaultComponentRefContext, entityComponentRef, } from '../../../utils/ComponentUtils';
+import {
+  defaultComponentRefContext,
+  entityComponentRef,
+} from '../../../utils/ComponentUtils';
 
 import { ScorecardServiceScore } from '../../../api/types';
 import { BackstageTheme } from '@backstage/theme';

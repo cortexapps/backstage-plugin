@@ -116,7 +116,7 @@ export const SingleScorecardHeatmapTable = ({
   const headers = useMemo(
     () =>
       (!isUndefined(ladder) && levelsDriven
-        ? getSortedLadderLevelNames(ladder)
+        ? getSortedLadderLevelNames(ladder, true)
         : scores[0] && getSortedRuleNames(scores[0])) ?? [],
     [levelsDriven, ladder, scores],
   );
