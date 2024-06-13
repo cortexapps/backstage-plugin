@@ -15,6 +15,7 @@
  */
 import React from 'react';
 import {
+  Link,
   Table,
   TableBody,
   TableCell,
@@ -45,6 +46,7 @@ interface LevelsDrivenTableProps {
   levels: string[];
   entityCategory: string;
   onSelect: (identifier: string) => void;
+  useHierarchy: boolean;
 }
 
 export const LevelsDrivenTable = ({
@@ -54,6 +56,7 @@ export const LevelsDrivenTable = ({
   levels,
   entityCategory,
   onSelect,
+  useHierarchy,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
   const headers = [
@@ -75,13 +78,26 @@ export const LevelsDrivenTable = ({
             <TableRow key={`TableRow-${key}`}>
               {notGroupedByServices || !firstScore.componentRef ? (
                 <TableCell>
-                  <Typography
-                    variant="subtitle1"
-                    style={{ display: 'inline-block' }}
-                    onClick={() => onSelect(key)}
-                  >
-                    {key}
-                  </Typography>
+                  {useHierarchy ? (
+                    <Link
+                      component="button"
+                      variant="subtitle1"
+                      color="primary"
+                      onClick={() => {
+                        onSelect(key);
+                      }}
+                    >
+                      {key}
+                    </Link>
+                  ) : (
+                    <Typography
+                      variant="subtitle1"
+                      style={{ display: 'inline-block' }}
+                      onClick={() => onSelect(key)}
+                    >
+                      {key}
+                    </Typography>
+                  )}
                 </TableCell>
               ) : (
                 <TableCell>
