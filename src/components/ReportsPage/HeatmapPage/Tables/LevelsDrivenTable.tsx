@@ -106,7 +106,7 @@ export const LevelsDrivenTable = ({
       },
       sortBy.desc ? 'desc' : 'asc',
     );
-  }, [data, sortBy]);
+  }, [data, sortBy, entitiesByTag]);
 
   const parentRef = useRef(null);
 
