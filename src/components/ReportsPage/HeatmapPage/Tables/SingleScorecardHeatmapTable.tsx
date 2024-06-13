@@ -212,6 +212,7 @@ export const SingleScorecardHeatmapTable = ({
           entityCategory={entityCategory}
           onSelect={onSelect}
           useHierarchy={useHierarchy}
+          hideWithoutChildren={hideWithoutChildren}
         />
       );
     }

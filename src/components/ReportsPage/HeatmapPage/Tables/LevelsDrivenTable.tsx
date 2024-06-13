@@ -47,6 +47,7 @@ interface LevelsDrivenTableProps {
   entityCategory: string;
   onSelect: (identifier: string) => void;
   useHierarchy: boolean;
+  hideWithoutChildren: boolean;
 }
 
 export const LevelsDrivenTable = ({
@@ -57,6 +58,7 @@ export const LevelsDrivenTable = ({
   entityCategory,
   onSelect,
   useHierarchy,
+  hideWithoutChildren,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
   const headers = [
@@ -71,6 +73,11 @@ export const LevelsDrivenTable = ({
       <TableBody>
         {Object.entries(data).map(([key, values]) => {
           const serviceCount = values.length;
+
+          if (serviceCount < 1 && hideWithoutChildren) {
+            return undefined;
+          }
+
           const scores = getServicesInLevelsFromScores(levels, values);
           const firstScore = values?.[0];
 
