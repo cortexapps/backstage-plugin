@@ -27,6 +27,11 @@ import { GroupByOption, HeaderType, ScorecardLadder } from '../../../api/types';
 import { StringIndexable } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 
+export interface SortBy {
+  column: 'identifier' | 'score' | 'percentage';
+  desc?: boolean;
+}
+
 export interface HeatmapPageFilters {
   selectedScorecardId?: number;
   groupBy: GroupByOption;

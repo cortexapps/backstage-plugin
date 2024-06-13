@@ -17,9 +17,13 @@ import React, { Dispatch, useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi } from '../../../utils/hooks';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
-import { StringIndexable, applyScoreFilters, catalogToRelationsByEntityId } from './HeatmapUtils';
+import {
+  StringIndexable,
+  applyScoreFilters,
+  catalogToRelationsByEntityId,
+} from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
-import { HeatmapPageFilters } from './HeatmapFilters';
+import { HeatmapPageFilters, SortBy } from './HeatmapFilters';
 import { ScorecardLadder } from '../../../api/types';
 import { keyBy } from 'lodash';
 
@@ -30,6 +34,8 @@ interface SingleScorecardHeatmapProps {
   ladder: ScorecardLadder | undefined;
   filters: HeatmapPageFilters;
   setFiltersAndNavigate: Dispatch<React.SetStateAction<HeatmapPageFilters>>;
+  sortBy?: SortBy;
+  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
 export const SingleScorecardHeatmap = ({
@@ -38,7 +44,9 @@ export const SingleScorecardHeatmap = ({
   scorecardId,
   ladder,
   setFiltersAndNavigate,
-  filters
+  filters,
+  sortBy,
+  setSortBy,
 }: SingleScorecardHeatmapProps) => {
   const {
     groupBy,
@@ -46,7 +54,7 @@ export const SingleScorecardHeatmap = ({
     scoreFilters,
     useHierarchy,
     hideWithoutChildren,
-  } = filters
+  } = filters;
   const {
     value: scores,
     loading: loadingScores,
@@ -57,19 +65,26 @@ export const SingleScorecardHeatmap = ({
     return catalogToRelationsByEntityId(entitiesByTag);
   }, [entitiesByTag]);
 
-  const { value: domainIdByEntityId, error: domainByEntityError, loading: isLoadingDomainByEntity } = useCortexApi(api => api.getEntityDomainAncestors());
+  const {
+    value: domainIdByEntityId,
+    error: domainByEntityError,
+    loading: isLoadingDomainByEntity,
+  } = useCortexApi(api => api.getEntityDomainAncestors());
   const domainTagByEntityId = useMemo(() => {
     if (!domainIdByEntityId) {
       return {};
     }
 
     const map = {} as Record<string, string[]>;
-    const domainsById = keyBy(Object.values(entitiesByTag).filter((entity) => entity.type === "domain"), (domain) => domain.id);
+    const domainsById = keyBy(
+      Object.values(entitiesByTag).filter(entity => entity.type === 'domain'),
+      domain => domain.id,
+    );
 
-    Object.keys(domainIdByEntityId.entitiesToAncestors).forEach((entityId) => {
-      map[entityId] = domainIdByEntityId.entitiesToAncestors[parseInt(entityId, 10)].map(
-        (parentId) => domainsById[parentId].codeTag
-      )
+    Object.keys(domainIdByEntityId.entitiesToAncestors).forEach(entityId => {
+      map[entityId] = domainIdByEntityId.entitiesToAncestors[
+        parseInt(entityId, 10)
+      ].map(parentId => domainsById[parentId].codeTag);
     });
 
     return map;
@@ -80,8 +95,20 @@ export const SingleScorecardHeatmap = ({
       return [];
     }
 
-    return applyScoreFilters(scores ?? [], scoreFilters, ownerEmailByEntityId, groupTagByEntityId, domainIdByEntityId.entitiesToAncestors);
-  }, [scores, scoreFilters, ownerEmailByEntityId, groupTagByEntityId, domainIdByEntityId]);
+    return applyScoreFilters(
+      scores ?? [],
+      scoreFilters,
+      ownerEmailByEntityId,
+      groupTagByEntityId,
+      domainIdByEntityId.entitiesToAncestors,
+    );
+  }, [
+    scores,
+    scoreFilters,
+    ownerEmailByEntityId,
+    groupTagByEntityId,
+    domainIdByEntityId,
+  ]);
 
   if (loadingScores || isLoadingDomainByEntity) {
     return <Progress />;
@@ -126,6 +153,8 @@ export const SingleScorecardHeatmap = ({
       domainTagByEntityId={domainTagByEntityId}
       setFiltersAndNavigate={setFiltersAndNavigate}
       filters={filters}
+      sortBy={sortBy}
+      setSortBy={setSortBy}
     />
   );
 };

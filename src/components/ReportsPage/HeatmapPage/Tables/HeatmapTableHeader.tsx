@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import TableHead from '@material-ui/core/TableHead/TableHead';
 import TableRow from '@material-ui/core/TableRow/TableRow';
 import { makeStyles, TableCell } from '@material-ui/core';
 import { BackstageTheme } from '@backstage/theme';
+import { SortBy } from '../HeatmapFilters';
 
 const useHeatmapStyles = makeStyles<BackstageTheme>({
   root: {
@@ -25,8 +26,15 @@ const useHeatmapStyles = makeStyles<BackstageTheme>({
   },
 });
 
+export interface HeaderItem {
+  sortKey?: string;
+  label: string;
+}
+
 interface HeatmapTableHeaderProps {
-  headers: string[];
+  headers: HeaderItem[];
+  sortBy?: SortBy;
+  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
 export const HeatmapTableHeader = ({ headers }: HeatmapTableHeaderProps) => {
@@ -37,10 +45,12 @@ export const HeatmapTableHeader = ({ headers }: HeatmapTableHeaderProps) => {
   return (
     <TableHead>
       <TableRow>
-        {headers.map((headerText, idx) => {
+        {headers.map(({ label }, idx) => {
           // first column set to 10% so that names don't get squished
           const style =
-            idx === 0 ? { width: `15%`, minWidth: '108px' } : { width: `${cellWidth}%` };
+            idx === 0
+              ? { width: `15%`, minWidth: '108px' }
+              : { width: `${cellWidth}%` };
 
           return (
             <TableCell
@@ -48,7 +58,7 @@ export const HeatmapTableHeader = ({ headers }: HeatmapTableHeaderProps) => {
               className={classes.root}
               style={style}
             >
-              {headerText}
+              {label}
             </TableCell>
           );
         })}

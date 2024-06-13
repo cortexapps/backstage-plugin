@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import React, { useCallback, useMemo, useState } from 'react';
-import { Content, ContentHeader, EmptyState, Progress } from '@backstage/core-components';
+import {
+  Content,
+  ContentHeader,
+  EmptyState,
+  Progress,
+} from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
@@ -28,7 +33,7 @@ import { stringifyUrl } from 'query-string';
 import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
 import { isScorecardTeamBased } from '../../../utils/ScorecardFilterUtils';
 import { defaultFilters as defaultScoreFilters } from './HeatmapFiltersModal';
-import { HeatmapFilters, HeatmapPageFilters } from './HeatmapFilters';
+import { HeatmapFilters, HeatmapPageFilters, SortBy } from './HeatmapFilters';
 
 const defaultFilters: HeatmapPageFilters = {
   groupBy: GroupByOption.ENTITY,
@@ -36,28 +41,48 @@ const defaultFilters: HeatmapPageFilters = {
   scoreFilters: defaultScoreFilters,
   useHierarchy: false,
   hideWithoutChildren: true,
-}
+};
 
 export const HeatmapPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  const [sortBy, setSortBy] = useState<SortBy | undefined>(undefined);
+
   const filtersToParams = (filters: HeatmapPageFilters) => {
     return {
       scorecardId: filters.selectedScorecardId,
-      groupBy: filters.groupBy !== defaultFilters.groupBy ? filters.groupBy as string : undefined,
-      headerType: filters.headerType !== defaultFilters.headerType ? filters.headerType as string : undefined,
-      serviceIds: filters.scoreFilters.serviceIds.length ? filters.scoreFilters.serviceIds : undefined,
-      groups: filters.scoreFilters.groups.length ? filters.scoreFilters.groups : undefined,
-      teams: filters.scoreFilters.teams.length ? filters.scoreFilters.teams : undefined,
-      users: filters.scoreFilters.users.length ? filters.scoreFilters.users : undefined,
-      domainIds: filters.scoreFilters.domainIds.length ? filters.scoreFilters.domainIds : undefined,
-      levels: filters.scoreFilters.levels.length ? filters.scoreFilters.levels : undefined,
+      groupBy:
+        filters.groupBy !== defaultFilters.groupBy
+          ? (filters.groupBy as string)
+          : undefined,
+      headerType:
+        filters.headerType !== defaultFilters.headerType
+          ? (filters.headerType as string)
+          : undefined,
+      serviceIds: filters.scoreFilters.serviceIds.length
+        ? filters.scoreFilters.serviceIds
+        : undefined,
+      groups: filters.scoreFilters.groups.length
+        ? filters.scoreFilters.groups
+        : undefined,
+      teams: filters.scoreFilters.teams.length
+        ? filters.scoreFilters.teams
+        : undefined,
+      users: filters.scoreFilters.users.length
+        ? filters.scoreFilters.users
+        : undefined,
+      domainIds: filters.scoreFilters.domainIds.length
+        ? filters.scoreFilters.domainIds
+        : undefined,
+      levels: filters.scoreFilters.levels.length
+        ? filters.scoreFilters.levels
+        : undefined,
       hierarchy: filters.useHierarchy ? 'true' : undefined,
       hideWithoutChildren: !filters.hideWithoutChildren ? 'false' : undefined,
-      path: filters.path
-    }
+      path: filters.path,
+    };
   };
 
   const queryScorecardId = Number(searchParams.get('scorecardId') ?? undefined);
@@ -67,35 +92,56 @@ export const HeatmapPage = () => {
 
   const [filters, setFilters] = useState<HeatmapPageFilters>({
     selectedScorecardId: initialScorecardId,
-    groupBy: (searchParams.get('groupBy') as GroupByOption) ?? defaultFilters.groupBy,
-    headerType: (searchParams.get('headerType') as HeaderType) ?? defaultFilters.headerType,
+    groupBy:
+      (searchParams.get('groupBy') as GroupByOption) ?? defaultFilters.groupBy,
+    headerType:
+      (searchParams.get('headerType') as HeaderType) ??
+      defaultFilters.headerType,
     useHierarchy: !!searchParams.has('hierarchy'),
     hideWithoutChildren: !searchParams.has('hideWithoutChildren'),
     scoreFilters: {
-      serviceIds: searchParams.getAll('serviceIds').map((i) => parseInt(i, 10)).filter(isFinite) ?? defaultFilters.scoreFilters.serviceIds,
-      groups: searchParams.getAll('groups') ?? defaultFilters.scoreFilters.groups,
+      serviceIds:
+        searchParams
+          .getAll('serviceIds')
+          .map(i => parseInt(i, 10))
+          .filter(isFinite) ?? defaultFilters.scoreFilters.serviceIds,
+      groups:
+        searchParams.getAll('groups') ?? defaultFilters.scoreFilters.groups,
       teams: searchParams.getAll('teams') ?? defaultFilters.scoreFilters.teams,
       users: searchParams.getAll('users') ?? defaultFilters.scoreFilters.users,
-      domainIds: searchParams.getAll('domainIds').map((i) => parseInt(i, 10)).filter(isFinite) ?? defaultFilters.scoreFilters.domainIds,
-      levels: searchParams.getAll('levels') ?? defaultFilters.scoreFilters.levels,
+      domainIds:
+        searchParams
+          .getAll('domainIds')
+          .map(i => parseInt(i, 10))
+          .filter(isFinite) ?? defaultFilters.scoreFilters.domainIds,
+      levels:
+        searchParams.getAll('levels') ?? defaultFilters.scoreFilters.levels,
     },
     path: searchParams.getAll('path'),
   });
-  const setFiltersAndNavigate = useCallback((value: React.SetStateAction<HeatmapPageFilters>) => 
-    setFilters((prev) => {
-      const newFilters = isFunction(value) ? value(prev) : value;
+  const setFiltersAndNavigate = useCallback(
+    (value: React.SetStateAction<HeatmapPageFilters>) =>
+      setFilters(prev => {
+        const newFilters = isFunction(value) ? value(prev) : value;
 
-      navigate(
-        stringifyUrl({ url: location.pathname, query: filtersToParams(newFilters)}),
-        { replace: true }
-      );
+        navigate(
+          stringifyUrl({
+            url: location.pathname,
+            query: filtersToParams(newFilters),
+          }),
+          { replace: true },
+        );
 
-      return newFilters;
-    })
-  , [location.pathname, navigate]);
+        return newFilters;
+      }),
+    [location.pathname, navigate],
+  );
 
   const { value: ladders, loading: loadingLadders } = useCortexApi(
-    async (api) => filters.selectedScorecardId ? api.getScorecardLadders(filters.selectedScorecardId) : undefined,
+    async api =>
+      filters.selectedScorecardId
+        ? api.getScorecardLadders(filters.selectedScorecardId)
+        : undefined,
     [filters.selectedScorecardId],
   );
 
@@ -106,25 +152,34 @@ export const HeatmapPage = () => {
   const scorecardsResult = useCortexApi(api => api.getScorecards());
 
   const { entityCategory, excludedGroupBys } = useMemo(() => {
-    const selectedScorecard = scorecardsResult.value?.find((scorecard) => scorecard.id === filters.selectedScorecardId);
+    const selectedScorecard = scorecardsResult.value?.find(
+      scorecard => scorecard.id === filters.selectedScorecardId,
+    );
 
-    const excludedGroupBys = isScorecardTeamBased(selectedScorecard) ? [GroupByOption.TEAM] : [];
-    if (selectedScorecard?.filter?.type === FilterType.DOMAIN_FILTER) excludedGroupBys.push(GroupByOption.DOMAIN);
+    const excludedGroupBys = isScorecardTeamBased(selectedScorecard)
+      ? [GroupByOption.TEAM]
+      : [];
+    if (selectedScorecard?.filter?.type === FilterType.DOMAIN_FILTER)
+      excludedGroupBys.push(GroupByOption.DOMAIN);
     if (isEmpty(ladders)) excludedGroupBys.push(GroupByOption.LEVEL);
 
     if (filters.groupBy && excludedGroupBys.includes(filters.groupBy)) {
-      setFiltersAndNavigate((prev) => ({ ...prev, groupBy: defaultFilters.groupBy }));
+      setFiltersAndNavigate(prev => ({
+        ...prev,
+        groupBy: defaultFilters.groupBy,
+      }));
     }
 
     return {
-      entityCategory: getEntityCategoryFromFilter(selectedScorecard?.filter) ?? 'Entity',
+      entityCategory:
+        getEntityCategoryFromFilter(selectedScorecard?.filter) ?? 'Entity',
       excludedGroupBys,
-    }
+    };
   }, [filters, setFiltersAndNavigate, scorecardsResult, ladders]);
 
   const onScorecardSelectChange = (selectedScorecardId?: number) => {
     setFiltersAndNavigate({ ...defaultFilters, selectedScorecardId });
-  }
+  };
 
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
 
@@ -153,23 +208,22 @@ export const HeatmapPage = () => {
           />
         </Grid>
         <Grid item lg={12}>
-          {isUndefined(filters.selectedScorecardId)
-            ? (
-              <EmptyState title="Select a Scorecard" missing="data" />
-            )
-            : (loadingEntities || loadingLadders)
-              ? <Progress />
-              : (
-                <SingleScorecardHeatmap
-                  entityCategory={entityCategory}
-                  entitiesByTag={entitiesByTag}
-                  scorecardId={filters.selectedScorecardId}
-                  filters={filters}
-                  ladder={ladders?.[0]}
-                  setFiltersAndNavigate={setFiltersAndNavigate}
-                />
-              )
-          }
+          {isUndefined(filters.selectedScorecardId) ? (
+            <EmptyState title="Select a Scorecard" missing="data" />
+          ) : loadingEntities || loadingLadders ? (
+            <Progress />
+          ) : (
+            <SingleScorecardHeatmap
+              entityCategory={entityCategory}
+              entitiesByTag={entitiesByTag}
+              scorecardId={filters.selectedScorecardId}
+              filters={filters}
+              ladder={ladders?.[0]}
+              setFiltersAndNavigate={setFiltersAndNavigate}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+            />
+          )}
         </Grid>
       </Grid>
     </Content>

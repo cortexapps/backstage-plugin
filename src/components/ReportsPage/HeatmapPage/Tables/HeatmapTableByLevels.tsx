@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { isUndefined, mean as _average } from 'lodash';
 import { Link, Table, TableBody, TableCell, TableRow } from '@material-ui/core';
 import { WarningPanel } from '@backstage/core-components';
@@ -27,6 +27,7 @@ import {
 } from '../HeatmapUtils';
 
 import { ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
+import { SortBy } from '../HeatmapFilters';
 
 interface HeatmapTableByLevelsProps {
   ladder: ScorecardLadder | undefined;
@@ -34,6 +35,8 @@ interface HeatmapTableByLevelsProps {
   data: StringIndexable<ScorecardServiceScore[]>;
   entityCategory: string;
   onSelect: (identifier: string) => void;
+  sortBy?: SortBy;
+  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
 export const HeatmapTableByLevels = ({
@@ -42,14 +45,27 @@ export const HeatmapTableByLevels = ({
   data,
   entityCategory,
   onSelect,
+  sortBy,
+  setSortBy,
 }: HeatmapTableByLevelsProps) => {
   const rulesByLevels = getSortedRulesByLevels(rules, ladder?.levels);
 
   const headers = [
-    'Level',
-    `${entityCategory} Count`,
-    'Average Score',
-    ...rulesByLevels,
+    {
+      label: 'Level',
+      sortKey: 'identifier',
+    },
+    {
+      label: `${entityCategory} Count`,
+      sortKey: 'score',
+    },
+    {
+      label: 'Average Score',
+      sortKey: 'percentage',
+    },
+    ...rulesByLevels.map(label => {
+      return { label };
+    }),
   ];
 
   if (isUndefined(ladder)) {
@@ -60,7 +76,11 @@ export const HeatmapTableByLevels = ({
 
   return (
     <Table>
-      <HeatmapTableHeader headers={headers} />
+      <HeatmapTableHeader
+        headers={headers}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
       <TableBody>
         {Object.entries(data).map(([identifier, values]) => {
           const firstScore = values[0];

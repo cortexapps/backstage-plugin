@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import {
   Link,
   Table,
@@ -38,6 +38,7 @@ import {
 
 import { GroupByOption, ScorecardServiceScore } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
+import { SortBy } from '../HeatmapFilters';
 
 interface LevelsDrivenTableProps {
   data: StringIndexable<ScorecardServiceScore[]>;
@@ -50,6 +51,8 @@ interface LevelsDrivenTableProps {
   useHierarchy: boolean;
   hideWithoutChildren: boolean;
   lastPathItem?: string;
+  sortBy?: SortBy;
+  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
 export const LevelsDrivenTable = ({
@@ -63,17 +66,28 @@ export const LevelsDrivenTable = ({
   useHierarchy,
   hideWithoutChildren,
   lastPathItem,
+  sortBy,
+  setSortBy,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
   const headers = [
-    header,
-    ...(notGroupedByServices ? [`${entityCategory} Count`] : []),
-    ...levels,
+    {
+      label: header,
+      sortKey: 'identifier',
+    },
+    ...(notGroupedByServices ? [`${entityCategory} Count`] : []).map(label => ({
+      label,
+    })),
+    ...levels.map(label => ({ label })),
   ];
 
   return (
     <Table>
-      <HeatmapTableHeader headers={headers} />
+      <HeatmapTableHeader
+        headers={headers}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
       <TableBody>
         {Object.entries(data).map(([key, values = []]) => {
           const serviceCount = values.length;

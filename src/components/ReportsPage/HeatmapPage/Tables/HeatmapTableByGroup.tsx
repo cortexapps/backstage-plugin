@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow/TableRow';
 import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
 import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
-import { mean as _average } from 'lodash';
-import { HeatmapTableHeader } from './HeatmapTableHeader';
+import { mean as _average, sortBy } from 'lodash';
+import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { TableCell, Link } from '@material-ui/core';
+import { SortBy } from '../HeatmapFilters';
 
 interface HeatmapTableByGroupProps {
   header: string;
@@ -33,6 +34,8 @@ interface HeatmapTableByGroupProps {
   onSelect: (identifier: string) => void;
   useHierarchy: boolean;
   lastPathItem?: string;
+  sortBy?: SortBy;
+  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
 export const HeatmapTableByGroup = ({
@@ -44,17 +47,34 @@ export const HeatmapTableByGroup = ({
   onSelect,
   useHierarchy,
   lastPathItem,
+  sortBy,
+  setSortBy,
 }: HeatmapTableByGroupProps) => {
-  const headers = [
-    header,
-    `${entityCategory} Count`,
-    'Average Score',
-    ...rules,
+  const headers: HeaderItem[] = [
+    {
+      label: header,
+      sortKey: 'identifier',
+    },
+    {
+      label: `${entityCategory} Count`,
+      sortKey: 'score',
+    },
+    {
+      label: 'Average Score',
+      sortKey: 'percentage',
+    },
+    ...rules.map(rule => ({
+      label: rule,
+    })),
   ];
 
   return (
     <Table>
-      <HeatmapTableHeader headers={headers} />
+      <HeatmapTableHeader
+        headers={headers}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
       <TableBody>
         {Object.entries(data).map(([identifier, values = []]) => {
           const serviceCount = values.length;
