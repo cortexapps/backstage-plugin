@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Dispatch } from 'react';
+import React, { Dispatch, useMemo } from 'react';
 import {
   Link,
   Table,
@@ -39,6 +39,7 @@ import {
 import { GroupByOption, ScorecardServiceScore } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { SortBy } from '../HeatmapFilters';
+import { orderBy } from 'lodash';
 
 interface LevelsDrivenTableProps {
   data: StringIndexable<ScorecardServiceScore[]>;
@@ -77,9 +78,29 @@ export const LevelsDrivenTable = ({
     },
     ...(notGroupedByServices ? [`${entityCategory} Count`] : []).map(label => ({
       label,
+      sortKey: 'score',
     })),
     ...levels.map(label => ({ label })),
   ];
+
+  const dataValues = useMemo(() => {
+    if (!sortBy) return Object.entries(data);
+
+    return orderBy(
+      Object.entries(data),
+      ([key, values]) => {
+        if (sortBy.column === 'identifier') {
+          const lowerCaseName =
+            entitiesByTag[values[0].componentRef]?.name?.toLowerCase();
+          return lowerCaseName || values[0].componentRef?.toLowerCase();
+        } else if (sortBy.column === 'score') {
+          return values.length;
+        }
+        return key;
+      },
+      sortBy.desc ? 'desc' : 'asc',
+    );
+  }, [data, sortBy]);
 
   return (
     <Table>
@@ -89,7 +110,7 @@ export const LevelsDrivenTable = ({
         setSortBy={setSortBy}
       />
       <TableBody>
-        {Object.entries(data).map(([key, values = []]) => {
+        {dataValues.map(([key, values = []]) => {
           const serviceCount = values.length;
 
           if (serviceCount < 1 && hideWithoutChildren) {

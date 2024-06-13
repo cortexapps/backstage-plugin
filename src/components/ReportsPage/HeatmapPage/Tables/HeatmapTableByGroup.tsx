@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Dispatch } from 'react';
+import React, { Dispatch, useMemo } from 'react';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow/TableRow';
 import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
 import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
-import { mean as _average } from 'lodash';
+import { mean as _average, orderBy, meanBy } from 'lodash';
 import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { TableCell, Link } from '@material-ui/core';
 import { SortBy } from '../HeatmapFilters';
+import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 interface HeatmapTableByGroupProps {
   header: string;
@@ -36,12 +37,14 @@ interface HeatmapTableByGroupProps {
   lastPathItem?: string;
   sortBy?: SortBy;
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
+  entitiesByTag: StringIndexable<HomepageEntity>;
 }
 
 export const HeatmapTableByGroup = ({
   header,
   rules,
   data,
+  // entitiesByTag,
   entityCategory,
   hideWithoutChildren = false,
   onSelect,
@@ -68,6 +71,26 @@ export const HeatmapTableByGroup = ({
     })),
   ];
 
+  const dataValues = useMemo(() => {
+    if (!sortBy) return Object.entries(data);
+
+    return orderBy(
+      Object.entries(data),
+      ([key, values]) => {
+        if (sortBy.column === 'identifier') {
+          return values[0].componentRef?.toLowerCase();
+          // return entitiesByTag[]?.name?.toLowerCase();
+        } else if (sortBy.column === 'score') {
+          return values.length;
+        } else if (sortBy.column === 'percentage') {
+          return meanBy(values, 'scorePercentage');
+        }
+        return key;
+      },
+      sortBy.desc ? 'desc' : 'asc',
+    );
+  }, [data, sortBy]);
+
   return (
     <Table>
       <HeatmapTableHeader
@@ -76,7 +99,7 @@ export const HeatmapTableByGroup = ({
         setSortBy={setSortBy}
       />
       <TableBody>
-        {Object.entries(data).map(([identifier, values = []]) => {
+        {dataValues.map(([identifier, values = []]) => {
           const serviceCount = values.length;
 
           if (serviceCount < 1 && hideWithoutChildren) {

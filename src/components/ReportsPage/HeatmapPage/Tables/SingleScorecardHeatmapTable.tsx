@@ -302,6 +302,7 @@ export const SingleScorecardHeatmapTable = ({
           useHierarchy={useHierarchy}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          entitiesByTag={entitiesByTag}
         />
       );
     case GroupByOption.TEAM:
@@ -317,6 +318,7 @@ export const SingleScorecardHeatmapTable = ({
           lastPathItem={lastPathItem}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          entitiesByTag={entitiesByTag}
         />
       );
     case GroupByOption.LEVEL:
@@ -344,6 +346,7 @@ export const SingleScorecardHeatmapTable = ({
           lastPathItem={lastPathItem}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          entitiesByTag={entitiesByTag}
         />
       );
   }

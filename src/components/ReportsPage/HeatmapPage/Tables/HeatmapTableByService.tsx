@@ -22,7 +22,7 @@ import TableBody from '@material-ui/core/TableBody/TableBody';
 import { entityComponentRef } from '../../../../utils/ComponentUtils';
 import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
-import { mean as _average, orderBy } from 'lodash';
+import { mean as _average, meanBy, orderBy } from 'lodash';
 import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
@@ -76,7 +76,7 @@ export const HeatmapTableByService = ({
         } else if (sortBy.column === 'score') {
           return values[0].score;
         } else if (sortBy.column === 'percentage') {
-          return values[0].scorePercentage;
+          return meanBy(values, 'scorePercentage');
         }
         return key;
       },

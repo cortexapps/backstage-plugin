@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Dispatch } from 'react';
-import { isUndefined, mean as _average } from 'lodash';
+import React, { Dispatch, useMemo } from 'react';
+import { isUndefined, mean as _average, orderBy, meanBy } from 'lodash';
 import { Link, Table, TableBody, TableCell, TableRow } from '@material-ui/core';
 import { WarningPanel } from '@backstage/core-components';
 
@@ -68,6 +68,25 @@ export const HeatmapTableByLevels = ({
     }),
   ];
 
+  const dataValues = useMemo(() => {
+    if (!sortBy) return Object.entries(data);
+
+    return orderBy(
+      Object.entries(data),
+      ([key, values]) => {
+        if (sortBy.column === 'identifier') {
+          return values[0].componentRef?.toLowerCase();
+        } else if (sortBy.column === 'score') {
+          return values.length;
+        } else if (sortBy.column === 'percentage') {
+          return meanBy(values, 'scorePercentage');
+        }
+        return key;
+      },
+      sortBy.desc ? 'desc' : 'asc',
+    );
+  }, [data, sortBy]);
+
   if (isUndefined(ladder)) {
     return (
       <WarningPanel severity="error" title="Scorecard has no levels defined." />
@@ -82,7 +101,7 @@ export const HeatmapTableByLevels = ({
         setSortBy={setSortBy}
       />
       <TableBody>
-        {Object.entries(data).map(([identifier, values]) => {
+        {dataValues.map(([identifier, values]) => {
           const firstScore = values[0];
           const serviceCount = values.length;
           const averageScorePercentage = _average(
