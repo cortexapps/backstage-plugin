@@ -41,6 +41,7 @@ import {
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { useCortexApi } from '../../../../utils/hooks';
 import { HeatmapPageFilters } from '../HeatmapFilters';
+import { defaultFilters as defaultScoreFilters } from '../HeatmapFiltersModal';
 
 interface SingleScorecardHeatmapTableProps {
   entityCategory: string;
@@ -128,10 +129,7 @@ export const SingleScorecardHeatmapTable = ({
 
       if (items) {
         if (lastPathItem) {
-          const foundHierarchyItem = findHierarchyItem(
-            items,
-            lastPathItem,
-          );
+          const foundHierarchyItem = findHierarchyItem(items, lastPathItem);
 
           if (foundHierarchyItem) {
             items = foundHierarchyItem.orderedChildren;
@@ -173,7 +171,10 @@ export const SingleScorecardHeatmapTable = ({
 
     // If an empty item is clicked we have no more navigation to do
     // So we should apply our filters and navigate to the entity view
-    if (isEmpty(hierarchyItem?.orderedChildren) || identifier === lastPathItem) {
+    if (
+      isEmpty(hierarchyItem?.orderedChildren) ||
+      identifier === lastPathItem
+    ) {
       const selectedFilter =
         groupBy === GroupByOption.DOMAIN
           ? {
@@ -207,6 +208,42 @@ export const SingleScorecardHeatmapTable = ({
     });
   };
 
+  const onLevelEntityClick = (identifier: string) => {
+    let scoreFilters: Partial<HeatmapPageFilters['scoreFilters']> = {};
+
+    if (groupBy === GroupByOption.LEVEL) {
+      scoreFilters = {
+        levels: [identifier],
+      };
+    } else if (groupBy === GroupByOption.TEAM) {
+      scoreFilters = {
+        teams: [identifier],
+      };
+    } else if (groupBy === GroupByOption.DOMAIN) {
+      const domain = Object.entries(domainTagByEntityId).find(([_id, tags]) => {
+        return tags.includes(identifier);
+      });
+      if (!domain) return;
+      scoreFilters = {
+        domainIds: [Number(domain[0])],
+      };
+    } else if (groupBy === GroupByOption.SERVICE_GROUP) {
+      scoreFilters = {
+        groups: [identifier],
+      };
+    }
+
+    setFiltersAndNavigate(prev => {
+      return {
+        ...prev,
+        groupBy: GroupByOption.ENTITY,
+        scoreFilters: {
+          ...defaultScoreFilters,
+          ...scoreFilters,
+        },
+      };
+    });
+  };
   if (headerType === HeaderType.LEVELS) {
     if (isUndefined(ladder)) {
       return (
@@ -216,14 +253,18 @@ export const SingleScorecardHeatmapTable = ({
         />
       );
     } else {
+      const levelsHeader =
+        groupBy === GroupByOption.SERVICE_GROUP ? 'Group' : groupBy;
       return (
         <LevelsDrivenTable
           data={data}
           entitiesByTag={entitiesByTag}
           groupBy={groupBy}
+          header={levelsHeader}
           levels={headers}
           entityCategory={entityCategory}
           onSelect={onSelect}
+          onLevelEntityClick={onLevelEntityClick}
           useHierarchy={useHierarchy}
           hideWithoutChildren={hideWithoutChildren}
           lastPathItem={lastPathItem}

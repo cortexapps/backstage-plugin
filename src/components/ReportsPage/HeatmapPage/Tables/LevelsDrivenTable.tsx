@@ -43,9 +43,11 @@ interface LevelsDrivenTableProps {
   data: StringIndexable<ScorecardServiceScore[]>;
   entitiesByTag: Record<string, HomepageEntity>;
   groupBy: GroupByOption;
+  header: string;
   levels: string[];
   entityCategory: string;
   onSelect: (identifier: string) => void;
+  onLevelEntityClick: (identifier: string) => void;
   useHierarchy: boolean;
   hideWithoutChildren: boolean;
   lastPathItem?: string;
@@ -55,16 +57,18 @@ export const LevelsDrivenTable = ({
   data,
   entitiesByTag,
   groupBy,
+  header,
   levels,
   entityCategory,
   onSelect,
   useHierarchy,
   hideWithoutChildren,
   lastPathItem,
+  onLevelEntityClick,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
   const headers = [
-    groupBy,
+    header,
     ...(notGroupedByServices ? [`${entityCategory} Count`] : []),
     ...levels,
   ];
@@ -95,15 +99,20 @@ export const LevelsDrivenTable = ({
                         onSelect(key);
                       }}
                     >
-                      {key === lastPathItem ? `Everything owned by ${lastPathItem}` : key}
+                      {key === lastPathItem
+                        ? `Everything owned by ${lastPathItem}`
+                        : key}
                     </Link>
                   ) : (
-                    <Typography
+                    <Link
                       variant="subtitle1"
-                      onClick={() => onSelect(key)}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        onLevelEntityClick(key);
+                      }}
                     >
                       {key}
-                    </Typography>
+                    </Link>
                   )}
                 </TableCell>
               ) : (
