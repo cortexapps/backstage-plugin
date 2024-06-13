@@ -25,17 +25,16 @@ import {
   getScorecardServiceScoresByGroupByOption,
   getSortedRuleNames,
   groupScoresByHierarchies,
+  HierarchyNode,
   StringIndexable,
 } from '../HeatmapUtils';
 import { getSortedLadderLevelNames } from '../../../../utils/ScorecardLadderUtils';
 
 import {
-  DomainHierarchyNode,
   GroupByOption,
   HeaderType,
   ScorecardLadder,
   ScorecardServiceScore,
-  TeamHierarchyNode,
 } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { useCortexApi } from '../../../../utils/hooks';
@@ -56,11 +55,8 @@ interface SingleScorecardHeatmapTableProps {
   filters: HeatmapPageFilters;
 }
 
-type HierarchyNode = DomainHierarchyNode | TeamHierarchyNode;
-type HierarchyNodeList = HierarchyNode[];
-
 const findItem = (
-  nodes: HierarchyNodeList,
+  nodes: HierarchyNode[],
   lastItemIdentifier: string,
 ): HierarchyNode | undefined => {
   let item = nodes.find((item: HierarchyNode) => {
@@ -80,7 +76,7 @@ const findItem = (
   return item;
 };
 
-const getAllDescendants = (treeNode: HierarchyNode): HierarchyNodeList => {
+const getAllDescendants = (treeNode: HierarchyNode): HierarchyNode[] => {
   const children = flatten(
     treeNode.orderedChildren.map(childNode => getAllDescendants(childNode)),
   );
@@ -89,8 +85,8 @@ const getAllDescendants = (treeNode: HierarchyNode): HierarchyNodeList => {
 };
 
 export const getAllNodesFromTree = (
-  nodes?: HierarchyNodeList,
-): HierarchyNodeList => {
+  nodes?: HierarchyNode[],
+): HierarchyNode[] => {
   if (isNil(nodes) || isEmpty(nodes)) {
     return [];
   }
@@ -159,31 +155,21 @@ export const SingleScorecardHeatmapTable = ({
     );
 
     if (useHierarchy) {
+      let items = undefined;
+
       if (groupBy === GroupByOption.TEAM && teamHierarchies) {
-        let items = teamHierarchies.orderedParents;
-        let foundHierarchyItem: TeamHierarchyNode | undefined;
-
-        if (lastPathItem) {
-          foundHierarchyItem = findItem(
-            teamHierarchies.orderedParents,
-            lastPathItem,
-          ) as TeamHierarchyNode;
-
-          if (foundHierarchyItem) {
-            items = foundHierarchyItem.orderedChildren;
-          }
-        }
-
-        return groupScoresByHierarchies(groupedData, items, lastPathItem);
+        items = teamHierarchies.orderedParents as HierarchyNode[];
       } else if (groupBy === GroupByOption.DOMAIN && domainHierarchies) {
-        let items = domainHierarchies.orderedTree;
-        let foundHierarchyItem: DomainHierarchyNode | undefined;
+        items = domainHierarchies.orderedTree as HierarchyNode[];
+      }
 
+      if (items) {
         if (lastPathItem) {
-          foundHierarchyItem = findItem(
-            domainHierarchies.orderedTree,
+          const foundHierarchyItem = findItem(
+            items,
             lastPathItem,
-          ) as DomainHierarchyNode;
+          );
+
           if (foundHierarchyItem) {
             items = foundHierarchyItem.orderedChildren;
           }
@@ -228,7 +214,7 @@ export const SingleScorecardHeatmapTable = ({
       const selectedFilter =
         groupBy === GroupByOption.DOMAIN
           ? {
-              domainIds: [hierarchyItem.node.id],
+              domainIds: [entitiesByTag[hierarchyItem.node.tag].id],
             }
           : {
               teams: [hierarchyItem.node.tag],

@@ -139,8 +139,7 @@ export const getScorecardServiceScoresByGroupByOption = (
   }
 };
 
-
-interface HierarchyNode {
+export interface HierarchyNode {
   node: {
     tag: string;
   }
