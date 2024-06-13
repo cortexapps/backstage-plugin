@@ -450,7 +450,7 @@ export interface DomainHierarchyNode {
     description: string | null;
     isArchived: boolean;
     definition: string | null;
-  },
+  };
   orderedChildren: DomainHierarchyNode[];
 }
 
@@ -467,15 +467,15 @@ export interface TeamHierarchyNode {
     description: string | null;
     isArchived: boolean;
     parentRelationshipProviders: string[];
-    ownerGroup:  string;
-    ownerGroupType:  string;
-    type:  string;
-  },
-  orderedChildren: TeamHierarchyNode[]
+    ownerGroup: string;
+    ownerGroupType: string;
+    type: string;
+  };
+  orderedChildren: TeamHierarchyNode[];
 }
 
 export interface TeamHierarchiesResponse {
-  orderedParents: TeamHierarchyNode[]
+  orderedParents: TeamHierarchyNode[];
 }
 
 // Entity Filter

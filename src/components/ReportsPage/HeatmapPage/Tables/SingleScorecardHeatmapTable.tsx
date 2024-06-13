@@ -40,7 +40,7 @@ import {
 } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { useCortexApi } from '../../../../utils/hooks';
-import { HeatmapPageFilters } from '../HeatmapFilters';
+import { HeatmapPageFilters, SortBy } from '../HeatmapFilters';
 import { defaultFilters as defaultScoreFilters } from '../HeatmapFiltersModal';
 
 interface SingleScorecardHeatmapTableProps {
@@ -56,6 +56,8 @@ interface SingleScorecardHeatmapTableProps {
   domainTagByEntityId: Record<string, string[]>;
   setFiltersAndNavigate: Dispatch<React.SetStateAction<HeatmapPageFilters>>;
   filters: HeatmapPageFilters;
+  sortBy?: SortBy;
+  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
 export const SingleScorecardHeatmapTable = ({
@@ -71,6 +73,8 @@ export const SingleScorecardHeatmapTable = ({
   domainTagByEntityId,
   setFiltersAndNavigate,
   filters,
+  sortBy,
+  setSortBy,
 }: SingleScorecardHeatmapTableProps) => {
   const levelsDriven = headerType === HeaderType.LEVELS;
   const headers = useMemo(
@@ -267,6 +271,8 @@ export const SingleScorecardHeatmapTable = ({
           useHierarchy={useHierarchy}
           hideWithoutChildren={hideWithoutChildren}
           lastPathItem={lastPathItem}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
         />
       );
     }
@@ -281,6 +287,8 @@ export const SingleScorecardHeatmapTable = ({
           data={data}
           entitiesByTag={entitiesByTag}
           rules={headers}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
         />
       );
     case GroupByOption.SERVICE_GROUP:
@@ -292,6 +300,9 @@ export const SingleScorecardHeatmapTable = ({
           entityCategory={entityCategory}
           onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
           useHierarchy={useHierarchy}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          entitiesByTag={entitiesByTag}
         />
       );
     case GroupByOption.TEAM:
@@ -305,6 +316,9 @@ export const SingleScorecardHeatmapTable = ({
           onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
           useHierarchy={useHierarchy}
           lastPathItem={lastPathItem}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          entitiesByTag={entitiesByTag}
         />
       );
     case GroupByOption.LEVEL:
@@ -315,6 +329,8 @@ export const SingleScorecardHeatmapTable = ({
           data={data}
           onSelect={onDisplayColumnClick}
           entityCategory={entityCategory}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
         />
       );
     case GroupByOption.DOMAIN:
@@ -328,6 +344,9 @@ export const SingleScorecardHeatmapTable = ({
           onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
           useHierarchy={useHierarchy}
           lastPathItem={lastPathItem}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          entitiesByTag={entitiesByTag}
         />
       );
   }

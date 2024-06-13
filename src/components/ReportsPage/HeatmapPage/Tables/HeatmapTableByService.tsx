@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { Dispatch, useMemo } from 'react';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow/TableRow';
 import { TableCell, Typography } from '@material-ui/core';
@@ -22,10 +22,11 @@ import TableBody from '@material-ui/core/TableBody/TableBody';
 import { entityComponentRef } from '../../../../utils/ComponentUtils';
 import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
-import { mean as _average } from 'lodash';
-import { HeatmapTableHeader } from './HeatmapTableHeader';
+import { mean as _average, meanBy, orderBy } from 'lodash';
+import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
+import { SortBy } from '../HeatmapFilters';
 
 interface HeatmapTableByServiceProps {
   header: string;
@@ -33,6 +34,8 @@ interface HeatmapTableByServiceProps {
   data: StringIndexable<ScorecardServiceScore[]>;
   entitiesByTag: StringIndexable<HomepageEntity>;
   rules: string[];
+  sortBy?: SortBy;
+  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
 export const HeatmapTableByService = ({
@@ -41,14 +44,55 @@ export const HeatmapTableByService = ({
   data,
   entitiesByTag,
   rules,
+  setSortBy,
+  sortBy,
 }: HeatmapTableByServiceProps) => {
-  const headers = [header, 'Score', 'Score percentage', ...rules];
+  const headers: HeaderItem[] = [
+    {
+      label: header,
+      sortKey: 'identifier',
+    },
+    {
+      label: 'Score',
+      sortKey: 'score',
+    },
+    {
+      label: 'Score percentage',
+      sortKey: 'percentage',
+    },
+    ...rules.map(rule => ({
+      label: rule,
+    })),
+  ];
+
+  const dataValues = useMemo(() => {
+    if (!sortBy) return Object.entries(data);
+
+    return orderBy(
+      Object.entries(data),
+      ([key, values]) => {
+        if (sortBy.column === 'identifier') {
+          return entitiesByTag[values[0].componentRef]?.name?.toLowerCase();
+        } else if (sortBy.column === 'score') {
+          return values[0].score;
+        } else if (sortBy.column === 'percentage') {
+          return meanBy(values, 'scorePercentage');
+        }
+        return key;
+      },
+      sortBy.desc ? 'desc' : 'asc',
+    );
+  }, [data, sortBy, entitiesByTag]);
 
   return (
     <Table>
-      <HeatmapTableHeader headers={headers} />
+      <HeatmapTableHeader
+        headers={headers}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
       <TableBody>
-        {Object.entries(data).map(([key, values]) => {
+        {dataValues.map(([key, values]) => {
           const firstScore = values[0];
           const averageScorePercentage = _average(
             values.map(score => score.scorePercentage),
@@ -60,14 +104,20 @@ export const HeatmapTableByService = ({
               <TableCell>
                 <ScorecardServiceRefLink
                   scorecardId={scorecardId}
-                  componentRef={entityComponentRef(entitiesByTag, entitiesByTag[firstScore.componentRef]?.codeTag)}
+                  componentRef={entityComponentRef(
+                    entitiesByTag,
+                    entitiesByTag[firstScore.componentRef]?.codeTag,
+                  )}
                 >
                   <Typography variant="subtitle1">
                     {entitiesByTag[firstScore.componentRef]?.name}
                   </Typography>
                 </ScorecardServiceRefLink>
               </TableCell>
-              <HeatmapCell score={averageScorePercentage} text={`${firstScore.score}`} />
+              <HeatmapCell
+                score={averageScorePercentage}
+                text={`${firstScore.score}`}
+              />
               <HeatmapCell score={averageScorePercentage} />
               {averageRuleScores.map((score, idx) => (
                 <HeatmapCell

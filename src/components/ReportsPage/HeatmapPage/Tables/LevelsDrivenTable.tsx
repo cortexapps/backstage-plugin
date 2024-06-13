@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { Dispatch, useMemo } from 'react';
 import {
   Link,
   Table,
@@ -29,7 +29,7 @@ import {
   defaultComponentRefContext,
   entityComponentRef,
 } from '../../../../utils/ComponentUtils';
-import { HeatmapTableHeader } from './HeatmapTableHeader';
+import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { LevelsInfoCell } from '../LevelsInfoCell';
 import {
   getServicesInLevelsFromScores,
@@ -38,6 +38,8 @@ import {
 
 import { GroupByOption, ScorecardServiceScore } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
+import { SortBy } from '../HeatmapFilters';
+import { orderBy } from 'lodash';
 
 interface LevelsDrivenTableProps {
   data: StringIndexable<ScorecardServiceScore[]>;
@@ -50,6 +52,8 @@ interface LevelsDrivenTableProps {
   useHierarchy: boolean;
   hideWithoutChildren: boolean;
   lastPathItem?: string;
+  sortBy?: SortBy;
+  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
 export const LevelsDrivenTable = ({
@@ -63,19 +67,50 @@ export const LevelsDrivenTable = ({
   useHierarchy,
   hideWithoutChildren,
   lastPathItem,
+  sortBy,
+  setSortBy,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
-  const headers = [
-    header,
-    ...(notGroupedByServices ? [`${entityCategory} Count`] : []),
-    ...levels,
+  const headers: HeaderItem[] = [
+    {
+      label: header,
+      sortKey: 'identifier',
+    },
+    ...(notGroupedByServices ? [`${entityCategory} Count`] : []).map(label => ({
+      label,
+      sortKey: 'score',
+    })),
+    ...levels.map(label => ({ label })),
   ];
+
+  const dataValues = useMemo(() => {
+    if (!sortBy) return Object.entries(data);
+
+    return orderBy(
+      Object.entries(data),
+      ([key, values]) => {
+        if (sortBy.column === 'identifier') {
+          const lowerCaseName =
+            entitiesByTag[values[0].componentRef]?.name?.toLowerCase();
+          return lowerCaseName || values[0].componentRef?.toLowerCase();
+        } else if (sortBy.column === 'score') {
+          return values.length;
+        }
+        return key;
+      },
+      sortBy.desc ? 'desc' : 'asc',
+    );
+  }, [data, sortBy]);
 
   return (
     <Table>
-      <HeatmapTableHeader headers={headers} />
+      <HeatmapTableHeader
+        headers={headers}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
       <TableBody>
-        {Object.entries(data).map(([key, values = []]) => {
+        {dataValues.map(([key, values = []]) => {
           const serviceCount = values.length;
 
           if (serviceCount < 1 && hideWithoutChildren) {

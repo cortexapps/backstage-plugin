@@ -27,6 +27,11 @@ import { GroupByOption, HeaderType, ScorecardLadder } from '../../../api/types';
 import { StringIndexable } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 
+export interface SortBy {
+  column: 'identifier' | 'score' | 'percentage';
+  desc?: boolean;
+}
+
 export interface HeatmapPageFilters {
   selectedScorecardId?: number;
   groupBy: GroupByOption;
@@ -43,6 +48,7 @@ interface HeatmapFiltersProps {
   entitiesByTag: StringIndexable<HomepageEntity>;
   excludedGroupBys: GroupByOption[];
   ladder: ScorecardLadder | undefined;
+  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
 export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
@@ -51,6 +57,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
   entitiesByTag,
   excludedGroupBys,
   ladder,
+  setSortBy,
 }) => {
   const isHierarchyToggleAllowed = [
     GroupByOption.TEAM,
@@ -58,6 +65,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
   ].includes(filters.groupBy);
 
   const onGroupByChange = (groupBy: GroupByOption) => {
+    setSortBy(undefined);
     setFiltersAndNavigate(prev => ({
       ...prev,
       groupBy,
@@ -67,6 +75,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
   };
 
   const onHeaderTypeChange = (headerType: HeaderType) => {
+    setSortBy(undefined);
     setFiltersAndNavigate(prev => ({ ...prev, headerType }));
   };
 
