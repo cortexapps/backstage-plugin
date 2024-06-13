@@ -89,10 +89,8 @@ export const LevelsDrivenTable = ({
                 <TableCell>
                   {useHierarchy ? (
                     <Link
-                      component="button"
                       variant="subtitle1"
-                      color="primary"
-                      style={{ width: '100%' }}
+                      style={{ cursor: 'pointer' }}
                       onClick={() => {
                         onSelect(key);
                       }}
@@ -102,7 +100,6 @@ export const LevelsDrivenTable = ({
                   ) : (
                     <Typography
                       variant="subtitle1"
-                      style={{ display: 'inline-block' }}
                       onClick={() => onSelect(key)}
                     >
                       {key}

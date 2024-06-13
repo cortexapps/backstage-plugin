@@ -73,13 +73,11 @@ export const HeatmapTableByGroup = ({
               <TableCell>
                 {useHierarchy ? (
                   <Link
-                    component="button"
                     variant="subtitle1"
-                    color="primary"
+                    style={{ cursor: 'pointer' }}
                     onClick={() => {
                       onSelect(identifier);
                     }}
-                    style={{ width: '100%' }}
                   >
                     {identifier === lastPathItem ? `Everything owned by ${lastPathItem}` : identifier}
                   </Link>
