@@ -199,10 +199,10 @@ export const LevelsDrivenTable = ({
                       </Typography>
                     </TableCell>
                   )}
-                  {scores.map((score, _idx) => {
+                  {scores.map((score, idx) => {
                     return (
                       <LevelsInfoCell
-                        // key={`LevelsInfoCell-${key}-${idx}`}
+                        key={`LevelsInfoCell-${key}-${idx}`}
                         entitiesByTag={entitiesByTag}
                         identifier={key}
                         scores={score}
