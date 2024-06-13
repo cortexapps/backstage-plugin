@@ -48,6 +48,7 @@ interface LevelsDrivenTableProps {
   onSelect: (identifier: string) => void;
   useHierarchy: boolean;
   hideWithoutChildren: boolean;
+  lastPathItem?: string;
 }
 
 export const LevelsDrivenTable = ({
@@ -59,6 +60,7 @@ export const LevelsDrivenTable = ({
   onSelect,
   useHierarchy,
   hideWithoutChildren,
+  lastPathItem,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
   const headers = [
@@ -71,7 +73,7 @@ export const LevelsDrivenTable = ({
     <Table>
       <HeatmapTableHeader headers={headers} />
       <TableBody>
-        {Object.entries(data).map(([key, values]) => {
+        {Object.entries(data).map(([key, values = []]) => {
           const serviceCount = values.length;
 
           if (serviceCount < 1 && hideWithoutChildren) {
@@ -90,11 +92,12 @@ export const LevelsDrivenTable = ({
                       component="button"
                       variant="subtitle1"
                       color="primary"
+                      style={{ width: '100%' }}
                       onClick={() => {
                         onSelect(key);
                       }}
                     >
-                      {key}
+                      {key === lastPathItem ? `Everything owned by ${lastPathItem}` : key}
                     </Link>
                   ) : (
                     <Typography

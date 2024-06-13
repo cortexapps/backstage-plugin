@@ -22,7 +22,7 @@ import {
   RuleOutcome,
   ScorecardScoreNextSteps,
 } from '../../../api/types';
-import { groupBy as _groupBy, flatten as _flatten, values, uniq, intersection, isEmpty } from 'lodash';
+import { groupBy as _groupBy, flatten as _flatten, values, uniq, intersection, isEmpty, flatten, isNil } from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
 import { isApplicableRuleOutcome } from '../../../utils/ScorecardRules';
 import { HomepageEntity } from '../../../api/userInsightTypes';
@@ -139,8 +139,7 @@ export const getScorecardServiceScoresByGroupByOption = (
   }
 };
 
-
-interface HierarchyNode {
+export interface HierarchyNode {
   node: {
     tag: string;
   }
@@ -151,7 +150,7 @@ export const hierarchyNodeFlatChildren = (node: HierarchyNode): string[] => {
   return node.orderedChildren.flatMap((child) => [child.node.tag, ...hierarchyNodeFlatChildren(child)]);
 }
 
-export const groupScoresByHierarchies = (groupedScores: StringIndexable<ScorecardServiceScore[]>, nodes: HierarchyNode[]) => {
+export const groupScoresByHierarchies = (groupedScores: StringIndexable<ScorecardServiceScore[]>, nodes: HierarchyNode[], currentHierarchyItemTag?: string) => {
   const hierarchyGroupedData = {} as Record<string, ScorecardServiceScore[]>;
 
   nodes.forEach((parent) => {
@@ -166,8 +165,51 @@ export const groupScoresByHierarchies = (groupedScores: StringIndexable<Scorecar
     });
   });
 
+  if (currentHierarchyItemTag && groupedScores[currentHierarchyItemTag]?.length) {
+    hierarchyGroupedData[currentHierarchyItemTag] = groupedScores[currentHierarchyItemTag];
+  }
+
   return hierarchyGroupedData;
 }
+
+export const findHierarchyItem = (
+  nodes: HierarchyNode[],
+  lastItemIdentifier: string,
+): HierarchyNode | undefined => {
+  let item = nodes.find((item: HierarchyNode) => {
+    return item.node.tag === lastItemIdentifier;
+  });
+
+  if (!item) {
+    for (const nodeItem of nodes) {
+      const childItem = findHierarchyItem(nodeItem.orderedChildren, lastItemIdentifier);
+      if (childItem) {
+        item = childItem;
+        break;
+      }
+    }
+  }
+
+  return item;
+};
+
+export const getAllHierarchyDescendants = (treeNode: HierarchyNode): HierarchyNode[] => {
+  const children = flatten(
+    treeNode.orderedChildren.map(childNode => getAllHierarchyDescendants(childNode)),
+  );
+
+  return [treeNode, ...children];
+};
+
+export const getAllHierarchyNodesFromTree = (
+  nodes?: HierarchyNode[],
+): HierarchyNode[] => {
+  if (isNil(nodes) || isEmpty(nodes)) {
+    return [];
+  }
+
+  return flatten(nodes.map(domainNode => getAllHierarchyDescendants(domainNode)));
+};
 
 export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<HomepageEntity>) => {
   const ownerEmailByEntityId = {} as Record<string, string[]>;

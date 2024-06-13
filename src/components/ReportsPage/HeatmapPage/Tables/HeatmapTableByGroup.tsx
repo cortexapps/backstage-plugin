@@ -32,6 +32,7 @@ interface HeatmapTableByGroupProps {
   hideWithoutChildren?: boolean;
   onSelect: (identifier: string) => void;
   useHierarchy: boolean;
+  lastPathItem?: string;
 }
 
 export const HeatmapTableByGroup = ({
@@ -42,6 +43,7 @@ export const HeatmapTableByGroup = ({
   hideWithoutChildren = false,
   onSelect,
   useHierarchy,
+  lastPathItem,
 }: HeatmapTableByGroupProps) => {
   const headers = [
     header,
@@ -54,7 +56,7 @@ export const HeatmapTableByGroup = ({
     <Table>
       <HeatmapTableHeader headers={headers} />
       <TableBody>
-        {Object.entries(data).map(([identifier, values]) => {
+        {Object.entries(data).map(([identifier, values = []]) => {
           const serviceCount = values.length;
 
           if (serviceCount < 1 && hideWithoutChildren) {
@@ -77,8 +79,9 @@ export const HeatmapTableByGroup = ({
                     onClick={() => {
                       onSelect(identifier);
                     }}
+                    style={{ width: '100%' }}
                   >
-                    {identifier}
+                    {identifier === lastPathItem ? `Everything owned by ${lastPathItem}` : identifier}
                   </Link>
                 ) : (
                   <Typography variant={'subtitle1'}>{identifier}</Typography>
