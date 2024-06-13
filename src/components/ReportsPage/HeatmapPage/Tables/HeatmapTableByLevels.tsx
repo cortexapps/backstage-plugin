@@ -18,7 +18,7 @@ import { isUndefined, mean as _average } from 'lodash';
 import { Link, Table, TableBody, TableCell, TableRow } from '@material-ui/core';
 import { WarningPanel } from '@backstage/core-components';
 
-import { HeatmapTableHeader } from './HeatmapTableHeader';
+import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { HeatmapCell } from '../HeatmapCell';
 import {
   getAverageRuleScores,
@@ -50,7 +50,7 @@ export const HeatmapTableByLevels = ({
 }: HeatmapTableByLevelsProps) => {
   const rulesByLevels = getSortedRulesByLevels(rules, ladder?.levels);
 
-  const headers = [
+  const headers: HeaderItem[] = [
     {
       label: 'Level',
       sortKey: 'identifier',

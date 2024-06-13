@@ -19,10 +19,13 @@ import { Table, TableBody, TableCell, TableRow } from '@material-ui/core';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 
-import { HeatmapTableHeader } from './HeatmapTableHeader';
+import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { HeatmapCell } from '../HeatmapCell';
 import { getFormattedScorecardScores, StringIndexable } from '../HeatmapUtils';
-import { defaultComponentRefContext, entityComponentRef } from '../../../../utils/ComponentUtils';
+import {
+  defaultComponentRefContext,
+  entityComponentRef,
+} from '../../../../utils/ComponentUtils';
 import { filterNotUndefined } from '../../../../utils/collections';
 
 import { GroupByOption, ScoresByIdentifier } from '../../../../api/types';
@@ -49,11 +52,11 @@ export const AllScorecardsHeatmapTable = ({
   const numberOfServicesOrEmpty = !isGroupedByService
     ? ['Number of Services']
     : [];
-  const headers = [
-    'Entity',
-    ...numberOfServicesOrEmpty,
-    'Average Score',
-    ...scorecardNames,
+  const headers: HeaderItem[] = [
+    { label: 'Entity' },
+    ...numberOfServicesOrEmpty.map(label => ({ label })),
+    { label: 'Average Score' },
+    ...scorecardNames.map(label => ({ label })),
   ];
 
   return (

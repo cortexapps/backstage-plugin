@@ -29,7 +29,7 @@ import {
   defaultComponentRefContext,
   entityComponentRef,
 } from '../../../../utils/ComponentUtils';
-import { HeatmapTableHeader } from './HeatmapTableHeader';
+import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { LevelsInfoCell } from '../LevelsInfoCell';
 import {
   getServicesInLevelsFromScores,
@@ -70,7 +70,7 @@ export const LevelsDrivenTable = ({
   setSortBy,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
-  const headers = [
+  const headers: HeaderItem[] = [
     {
       label: header,
       sortKey: 'identifier',

@@ -20,7 +20,7 @@ import { ScorecardServiceScore } from '../../../../api/types';
 import TableBody from '@material-ui/core/TableBody/TableBody';
 import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
-import { mean as _average, sortBy } from 'lodash';
+import { mean as _average } from 'lodash';
 import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { TableCell, Link } from '@material-ui/core';
 import { SortBy } from '../HeatmapFilters';

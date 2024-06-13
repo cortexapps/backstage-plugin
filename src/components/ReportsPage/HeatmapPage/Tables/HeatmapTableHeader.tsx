@@ -27,17 +27,21 @@ const useHeatmapStyles = makeStyles<BackstageTheme>({
 });
 
 export interface HeaderItem {
-  sortKey?: string;
+  sortKey?: SortBy['column'];
   label: string;
 }
 
 interface HeatmapTableHeaderProps {
   headers: HeaderItem[];
   sortBy?: SortBy;
-  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
+  setSortBy?: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
-export const HeatmapTableHeader = ({ headers }: HeatmapTableHeaderProps) => {
+export const HeatmapTableHeader = ({
+  headers,
+  // sortBy,
+  setSortBy,
+}: HeatmapTableHeaderProps) => {
   const classes = useHeatmapStyles();
 
   const cellWidth = 85 / headers.length;
@@ -45,7 +49,7 @@ export const HeatmapTableHeader = ({ headers }: HeatmapTableHeaderProps) => {
   return (
     <TableHead>
       <TableRow>
-        {headers.map(({ label }, idx) => {
+        {headers.map(({ sortKey, label }, idx) => {
           // first column set to 10% so that names don't get squished
           const style =
             idx === 0
@@ -57,6 +61,16 @@ export const HeatmapTableHeader = ({ headers }: HeatmapTableHeaderProps) => {
               key={`HeatmapTableHeader-${idx}`}
               className={classes.root}
               style={style}
+              onClick={() => {
+                if (sortKey && setSortBy) {
+                  setSortBy(prev => {
+                    if (prev?.column === sortKey) {
+                      return { column: sortKey, desc: !prev.desc };
+                    }
+                    return { column: sortKey, desc: false };
+                  });
+                }
+              }}
             >
               {label}
             </TableCell>
