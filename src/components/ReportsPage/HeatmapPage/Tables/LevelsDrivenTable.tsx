@@ -47,7 +47,6 @@ interface LevelsDrivenTableProps {
   levels: string[];
   entityCategory: string;
   onSelect: (identifier: string) => void;
-  onLevelEntityClick: (identifier: string) => void;
   useHierarchy: boolean;
   hideWithoutChildren: boolean;
   lastPathItem?: string;
@@ -64,7 +63,6 @@ export const LevelsDrivenTable = ({
   useHierarchy,
   hideWithoutChildren,
   lastPathItem,
-  onLevelEntityClick,
 }: LevelsDrivenTableProps) => {
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
   const headers = [
@@ -108,7 +106,7 @@ export const LevelsDrivenTable = ({
                       variant="subtitle1"
                       style={{ cursor: 'pointer' }}
                       onClick={() => {
-                        onLevelEntityClick(key);
+                        onSelect(key);
                       }}
                     >
                       {key}

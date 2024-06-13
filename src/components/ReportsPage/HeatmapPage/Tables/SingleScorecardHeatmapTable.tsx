@@ -208,7 +208,7 @@ export const SingleScorecardHeatmapTable = ({
     });
   };
 
-  const onLevelEntityClick = (identifier: string) => {
+  const onDisplayColumnClick = (identifier: string) => {
     let scoreFilters: Partial<HeatmapPageFilters['scoreFilters']> = {};
 
     if (groupBy === GroupByOption.LEVEL) {
@@ -263,8 +263,7 @@ export const SingleScorecardHeatmapTable = ({
           header={levelsHeader}
           levels={headers}
           entityCategory={entityCategory}
-          onSelect={onSelect}
-          onLevelEntityClick={onLevelEntityClick}
+          onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
           useHierarchy={useHierarchy}
           hideWithoutChildren={hideWithoutChildren}
           lastPathItem={lastPathItem}
@@ -291,7 +290,7 @@ export const SingleScorecardHeatmapTable = ({
           rules={headers}
           data={data}
           entityCategory={entityCategory}
-          onSelect={onSelect}
+          onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
           useHierarchy={useHierarchy}
         />
       );
@@ -303,7 +302,7 @@ export const SingleScorecardHeatmapTable = ({
           data={data}
           entityCategory={entityCategory}
           hideWithoutChildren={hideWithoutChildren}
-          onSelect={onSelect}
+          onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
           useHierarchy={useHierarchy}
           lastPathItem={lastPathItem}
         />
@@ -314,6 +313,7 @@ export const SingleScorecardHeatmapTable = ({
           ladder={ladder}
           rules={headers}
           data={data}
+          onSelect={onDisplayColumnClick}
           entityCategory={entityCategory}
         />
       );
@@ -325,7 +325,7 @@ export const SingleScorecardHeatmapTable = ({
           data={data}
           entityCategory={entityCategory}
           hideWithoutChildren={hideWithoutChildren}
-          onSelect={onSelect}
+          onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
           useHierarchy={useHierarchy}
           lastPathItem={lastPathItem}
         />

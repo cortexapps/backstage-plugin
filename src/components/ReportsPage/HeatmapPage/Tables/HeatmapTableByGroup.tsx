@@ -22,7 +22,7 @@ import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
 import { mean as _average } from 'lodash';
 import { HeatmapTableHeader } from './HeatmapTableHeader';
-import { TableCell, Typography, Link } from '@material-ui/core';
+import { TableCell, Link } from '@material-ui/core';
 
 interface HeatmapTableByGroupProps {
   header: string;
@@ -79,10 +79,20 @@ export const HeatmapTableByGroup = ({
                       onSelect(identifier);
                     }}
                   >
-                    {identifier === lastPathItem ? `Everything owned by ${lastPathItem}` : identifier}
+                    {identifier === lastPathItem
+                      ? `Everything owned by ${lastPathItem}`
+                      : identifier}
                   </Link>
                 ) : (
-                  <Typography variant={'subtitle1'}>{identifier}</Typography>
+                  <Link
+                    variant="subtitle1"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      onSelect(identifier);
+                    }}
+                  >
+                    {identifier}
+                  </Link>
                 )}
               </TableCell>
               <HeatmapCell text={serviceCount.toString()} />

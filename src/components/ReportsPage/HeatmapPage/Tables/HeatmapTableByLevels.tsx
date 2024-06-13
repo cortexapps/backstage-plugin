@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { isUndefined, mean as _average } from 'lodash';
-import { Table, TableBody, TableCell, TableRow, Typography } from '@material-ui/core';
+import { Link, Table, TableBody, TableCell, TableRow } from '@material-ui/core';
 import { WarningPanel } from '@backstage/core-components';
 
 import { HeatmapTableHeader } from './HeatmapTableHeader';
@@ -33,6 +33,7 @@ interface HeatmapTableByLevelsProps {
   rules: string[];
   data: StringIndexable<ScorecardServiceScore[]>;
   entityCategory: string;
+  onSelect: (identifier: string) => void;
 }
 
 export const HeatmapTableByLevels = ({
@@ -40,10 +41,16 @@ export const HeatmapTableByLevels = ({
   rules,
   data,
   entityCategory,
+  onSelect,
 }: HeatmapTableByLevelsProps) => {
   const rulesByLevels = getSortedRulesByLevels(rules, ladder?.levels);
 
-  const headers = ['Level', `${entityCategory} Count`, 'Average Score', ...rulesByLevels];
+  const headers = [
+    'Level',
+    `${entityCategory} Count`,
+    'Average Score',
+    ...rulesByLevels,
+  ];
 
   if (isUndefined(ladder)) {
     return (
@@ -66,9 +73,15 @@ export const HeatmapTableByLevels = ({
           return (
             <TableRow key={`TableRow-${firstScore.componentRef}`}>
               <TableCell>
-                <Typography variant='subtitle1'>
+                <Link
+                  variant="subtitle1"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    onSelect(identifier);
+                  }}
+                >
                   {identifier}
-                </Typography>
+                </Link>
               </TableCell>
               <HeatmapCell text={serviceCount.toString()} />
               <HeatmapCell score={averageScorePercentage} />
