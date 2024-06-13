@@ -275,6 +275,7 @@ export const SingleScorecardHeatmapTable = ({
           lastPathItem={lastPathItem}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          tableHeight={tableHeight}
         />
       );
     }
@@ -306,6 +307,7 @@ export const SingleScorecardHeatmapTable = ({
           sortBy={sortBy}
           setSortBy={setSortBy}
           entitiesByTag={entitiesByTag}
+          tableHeight={tableHeight}
         />
       );
     case GroupByOption.TEAM:
@@ -322,6 +324,7 @@ export const SingleScorecardHeatmapTable = ({
           sortBy={sortBy}
           setSortBy={setSortBy}
           entitiesByTag={entitiesByTag}
+          tableHeight={tableHeight}
         />
       );
     case GroupByOption.LEVEL:
@@ -334,6 +337,7 @@ export const SingleScorecardHeatmapTable = ({
           entityCategory={entityCategory}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          tableHeight={tableHeight}
         />
       );
     case GroupByOption.DOMAIN:
@@ -350,6 +354,7 @@ export const SingleScorecardHeatmapTable = ({
           sortBy={sortBy}
           setSortBy={setSortBy}
           entitiesByTag={entitiesByTag}
+          tableHeight={tableHeight}
         />
       );
   }
