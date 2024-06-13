@@ -58,6 +58,7 @@ interface SingleScorecardHeatmapTableProps {
   filters: HeatmapPageFilters;
   sortBy?: SortBy;
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
+  tableHeight: number;
 }
 
 export const SingleScorecardHeatmapTable = ({
@@ -75,6 +76,7 @@ export const SingleScorecardHeatmapTable = ({
   filters,
   sortBy,
   setSortBy,
+  tableHeight,
 }: SingleScorecardHeatmapTableProps) => {
   const levelsDriven = headerType === HeaderType.LEVELS;
   const headers = useMemo(
@@ -289,6 +291,7 @@ export const SingleScorecardHeatmapTable = ({
           rules={headers}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          tableHeight={tableHeight}
         />
       );
     case GroupByOption.SERVICE_GROUP:

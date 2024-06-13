@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { Dispatch, useMemo } from 'react';
+import React, { Dispatch, useMemo, useRef } from 'react';
 import Table from '@material-ui/core/Table';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import TableRow from '@material-ui/core/TableRow/TableRow';
 import { TableCell, Typography } from '@material-ui/core';
 import { ScorecardServiceScore } from '../../../../api/types';
@@ -36,7 +37,10 @@ interface HeatmapTableByServiceProps {
   rules: string[];
   sortBy?: SortBy;
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
+  tableHeight: number;
 }
+
+const heightEstimator = () => 82;
 
 export const HeatmapTableByService = ({
   header,
@@ -46,6 +50,7 @@ export const HeatmapTableByService = ({
   rules,
   setSortBy,
   sortBy,
+  tableHeight,
 }: HeatmapTableByServiceProps) => {
   const headers: HeaderItem[] = [
     {
@@ -84,52 +89,80 @@ export const HeatmapTableByService = ({
     );
   }, [data, sortBy, entitiesByTag]);
 
-  return (
-    <Table>
-      <HeatmapTableHeader
-        headers={headers}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
-      <TableBody>
-        {dataValues.map(([key, values]) => {
-          const firstScore = values[0];
-          const averageScorePercentage = _average(
-            values.map(score => score.scorePercentage),
-          );
-          const averageRuleScores = getAverageRuleScores(values);
+  const parentRef = useRef(null);
 
-          return (
-            <TableRow key={`TableRow-${firstScore.componentRef}`}>
-              <TableCell>
-                <ScorecardServiceRefLink
-                  scorecardId={scorecardId}
-                  componentRef={entityComponentRef(
-                    entitiesByTag,
-                    entitiesByTag[firstScore.componentRef]?.codeTag,
-                  )}
-                >
-                  <Typography variant="subtitle1">
-                    {entitiesByTag[firstScore.componentRef]?.name}
-                  </Typography>
-                </ScorecardServiceRefLink>
-              </TableCell>
-              <HeatmapCell
-                score={averageScorePercentage}
-                text={`${firstScore.score}`}
-              />
-              <HeatmapCell score={averageScorePercentage} />
-              {averageRuleScores.map((score, idx) => (
+  const virtualizer = useVirtualizer({
+    count: dataValues.length,
+    estimateSize: heightEstimator,
+    getScrollElement: () => parentRef.current!,
+    overscan: 10,
+  });
+  const totalSize = virtualizer.getTotalSize();
+  const virtualRows = virtualizer.getVirtualItems();
+
+  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
+  const paddingBottom =
+    virtualRows.length > 0
+      ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
+      : 0;
+
+  return (
+    <div
+      style={{
+        height: `${tableHeight}px`,
+        overflow: 'auto',
+      }}
+      ref={parentRef}
+    >
+      <Table>
+        <HeatmapTableHeader
+          headers={headers}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
+        <TableBody>
+          {paddingTop > 0 && <tr style={{ height: paddingTop }} />}
+          {virtualizer.getVirtualItems().map(item => {
+            const [key, values = []] = dataValues[item.index];
+            const firstScore = values[0];
+            const averageScorePercentage = _average(
+              values.map(score => score.scorePercentage),
+            );
+            const averageRuleScores = getAverageRuleScores(values);
+
+            return (
+              <TableRow key={`TableRow-${firstScore.componentRef}`}>
+                <TableCell>
+                  <ScorecardServiceRefLink
+                    scorecardId={scorecardId}
+                    componentRef={entityComponentRef(
+                      entitiesByTag,
+                      entitiesByTag[firstScore.componentRef]?.codeTag,
+                    )}
+                  >
+                    <Typography variant="subtitle1">
+                      {entitiesByTag[firstScore.componentRef]?.name}
+                    </Typography>
+                  </ScorecardServiceRefLink>
+                </TableCell>
                 <HeatmapCell
-                  key={`HeatmapCell-${key}-${idx}`}
-                  score={score > 0 ? 1 : 0}
-                  text={score > 0 ? '1' : '0'}
+                  score={averageScorePercentage}
+                  text={`${firstScore.score}`}
                 />
-              ))}
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+                <HeatmapCell score={averageScorePercentage} />
+                {averageRuleScores.map((score, idx) => (
+                  <HeatmapCell
+                    key={`HeatmapCell-${key}-${idx}`}
+                    score={score > 0 ? 1 : 0}
+                    text={score > 0 ? '1' : '0'}
+                  />
+                ))}
+              </TableRow>
+            );
+          })}
+          {paddingBottom > 0 && <tr style={{ height: paddingBottom }} />}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
