@@ -238,6 +238,9 @@ export const SingleScorecardHeatmapTable = ({
           groupBy: GroupByOption.ENTITY,
           scoreFilters: {
             ...prev.scoreFilters,
+            // reset conflicting filters
+            teams: [],
+            domainIds: [],
             ...selectedFilter,
           },
         };
