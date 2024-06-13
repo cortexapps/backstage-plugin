@@ -126,7 +126,11 @@ export const LevelsDrivenTable = ({
     <div ref={parentRef}>
       <div>
         <Table>
-          <HeatmapTableHeader headers={headers} />
+          <HeatmapTableHeader
+            headers={headers}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+          />
           <TableBody>
             {paddingTop > 0 && <tr style={{ height: paddingTop }} />}
             {virtualizer.getVirtualItems().map(item => {
