@@ -24,7 +24,7 @@ import {
 } from '@material-ui/core';
 import { StringIndexable } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
-import { sortBy, uniq, uniqBy } from 'lodash';
+import { sortBy, uniqBy } from 'lodash';
 import { Clear } from '@material-ui/icons';
 import { ModalSelect, ModalSelectItem } from './HeatmapFiltersSelect';
 import { ScorecardLadder } from '../../../api/types';
