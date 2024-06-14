@@ -14,53 +14,9 @@
  * limitations under the License.
  */
 import React from 'react';
-import { makeStyles, TableCell, Typography } from '@material-ui/core';
-import { BackstageTheme } from '@backstage/theme';
+import { TableCell, Typography } from '@material-ui/core';
 import { percentify } from '../../../utils/NumberUtils';
-
-const useStyles = makeStyles<BackstageTheme>(theme => ({
-  root: {
-    border: 'none',
-    textAlign: 'center',
-    minWidth: '100px',
-  },
-  success1: {
-    background: '#00ca9b',
-    color: theme.palette.common.black,
-  },
-  success2: {
-    background: '#60e6c7',
-    color: theme.palette.common.black,
-  },
-  success3: {
-    background: '#b0ecde',
-    color: theme.palette.common.black,
-  },
-  warning1: {
-    background: '#ffecb3',
-    color: theme.palette.common.black,
-  },
-  warning2: {
-    background: '#ffca28',
-    color: theme.palette.common.black,
-  },
-  warning3: {
-    background: '#ffa001',
-    color: theme.palette.common.black,
-  },
-  danger1: {
-    background: '#ffd6dd',
-    color: theme.palette.common.black,
-  },
-  danger2: {
-    background: '#fe899e',
-    color: theme.palette.common.black,
-  },
-  danger3: {
-    background: '#fd496a',
-    color: theme.palette.common.black,
-  },
-}));
+import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 
 function getCellClassname(value?: number): string | undefined {
   if (value === undefined) return undefined;
@@ -89,15 +45,21 @@ function getCellClassname(value?: number): string | undefined {
 interface HeatmapCellProps {
   score?: number;
   text?: string;
+  colorClasses: ClassNameMap<string>;
 }
 
-export const HeatmapCell = ({ score, text }: HeatmapCellProps) => {
-  const classes = useStyles();
+export const HeatmapCell = ({
+  score,
+  text,
+  colorClasses,
+}: HeatmapCellProps) => {
   const className = getCellClassname(score);
 
   return (
     <TableCell
-      className={`${classes.root} ${className ? classes[className] : ''}`}
+      className={`${colorClasses.root} ${
+        className ? colorClasses[className] : ''
+      }`}
     >
       <Typography variant="h6" style={{ display: 'inline-block' }}>
         {text ?? (score !== undefined ? `${percentify(score)}%` : '')}

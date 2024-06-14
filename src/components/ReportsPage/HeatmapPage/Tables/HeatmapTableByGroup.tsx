@@ -26,6 +26,7 @@ import { TableCell, Link, Box } from '@material-ui/core';
 import { SortBy } from '../HeatmapFilters';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { useVirtualizer } from '@tanstack/react-virtual';
+import { useColorCellStyles } from './colorClasses';
 
 interface HeatmapTableByGroupProps {
   header: string;
@@ -58,6 +59,8 @@ export const HeatmapTableByGroup = ({
   setSortBy,
   tableHeight,
 }: HeatmapTableByGroupProps) => {
+  const colorClasses = useColorCellStyles();
+
   const headers: HeaderItem[] = [
     {
       label: header,
@@ -156,7 +159,9 @@ export const HeatmapTableByGroup = ({
                         }}
                       >
                         {identifier === lastPathItem
-                          ? `Everything owned by ${entity?.name ?? lastPathItem}`
+                          ? `Everything owned by ${
+                              entity?.name ?? lastPathItem
+                            }`
                           : entity?.name ?? identifier}
                       </Link>
                     ) : (
@@ -173,23 +178,31 @@ export const HeatmapTableByGroup = ({
                     {entity?.codeTag}
                   </Box>
                 </TableCell>
-                <HeatmapCell text={serviceCount.toString()} />
+                <HeatmapCell
+                  text={serviceCount.toString()}
+                  colorClasses={colorClasses}
+                />
                 {isNaN(averageScore) ? (
-                  <HeatmapCell text="N/A" />
+                  <HeatmapCell text="N/A" colorClasses={colorClasses} />
                 ) : (
-                  <HeatmapCell score={averageScore} />
+                  <HeatmapCell
+                    score={averageScore}
+                    colorClasses={colorClasses}
+                  />
                 )}
                 {averageRuleScores.length
                   ? averageRuleScores.map((score, idx) => (
                       <HeatmapCell
                         key={`HeatmapCell-${identifier}-${idx}`}
                         score={score}
+                        colorClasses={colorClasses}
                       />
                     ))
                   : rules.map((_, idx) => (
                       <HeatmapCell
                         key={`HeatmapCell-${identifier}-${idx}`}
                         text="N/A"
+                        colorClasses={colorClasses}
                       />
                     ))}
               </TableRow>

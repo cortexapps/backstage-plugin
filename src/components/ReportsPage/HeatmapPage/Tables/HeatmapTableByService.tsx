@@ -28,6 +28,7 @@ import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 import { SortBy } from '../HeatmapFilters';
+import { useColorCellStyles } from './colorClasses';
 
 interface HeatmapTableByServiceProps {
   header: string;
@@ -52,6 +53,7 @@ export const HeatmapTableByService = ({
   sortBy,
   tableHeight,
 }: HeatmapTableByServiceProps) => {
+  const colorClasses = useColorCellStyles();
   const headers: HeaderItem[] = [
     {
       label: header,
@@ -149,13 +151,18 @@ export const HeatmapTableByService = ({
                 <HeatmapCell
                   score={averageScorePercentage}
                   text={`${firstScore.score}`}
+                  colorClasses={colorClasses}
                 />
-                <HeatmapCell score={averageScorePercentage} />
+                <HeatmapCell
+                  score={averageScorePercentage}
+                  colorClasses={colorClasses}
+                />
                 {averageRuleScores.map((score, idx) => (
                   <HeatmapCell
                     key={`HeatmapCell-${key}-${idx}`}
                     score={score > 0 ? 1 : 0}
                     text={score > 0 ? '1' : '0'}
+                    colorClasses={colorClasses}
                   />
                 ))}
               </TableRow>

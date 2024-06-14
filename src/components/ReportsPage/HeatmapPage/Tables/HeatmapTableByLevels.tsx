@@ -29,6 +29,7 @@ import {
 
 import { ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
 import { SortBy } from '../HeatmapFilters';
+import { useColorCellStyles } from './colorClasses';
 
 interface HeatmapTableByLevelsProps {
   ladder: ScorecardLadder | undefined;
@@ -53,6 +54,8 @@ export const HeatmapTableByLevels = ({
   setSortBy,
   tableHeight,
 }: HeatmapTableByLevelsProps) => {
+  const colorClasses = useColorCellStyles();
+
   const rulesByLevels = getSortedRulesByLevels(rules, ladder?.levels);
 
   const headers: HeaderItem[] = [
@@ -153,12 +156,19 @@ export const HeatmapTableByLevels = ({
                     {identifier}
                   </Link>
                 </TableCell>
-                <HeatmapCell text={serviceCount.toString()} />
-                <HeatmapCell score={averageScorePercentage} />
+                <HeatmapCell
+                  text={serviceCount.toString()}
+                  colorClasses={colorClasses}
+                />
+                <HeatmapCell
+                  score={averageScorePercentage}
+                  colorClasses={colorClasses}
+                />
                 {averageRuleScores.map((score, idx) => (
                   <HeatmapCell
                     key={`HeatmapCell-${identifier}-${idx}`}
                     score={score}
+                    colorClasses={colorClasses}
                   />
                 ))}
               </TableRow>

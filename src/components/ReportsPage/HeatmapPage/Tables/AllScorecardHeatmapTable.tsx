@@ -30,6 +30,7 @@ import { filterNotUndefined } from '../../../../utils/collections';
 
 import { GroupByOption, ScoresByIdentifier } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
+import { useColorCellStyles } from './colorClasses';
 
 interface AllScorecardsHeatmapTableProps {
   entitiesByTag: StringIndexable<HomepageEntity>;
@@ -44,6 +45,8 @@ export const AllScorecardsHeatmapTable = ({
   scorecardNames,
   serviceScores,
 }: AllScorecardsHeatmapTableProps) => {
+  const colorClasses = useColorCellStyles();
+
   const data = useMemo(
     () => getFormattedScorecardScores(scorecardNames, serviceScores),
     [scorecardNames, serviceScores],
@@ -99,12 +102,14 @@ export const AllScorecardsHeatmapTable = ({
               <HeatmapCell
                 score={isNaN(averageScore) ? undefined : averageScore}
                 text={isNaN(averageScore) ? 'N/A' : undefined}
+                colorClasses={colorClasses}
               />
               {groupScore.scores.map((score, idx) => (
                 <React.Fragment key={`ReportsTableRuleRow-${idx}`}>
                   <HeatmapCell
                     score={score?.scorePercentage}
                     text={score !== undefined ? undefined : 'N/A'}
+                    colorClasses={colorClasses}
                   />
                 </React.Fragment>
               ))}
