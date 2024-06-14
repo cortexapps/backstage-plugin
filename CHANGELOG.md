@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.9.2
+
+- Fix breadcrumbs on non-hierarchy items
+
 ### 2.9.1
 
 - Fix incorrect logic around group by changes and hierarchy

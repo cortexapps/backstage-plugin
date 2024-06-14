@@ -40,6 +40,7 @@ export interface HeatmapPageFilters {
   selectedScorecardId?: number;
   groupBy: GroupByOption;
   hierarchyGroupBy?: GroupByOption;
+  selectedGroupBy?: [GroupByOption, string];
   headerType: HeaderType;
   scoreFilters: ScoreFilters;
   useHierarchy: boolean;
@@ -74,6 +75,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
       ...prev,
       groupBy,
       path: undefined,
+      selectedGroupBy: undefined,
       useHierarchy: allowedHierarchy.includes(groupBy)
         ? filters.useHierarchy
         : false,
@@ -164,7 +166,10 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
             setFiltersAndNavigate(prev => {
               return {
                 ...prev,
-                groupBy: prev.hierarchyGroupBy || prev.groupBy,
+                groupBy:
+                  prev.hierarchyGroupBy ||
+                  prev.selectedGroupBy?.[0] ||
+                  prev.groupBy,
                 hierarchyGroupBy: undefined,
                 scoreFilters: defaultFilters,
               };

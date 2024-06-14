@@ -54,7 +54,7 @@ const Breadcrumbs = ({ items, onClick, groupBy, enableLastItem }: Props) => {
               color={'primary'}
               underline={'hover'}
             >
-              {groupBy}
+              {groupBy === GroupByOption.SERVICE_GROUP ? 'Group' : groupBy}
             </Link>
           </Typography>
         </Grid>
