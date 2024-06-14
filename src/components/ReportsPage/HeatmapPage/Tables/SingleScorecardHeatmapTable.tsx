@@ -213,7 +213,7 @@ export const SingleScorecardHeatmapTable = ({
     });
   };
 
-  const onBreadcrumbClick = (index?: number) => {
+  const onHierarchyBreadcrumbClick = (index?: number) => {
     setFiltersAndNavigate(prev => {
       let nextPath: HeatmapPageFilters['path'] = [];
       if (!isNil(index)) {
@@ -227,6 +227,22 @@ export const SingleScorecardHeatmapTable = ({
         scoreFilters: filters.hierarchyGroupBy
           ? defaultScoreFilters
           : prev.scoreFilters,
+      };
+    });
+  };
+
+  const onBreadcrumbClick = () => {
+    setFiltersAndNavigate(prev => {
+      if (!prev.selectedGroupBy) return prev;
+
+      const [curGroupBy] = prev.selectedGroupBy;
+
+      return {
+        ...prev,
+        selectedGroupBy: undefined,
+        groupBy: curGroupBy ?? groupBy,
+        hierarchyGroupBy: undefined,
+        scoreFilters: defaultScoreFilters,
       };
     });
   };
@@ -266,6 +282,7 @@ export const SingleScorecardHeatmapTable = ({
     setFiltersAndNavigate(prev => {
       return {
         ...prev,
+        selectedGroupBy: [groupBy, identifier],
         groupBy: GroupByOption.ENTITY,
         scoreFilters: {
           ...defaultScoreFilters,
@@ -275,8 +292,8 @@ export const SingleScorecardHeatmapTable = ({
     });
   };
 
-  const breadcrumbGroupBy = filters.hierarchyGroupBy ?? groupBy;
-  const resolvedBreadcrumbs = compact(
+  let breadcrumbGroupBy = filters.hierarchyGroupBy ?? groupBy;
+  let resolvedBreadcrumbs = compact(
     filters?.path?.map(pathItem => {
       if (breadcrumbGroupBy === GroupByOption.DOMAIN && domainHierarchies) {
         return (
@@ -292,6 +309,11 @@ export const SingleScorecardHeatmapTable = ({
       return undefined;
     }),
   );
+
+  if (filters.selectedGroupBy) {
+    breadcrumbGroupBy = filters.selectedGroupBy[0];
+    resolvedBreadcrumbs = [filters.selectedGroupBy[1]];
+  }
 
   if (headerType === HeaderType.LEVELS) {
     if (isUndefined(ladder)) {
@@ -310,9 +332,17 @@ export const SingleScorecardHeatmapTable = ({
           {useHierarchy && (
             <Breadcrumbs
               groupBy={breadcrumbGroupBy}
-              onClick={onBreadcrumbClick}
+              onClick={onHierarchyBreadcrumbClick}
               items={resolvedBreadcrumbs}
               enableLastItem={true}
+            />
+          )}
+          {!useHierarchy && !!filters.selectedGroupBy && (
+            <Breadcrumbs
+              groupBy={breadcrumbGroupBy}
+              onClick={onBreadcrumbClick}
+              items={resolvedBreadcrumbs}
+              enableLastItem={false}
             />
           )}
           <LevelsDrivenTable
@@ -342,9 +372,17 @@ export const SingleScorecardHeatmapTable = ({
           {useHierarchy && !!filters.hierarchyGroupBy && (
             <Breadcrumbs
               groupBy={breadcrumbGroupBy}
-              onClick={onBreadcrumbClick}
+              onClick={onHierarchyBreadcrumbClick}
               items={resolvedBreadcrumbs}
               enableLastItem={true}
+            />
+          )}
+          {!useHierarchy && !!filters.selectedGroupBy && (
+            <Breadcrumbs
+              groupBy={breadcrumbGroupBy}
+              onClick={onBreadcrumbClick}
+              items={resolvedBreadcrumbs}
+              enableLastItem={false}
             />
           )}
           <HeatmapTableByService
@@ -380,7 +418,7 @@ export const SingleScorecardHeatmapTable = ({
           {useHierarchy && (
             <Breadcrumbs
               groupBy={groupBy}
-              onClick={onBreadcrumbClick}
+              onClick={onHierarchyBreadcrumbClick}
               items={resolvedBreadcrumbs}
             />
           )}
@@ -419,7 +457,7 @@ export const SingleScorecardHeatmapTable = ({
           {useHierarchy && (
             <Breadcrumbs
               groupBy={groupBy}
-              onClick={onBreadcrumbClick}
+              onClick={onHierarchyBreadcrumbClick}
               items={resolvedBreadcrumbs}
             />
           )}

@@ -113,6 +113,7 @@ export const HeatmapPage = () => {
       hierarchy: filters.useHierarchy ? 'true' : undefined,
       hideWithoutChildren: !filters.hideWithoutChildren ? 'false' : undefined,
       path: filters.path,
+      selectedGroupBy: filters.selectedGroupBy,
     };
   };
 
@@ -151,6 +152,9 @@ export const HeatmapPage = () => {
         searchParams.getAll('levels') ?? defaultFilters.scoreFilters.levels,
     },
     path: searchParams.getAll('path'),
+    selectedGroupBy: searchParams.getAll('selectedGroupBy') as
+      | [GroupByOption, string]
+      | undefined,
   });
   const setFiltersAndNavigate = useCallback(
     (value: React.SetStateAction<HeatmapPageFilters>) =>
