@@ -232,7 +232,7 @@ export const HeatmapPage = () => {
       setTableHeight(
         getTableHeight({
           element: filterRef.current,
-          includeBreadcrumb: filters.useHierarchy,
+          includeBreadcrumb: filters.useHierarchy || !!filters.selectedGroupBy,
         }),
       );
     }
@@ -241,6 +241,7 @@ export const HeatmapPage = () => {
     filters.selectedScorecardId,
     filters.groupBy,
     filters.useHierarchy,
+    filters.selectedGroupBy,
   ]);
 
   useEffect(() => {
@@ -249,7 +250,8 @@ export const HeatmapPage = () => {
         setTableHeight(
           getTableHeight({
             element: filterRef.current,
-            includeBreadcrumb: filters.useHierarchy,
+            includeBreadcrumb:
+              filters.useHierarchy || !!filters.selectedGroupBy,
           }),
         );
       }
@@ -259,7 +261,7 @@ export const HeatmapPage = () => {
     window.addEventListener('resize', handleResizeDebounced);
     handleResize();
     return () => window.removeEventListener('resize', handleResizeDebounced);
-  }, [filters.useHierarchy]);
+  }, [filters.useHierarchy, filters.selectedGroupBy]);
 
   return (
     <>
