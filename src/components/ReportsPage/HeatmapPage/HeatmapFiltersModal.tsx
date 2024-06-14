@@ -21,13 +21,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  MenuItem,
 } from '@material-ui/core';
 import { StringIndexable } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
-import { sortBy, uniq } from 'lodash';
+import { sortBy, uniq, uniqBy } from 'lodash';
 import { Clear } from '@material-ui/icons';
-import { ModalSelect } from './HeatmapFiltersSelect';
+import { ModalSelect, ModalSelectItem } from './HeatmapFiltersSelect';
 import { ScorecardLadder } from '../../../api/types';
 
 export interface ScoreFilters {
@@ -78,40 +77,48 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
 
   const { services, groups, teams, users, domains } = useMemo(() => {
     const results = {
-      services: [] as HomepageEntity[],
-      groups: [] as string[],
-      teams: [] as HomepageEntity[],
-      users: [] as string[],
-      domains: [] as HomepageEntity[],
+      services: [] as ModalSelectItem[],
+      groups: [
+        { value: "No group", label: "No group" },
+      ] as ModalSelectItem[],
+      teams: [
+        { value: "No team", label: "No team" },
+      ] as ModalSelectItem[],
+      users: [] as ModalSelectItem[],
+      domains: [
+        { value: -1, label: "No domain" },
+      ] as ModalSelectItem[],
     };
 
     Object.keys(entitiesByTag).forEach(key => {
       const entity = entitiesByTag[key];
       switch (entity.type) {
         case 'service':
-          results.services.push(entity);
+          results.services.push({ label: entity.name, value: entity.id });
           break;
         case 'team':
-          results.teams.push(entity);
+          results.teams.push({ label: entity.name, value: entity.codeTag });
           break;
         case 'domain':
-          results.domains.push(entity);
+          results.domains.push({ label: entity.name, value: entity.id });
           break;
         default:
           break;
       }
-      results.groups.push(...entity.serviceGroupTags);
+      results.groups.push(
+        ...entity.serviceGroupTags.map(groupTag => ({ label: groupTag, value: groupTag }))
+      );
       results.users.push(
-        ...entity.serviceOwnerEmails.map(owner => owner.email),
+        ...entity.serviceOwnerEmails.map(owner => ({ label: owner.email, value: owner.email })),
       );
     });
 
     return {
-      services: sortBy(results.services, 'name'),
-      groups: sortBy(uniq(results.groups)),
-      teams: sortBy(results.teams, 'name'),
-      users: sortBy(uniq(results.users)),
-      domains: sortBy(results.domains, 'name'),
+      services: sortBy(results.services, 'label'),
+      groups: sortBy(uniqBy(results.groups, 'value'), 'label'),
+      teams: sortBy(results.teams, 'label'),
+      users: sortBy(uniqBy(results.users, 'value'), 'label'),
+      domains: sortBy(results.domains, 'label'),
     };
   }, [entitiesByTag]);
 
@@ -160,14 +167,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
                 })
               }
               value={modalFilters.serviceIds}
-              options={services.map(service => (
-                <MenuItem
-                  key={`ScorecardOption-service-${service.id}`}
-                  value={service.id}
-                >
-                  {service.name}
-                </MenuItem>
-              ))}
+              options={services}
             />
             <ModalSelect
               name="Domains"
@@ -178,14 +178,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
                 })
               }
               value={modalFilters.domainIds}
-              options={domains.map(domain => (
-                <MenuItem
-                  key={`ScorecardOption-domain-${domain.id}`}
-                  value={domain.id}
-                >
-                  {domain.name}
-                </MenuItem>
-              ))}
+              options={domains}
             />
             <ModalSelect
               name="Groups"
@@ -194,14 +187,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
                 setModalFiltersPartially({ groups: defaultFilters.groups })
               }
               value={modalFilters.groups}
-              options={groups.map(groupTag => (
-                <MenuItem
-                  key={`ScorecardOption-group-${groupTag}`}
-                  value={groupTag}
-                >
-                  {groupTag}
-                </MenuItem>
-              ))}
+              options={groups}
             />
             <ModalSelect
               name="Teams"
@@ -210,14 +196,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
                 setModalFiltersPartially({ teams: defaultFilters.teams })
               }
               value={modalFilters.teams}
-              options={teams.map(team => (
-                <MenuItem
-                  key={`ScorecardOption-team-${team.id}`}
-                  value={team.codeTag}
-                >
-                  {team.codeTag}
-                </MenuItem>
-              ))}
+              options={teams}
             />
             <ModalSelect
               name="Users"
@@ -226,14 +205,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
                 setModalFiltersPartially({ users: defaultFilters.users })
               }
               value={modalFilters.users}
-              options={users.map(usersEmail => (
-                <MenuItem
-                  key={`ScorecardOption-user-${usersEmail}`}
-                  value={usersEmail}
-                >
-                  {usersEmail}
-                </MenuItem>
-              ))}
+              options={users}
             />
             {levels?.length && (
               <ModalSelect
@@ -243,14 +215,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
                   setModalFiltersPartially({ levels: defaultFilters.levels })
                 }
                 value={modalFilters.levels}
-                options={levels.map(level => (
-                  <MenuItem
-                    key={`ScorecardOption-level-${level}`}
-                    value={level}
-                  >
-                    {level}
-                  </MenuItem>
-                ))}
+                options={levels.map(level => ({ label: level, value: level }))}
               />
             )}
           </Box>

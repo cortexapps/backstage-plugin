@@ -274,6 +274,7 @@ export const SingleScorecardHeatmapTable = ({
       };
     });
   };
+
   if (headerType === HeaderType.LEVELS) {
     if (isUndefined(ladder)) {
       return (

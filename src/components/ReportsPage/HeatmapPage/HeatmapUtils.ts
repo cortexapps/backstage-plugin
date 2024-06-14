@@ -292,33 +292,49 @@ export const applyScoreFilters = (
   domainIdByEntityId: Record<number, number[]>,
 ) => {
   return scores.filter(score => {
-    return (
-      (isEmpty(scoreFilters.serviceIds) ||
-        scoreFilters.serviceIds.includes(score.serviceId)) &&
-      (isEmpty(scoreFilters.groups) ||
-        intersection(
-          scoreFilters.groups,
-          groupTagByEntityId?.[score.serviceId] || [],
-        ).length) &&
-      (isEmpty(scoreFilters.teams) ||
-        intersection(scoreFilters.teams, score.teams || []).length) &&
-      (isEmpty(scoreFilters.users) ||
-        intersection(
-          scoreFilters.users,
-          ownerEmailByEntityId?.[score.serviceId] || [],
-        ).length) &&
-      (isEmpty(scoreFilters.levels) ||
-        score.ladderLevels.some(ladderLevel =>
-          scoreFilters.levels.includes(
-            ladderLevel.currentLevel?.name ?? 'No Level',
-          ),
-        )) &&
-      (isEmpty(scoreFilters.domainIds) ||
-        intersection(
-          domainIdByEntityId?.[score.serviceId] || [],
-          scoreFilters.domainIds,
-        ).length)
-    );
+    if (
+      !isEmpty(scoreFilters.serviceIds) &&
+      !scoreFilters.serviceIds.includes(score.serviceId)
+    ) {
+      return false;
+    }
+    if (
+      !isEmpty(scoreFilters.groups) &&
+      !intersection(scoreFilters.groups, groupTagByEntityId?.[score.serviceId] || []).length &&
+      !(scoreFilters.groups.includes('No group') && !groupTagByEntityId?.[score.serviceId].length)
+    ) {
+      return false;
+    }
+    if (
+      !isEmpty(scoreFilters.teams) &&
+      !intersection(scoreFilters.teams, score.teams || []).length &&
+      !(scoreFilters.teams.includes('No team') && !score.teams.length)
+    ) {
+      return false;
+    }
+    if (
+      !isEmpty(scoreFilters.users) &&
+      !intersection(scoreFilters.users, ownerEmailByEntityId?.[score.serviceId] || []).length
+    ) {
+      return false;
+    }
+    if (
+      !isEmpty(scoreFilters.levels) &&
+      !score.ladderLevels.some(
+        ladderLevel => scoreFilters.levels.includes(ladderLevel.currentLevel?.name ?? 'No Level')
+      )
+    ) {
+      return false;
+    }
+    if (
+      !isEmpty(scoreFilters.domainIds) &&
+      !intersection( domainIdByEntityId?.[score.serviceId] || [], scoreFilters.domainIds).length &&
+      !(scoreFilters.domainIds.includes(-1) && !domainIdByEntityId?.[score.serviceId]?.length)
+    ) {
+      return false;
+    }
+
+    return true;
   });
 };
 
