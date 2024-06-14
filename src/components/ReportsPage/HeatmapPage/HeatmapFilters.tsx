@@ -22,7 +22,11 @@ import {
 import React, { Dispatch } from 'react';
 import { GroupByDropdown } from '../Common/GroupByDropdown';
 import { HeaderTypeDropdown } from '../Common/HeaderTypeDropdown';
-import { HeatmapFiltersModal, ScoreFilters } from './HeatmapFiltersModal';
+import {
+  HeatmapFiltersModal,
+  ScoreFilters,
+  defaultFilters,
+} from './HeatmapFiltersModal';
 import { GroupByOption, HeaderType, ScorecardLadder } from '../../../api/types';
 import { StringIndexable } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
@@ -155,6 +159,16 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
           setFilters={scoreFilters =>
             setFiltersAndNavigate(prev => ({ ...prev, scoreFilters }))
           }
+          onClear={() => {
+            setFiltersAndNavigate(prev => {
+              return {
+                ...prev,
+                groupBy: prev.hierarchyGroupBy || prev.groupBy,
+                hierarchyGroupBy: undefined,
+                scoreFilters: defaultFilters,
+              };
+            });
+          }}
           entitiesByTag={entitiesByTag}
           ladder={ladder}
         />

@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 import React, { useMemo, useState } from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  MenuItem,
+} from '@material-ui/core';
 import { StringIndexable } from './HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { sortBy, uniq } from 'lodash';
@@ -38,19 +46,27 @@ export const defaultFilters: ScoreFilters = {
   users: [],
   domainIds: [],
   levels: [],
-}
+};
 
 interface HeatmapFiltersModalProps {
   filters: ScoreFilters;
   setFilters: (scoreFilters: ScoreFilters) => void;
   entitiesByTag: StringIndexable<HomepageEntity>;
   ladder: ScorecardLadder | undefined;
+  onClear: () => void;
 }
 
-export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filters, setFilters, entitiesByTag, ladder }) => {
+export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
+  filters,
+  setFilters,
+  entitiesByTag,
+  ladder,
+  onClear,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalFilters, setModalFilters] = useState(filters);
-  const setModalFiltersPartially = (filters: Partial<ScoreFilters>) => setModalFilters((prev) => ({ ...prev, ...filters }));
+  const setModalFiltersPartially = (filters: Partial<ScoreFilters>) =>
+    setModalFilters(prev => ({ ...prev, ...filters }));
   const handleSaveFilters = () => {
     setFilters(modalFilters);
     setIsOpen(false);
@@ -58,7 +74,7 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
   const setModalOpenAndResetFilters = () => {
     setModalFilters(filters);
     setIsOpen(true);
-  }
+  };
 
   const { services, groups, teams, users, domains } = useMemo(() => {
     const results = {
@@ -66,163 +82,189 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({ filter
       groups: [] as string[],
       teams: [] as HomepageEntity[],
       users: [] as string[],
-      domains: [] as HomepageEntity[]
+      domains: [] as HomepageEntity[],
     };
 
-    Object.keys(entitiesByTag).forEach((key) => {
+    Object.keys(entitiesByTag).forEach(key => {
       const entity = entitiesByTag[key];
       switch (entity.type) {
-        case "service":
+        case 'service':
           results.services.push(entity);
           break;
-        case "team":
+        case 'team':
           results.teams.push(entity);
           break;
-        case "domain":
+        case 'domain':
           results.domains.push(entity);
           break;
         default:
           break;
       }
       results.groups.push(...entity.serviceGroupTags);
-      results.users.push(...entity.serviceOwnerEmails.map((owner) => owner.email));
+      results.users.push(
+        ...entity.serviceOwnerEmails.map(owner => owner.email),
+      );
     });
 
     return {
-      services: sortBy(results.services, "name"),
+      services: sortBy(results.services, 'name'),
       groups: sortBy(uniq(results.groups)),
-      teams: sortBy(results.teams, "name"),
+      teams: sortBy(results.teams, 'name'),
       users: sortBy(uniq(results.users)),
-      domains: sortBy(results.domains, "name"),
+      domains: sortBy(results.domains, 'name'),
     };
   }, [entitiesByTag]);
 
-  const levels = useMemo(() => [...ladder?.levels.map(({ name }) => name) ?? [], 'No Level'], [ladder])
+  const levels = useMemo(
+    () => [...(ladder?.levels.map(({ name }) => name) ?? []), 'No Level'],
+    [ladder],
+  );
 
   const filtersCount = useMemo(() => {
-    return Object.values(filters).reduce((total, item) => total + item.length, 0)
+    return Object.values(filters).reduce(
+      (total, item) => total + item.length,
+      0,
+    );
   }, [filters]);
 
-  return <>
-    <Button
-      onClick={setModalOpenAndResetFilters}
-      variant="outlined"
-      aria-label="Filter"
-    >
-      Filters
-      {filtersCount > 0 && <> ({filtersCount})</>}
-    </Button>
-    {filtersCount > 0 && (
+  return (
+    <>
       <Button
-        onClick={() => setFilters(defaultFilters)}
-        variant="text"
-        aria-label="Clear filters"
-        title="Clear filters"
+        onClick={setModalOpenAndResetFilters}
+        variant="outlined"
+        aria-label="Filter"
       >
-        <Clear />
+        Filters
+        {filtersCount > 0 && <> ({filtersCount})</>}
       </Button>
-    )}
-    <Dialog open={isOpen} onClose={() => setIsOpen(false)} fullWidth>
-      <DialogTitle>Filter Bird's Eye Report</DialogTitle>
-      <DialogContent>
-        <Box display={"flex"} flexDirection={"column"} gridRowGap={16}>
-          <ModalSelect
-            name='Entities'
-            onChange={(serviceIds) => setModalFiltersPartially({ serviceIds })}
-            onReset={() => setModalFiltersPartially({ serviceIds: defaultFilters.serviceIds })}
-            value={modalFilters.serviceIds}
-            options={services.map((service) => (
-              <MenuItem
-                key={`ScorecardOption-service-${service.id}`}
-                value={service.id}
-              >
-                {service.name}
-              </MenuItem>
-            ))}
-          />
-          <ModalSelect
-            name='Domains'
-            onChange={(domainIds) => setModalFiltersPartially({ domainIds })}
-            onReset={() => setModalFiltersPartially({ domainIds: defaultFilters.domainIds })}
-            value={modalFilters.domainIds}
-            options={domains.map((domain) => (
-              <MenuItem
-                key={`ScorecardOption-domain-${domain.id}`}
-                value={domain.id}
-              >
-                {domain.name}
-              </MenuItem>
-            ))}
-          />
-          <ModalSelect
-            name='Groups'
-            onChange={(groups) => setModalFiltersPartially({ groups })}
-            onReset={() => setModalFiltersPartially({ groups: defaultFilters.groups })}
-            value={modalFilters.groups}
-            options={groups.map((groupTag) => (
-              <MenuItem
-                key={`ScorecardOption-group-${groupTag}`}
-                value={groupTag}
-              >
-                {groupTag}
-              </MenuItem>
-            ))}
-          />
-          <ModalSelect
-            name='Teams'
-            onChange={(teams) => setModalFiltersPartially({ teams })}
-            onReset={() => setModalFiltersPartially({ teams: defaultFilters.teams })}
-            value={modalFilters.teams}
-            options={teams.map((team) => (
-              <MenuItem
-                key={`ScorecardOption-team-${team.id}`}
-                value={team.codeTag}
-              >
-                {team.codeTag}
-              </MenuItem>
-            ))}
-          />
-          <ModalSelect
-            name='Users'
-            onChange={(users) => setModalFiltersPartially({ users })}
-            onReset={() => setModalFiltersPartially({ users: defaultFilters.users })}
-            value={modalFilters.users}
-            options={users.map((usersEmail) => (
-              <MenuItem
-                key={`ScorecardOption-user-${usersEmail}`}
-                value={usersEmail}
-              >
-                {usersEmail}
-              </MenuItem>
-            ))}
-          />
-          {levels?.length && (
+      {filtersCount > 0 && (
+        <Button
+          onClick={onClear}
+          variant="text"
+          aria-label="Clear filters"
+          title="Clear filters"
+        >
+          <Clear />
+        </Button>
+      )}
+      <Dialog open={isOpen} onClose={() => setIsOpen(false)} fullWidth>
+        <DialogTitle>Filter Bird's Eye Report</DialogTitle>
+        <DialogContent>
+          <Box display={'flex'} flexDirection={'column'} gridRowGap={16}>
             <ModalSelect
-              name='Levels'
-              onChange={(levels) => setModalFiltersPartially({ levels })}
-              onReset={() => setModalFiltersPartially({ levels: defaultFilters.levels })}
-              value={modalFilters.levels}
-              options={levels.map((level) => (
+              name="Entities"
+              onChange={serviceIds => setModalFiltersPartially({ serviceIds })}
+              onReset={() =>
+                setModalFiltersPartially({
+                  serviceIds: defaultFilters.serviceIds,
+                })
+              }
+              value={modalFilters.serviceIds}
+              options={services.map(service => (
                 <MenuItem
-                  key={`ScorecardOption-level-${level}`}
-                  value={level}
+                  key={`ScorecardOption-service-${service.id}`}
+                  value={service.id}
                 >
-                  {level}
+                  {service.name}
                 </MenuItem>
               ))}
             />
-          )}
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={handleSaveFilters}
-          color="primary"
-          aria-label="Apply filters"
-        >
-          Apply filters
-        </Button>
-      </DialogActions>
-    </Dialog>
-  </>;
-}
+            <ModalSelect
+              name="Domains"
+              onChange={domainIds => setModalFiltersPartially({ domainIds })}
+              onReset={() =>
+                setModalFiltersPartially({
+                  domainIds: defaultFilters.domainIds,
+                })
+              }
+              value={modalFilters.domainIds}
+              options={domains.map(domain => (
+                <MenuItem
+                  key={`ScorecardOption-domain-${domain.id}`}
+                  value={domain.id}
+                >
+                  {domain.name}
+                </MenuItem>
+              ))}
+            />
+            <ModalSelect
+              name="Groups"
+              onChange={groups => setModalFiltersPartially({ groups })}
+              onReset={() =>
+                setModalFiltersPartially({ groups: defaultFilters.groups })
+              }
+              value={modalFilters.groups}
+              options={groups.map(groupTag => (
+                <MenuItem
+                  key={`ScorecardOption-group-${groupTag}`}
+                  value={groupTag}
+                >
+                  {groupTag}
+                </MenuItem>
+              ))}
+            />
+            <ModalSelect
+              name="Teams"
+              onChange={teams => setModalFiltersPartially({ teams })}
+              onReset={() =>
+                setModalFiltersPartially({ teams: defaultFilters.teams })
+              }
+              value={modalFilters.teams}
+              options={teams.map(team => (
+                <MenuItem
+                  key={`ScorecardOption-team-${team.id}`}
+                  value={team.codeTag}
+                >
+                  {team.codeTag}
+                </MenuItem>
+              ))}
+            />
+            <ModalSelect
+              name="Users"
+              onChange={users => setModalFiltersPartially({ users })}
+              onReset={() =>
+                setModalFiltersPartially({ users: defaultFilters.users })
+              }
+              value={modalFilters.users}
+              options={users.map(usersEmail => (
+                <MenuItem
+                  key={`ScorecardOption-user-${usersEmail}`}
+                  value={usersEmail}
+                >
+                  {usersEmail}
+                </MenuItem>
+              ))}
+            />
+            {levels?.length && (
+              <ModalSelect
+                name="Levels"
+                onChange={levels => setModalFiltersPartially({ levels })}
+                onReset={() =>
+                  setModalFiltersPartially({ levels: defaultFilters.levels })
+                }
+                value={modalFilters.levels}
+                options={levels.map(level => (
+                  <MenuItem
+                    key={`ScorecardOption-level-${level}`}
+                    value={level}
+                  >
+                    {level}
+                  </MenuItem>
+                ))}
+              />
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleSaveFilters}
+            color="primary"
+            aria-label="Apply filters"
+          >
+            Apply filters
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
