@@ -40,6 +40,7 @@ export interface HeatmapPageFilters {
   selectedScorecardId?: number;
   groupBy: GroupByOption;
   hierarchyGroupBy?: GroupByOption;
+  selectedGroupBy?: [GroupByOption, string];
   headerType: HeaderType;
   scoreFilters: ScoreFilters;
   useHierarchy: boolean;
@@ -56,6 +57,8 @@ interface HeatmapFiltersProps {
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
+const allowedHierarchy = [GroupByOption.TEAM, GroupByOption.DOMAIN];
+
 export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
   filters,
   setFiltersAndNavigate,
@@ -64,10 +67,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
   ladder,
   setSortBy,
 }) => {
-  const isHierarchyToggleAllowed = [
-    GroupByOption.TEAM,
-    GroupByOption.DOMAIN,
-  ].includes(filters.groupBy);
+  const isHierarchyToggleAllowed = allowedHierarchy.includes(filters.groupBy);
 
   const onGroupByChange = (groupBy: GroupByOption) => {
     setSortBy(undefined);
@@ -75,7 +75,10 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
       ...prev,
       groupBy,
       path: undefined,
-      useHierarchy: isHierarchyToggleAllowed ? filters.useHierarchy : false,
+      selectedGroupBy: undefined,
+      useHierarchy: allowedHierarchy.includes(groupBy)
+        ? filters.useHierarchy
+        : false,
     }));
   };
 
@@ -163,7 +166,10 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
             setFiltersAndNavigate(prev => {
               return {
                 ...prev,
-                groupBy: prev.hierarchyGroupBy || prev.groupBy,
+                groupBy:
+                  prev.hierarchyGroupBy ||
+                  prev.selectedGroupBy?.[0] ||
+                  prev.groupBy,
                 hierarchyGroupBy: undefined,
                 scoreFilters: defaultFilters,
               };
