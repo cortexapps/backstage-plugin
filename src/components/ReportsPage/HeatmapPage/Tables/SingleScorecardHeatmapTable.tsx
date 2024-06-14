@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { Dispatch, useMemo } from 'react';
-import { isEmpty, isUndefined, keyBy, last } from 'lodash';
+import { isEmpty, isUndefined, keyBy, last, compact } from 'lodash';
 import { Progress, WarningPanel } from '@backstage/core-components';
 
 import { HeatmapTableByGroup } from './HeatmapTableByGroup';
@@ -42,6 +42,7 @@ import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { useCortexApi } from '../../../../utils/hooks';
 import { HeatmapPageFilters, SortBy } from '../HeatmapFilters';
 import { defaultFilters as defaultScoreFilters } from '../HeatmapFiltersModal';
+import Breadcrumbs from './HierarchyBreadcrumbs';
 
 interface SingleScorecardHeatmapTableProps {
   entityCategory: string;
@@ -214,6 +215,16 @@ export const SingleScorecardHeatmapTable = ({
     });
   };
 
+  const onBreadcrumbClick = (index: number) => {
+    setFiltersAndNavigate(prev => {
+      const nextPath = prev.path?.slice(0, index + 1);
+      return {
+        ...prev,
+        path: nextPath,
+      };
+    });
+  };
+
   const onDisplayColumnClick = (identifier: string) => {
     let scoreFilters: Partial<HeatmapPageFilters['scoreFilters']> = {};
 
@@ -281,6 +292,23 @@ export const SingleScorecardHeatmapTable = ({
     }
   }
 
+  const resolvedBreadcrumbs = compact(
+    filters?.path?.map(pathItem => {
+      if (groupBy === GroupByOption.DOMAIN && domainHierarchies) {
+        return (
+          findHierarchyItem(domainHierarchies.orderedTree, pathItem)?.node
+            ?.tag ?? ''
+        );
+      } else if (groupBy === GroupByOption.TEAM && teamHierarchies) {
+        return (
+          findHierarchyItem(teamHierarchies.orderedParents, pathItem)?.node
+            ?.tag ?? ''
+        );
+      }
+      return;
+    }),
+  );
+
   switch (groupBy) {
     case GroupByOption.ENTITY:
       return (
@@ -312,20 +340,29 @@ export const SingleScorecardHeatmapTable = ({
       );
     case GroupByOption.TEAM:
       return (
-        <HeatmapTableByGroup
-          header="Team"
-          rules={headers}
-          data={data}
-          entityCategory={entityCategory}
-          hideWithoutChildren={hideWithoutChildren}
-          onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
-          useHierarchy={useHierarchy}
-          lastPathItem={lastPathItem}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          entitiesByTag={entitiesByTag}
-          tableHeight={tableHeight}
-        />
+        <>
+          {useHierarchy && (
+            <Breadcrumbs
+              groupBy={groupBy}
+              onClick={onBreadcrumbClick}
+              items={resolvedBreadcrumbs}
+            />
+          )}
+          <HeatmapTableByGroup
+            header="Team"
+            rules={headers}
+            data={data}
+            entityCategory={entityCategory}
+            hideWithoutChildren={hideWithoutChildren}
+            onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
+            useHierarchy={useHierarchy}
+            lastPathItem={lastPathItem}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            entitiesByTag={entitiesByTag}
+            tableHeight={tableHeight}
+          />
+        </>
       );
     case GroupByOption.LEVEL:
       return (
@@ -342,20 +379,29 @@ export const SingleScorecardHeatmapTable = ({
       );
     case GroupByOption.DOMAIN:
       return (
-        <HeatmapTableByGroup
-          header="Domain"
-          rules={headers}
-          data={data}
-          entityCategory={entityCategory}
-          hideWithoutChildren={hideWithoutChildren}
-          onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
-          useHierarchy={useHierarchy}
-          lastPathItem={lastPathItem}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          entitiesByTag={entitiesByTag}
-          tableHeight={tableHeight}
-        />
+        <>
+          {useHierarchy && (
+            <Breadcrumbs
+              groupBy={groupBy}
+              onClick={onBreadcrumbClick}
+              items={resolvedBreadcrumbs}
+            />
+          )}
+          <HeatmapTableByGroup
+            header="Domain"
+            rules={headers}
+            data={data}
+            entityCategory={entityCategory}
+            hideWithoutChildren={hideWithoutChildren}
+            onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
+            useHierarchy={useHierarchy}
+            lastPathItem={lastPathItem}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            entitiesByTag={entitiesByTag}
+            tableHeight={tableHeight}
+          />
+        </>
       );
   }
 };

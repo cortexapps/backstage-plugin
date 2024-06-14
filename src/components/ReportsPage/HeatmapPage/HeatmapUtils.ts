@@ -22,7 +22,16 @@ import {
   RuleOutcome,
   ScorecardScoreNextSteps,
 } from '../../../api/types';
-import { groupBy as _groupBy, flatten as _flatten, values, uniq, intersection, isEmpty, flatten, isNil } from 'lodash';
+import {
+  groupBy as _groupBy,
+  flatten as _flatten,
+  values,
+  uniq,
+  intersection,
+  isEmpty,
+  flatten,
+  isNil,
+} from 'lodash';
 import { filterNotUndefined } from '../../../utils/collections';
 import { isApplicableRuleOutcome } from '../../../utils/ScorecardRules';
 import { HomepageEntity } from '../../../api/userInsightTypes';
@@ -76,7 +85,7 @@ const groupByKeyToLabel: Record<GroupByKeys, string> = {
   tags: 'group',
   ladderLevels: 'level',
   domains: 'domain',
-}
+};
 
 const groupReportDataBy = <T extends GroupByValues>(
   scores: T[],
@@ -84,9 +93,10 @@ const groupReportDataBy = <T extends GroupByValues>(
   domainTagByEntityId?: Record<string, string[]>,
 ): StringIndexable<T[]> => {
   return scores.reduce<StringIndexable<T[]>>((data, score) => {
-    const groups = groupBy !== "domains"
-      ? score[groupBy]
-      : domainTagByEntityId?.[score.serviceId] ?? [];
+    const groups =
+      groupBy !== 'domains'
+        ? score[groupBy]
+        : domainTagByEntityId?.[score.serviceId] ?? [];
 
     if (!groups?.length) {
       const key = `No ${groupByKeyToLabel[groupBy]}`;
@@ -142,35 +152,52 @@ export const getScorecardServiceScoresByGroupByOption = (
 export interface HierarchyNode {
   node: {
     tag: string;
-  }
+    name: string;
+  };
   orderedChildren: HierarchyNode[];
 }
 
 export const hierarchyNodeFlatChildren = (node: HierarchyNode): string[] => {
-  return node.orderedChildren.flatMap((child) => [child.node.tag, ...hierarchyNodeFlatChildren(child)]);
-}
+  return node.orderedChildren.flatMap(child => [
+    child.node.tag,
+    ...hierarchyNodeFlatChildren(child),
+  ]);
+};
 
-export const groupScoresByHierarchies = (groupedScores: StringIndexable<ScorecardServiceScore[]>, nodes: HierarchyNode[], currentHierarchyItemTag?: string) => {
+export const groupScoresByHierarchies = (
+  groupedScores: StringIndexable<ScorecardServiceScore[]>,
+  nodes: HierarchyNode[],
+  currentHierarchyItemTag?: string,
+) => {
   const hierarchyGroupedData = {} as Record<string, ScorecardServiceScore[]>;
 
-  nodes.forEach((parent) => {
-    hierarchyGroupedData[parent.node.tag] = groupedScores[parent.node.tag] ?? [];
+  nodes.forEach(parent => {
+    hierarchyGroupedData[parent.node.tag] =
+      groupedScores[parent.node.tag] ?? [];
 
-    hierarchyNodeFlatChildren(parent).forEach((childTag) => {
-      (groupedScores[childTag] ?? []).forEach((score) => {
-        if (!hierarchyGroupedData[parent.node.tag].find((existingScore) => existingScore.componentRef === score.componentRef)) {
+    hierarchyNodeFlatChildren(parent).forEach(childTag => {
+      (groupedScores[childTag] ?? []).forEach(score => {
+        if (
+          !hierarchyGroupedData[parent.node.tag].find(
+            existingScore => existingScore.componentRef === score.componentRef,
+          )
+        ) {
           hierarchyGroupedData[parent.node.tag].push(score);
         }
       });
     });
   });
 
-  if (currentHierarchyItemTag && groupedScores[currentHierarchyItemTag]?.length) {
-    hierarchyGroupedData[currentHierarchyItemTag] = groupedScores[currentHierarchyItemTag];
+  if (
+    currentHierarchyItemTag &&
+    groupedScores[currentHierarchyItemTag]?.length
+  ) {
+    hierarchyGroupedData[currentHierarchyItemTag] =
+      groupedScores[currentHierarchyItemTag];
   }
 
   return hierarchyGroupedData;
-}
+};
 
 export const findHierarchyItem = (
   nodes: HierarchyNode[],
@@ -182,7 +209,10 @@ export const findHierarchyItem = (
 
   if (!item) {
     for (const nodeItem of nodes) {
-      const childItem = findHierarchyItem(nodeItem.orderedChildren, lastItemIdentifier);
+      const childItem = findHierarchyItem(
+        nodeItem.orderedChildren,
+        lastItemIdentifier,
+      );
       if (childItem) {
         item = childItem;
         break;
@@ -193,9 +223,13 @@ export const findHierarchyItem = (
   return item;
 };
 
-export const getAllHierarchyDescendants = (treeNode: HierarchyNode): HierarchyNode[] => {
+export const getAllHierarchyDescendants = (
+  treeNode: HierarchyNode,
+): HierarchyNode[] => {
   const children = flatten(
-    treeNode.orderedChildren.map(childNode => getAllHierarchyDescendants(childNode)),
+    treeNode.orderedChildren.map(childNode =>
+      getAllHierarchyDescendants(childNode),
+    ),
   );
 
   return [treeNode, ...children];
@@ -208,18 +242,25 @@ export const getAllHierarchyNodesFromTree = (
     return [];
   }
 
-  return flatten(nodes.map(domainNode => getAllHierarchyDescendants(domainNode)));
+  return flatten(
+    nodes.map(domainNode => getAllHierarchyDescendants(domainNode)),
+  );
 };
 
-export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<HomepageEntity>) => {
+export const catalogToRelationsByEntityId = (
+  entitiesByTag: StringIndexable<HomepageEntity>,
+) => {
   const ownerEmailByEntityId = {} as Record<string, string[]>;
   const groupTagByEntityId = {} as Record<string, string[]>;
 
-  Object.values(entitiesByTag).forEach((entity) => {
+  Object.values(entitiesByTag).forEach(entity => {
     if (entity.serviceOwnerEmails.length) {
       const ownerEmails = entity.serviceOwnerEmails.map(({ email }) => email);
       if (ownerEmailByEntityId[entity.id]) {
-        ownerEmailByEntityId[entity.id] = uniq([...ownerEmails, ...ownerEmailByEntityId[entity.id]]);
+        ownerEmailByEntityId[entity.id] = uniq([
+          ...ownerEmails,
+          ...ownerEmailByEntityId[entity.id],
+        ]);
       } else {
         ownerEmailByEntityId[entity.id] = ownerEmails;
       }
@@ -227,7 +268,10 @@ export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<Home
 
     if (entity.serviceGroupTags) {
       if (groupTagByEntityId[entity.id]) {
-        groupTagByEntityId[entity.id] = uniq([...entity.serviceGroupTags, ...groupTagByEntityId[entity.id]]);
+        groupTagByEntityId[entity.id] = uniq([
+          ...entity.serviceGroupTags,
+          ...groupTagByEntityId[entity.id],
+        ]);
       } else {
         groupTagByEntityId[entity.id] = entity.serviceGroupTags;
       }
@@ -236,9 +280,9 @@ export const catalogToRelationsByEntityId = (entitiesByTag: StringIndexable<Home
 
   return {
     ownerEmailByEntityId,
-    groupTagByEntityId
+    groupTagByEntityId,
   };
-}
+};
 
 export const applyScoreFilters = (
   scores: ScorecardServiceScore[],
@@ -247,17 +291,36 @@ export const applyScoreFilters = (
   groupTagByEntityId: StringIndexable<string[]>,
   domainIdByEntityId: Record<number, number[]>,
 ) => {
-  return scores.filter((score) => {
+  return scores.filter(score => {
     return (
-      (isEmpty(scoreFilters.serviceIds) || scoreFilters.serviceIds.includes(score.serviceId)) &&
-      (isEmpty(scoreFilters.groups) || intersection(scoreFilters.groups, groupTagByEntityId?.[score.serviceId] || []).length) &&
-      (isEmpty(scoreFilters.teams) || intersection(scoreFilters.teams, score.teams || []).length) &&
-      (isEmpty(scoreFilters.users) || intersection(scoreFilters.users, ownerEmailByEntityId?.[score.serviceId] || []).length) &&
-      (isEmpty(scoreFilters.levels) || score.ladderLevels.some((ladderLevel) => scoreFilters.levels.includes(ladderLevel.currentLevel?.name ?? "No Level"))) &&
-      (isEmpty(scoreFilters.domainIds) || intersection(domainIdByEntityId?.[score.serviceId] || [], scoreFilters.domainIds).length)
+      (isEmpty(scoreFilters.serviceIds) ||
+        scoreFilters.serviceIds.includes(score.serviceId)) &&
+      (isEmpty(scoreFilters.groups) ||
+        intersection(
+          scoreFilters.groups,
+          groupTagByEntityId?.[score.serviceId] || [],
+        ).length) &&
+      (isEmpty(scoreFilters.teams) ||
+        intersection(scoreFilters.teams, score.teams || []).length) &&
+      (isEmpty(scoreFilters.users) ||
+        intersection(
+          scoreFilters.users,
+          ownerEmailByEntityId?.[score.serviceId] || [],
+        ).length) &&
+      (isEmpty(scoreFilters.levels) ||
+        score.ladderLevels.some(ladderLevel =>
+          scoreFilters.levels.includes(
+            ladderLevel.currentLevel?.name ?? 'No Level',
+          ),
+        )) &&
+      (isEmpty(scoreFilters.domainIds) ||
+        intersection(
+          domainIdByEntityId?.[score.serviceId] || [],
+          scoreFilters.domainIds,
+        ).length)
     );
   });
-}
+};
 
 interface ScorecardRuleMetadata {
   ruleName: string;

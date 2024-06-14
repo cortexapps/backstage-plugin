@@ -21,7 +21,6 @@ import React, {
   useState,
 } from 'react';
 import {
-  Content,
   ContentHeader,
   EmptyState,
   Progress,
@@ -49,13 +48,21 @@ const defaultFilters: HeatmapPageFilters = {
   hideWithoutChildren: true,
 };
 
-const MISC_ELEMENT_PADDING = 56;
-const getTableHeight = (filterElement: HTMLDivElement) => {
+const MISC_ELEMENT_PADDING = 48;
+const BREADCRUMB_HEIGHT = 38;
+const getTableHeight = ({
+  element,
+  includeBreadcrumb,
+}: {
+  element: HTMLDivElement;
+  includeBreadcrumb: boolean;
+}) => {
   return (
     window.innerHeight -
-    filterElement.clientHeight -
-    filterElement.offsetTop -
-    MISC_ELEMENT_PADDING
+    element.clientHeight -
+    element.offsetTop -
+    MISC_ELEMENT_PADDING -
+    (includeBreadcrumb ? BREADCRUMB_HEIGHT : 0)
   );
 };
 
@@ -208,14 +215,29 @@ export const HeatmapPage = () => {
       !scorecardsResult.loading &&
       filters.selectedScorecardId
     ) {
-      setTableHeight(getTableHeight(filterRef.current));
+      setTableHeight(
+        getTableHeight({
+          element: filterRef.current,
+          includeBreadcrumb: filters.useHierarchy,
+        }),
+      );
     }
-  }, [scorecardsResult.loading, filters.selectedScorecardId]);
+  }, [
+    scorecardsResult.loading,
+    filters.selectedScorecardId,
+    filters.groupBy,
+    filters.useHierarchy,
+  ]);
 
   useEffect(() => {
     const handleResize = () => {
       if (filterRef.current) {
-        setTableHeight(getTableHeight(filterRef.current));
+        setTableHeight(
+          getTableHeight({
+            element: filterRef.current,
+            includeBreadcrumb: filters.useHierarchy,
+          }),
+        );
       }
     };
     const handleResizeDebounced = debounce(handleResize, 150);
@@ -223,10 +245,10 @@ export const HeatmapPage = () => {
     window.addEventListener('resize', handleResizeDebounced);
     handleResize();
     return () => window.removeEventListener('resize', handleResizeDebounced);
-  }, []);
+  }, [filters.useHierarchy]);
 
   return (
-    <Content>
+    <>
       <ContentHeader title="Bird's Eye">
         <CopyButton textToCopy={getShareableLink} aria-label="Share link">
           Share link
@@ -270,6 +292,6 @@ export const HeatmapPage = () => {
           )}
         </Grid>
       </Grid>
-    </Content>
+    </>
   );
 };
