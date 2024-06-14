@@ -83,8 +83,7 @@ export const HeatmapTableByGroup = ({
       Object.entries(data),
       ([key, values]) => {
         if (sortBy.column === 'identifier') {
-          return values[0].componentRef?.toLowerCase();
-          // return entitiesByTag[]?.name?.toLowerCase();
+          return useHierarchy ? key : values[0].componentRef?.toLowerCase();
         } else if (sortBy.column === 'score') {
           return values.length;
         } else if (sortBy.column === 'percentage') {
@@ -94,7 +93,7 @@ export const HeatmapTableByGroup = ({
       },
       sortBy.desc ? 'desc' : 'asc',
     );
-  }, [data, sortBy]);
+  }, [data, sortBy, useHierarchy]);
 
   const parentRef = useRef(null);
 
