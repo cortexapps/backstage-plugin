@@ -4,6 +4,12 @@
 
 - Backstage version update from 1.25.2 to 1.27.7
 
+### 2.9.0
+
+- Add filters to the Bird's Eye Report
+- Add team and domain hierarchies to the Bird's Eye Report
+- Add option to group by domain to the Bird's Eye Report
+
 ### 2.8.0
 
 - Display Initiatives notification schedule

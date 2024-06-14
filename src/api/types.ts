@@ -251,10 +251,11 @@ export interface ScoresByIdentifier {
 }
 
 export enum GroupByOption {
-  SERVICE = 'Service',
+  ENTITY = 'Entity',
   TEAM = 'Team',
   SERVICE_GROUP = 'Service Group',
   LEVEL = 'Level',
+  DOMAIN = 'Domain',
 }
 
 export enum HeaderType {
@@ -437,6 +438,44 @@ export interface ExpirationResponse {
   contractType: ContractType;
   expirationDate: string | null;
   shutdownDate: string | null;
+}
+
+export interface DomainHierarchyNode {
+  node: {
+    id: number;
+    cid: string;
+    tag: string;
+    name: string;
+    type: string;
+    description: string | null;
+    isArchived: boolean;
+    definition: string | null;
+  };
+  orderedChildren: DomainHierarchyNode[];
+}
+
+export interface DomainHierarchiesResponse {
+  orderedTree: DomainHierarchyNode[];
+}
+
+export interface TeamHierarchyNode {
+  node: {
+    id: number;
+    cid: string;
+    tag: string;
+    name: string;
+    description: string | null;
+    isArchived: boolean;
+    parentRelationshipProviders: string[];
+    ownerGroup: string;
+    ownerGroupType: string;
+    type: string;
+  };
+  orderedChildren: TeamHierarchyNode[];
+}
+
+export interface TeamHierarchiesResponse {
+  orderedParents: TeamHierarchyNode[];
 }
 
 // Entity Filter

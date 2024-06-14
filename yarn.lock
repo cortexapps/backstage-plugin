@@ -3388,6 +3388,18 @@
   dependencies:
     "@swc/counter" "^0.1.3"
 
+"@tanstack/react-virtual@^3.0.0-beta.49":
+  version "3.5.1"
+  resolved "https://registry.npmjs.org/@tanstack/react-virtual/-/react-virtual-3.5.1.tgz#1ce466f530a10f781871360ed2bf7ff83e664f85"
+  integrity sha512-jIsuhfgy8GqA67PdWqg73ZB2LFE+HD9hjWL1L6ifEIZVyZVAKpYmgUG4WsKQ005aEyImJmbuimPiEvc57IY0Aw==
+  dependencies:
+    "@tanstack/virtual-core" "3.5.1"
+
+"@tanstack/virtual-core@3.5.1":
+  version "3.5.1"
+  resolved "https://registry.npmjs.org/@tanstack/virtual-core/-/virtual-core-3.5.1.tgz#f519149bce9156d0e7954b9531df15f446f2fc12"
+  integrity sha512-046+AUSiDru/V9pajE1du8WayvBKeCvJ2NmKPy/mR8/SbKKrqmSbj7LJBfXE+nSq4f5TBXvnCzu0kcYebI9WdQ==
+
 "@testing-library/dom@^8.0.0":
   version "8.20.1"
   resolved "https://registry.npmjs.org/@testing-library/dom/-/dom-8.20.1.tgz#2e52a32e46fc88369eef7eef634ac2a192decd9f"

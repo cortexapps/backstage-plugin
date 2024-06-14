@@ -86,3 +86,7 @@ export interface HomepageEntity {
 export interface HomepageEntityResponse {
   entities: HomepageEntity[];
 }
+
+export interface EntityDomainAncestorsResponse {
+  entitiesToAncestors: Record<number, number[]>;
+}
