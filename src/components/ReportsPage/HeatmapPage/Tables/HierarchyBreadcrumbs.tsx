@@ -19,7 +19,7 @@ import { Grid, Link, Typography, makeStyles } from '@material-ui/core';
 
 interface Props {
   items: string[];
-  onClick: (index: number) => void;
+  onClick: (index?: number) => void;
   groupBy: GroupByOption;
   enableLastItem?: boolean;
 }
@@ -46,7 +46,17 @@ const Breadcrumbs = ({ items, onClick, groupBy, enableLastItem }: Props) => {
     <Grid item className={classes.spacing}>
       <Grid container spacing={2} direction="row" alignItems="center">
         <Grid item>
-          <Typography variant="subtitle2">Group By: {groupBy}</Typography>
+          <Typography variant="subtitle2">
+            Group By:{' '}
+            <Link
+              component={'button'}
+              onClick={() => onClick()}
+              color={'primary'}
+              underline={'hover'}
+            >
+              {groupBy}
+            </Link>
+          </Typography>
         </Grid>
         {!!items.length && <BreadcrumbSeparator />}
         {items.map((item, index) => {

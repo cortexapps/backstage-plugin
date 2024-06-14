@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { Dispatch, useMemo } from 'react';
-import { isEmpty, isUndefined, keyBy, last, compact } from 'lodash';
+import { isEmpty, isUndefined, keyBy, last, compact, isNil } from 'lodash';
 import { Progress, WarningPanel } from '@backstage/core-components';
 
 import { HeatmapTableByGroup } from './HeatmapTableByGroup';
@@ -213,9 +213,12 @@ export const SingleScorecardHeatmapTable = ({
     });
   };
 
-  const onBreadcrumbClick = (index: number) => {
+  const onBreadcrumbClick = (index?: number) => {
     setFiltersAndNavigate(prev => {
-      const nextPath = prev.path?.slice(0, index + 1);
+      let nextPath: HeatmapPageFilters['path'] = [];
+      if (!isNil(index)) {
+        nextPath = prev.path?.slice(0, index + 1);
+      }
       return {
         ...prev,
         groupBy: filters.hierarchyGroupBy ?? groupBy,
