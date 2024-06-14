@@ -84,8 +84,9 @@ const Sorter = ({
   );
 };
 
-const firstColumn = { width: `15%`, minWidth: '108px' };
-const secondaryColumns = { width: `10%`, minWidth: '108px' };
+const MIN_COL_WIDTH = '150px';
+const firstColumn = { width: `15%`, minWidth: MIN_COL_WIDTH };
+const secondaryColumns = { width: `10%`, minWidth: MIN_COL_WIDTH };
 
 export const HeatmapTableHeader = ({
   headers,
@@ -106,7 +107,7 @@ export const HeatmapTableHeader = ({
               ? firstColumn
               : [1, 2].includes(idx)
               ? secondaryColumns
-              : { width: `${cellWidth}%` };
+              : { width: `${cellWidth}%`, minWidth: MIN_COL_WIDTH };
 
           return (
             <TableCell
