@@ -22,6 +22,7 @@ import {
   TableCell,
   TableRow,
   Typography,
+  makeStyles,
 } from '@material-ui/core';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
@@ -43,6 +44,7 @@ import { GroupByOption, ScorecardServiceScore } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { SortBy } from '../HeatmapFilters';
 import { orderBy } from 'lodash';
+import { BackstageTheme } from '@backstage/theme';
 
 interface LevelsDrivenTableProps {
   data: StringIndexable<ScorecardServiceScore[]>;
@@ -59,6 +61,12 @@ interface LevelsDrivenTableProps {
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
   tableHeight: number;
 }
+
+const useStyles = makeStyles<BackstageTheme>(_ => ({
+  componentList: {
+    paddingLeft: '16px',
+  },
+}));
 
 const heightEstimator = () => 106;
 
@@ -77,6 +85,7 @@ export const LevelsDrivenTable = ({
   setSortBy,
   tableHeight,
 }: LevelsDrivenTableProps) => {
+  const cellStyles = useStyles();
   const notGroupedByServices = groupBy !== GroupByOption.ENTITY;
   const headers: HeaderItem[] = [
     {
@@ -169,7 +178,9 @@ export const LevelsDrivenTable = ({
                           }}
                         >
                           {key === lastPathItem
-                            ? `Everything owned by ${entity?.name ?? lastPathItem}`
+                            ? `Everything owned by ${
+                                entity?.name ?? lastPathItem
+                              }`
                             : entity?.name ?? key}
                         </Link>
                       ) : (
@@ -220,6 +231,7 @@ export const LevelsDrivenTable = ({
                     entitiesByTag={entitiesByTag}
                     identifier={key}
                     scores={score}
+                    classes={cellStyles}
                   />
                 ))}
               </TableRow>

@@ -14,36 +14,40 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, makeStyles, TableCell, Typography, } from '@material-ui/core';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  TableCell,
+  Typography,
+} from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 
 import { maybePluralize } from '../../../utils/strings';
-import { defaultComponentRefContext, entityComponentRef, } from '../../../utils/ComponentUtils';
+import {
+  defaultComponentRefContext,
+  entityComponentRef,
+} from '../../../utils/ComponentUtils';
 
 import { ScorecardServiceScore } from '../../../api/types';
-import { BackstageTheme } from '@backstage/theme';
 import { HomepageEntity } from '../../../api/userInsightTypes';
-
-const useStyles = makeStyles<BackstageTheme>(_ => ({
-  componentList: {
-    paddingLeft: '16px',
-  },
-}));
+import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 
 interface LevelsInfoCellProps {
   entitiesByTag: Record<string, HomepageEntity>;
   identifier: string;
   scores: ScorecardServiceScore[];
+  classes: ClassNameMap<string>;
 }
 
 export const LevelsInfoCell = ({
   identifier,
   scores,
   entitiesByTag,
+  classes,
 }: LevelsInfoCellProps) => {
-  const classes = useStyles();
   return (
     <TableCell>
       <Accordion>
