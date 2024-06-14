@@ -22,7 +22,7 @@ import { HeatmapCell } from '../HeatmapCell';
 import { getAverageRuleScores, StringIndexable } from '../HeatmapUtils';
 import { mean as _average, orderBy, meanBy } from 'lodash';
 import { HeaderItem, HeatmapTableHeader } from './HeatmapTableHeader';
-import { TableCell, Link } from '@material-ui/core';
+import { TableCell, Link, Box } from '@material-ui/core';
 import { SortBy } from '../HeatmapFilters';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -48,7 +48,7 @@ export const HeatmapTableByGroup = ({
   header,
   rules,
   data,
-  // entitiesByTag,
+  entitiesByTag,
   entityCategory,
   hideWithoutChildren = false,
   onSelect,
@@ -141,32 +141,37 @@ export const HeatmapTableByGroup = ({
             );
             const averageRuleScores = getAverageRuleScores(values);
 
+            const entity = entitiesByTag?.[identifier];
+
             return (
               <TableRow key={`TableRow-${identifier}`}>
                 <TableCell>
-                  {useHierarchy ? (
-                    <Link
-                      variant="subtitle1"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        onSelect(identifier);
-                      }}
-                    >
-                      {identifier === lastPathItem
-                        ? `Everything owned by ${lastPathItem}`
-                        : identifier}
-                    </Link>
-                  ) : (
-                    <Link
-                      variant="subtitle1"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        onSelect(identifier);
-                      }}
-                    >
-                      {identifier}
-                    </Link>
-                  )}
+                  <Box display="flex" flexDirection="column">
+                    {useHierarchy ? (
+                      <Link
+                        variant="subtitle1"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          onSelect(identifier);
+                        }}
+                      >
+                        {identifier === lastPathItem
+                          ? `Everything owned by ${entity?.name ?? lastPathItem}`
+                          : entity?.name ?? identifier}
+                      </Link>
+                    ) : (
+                      <Link
+                        variant="subtitle1"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          onSelect(identifier);
+                        }}
+                      >
+                        {entity?.name ?? identifier}
+                      </Link>
+                    )}
+                    {entity?.codeTag}
+                  </Box>
                 </TableCell>
                 <HeatmapCell text={serviceCount.toString()} />
                 {isNaN(averageScore) ? (

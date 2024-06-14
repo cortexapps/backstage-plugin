@@ -15,6 +15,7 @@
  */
 import React, { Dispatch, useMemo, useRef } from 'react';
 import {
+  Box,
   Link,
   Table,
   TableBody,
@@ -152,33 +153,38 @@ export const LevelsDrivenTable = ({
             const scores = getServicesInLevelsFromScores(levels, values);
             const firstScore = values?.[0];
 
+            const entity = entitiesByTag?.[key];
+
             return (
               <TableRow key={`TableRow-${key}`}>
                 {notGroupedByServices || !firstScore.componentRef ? (
                   <TableCell>
-                    {useHierarchy ? (
-                      <Link
-                        variant="subtitle1"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                          onSelect(key);
-                        }}
-                      >
-                        {key === lastPathItem
-                          ? `Everything owned by ${lastPathItem}`
-                          : key}
-                      </Link>
-                    ) : (
-                      <Link
-                        variant="subtitle1"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                          onSelect(key);
-                        }}
-                      >
-                        {key}
-                      </Link>
-                    )}
+                    <Box display="flex" flexDirection="column">
+                      {useHierarchy ? (
+                        <Link
+                          variant="subtitle1"
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => {
+                            onSelect(key);
+                          }}
+                        >
+                          {key === lastPathItem
+                            ? `Everything owned by ${entity?.name ?? lastPathItem}`
+                            : entity?.name ?? key}
+                        </Link>
+                      ) : (
+                        <Link
+                          variant="subtitle1"
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => {
+                            onSelect(key);
+                          }}
+                        >
+                          {entity?.name ?? key}
+                        </Link>
+                      )}
+                      {entity?.codeTag}
+                    </Box>
                   </TableCell>
                 ) : (
                   <TableCell>
@@ -195,6 +201,7 @@ export const LevelsDrivenTable = ({
                         {entitiesByTag[firstScore.componentRef]?.name}
                       </Typography>
                     </EntityRefLink>
+                    {entitiesByTag[firstScore.componentRef]?.codeTag}
                   </TableCell>
                 )}
                 {notGroupedByServices && (

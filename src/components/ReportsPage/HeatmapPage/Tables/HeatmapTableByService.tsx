@@ -144,6 +144,7 @@ export const HeatmapTableByService = ({
                       {entitiesByTag[firstScore.componentRef]?.name}
                     </Typography>
                   </ScorecardServiceRefLink>
+                  {entitiesByTag[firstScore.componentRef]?.codeTag}
                 </TableCell>
                 <HeatmapCell
                   score={averageScorePercentage}
