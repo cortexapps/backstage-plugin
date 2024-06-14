@@ -246,10 +246,17 @@ export const SingleScorecardHeatmapTable = ({
       const domain = Object.entries(domainTagByEntityId).find(([_id, tags]) => {
         return tags.includes(identifier);
       });
-      if (!domain) return;
-      scoreFilters = {
-        domainIds: [Number(domain[0])],
-      };
+      if (domain) {
+        scoreFilters = {
+          domainIds: [Number(domain[0])],
+        };
+      } else if (identifier === "No domain") {
+        scoreFilters = {
+          domainIds: [-1],
+        };
+      } else {
+        return;
+      }
     } else if (groupBy === GroupByOption.SERVICE_GROUP) {
       scoreFilters = {
         groups: [identifier],
