@@ -35,6 +35,7 @@ export interface SortBy {
 export interface HeatmapPageFilters {
   selectedScorecardId?: number;
   groupBy: GroupByOption;
+  hierarchyGroupBy?: GroupByOption;
   headerType: HeaderType;
   scoreFilters: ScoreFilters;
   useHierarchy: boolean;

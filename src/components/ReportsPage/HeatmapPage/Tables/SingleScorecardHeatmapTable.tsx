@@ -193,12 +193,10 @@ export const SingleScorecardHeatmapTable = ({
       setFiltersAndNavigate(prev => {
         return {
           ...prev,
+          hierarchyGroupBy: groupBy,
           groupBy: GroupByOption.ENTITY,
           scoreFilters: {
-            ...prev.scoreFilters,
-            // reset conflicting filters
-            teams: [],
-            domainIds: [],
+            ...defaultScoreFilters,
             ...selectedFilter,
           },
         };
@@ -220,7 +218,12 @@ export const SingleScorecardHeatmapTable = ({
       const nextPath = prev.path?.slice(0, index + 1);
       return {
         ...prev,
+        groupBy: filters.hierarchyGroupBy ?? groupBy,
+        hierarchyGroupBy: undefined,
         path: nextPath,
+        scoreFilters: filters.hierarchyGroupBy
+          ? defaultScoreFilters
+          : prev.scoreFilters,
       };
     });
   };
@@ -292,36 +295,47 @@ export const SingleScorecardHeatmapTable = ({
     }
   }
 
+  const breadcrumbGroupBy = filters.hierarchyGroupBy ?? groupBy;
   const resolvedBreadcrumbs = compact(
     filters?.path?.map(pathItem => {
-      if (groupBy === GroupByOption.DOMAIN && domainHierarchies) {
+      if (breadcrumbGroupBy === GroupByOption.DOMAIN && domainHierarchies) {
         return (
           findHierarchyItem(domainHierarchies.orderedTree, pathItem)?.node
             ?.tag ?? ''
         );
-      } else if (groupBy === GroupByOption.TEAM && teamHierarchies) {
+      } else if (breadcrumbGroupBy === GroupByOption.TEAM && teamHierarchies) {
         return (
           findHierarchyItem(teamHierarchies.orderedParents, pathItem)?.node
             ?.tag ?? ''
         );
       }
-      return;
+      return undefined;
     }),
   );
 
   switch (groupBy) {
     case GroupByOption.ENTITY:
       return (
-        <HeatmapTableByService
-          header={`${entityCategory} Details`}
-          scorecardId={scorecardId}
-          data={data}
-          entitiesByTag={entitiesByTag}
-          rules={headers}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          tableHeight={tableHeight}
-        />
+        <>
+          {useHierarchy && !!filters.hierarchyGroupBy && (
+            <Breadcrumbs
+              groupBy={breadcrumbGroupBy}
+              onClick={onBreadcrumbClick}
+              items={resolvedBreadcrumbs}
+              enableLastItem={true}
+            />
+          )}
+          <HeatmapTableByService
+            header={`${entityCategory} Details`}
+            scorecardId={scorecardId}
+            data={data}
+            entitiesByTag={entitiesByTag}
+            rules={headers}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            tableHeight={tableHeight}
+          />
+        </>
       );
     case GroupByOption.SERVICE_GROUP:
       return (

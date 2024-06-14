@@ -82,6 +82,9 @@ export const HeatmapPage = () => {
         filters.groupBy !== defaultFilters.groupBy
           ? (filters.groupBy as string)
           : undefined,
+      hierarchyGroupBy: !!filters.hierarchyGroupBy
+        ? (filters.hierarchyGroupBy as string)
+        : undefined,
       headerType:
         filters.headerType !== defaultFilters.headerType
           ? (filters.headerType as string)
@@ -119,6 +122,8 @@ export const HeatmapPage = () => {
     selectedScorecardId: initialScorecardId,
     groupBy:
       (searchParams.get('groupBy') as GroupByOption) ?? defaultFilters.groupBy,
+    hierarchyGroupBy:
+      (searchParams.get('hierarchyGroupBy') as GroupByOption) ?? undefined,
     headerType:
       (searchParams.get('headerType') as HeaderType) ??
       defaultFilters.headerType,
