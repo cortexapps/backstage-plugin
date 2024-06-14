@@ -20,17 +20,21 @@ import { HeaderType } from '../../../api/types';
 
 interface HeaderTypeDropdownProps {
   headerType: HeaderType | undefined;
-  setHeaderType: (event: React.ChangeEvent<{ value: unknown }>) => void;
+  setHeaderType: (headerType: HeaderType) => void;
 }
 
 export const HeaderTypeDropdown = ({
   headerType,
   setHeaderType,
 }: HeaderTypeDropdownProps) => {
+  const onHeaderTypeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setHeaderType(event.target.value as HeaderType);
+  }
+
   return (
     <FormControl>
       <InputLabel style={{ minWidth: '100px' }}>Driven By</InputLabel>
-      <Select value={headerType} onChange={setHeaderType}>
+      <Select value={headerType} onChange={onHeaderTypeChange}>
         {enumKeys(HeaderType).map(key => (
           <MenuItem key={`HeaderType-${key}`} value={HeaderType[key]}>
             {HeaderType[key].valueOf()}

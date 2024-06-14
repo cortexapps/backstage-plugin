@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { GroupByOption } from '../../../api/types';
 
 interface GroupByDropdownProps {
   groupBy: GroupByOption | undefined;
-  setGroupBy: (event: React.ChangeEvent<{ value: unknown }>) => void;
+  setGroupBy: (groupBy: GroupByOption) => void;
   excluded?: GroupByOption[];
 }
 
 const GroupByLabels = {
-  [GroupByOption.SERVICE]: 'Entity',
+  [GroupByOption.ENTITY]: 'Entity',
   [GroupByOption.TEAM]: GroupByOption.TEAM,
   [GroupByOption.SERVICE_GROUP]: 'Group',
   [GroupByOption.LEVEL]: GroupByOption.LEVEL,
+  [GroupByOption.DOMAIN]: GroupByOption.DOMAIN,
 };
 
 export const GroupByDropdown = ({
@@ -39,10 +40,14 @@ export const GroupByDropdown = ({
     (option) => !excluded.includes(option)
   );
 
+  const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
+    setGroupBy(event.target.value as GroupByOption);
+  }
+
   return (
     <FormControl>
       <InputLabel style={{ minWidth: '100px' }}>Group By</InputLabel>
-      <Select value={groupBy} onChange={setGroupBy}>
+      <Select value={groupBy} onChange={onGroupByChange}>
         {options.map(value => (
           <MenuItem key={`GroupByOption-${value}`} value={value}>
             {GroupByLabels[value]}

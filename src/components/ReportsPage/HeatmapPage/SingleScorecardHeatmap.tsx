@@ -13,38 +13,106 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { Dispatch, useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
-import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
-import { GroupByOption, HeaderType } from '../../../api/types';
+import { useCortexApi } from '../../../utils/hooks';
 import { SingleScorecardHeatmapTable } from './Tables/SingleScorecardHeatmapTable';
+import {
+  StringIndexable,
+  applyScoreFilters,
+  catalogToRelationsByEntityId,
+} from './HeatmapUtils';
+import { HomepageEntity } from '../../../api/userInsightTypes';
+import { HeatmapPageFilters, SortBy } from './HeatmapFilters';
+import { ScorecardLadder } from '../../../api/types';
+import { keyBy } from 'lodash';
 
 interface SingleScorecardHeatmapProps {
   entityCategory: string;
+  entitiesByTag: StringIndexable<HomepageEntity>;
   scorecardId: number;
-  groupBy: GroupByOption;
-  headerType: HeaderType;
+  ladder: ScorecardLadder | undefined;
+  filters: HeatmapPageFilters;
+  setFiltersAndNavigate: Dispatch<React.SetStateAction<HeatmapPageFilters>>;
+  sortBy?: SortBy;
+  setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
+  tableHeight: number;
 }
 
 export const SingleScorecardHeatmap = ({
   entityCategory,
+  entitiesByTag,
   scorecardId,
-  groupBy,
-  headerType,
+  ladder,
+  setFiltersAndNavigate,
+  filters,
+  sortBy,
+  setSortBy,
+  tableHeight,
 }: SingleScorecardHeatmapProps) => {
+  const {
+    groupBy,
+    headerType,
+    scoreFilters,
+    useHierarchy,
+    hideWithoutChildren,
+  } = filters;
   const {
     value: scores,
     loading: loadingScores,
     error: scoresError,
   } = useCortexApi(api => api.getScorecardScores(scorecardId), [scorecardId]);
 
-  const { value: ladders, loading: loadingLadders } = useCortexApi(
-    api => api.getScorecardLadders(scorecardId),
-    [scorecardId],
-  );
-  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
+  const { ownerEmailByEntityId, groupTagByEntityId } = useMemo(() => {
+    return catalogToRelationsByEntityId(entitiesByTag);
+  }, [entitiesByTag]);
 
-  if (loadingScores || loadingLadders || loadingEntities) {
+  const {
+    value: domainIdByEntityId,
+    error: domainByEntityError,
+    loading: isLoadingDomainByEntity,
+  } = useCortexApi(api => api.getEntityDomainAncestors());
+  const domainTagByEntityId = useMemo(() => {
+    if (!domainIdByEntityId) {
+      return {};
+    }
+
+    const map = {} as Record<string, string[]>;
+    const domainsById = keyBy(
+      Object.values(entitiesByTag).filter(entity => entity.type === 'domain'),
+      domain => domain.id,
+    );
+
+    Object.keys(domainIdByEntityId.entitiesToAncestors).forEach(entityId => {
+      map[entityId] = domainIdByEntityId.entitiesToAncestors[
+        parseInt(entityId, 10)
+      ].map(parentId => domainsById[parentId].codeTag);
+    });
+
+    return map;
+  }, [entitiesByTag, domainIdByEntityId]);
+
+  const filteredScores = useMemo(() => {
+    if (!domainIdByEntityId) {
+      return [];
+    }
+
+    return applyScoreFilters(
+      scores ?? [],
+      scoreFilters,
+      ownerEmailByEntityId,
+      groupTagByEntityId,
+      domainIdByEntityId.entitiesToAncestors,
+    );
+  }, [
+    scores,
+    scoreFilters,
+    ownerEmailByEntityId,
+    groupTagByEntityId,
+    domainIdByEntityId,
+  ]);
+
+  if (loadingScores || isLoadingDomainByEntity) {
     return <Progress />;
   }
 
@@ -52,6 +120,14 @@ export const SingleScorecardHeatmap = ({
     return (
       <WarningPanel severity="error" title="Could not load Scorecard scores.">
         {scoresError?.message}
+      </WarningPanel>
+    );
+  }
+
+  if (!domainIdByEntityId || domainByEntityError) {
+    return (
+      <WarningPanel severity="error" title="Could not load Domain hierarchies.">
+        {domainByEntityError?.message}
       </WarningPanel>
     );
   }
@@ -72,8 +148,16 @@ export const SingleScorecardHeatmap = ({
       entitiesByTag={entitiesByTag}
       groupBy={groupBy}
       headerType={headerType}
-      ladder={ladders?.[0]}
-      scores={scores}
+      ladder={ladder}
+      scores={filteredScores}
+      useHierarchy={useHierarchy}
+      hideWithoutChildren={hideWithoutChildren}
+      domainTagByEntityId={domainTagByEntityId}
+      setFiltersAndNavigate={setFiltersAndNavigate}
+      filters={filters}
+      sortBy={sortBy}
+      setSortBy={setSortBy}
+      tableHeight={tableHeight}
     />
   );
 };
