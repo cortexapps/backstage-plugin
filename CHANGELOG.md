@@ -2,7 +2,7 @@
 
 ### 2.10.0
 
-- Backstage version update from 1.25.2 to 1.26.5
+- Backstage version update from 1.25.2 to 1.27.7
 
 ### 2.8.0
 
