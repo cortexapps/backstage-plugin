@@ -181,7 +181,8 @@ export const HeatmapPage = () => {
   const getShareableLink = useCallback(() => {
     return buildUrl(filtersToParams(filters), location.pathname);
   }, [filters, location]);
-  const onGetShareableLinkSuccess = () => alertApi.post({ message: 'Share link copied!', display: 'transient' });
+  const onGetShareableLinkSuccess = () =>
+    alertApi.post({ message: 'Share link copied!', display: 'transient' });
 
   const scorecardsResult = useCortexApi(api => api.getScorecards());
 
@@ -259,7 +260,11 @@ export const HeatmapPage = () => {
   return (
     <>
       <ContentHeader title="Bird's Eye">
-        <CopyButton textToCopy={getShareableLink} aria-label="Share link" onSuccess={onGetShareableLinkSuccess}>
+        <CopyButton
+          textToCopy={getShareableLink}
+          aria-label="Share link"
+          onSuccess={onGetShareableLinkSuccess}
+        >
           Share link
         </CopyButton>
       </ContentHeader>

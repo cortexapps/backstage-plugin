@@ -48,9 +48,14 @@ export const LevelsInfoCell = ({
   entitiesByTag,
   classes,
 }: LevelsInfoCellProps) => {
+  const [expanded, setExpanded] = React.useState<boolean>(false);
+
   return (
     <TableCell>
-      <Accordion>
+      <Accordion
+        expanded={expanded}
+        onChange={(_e, value) => setExpanded(value)}
+      >
         <AccordionSummary
           expandIcon={<ExpandMore />}
           disabled={scores.length === 0}
@@ -60,18 +65,20 @@ export const LevelsInfoCell = ({
           </Typography>
         </AccordionSummary>
         <AccordionDetails style={{ display: 'flex', flexDirection: 'column' }}>
-          <ul className={classes.componentList}>
-            {scores?.map(score => (
-              <li key={`LevelService-${identifier}-${score.serviceId}`}>
-                <EntityRefLink
-                  entityRef={parseEntityRef(
-                    entityComponentRef(entitiesByTag, score.componentRef),
-                    defaultComponentRefContext,
-                  )}
-                />
-              </li>
-            ))}
-          </ul>
+          {expanded && (
+            <ul className={classes.componentList}>
+              {scores?.map(score => (
+                <li key={`LevelService-${identifier}-${score.serviceId}`}>
+                  <EntityRefLink
+                    entityRef={parseEntityRef(
+                      entityComponentRef(entitiesByTag, score.componentRef),
+                      defaultComponentRefContext,
+                    )}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
         </AccordionDetails>
       </Accordion>
     </TableCell>

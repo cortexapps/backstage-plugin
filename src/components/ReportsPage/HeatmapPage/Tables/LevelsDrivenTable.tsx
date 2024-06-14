@@ -65,6 +65,9 @@ interface LevelsDrivenTableProps {
 const useStyles = makeStyles<BackstageTheme>(_ => ({
   componentList: {
     paddingLeft: '16px',
+    maxHeight: '200px',
+    overflow: 'auto',
+    minHeight: '20px',
   },
 }));
 
