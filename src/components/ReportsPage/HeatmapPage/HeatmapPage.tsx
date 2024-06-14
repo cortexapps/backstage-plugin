@@ -39,6 +39,7 @@ import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPa
 import { isScorecardTeamBased } from '../../../utils/ScorecardFilterUtils';
 import { defaultFilters as defaultScoreFilters } from './HeatmapFiltersModal';
 import { HeatmapFilters, HeatmapPageFilters, SortBy } from './HeatmapFilters';
+import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 
 const defaultFilters: HeatmapPageFilters = {
   groupBy: GroupByOption.ENTITY,
@@ -74,6 +75,8 @@ export const HeatmapPage = () => {
   const [sortBy, setSortBy] = useState<SortBy | undefined>(undefined);
   const filterRef = useRef<HTMLDivElement>(null);
   const [tableHeight, setTableHeight] = useState<number>(0);
+
+  const alertApi = useApi(alertApiRef);
 
   const filtersToParams = (filters: HeatmapPageFilters) => {
     return {
@@ -178,6 +181,7 @@ export const HeatmapPage = () => {
   const getShareableLink = useCallback(() => {
     return buildUrl(filtersToParams(filters), location.pathname);
   }, [filters, location]);
+  const onGetShareableLinkSuccess = () => alertApi.post({ message: 'Share link copied!', display: 'transient' });
 
   const scorecardsResult = useCortexApi(api => api.getScorecards());
 
@@ -255,7 +259,7 @@ export const HeatmapPage = () => {
   return (
     <>
       <ContentHeader title="Bird's Eye">
-        <CopyButton textToCopy={getShareableLink} aria-label="Share link">
+        <CopyButton textToCopy={getShareableLink} aria-label="Share link" onSuccess={onGetShareableLinkSuccess}>
           Share link
         </CopyButton>
       </ContentHeader>
