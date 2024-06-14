@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.9.1
+
+- Fix incorrect logic around group by changes and hierarchy
+
 ### 2.9.0
 
 - Add filters to the Bird's Eye Report

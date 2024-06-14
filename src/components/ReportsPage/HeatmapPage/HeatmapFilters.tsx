@@ -56,6 +56,8 @@ interface HeatmapFiltersProps {
   setSortBy: Dispatch<React.SetStateAction<SortBy | undefined>>;
 }
 
+const allowedHierarchy = [GroupByOption.TEAM, GroupByOption.DOMAIN];
+
 export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
   filters,
   setFiltersAndNavigate,
@@ -64,10 +66,7 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
   ladder,
   setSortBy,
 }) => {
-  const isHierarchyToggleAllowed = [
-    GroupByOption.TEAM,
-    GroupByOption.DOMAIN,
-  ].includes(filters.groupBy);
+  const isHierarchyToggleAllowed = allowedHierarchy.includes(filters.groupBy);
 
   const onGroupByChange = (groupBy: GroupByOption) => {
     setSortBy(undefined);
@@ -75,7 +74,9 @@ export const HeatmapFilters: React.FC<HeatmapFiltersProps> = ({
       ...prev,
       groupBy,
       path: undefined,
-      useHierarchy: isHierarchyToggleAllowed ? filters.useHierarchy : false,
+      useHierarchy: allowedHierarchy.includes(groupBy)
+        ? filters.useHierarchy
+        : false,
     }));
   };
 
