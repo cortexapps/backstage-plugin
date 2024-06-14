@@ -250,7 +250,7 @@ export const SingleScorecardHeatmapTable = ({
         scoreFilters = {
           domainIds: [Number(domain[0])],
         };
-      } else if (identifier === "No domain") {
+      } else if (identifier === 'No domain') {
         scoreFilters = {
           domainIds: [-1],
         };
@@ -275,37 +275,6 @@ export const SingleScorecardHeatmapTable = ({
     });
   };
 
-  if (headerType === HeaderType.LEVELS) {
-    if (isUndefined(ladder)) {
-      return (
-        <WarningPanel
-          severity="error"
-          title="Scorecard has no levels defined."
-        />
-      );
-    } else {
-      const levelsHeader =
-        groupBy === GroupByOption.SERVICE_GROUP ? 'Group' : groupBy;
-      return (
-        <LevelsDrivenTable
-          data={data}
-          entitiesByTag={entitiesByTag}
-          groupBy={groupBy}
-          header={levelsHeader}
-          levels={headers}
-          entityCategory={entityCategory}
-          onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
-          useHierarchy={useHierarchy}
-          hideWithoutChildren={hideWithoutChildren}
-          lastPathItem={lastPathItem}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          tableHeight={tableHeight}
-        />
-      );
-    }
-  }
-
   const breadcrumbGroupBy = filters.hierarchyGroupBy ?? groupBy;
   const resolvedBreadcrumbs = compact(
     filters?.path?.map(pathItem => {
@@ -323,6 +292,48 @@ export const SingleScorecardHeatmapTable = ({
       return undefined;
     }),
   );
+
+  if (headerType === HeaderType.LEVELS) {
+    if (isUndefined(ladder)) {
+      return (
+        <WarningPanel
+          severity="error"
+          title="Scorecard has no levels defined."
+        />
+      );
+    } else {
+      const levelsHeader =
+        groupBy === GroupByOption.SERVICE_GROUP ? 'Group' : groupBy;
+
+      return (
+        <>
+          {useHierarchy && (
+            <Breadcrumbs
+              groupBy={breadcrumbGroupBy}
+              onClick={onBreadcrumbClick}
+              items={resolvedBreadcrumbs}
+              enableLastItem={true}
+            />
+          )}
+          <LevelsDrivenTable
+            data={data}
+            entitiesByTag={entitiesByTag}
+            groupBy={groupBy}
+            header={levelsHeader}
+            levels={headers}
+            entityCategory={entityCategory}
+            onSelect={useHierarchy ? onSelect : onDisplayColumnClick}
+            useHierarchy={useHierarchy}
+            hideWithoutChildren={hideWithoutChildren}
+            lastPathItem={lastPathItem}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            tableHeight={tableHeight}
+          />
+        </>
+      );
+    }
+  }
 
   switch (groupBy) {
     case GroupByOption.ENTITY:
