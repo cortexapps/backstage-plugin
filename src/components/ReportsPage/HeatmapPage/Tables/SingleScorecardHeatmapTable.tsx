@@ -334,7 +334,7 @@ export const SingleScorecardHeatmapTable = ({
               groupBy={breadcrumbGroupBy}
               onClick={onHierarchyBreadcrumbClick}
               items={resolvedBreadcrumbs}
-              enableLastItem={true}
+              enableLastItem={groupBy === GroupByOption.ENTITY}
             />
           )}
           {!useHierarchy && !!filters.selectedGroupBy && (
