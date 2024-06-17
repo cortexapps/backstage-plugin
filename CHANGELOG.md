@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.10.2
+
+- Fix date offset on Initiative detail page
+
 ### 2.10.1
 
 - Fix table measure bug for new breadcrumb options
