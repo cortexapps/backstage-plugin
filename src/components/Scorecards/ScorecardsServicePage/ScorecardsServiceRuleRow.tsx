@@ -13,14 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Box,
-  Collapse,
-  IconButton,
-  Typography,
-  makeStyles,
-} from '@material-ui/core';
 import React, { useState } from 'react';
+import { Box, Collapse, IconButton, Typography } from '@material-ui/core';
+import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -28,49 +23,24 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { MarkdownContent } from '@backstage/core-components';
 
 import classNames from 'classnames';
-import { fallbackPalette, useIconsStyles } from '../../../styles/styles';
+import { useIconsStyles } from '../../../styles/styles';
 import { RuleDetail, isRuleFailing } from '../../../utils/ScorecardRules';
 import { ruleName } from '../../../api/types';
 import { isNil } from 'lodash';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: theme.spacing(1),
-    '&:last-child': {
-      marginBottom: 0,
-    },
-  },
-  expandIcon: {
-    padding: 0,
-  },
-  ruleDescription: {
-    margin: theme.spacing(1, 0),
-    '& p': {
-      margin: 0,
-    },
-  },
-  ruleQuery: {
-    color: fallbackPalette.common.gray,
-    fontFamily: 'Monospace',
-    fontSize: 12,
-  },
-}));
-
-interface ScorecardServiceRuleRowProps {
+export interface ScorecardServiceRuleRowProps {
+  classes: ClassNameMap<string>;
   rule: RuleDetail;
   isFailing?: boolean;
   hideWeight?: boolean;
 }
 
 export const ScorecardServiceRuleRow = ({
+  classes,
   hideWeight,
   rule,
 }: ScorecardServiceRuleRowProps) => {
   const [open, setOpen] = useState(false);
-  const classes = useStyles();
   const iconsClasses = useIconsStyles();
   const showExpandButton = rule.description || rule.filter || rule.expression;
   const isFailing = isRuleFailing(rule);

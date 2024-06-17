@@ -19,6 +19,7 @@ import { ScorecardLadderLevelBadge } from '../../../Common/ScorecardLadderLevelB
 import React from 'react';
 import { LinearProgressWithLabel } from '../../../Common/LinearProgressWithLabel';
 import { percentify } from '../../../../utils/NumberUtils';
+import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 
 export const PAGE_SIZE = 25;
 
@@ -62,9 +63,15 @@ export const scoreColumn: TableColumn = {
   sorting: true,
   title: 'Score',
   width: '10%',
-  render: (data: { scorePercentage?: number }) => {
+  render: (data: {
+    linearProgressClasses?: ClassNameMap<string>;
+    scorePercentage?: number;
+  }) => {
     return (
-      <LinearProgressWithLabel value={percentify(data?.scorePercentage ?? 0)} />
+      <LinearProgressWithLabel
+        classes={data?.linearProgressClasses!}
+        value={percentify(data?.scorePercentage ?? 0)}
+      />
     );
   },
   customSort: scorePercentageSort,

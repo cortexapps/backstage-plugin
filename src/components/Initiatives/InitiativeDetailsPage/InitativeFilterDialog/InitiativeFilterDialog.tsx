@@ -36,7 +36,11 @@ import {
   InitiativeFilter,
   groupAndSystemFilters,
 } from './InitiativeFilterDialogUtils';
-import { useFilters, useInitiativesCustomName } from '../../../../utils/hooks';
+import {
+  useEntitiesByTag,
+  useFilters,
+  useInitiativesCustomName,
+} from '../../../../utils/hooks';
 import { Progress } from '@backstage/core-components';
 
 const useStyles = makeStyles(() => ({
@@ -66,6 +70,7 @@ interface InitiativeFilterDialogProps {
   initiative: Initiative;
   actionItems: InitiativeActionItem[];
   isOpen: boolean;
+  ownerOptions: string[];
   setFilter: (filter: InitiativeFilter) => void;
 }
 
@@ -74,6 +79,7 @@ const InitiativeFilterDialog = ({
   isOpen,
   actionItems,
   handleClose,
+  ownerOptions,
   setFilter,
 }: InitiativeFilterDialogProps) => {
   const classes = useStyles();
@@ -99,6 +105,20 @@ const InitiativeFilterDialog = ({
     },
   );
 
+  const { entitiesByTag } = useEntitiesByTag();
+
+  const ownerOptionsMap = useMemo(() => {
+    return ownerOptions.reduce((acc, email) => {
+      acc[email] = {
+        display: email,
+        value: email,
+        id: email,
+      };
+
+      return acc;
+    }, {} as Record<string, { display: string; value: string; id: string }>);
+  }, [ownerOptions]);
+
   const filtersDefinition = [
     {
       name: 'Failing rules',
@@ -111,6 +131,23 @@ const InitiativeFilterDialog = ({
       filters: ruleFilterDefinitions,
       generatePredicate: (passingRule: string) =>
         createRulePredicate(passingRule, actionItems, true),
+    },
+    {
+      name: 'Email owners',
+      filters: ownerOptionsMap,
+      generatePredicate: (emailOwner: string) => {
+        return (componentRef: string) => {
+          const entity = entitiesByTag[componentRef];
+
+          if (!entity) {
+            return false;
+          }
+
+          return entity.serviceOwnerEmails.some(
+            email => email.email === emailOwner,
+          );
+        };
+      },
     },
     ...(filterGroups ?? []),
   ];

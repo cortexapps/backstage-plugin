@@ -14,17 +14,32 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage/core-components';
-import { ScorecardLadder, ScorecardServiceScore, } from '../../../../api/types';
+import {
+  EmptyState,
+  InfoCard,
+  Table as BSTable,
+  TableColumn,
+} from '@backstage/core-components';
+import { ScorecardLadder, ScorecardServiceScore } from '../../../../api/types';
 import { useDetailCardStyles } from '../../../../styles/styles';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
-import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
+import {
+  defaultComponentRefContext,
+  entityComponentRef,
+} from '../../../../utils/ComponentUtils';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
 import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { isNil } from 'lodash';
-import { levelColumn, levelSort, PAGE_SIZE, scoreColumn, scorePercentageSort, } from './ScorecardsScoresTableConfig';
+import {
+  levelColumn,
+  levelSort,
+  PAGE_SIZE,
+  scoreColumn,
+  scorePercentageSort,
+} from './ScorecardsScoresTableConfig';
+import useLinearProgressWithLabelStyles from '../../../Common/useLinearProgressWithLabelStyles';
 
 interface ScorecardsScoresTableProps {
   category: string;
@@ -50,6 +65,7 @@ export const ScorecardsScoresTable = ({
 }: ScorecardsScoresTableProps) => {
   const classes = useDetailCardStyles();
   const scorecardsTableCardClasses = useScorecardsScoresTableCardStyle();
+  const linearProgressWithLabelClasses = useLinearProgressWithLabelStyles();
 
   const columns: TableColumn[] = useMemo(
     () => [
@@ -130,6 +146,7 @@ export const ScorecardsScoresTable = ({
 
         return {
           level: currentLevel,
+          linearProgressClasses: linearProgressWithLabelClasses,
           name: serviceName,
           scorePercentage: score.scorePercentage,
           description: score.description,
@@ -137,7 +154,7 @@ export const ScorecardsScoresTable = ({
         };
       })
       .sort(!isNil(ladder) ? levelSort : scorePercentageSort);
-  }, [entitiesByTag, ladder, scores]);
+  }, [entitiesByTag, ladder, linearProgressWithLabelClasses, scores]);
 
   const tableColumns = useMemo(() => {
     return !isNil(ladder)
