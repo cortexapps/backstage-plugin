@@ -17,16 +17,27 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
-import { ScorecardServiceRuleRow } from '../../../Scorecards/ScorecardsServicePage/ScorecardsServiceRuleRow';
+import {
+  ScorecardServiceRuleRow,
+  ScorecardServiceRuleRowProps,
+} from '../../../Scorecards/ScorecardsServicePage/ScorecardsServiceRuleRow';
 import { InitiativeFailingTabRowProps } from './InitiativeFailingTabConfig';
 
 export interface ServiceNameAndRulesColumnProps
   extends InitiativeFailingTabRowProps {
+  scorecardServiceRuleRowClasses: ScorecardServiceRuleRowProps['classes'];
   scorecardId: number;
 }
 
 export const ServiceNameAndRulesColumn: React.FC<ServiceNameAndRulesColumnProps> =
-  ({ actionItems, componentRef, scorecardId, name, description }) => {
+  ({
+    actionItems,
+    componentRef,
+    scorecardId,
+    scorecardServiceRuleRowClasses,
+    name,
+    description,
+  }) => {
     return (
       <Box display="flex" flexDirection="column">
         <Box
@@ -51,6 +62,7 @@ export const ServiceNameAndRulesColumn: React.FC<ServiceNameAndRulesColumnProps>
           {actionItems.map(actionItem => {
             return (
               <ScorecardServiceRuleRow
+                classes={scorecardServiceRuleRowClasses}
                 hideWeight
                 key={`${componentRef}-FailingRule-${actionItem.rule.id}`}
                 rule={{

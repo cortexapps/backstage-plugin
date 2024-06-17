@@ -25,6 +25,7 @@ import {
 } from '../../../utils/ScorecardRules';
 import { ScorecardServiceRuleRow } from './ScorecardsServiceRuleRow';
 import { CortexInfoCard } from '../../Common/CortexInfoCard';
+import useScorecardServiceRuleRowStyle from './useScorecardServiceRuleRowStyles';
 
 interface ScorecardsServiceRulesDetailsProps {
   ruleOutcomes: RuleOutcome[];
@@ -51,6 +52,8 @@ export const ScorecardsServiceRulesDetails = ({
     return filterNotEvaluatedRuleOutcomes(ruleOutcomes);
   }, [ruleOutcomes]);
 
+  const scorecardServiceRuleRowClasses = useScorecardServiceRuleRowStyle();
+
   return (
     <>
       {!isEmpty(failingRules) && (
@@ -58,6 +61,7 @@ export const ScorecardsServiceRulesDetails = ({
           {failingRules.map(failingRule => (
             <ScorecardServiceRuleRow
               key={`failing-rule-${failingRule.rule.id}`}
+              classes={scorecardServiceRuleRowClasses}
               rule={{
                 ...failingRule.rule,
                 score: failingRule.score,
@@ -74,6 +78,7 @@ export const ScorecardsServiceRulesDetails = ({
           {passingRules.map(passingRule => (
             <ScorecardServiceRuleRow
               key={`passing-rule-${passingRule.rule.id}`}
+              classes={scorecardServiceRuleRowClasses}
               rule={{
                 ...passingRule.rule,
                 score: passingRule.score,
@@ -89,6 +94,7 @@ export const ScorecardsServiceRulesDetails = ({
           {notEvaluatedRules.map(notEvaluatedRule => (
             <ScorecardServiceRuleRow
               key={`not-evaluated-rule-${notEvaluatedRule.rule.id}`}
+              classes={scorecardServiceRuleRowClasses}
               rule={notEvaluatedRule.rule}
               hideWeight={hideWeights}
             />

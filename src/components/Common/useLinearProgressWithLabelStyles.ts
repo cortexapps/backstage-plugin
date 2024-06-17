@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Cortex Applications, Inc.
+ * Copyright 2024 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,5 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { InitiativeDetailsPage } from './InitiativeDetailsPage';
-export { default } from './InitiativeDetailsPage';
+import { makeStyles } from '@material-ui/core';
+import { fallbackPalette } from '../../styles/styles';
+
+const useLinearProgressWithLabelStyles = makeStyles(() => ({
+  barColorSuccess: {
+    backgroundColor: fallbackPalette.status.ok,
+  },
+  barColorWarning: {
+    backgroundColor: fallbackPalette.status.warning,
+  },
+  barColorDanger: {
+    backgroundColor: fallbackPalette.status.error,
+  },
+}));
+
+export default useLinearProgressWithLabelStyles;

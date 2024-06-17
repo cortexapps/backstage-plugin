@@ -22,18 +22,26 @@ import { Box, Button, Grid, Tab, Tabs } from '@material-ui/core';
 import { initiativeRouteRef } from '../../../routes';
 import { Predicate } from '../../../utils/types';
 import { InitiativeStatsCard } from './InitiativeStatsCard';
-import {
-  useEntitiesByTag,
-  useInitiativesCustomName,
-} from '../../../utils/hooks';
+import { useEntitiesByTag } from '../../../utils/hooks';
 import { InitiativeMetadataCard } from './InitiativeMetadataCard';
 import { InitiativeFailingTab } from './InitiativeFailingTab';
 import { InitiativePassingTab } from './InitiativePassingTab';
 import { InitiativeLevelsTab } from './InitiativeLevelsTab';
 import { InitiativeRulesTab } from './InitiativeRulesTab';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, keyBy, mapValues } from 'lodash';
 import { InitiativeFilterDialog } from './InitativeFilterDialog';
-import { InitiativeFilter } from './InitativeFilterDialog/InitiativeFilterDialogUtils';
+import {
+  InitiativeFilter,
+  getFilterDefinitions,
+  getPredicateFilterFromFilters,
+  useFiltersFromQueryParams,
+} from './InitativeFilterDialog/InitiativeFilterDialogUtils';
+import {
+  InitiativeActionItem,
+  InitiativeWithScores,
+  ruleName,
+} from '../../../api/types';
+import { HomepageEntity } from '../../../api/userInsightTypes';
 
 enum InitiativeDetailsTab {
   'Failing' = 'Failing',
@@ -42,28 +50,81 @@ enum InitiativeDetailsTab {
   'Rules' = 'Rules',
 }
 
-export const InitiativeDetailsPage = () => {
-  const { id: initiativeId } = useRouteRefParams(initiativeRouteRef);
-  const cortexApi = useApi(cortexApiRef);
+export interface InitiativeDetailsPageProps {
+  initiative: InitiativeWithScores;
+  actionItems: InitiativeActionItem[];
+  entitiesByTag: Record<HomepageEntity['codeTag'], HomepageEntity>;
+}
 
+export const InitiativeDetailsPage: React.FC<InitiativeDetailsPageProps> = ({
+  actionItems,
+  entitiesByTag,
+  initiative,
+}) => {
   const [activeTab, setActiveTab] = useState(InitiativeDetailsTab.Failing);
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
 
+  const { filters } = useFiltersFromQueryParams();
+
+  const ownerOptions = useMemo(() => {
+    const actionItemEntityRefs = actionItems?.map(actionItem => {
+      return actionItem.componentRef;
+    });
+
+    const actionItemEntities = actionItemEntityRefs?.map(
+      (entityRef: string) => {
+        return entitiesByTag[entityRef];
+      },
+    );
+
+    return (
+      actionItemEntities?.flatMap(entity => {
+        return entity?.serviceOwnerEmails.map(emailOwner => emailOwner.email);
+      }) ?? []
+    );
+  }, [actionItems, entitiesByTag]);
+
+  const ownerOptionsMap = useMemo(() => {
+    return ownerOptions.reduce((acc, email) => {
+      acc[email] = {
+        display: email,
+        value: email,
+        id: email,
+      };
+
+      return acc;
+    }, {} as Record<string, { display: string; value: string; id: string }>);
+  }, [ownerOptions]);
+
+  const ruleFilterDefinitions = useMemo(() => {
+    return mapValues(
+      keyBy(initiative?.rules, rule => `${rule.ruleId}`),
+      rule => {
+        return {
+          display: ruleName(rule),
+          value: rule.expression,
+          id: rule.ruleId.toString(),
+        };
+      },
+    );
+  }, [initiative?.rules]);
+
+  const filterDefinitions = getFilterDefinitions({
+    actionItems: actionItems ?? [],
+    ownerOptionsMap,
+    entitiesByTag,
+    ruleFilterDefinitions,
+  });
+
   // Have to store lambda of lambda for React to not eagerly invoke
-  const [filter, setFilter] = useState<() => Predicate<string>>(
-    () => () => true,
-  );
+  const [filter, setFilter] = useState<() => Predicate<string>>(() => {
+    const predicateFilter = getPredicateFilterFromFilters(
+      filters,
+      filterDefinitions,
+    );
 
-  const { value, loading, error } = useAsync(async () => {
-    return await Promise.all([
-      cortexApi.getInitiative(+initiativeId),
-      cortexApi.getInitiativeActionItems(+initiativeId),
-    ]);
-  }, []);
-
-  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
-
-  const [initiative, actionItems] = value ?? [undefined, undefined];
+    return predicateFilter;
+  });
 
   const filteredComponentRefs = useMemo(() => {
     return (
@@ -93,23 +154,6 @@ export const InitiativeDetailsPage = () => {
   const handleFilterDialogClose = () => {
     setIsFilterDialogOpen(false);
   };
-
-  const { singular: initiativeName } = useInitiativesCustomName();
-
-  if (loading || loadingEntities) {
-    return <Progress />;
-  }
-
-  if (error || initiative === undefined || filteredActionItems === undefined) {
-    return (
-      <WarningPanel
-        severity="error"
-        title={`Could not load ${initiativeName}.`}
-      >
-        {error?.message ?? ''}
-      </WarningPanel>
-    );
-  }
 
   const renderTab = (tabName: InitiativeDetailsTab) => {
     switch (tabName) {
@@ -200,12 +244,43 @@ export const InitiativeDetailsPage = () => {
       </Box>
       <Box my={1}>{renderTab(activeTab)}</Box>
       <InitiativeFilterDialog
-        isOpen={isFilterDialogOpen}
-        actionItems={actionItems}
-        initiative={initiative}
+        filtersDefinition={filterDefinitions}
         handleClose={handleFilterDialogClose}
+        isOpen={isFilterDialogOpen}
         setFilter={(filter: InitiativeFilter) => setFilter(() => filter)}
       />
     </Content>
   );
 };
+
+const InitiativeDetailsPageWrapper: React.FC = () => {
+  const { id: initiativeId } = useRouteRefParams(initiativeRouteRef);
+  const cortexApi = useApi(cortexApiRef);
+
+  const { value, loading, error } = useAsync(async () => {
+    return await Promise.all([
+      cortexApi.getInitiative(+initiativeId),
+      cortexApi.getInitiativeActionItems(+initiativeId),
+    ]);
+  }, []);
+
+  const [initiative, actionItems] = value ?? [undefined, undefined];
+
+  const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
+
+  return loading || loadingEntities ? (
+    <Progress />
+  ) : error || initiative === undefined ? (
+    <WarningPanel severity="error" title={`Could not load Initiative.`}>
+      {error?.message ?? ''}
+    </WarningPanel>
+  ) : (
+    <InitiativeDetailsPage
+      actionItems={actionItems ?? []}
+      entitiesByTag={entitiesByTag}
+      initiative={initiative}
+    />
+  );
+};
+
+export default InitiativeDetailsPageWrapper;

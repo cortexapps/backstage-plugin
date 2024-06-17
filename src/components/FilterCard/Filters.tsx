@@ -27,9 +27,10 @@ import {
 import Select from '@material-ui/core/Select';
 import { fallbackPalette } from '../../styles/styles';
 import { Autocomplete } from '@material-ui/lab';
-import { mapByString, mapValues } from '../../utils/collections';
+import { mapValues } from '../../utils/collections';
 import { useFilter } from './useFilter';
 import { Predicate } from '../../utils/types';
+import { keyBy } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   name: {
@@ -55,9 +56,12 @@ export interface FilterValue {
   id: string;
 }
 
-export interface FilterDefinition {
+export interface FilterDefinitionWithoutFilters {
   name: string;
   oneOfDisabled?: boolean;
+}
+
+export interface FilterDefinition extends FilterDefinitionWithoutFilters {
   filters: { [id: string]: FilterValue };
 }
 
@@ -79,7 +83,7 @@ export const Filters: React.FC<FiltersProps> = ({
   const toggleAllFilters = (allCheckedFilters: FilterValue[]) => {
     setCheckedFilters(oldFilters => {
       const newFilters = mapValues(
-        mapByString(allCheckedFilters, filter => `${name}${filter.id}`),
+        keyBy(allCheckedFilters, filter => `${name}${filter.id}`),
         () => true,
       );
 

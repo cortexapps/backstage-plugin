@@ -24,6 +24,7 @@ import { percentify } from '../../../utils/NumberUtils';
 import { quantileRankSorted } from 'simple-statistics';
 import { filterFailingRuleOutcomes } from '../../../utils/ScorecardRules';
 import { LinearProgressWithLabel } from '../../Common/LinearProgressWithLabel';
+import useLinearProgressWithLabelStyles from '../../Common/useLinearProgressWithLabelStyles';
 
 interface ScorecardsServiceStatisticsProps {
   scores: number[];
@@ -48,6 +49,8 @@ export const ScorecardsServiceStatistics: React.FC<ScorecardsServiceStatisticsPr
     const percentileRank = quantileRankSorted(scores, score.scorePercentage);
     const failingRules = filterFailingRuleOutcomes(rules).length;
 
+    const linearProgressWithLabelClasses = useLinearProgressWithLabelStyles();
+
     return (
       <Paper elevation={0}>
         <Stats>
@@ -66,6 +69,7 @@ export const ScorecardsServiceStatistics: React.FC<ScorecardsServiceStatisticsPr
           <Box>
             <CaptionTypography variant="caption">Score</CaptionTypography>
             <LinearProgressWithLabel
+              classes={linearProgressWithLabelClasses}
               value={percentify(score.scorePercentage)}
             />
           </Box>
