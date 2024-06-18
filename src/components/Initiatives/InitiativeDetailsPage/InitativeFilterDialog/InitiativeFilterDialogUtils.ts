@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { isEmpty } from 'lodash';
 import {
   RELATION_OWNED_BY,
   parseEntityRef,
@@ -87,6 +88,7 @@ export const toPredicateFilters = (filters: FilterShape, name: string) => {
 
 export const getPredicateFilterFromFilters = (
   filters: FilterShape,
+  oneOf: Record<string, boolean>,
   filterDefinitions: FilterDefinitionWithPredicate<string>[],
 ) => {
   const allFilters = filterDefinitions.reduce<
@@ -94,12 +96,20 @@ export const getPredicateFilterFromFilters = (
   >((acc, filter) => {
     const predicateFilters = toPredicateFilters(filters, filter.name);
 
+    const filterOneOf = oneOf[filter.name] ?? true;
+
     acc[filter.name] = (componentRef: string) => {
+      if (isEmpty(predicateFilters)) {
+        return true;
+      }
+
       const results = Object.keys(predicateFilters)
         .filter(id => predicateFilters[id])
-        .map(id => filter.generatePredicate(filter.filters[id].value));
+        .map(id =>
+          filter.generatePredicate(filter.filters[id].value)(componentRef),
+        );
 
-      return results.every(predicate => predicate(componentRef));
+      return filterOneOf ? results.some(Boolean) : results.every(Boolean);
     };
 
     return acc;

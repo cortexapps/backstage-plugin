@@ -64,7 +64,7 @@ export const InitiativeDetailsPage: React.FC<InitiativeDetailsPageProps> = ({
   const [activeTab, setActiveTab] = useState(InitiativeDetailsTab.Failing);
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
 
-  const { filters } = useFiltersFromQueryParams(window.location.search);
+  const { filters, oneOf } = useFiltersFromQueryParams(window.location.search);
 
   const ownerOptions = useMemo(() => {
     const actionItemEntityRefs = actionItems?.map(actionItem => {
@@ -118,7 +118,7 @@ export const InitiativeDetailsPage: React.FC<InitiativeDetailsPageProps> = ({
 
   // Have to store lambda of lambda for React to not eagerly invoke
   const [filter, setFilter] = useState<() => Predicate<string>>(() => {
-    return getPredicateFilterFromFilters(filters, filterDefinitions);
+    return getPredicateFilterFromFilters(filters, oneOf, filterDefinitions);
   });
 
   const filteredComponentRefs = useMemo(() => {

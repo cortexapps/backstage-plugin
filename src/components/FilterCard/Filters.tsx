@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
+import { keyBy } from 'lodash';
 import {
   Box,
   Checkbox,
@@ -25,12 +26,11 @@ import {
   Typography,
 } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
-import { fallbackPalette } from '../../styles/styles';
 import { Autocomplete } from '@material-ui/lab';
+import { fallbackPalette } from '../../styles/styles';
 import { mapValues } from '../../utils/collections';
 import { useFilter } from './useFilter';
 import { Predicate } from '../../utils/types';
-import { keyBy } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   name: {
@@ -81,14 +81,11 @@ export const Filters: React.FC<FiltersProps> = ({
   const currentOneOf = oneOf[name] ?? true;
 
   const toggleAllFilters = (allCheckedFilters: FilterValue[]) => {
-    setCheckedFilters(oldFilters => {
-      const newFilters = mapValues(
-        keyBy(allCheckedFilters, filter => `${name}${filter.id}`),
-        () => true,
-      );
-
-      return { ...oldFilters, ...newFilters };
-    });
+    const newFilters = mapValues(
+      keyBy(allCheckedFilters, filter => `${name}${filter.id}`),
+      () => true,
+    );
+    setCheckedFilters(newFilters);
   };
 
   const toggleFilter = (filter: string) => {

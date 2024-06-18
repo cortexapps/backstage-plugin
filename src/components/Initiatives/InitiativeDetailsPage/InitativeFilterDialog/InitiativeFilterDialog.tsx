@@ -75,6 +75,7 @@ const InitiativeFilterDialog = ({
   const handleSaveFilters = () => {
     const predicateFilter = getPredicateFilterFromFilters(
       checkedFilters,
+      oneOf,
       filtersDefinition,
     );
 
