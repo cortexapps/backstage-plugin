@@ -42,6 +42,7 @@ import { InitiativeActionItem } from '../../../../api/types';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 
 export type InitiativeFilter = Predicate<string>;
+export type FilterShape = Record<string, boolean>;
 
 export enum FilterDefinitionName {
   FailingRules = 'Failing rules',
@@ -74,10 +75,7 @@ export const groupAndSystemFilters: EntityFilterGroup[] = [
   },
 ];
 
-export const toPredicateFilters = (
-  filters: { [id: string]: boolean },
-  name: string,
-) => {
+export const toPredicateFilters = (filters: FilterShape, name: string) => {
   return Object.keys(filters)
     .filter(key => key.includes(name))
     .reduce<Record<string, boolean>>((acc, key) => {
@@ -88,7 +86,7 @@ export const toPredicateFilters = (
 };
 
 export const getPredicateFilterFromFilters = (
-  filters: { [id: string]: boolean },
+  filters: FilterShape,
   filterDefinitions: FilterDefinitionWithPredicate<string>[],
 ) => {
   const allFilters = filterDefinitions.reduce<
@@ -113,7 +111,7 @@ export const getPredicateFilterFromFilters = (
 const oneOfPrefix = 'oneOf__';
 
 export const toQueryParams = (
-  filters: Record<string, boolean>,
+  filters: FilterShape,
   oneOf: Record<string, boolean>,
   filterDefinitions: FilterDefinition[],
 ) => {

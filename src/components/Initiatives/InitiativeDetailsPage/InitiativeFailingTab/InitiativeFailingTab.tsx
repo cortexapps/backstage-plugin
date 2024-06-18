@@ -185,12 +185,12 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
       },
     ],
     [
-      entitiesByTag,
-      scorecardServiceRuleRowClasses,
-      scorecardId,
       classes.tag,
+      entitiesByTag,
       linearProgressWithLabelClasses,
       numRules,
+      scorecardId,
+      scorecardServiceRuleRowClasses,
     ],
   );
 

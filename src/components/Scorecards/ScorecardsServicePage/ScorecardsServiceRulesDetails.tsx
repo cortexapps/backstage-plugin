@@ -33,8 +33,8 @@ interface ScorecardsServiceRulesDetailsProps {
 }
 
 export const ScorecardsServiceRulesDetails = ({
-  ruleOutcomes,
   hideWeights,
+  ruleOutcomes,
 }: ScorecardsServiceRulesDetailsProps) => {
   const [failingRules, passingRules] = useMemo(() => {
     const applicableRules = getApplicableRules(ruleOutcomes);

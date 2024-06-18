@@ -175,11 +175,11 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
       },
     ],
     [
-      entitiesByTag,
-      scorecardId,
       classes.tag,
+      entitiesByTag,
       linearProgressWithLabelClasses,
       numRules,
+      scorecardId,
     ],
   );
 

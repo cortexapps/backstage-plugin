@@ -25,18 +25,18 @@ import { InitiativeFailingTabRowProps } from './InitiativeFailingTabConfig';
 
 export interface ServiceNameAndRulesColumnProps
   extends InitiativeFailingTabRowProps {
-  scorecardServiceRuleRowClasses: ScorecardServiceRuleRowProps['classes'];
   scorecardId: number;
+  scorecardServiceRuleRowClasses: ScorecardServiceRuleRowProps['classes'];
 }
 
 export const ServiceNameAndRulesColumn: React.FC<ServiceNameAndRulesColumnProps> =
   ({
     actionItems,
     componentRef,
+    description,
+    name,
     scorecardId,
     scorecardServiceRuleRowClasses,
-    name,
-    description,
   }) => {
     return (
       <Box display="flex" flexDirection="column">
