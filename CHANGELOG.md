@@ -1,5 +1,11 @@
 # Changelog
 
+### 2.11.0
+
+- Add the ability to filter by email owner on the Initiative details page
+- Persist filters in the URL on the Initiative details page
+- Performance improvements for the Initiative details page
+
 ### 2.10.2
 
 - Fix disabling levels hierarchy breadcrumbs correctly
