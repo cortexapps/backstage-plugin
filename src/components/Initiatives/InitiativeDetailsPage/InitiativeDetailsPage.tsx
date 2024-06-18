@@ -126,6 +126,24 @@ export const InitiativeDetailsPage: React.FC<InitiativeDetailsPageProps> = ({
     return predicateFilter;
   });
 
+  const ownerOptions = useMemo(() => {
+    const actionItemEntityRefs = actionItems?.map(actionItem => {
+      return actionItem.componentRef;
+    });
+
+    const actionItemEntities = actionItemEntityRefs?.map(
+      (entityRef: string) => {
+        return entitiesByTag[entityRef];
+      },
+    );
+
+    return (
+      actionItemEntities?.flatMap(entity => {
+        return entity?.serviceOwnerEmails.map(emailOwner => emailOwner.email);
+      }) ?? []
+    );
+  }, [actionItems, entitiesByTag]);
+
   const filteredComponentRefs = useMemo(() => {
     return (
       initiative?.scores?.map(score => score.entityTag)?.filter(filter) ?? []

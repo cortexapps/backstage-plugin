@@ -30,7 +30,11 @@ import {
   useFiltersFromQueryParams,
   getPredicateFilterFromFilters,
 } from './InitiativeFilterDialogUtils';
-import { useFilters, useInitiativesCustomName } from '../../../../utils/hooks';
+import {
+  useEntitiesByTag,
+  useFilters,
+  useInitiativesCustomName,
+} from '../../../../utils/hooks';
 import { Progress } from '@backstage/core-components';
 import { FilterDefinitionWithPredicate } from '../../../FilterCard/Filters';
 import { useLocation, useNavigate } from 'react-router';
@@ -46,6 +50,7 @@ interface InitiativeFilterDialogProps {
   filtersDefinition: FilterDefinitionWithPredicate<string>[];
   handleClose: () => void;
   isOpen: boolean;
+  ownerOptions: string[];
   setFilter: (filter: InitiativeFilter) => void;
 }
 
