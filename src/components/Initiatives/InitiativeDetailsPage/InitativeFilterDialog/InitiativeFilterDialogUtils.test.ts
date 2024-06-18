@@ -110,5 +110,17 @@ describe('InitiativeFilterDialogUtils', () => {
         },
       });
     });
+
+    it('converts a single owner and single failing rule from query param into filter', () => {
+      const queryParams = `${FilterDefinitionName.EmailOwners}=${davidsEmailAddress}&${FilterDefinitionName.FailingRules}=1`;
+
+      expect(useFiltersFromQueryParams(queryParams)).toEqual({
+        filters: {
+          [`${FilterDefinitionName.EmailOwners}${davidsEmailAddress}`]: true,
+          [`${FilterDefinitionName.FailingRules}1`]: true,
+        },
+        oneOf: {},
+      });
+    });
   });
 });
