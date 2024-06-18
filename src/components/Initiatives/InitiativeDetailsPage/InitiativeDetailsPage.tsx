@@ -118,12 +118,7 @@ export const InitiativeDetailsPage: React.FC<InitiativeDetailsPageProps> = ({
 
   // Have to store lambda of lambda for React to not eagerly invoke
   const [filter, setFilter] = useState<() => Predicate<string>>(() => {
-    const predicateFilter = getPredicateFilterFromFilters(
-      filters,
-      filterDefinitions,
-    );
-
-    return predicateFilter;
+    return getPredicateFilterFromFilters(filters, filterDefinitions);
   });
 
   const filteredComponentRefs = useMemo(() => {
@@ -238,7 +233,7 @@ export const InitiativeDetailsPage: React.FC<InitiativeDetailsPageProps> = ({
             variant="outlined"
             aria-label="Filter"
           >
-            filter
+            Filter
           </Button>
         )}
       </Box>

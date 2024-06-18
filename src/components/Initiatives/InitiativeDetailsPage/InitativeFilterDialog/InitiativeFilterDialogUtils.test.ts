@@ -52,39 +52,62 @@ describe('InitiativeFilterDialogUtils', () => {
       });
     });
 
-    describe('useFiltersFromQueryParams', () => {
-      it('should return empty object when filters are empty', () => {
-        expect(useFiltersFromQueryParams('')).toEqual({
-          filters: {},
-          oneOf: {},
-        });
+    it('should omit false values', () => {
+      expect(
+        toQueryParams(
+          {
+            [`${FilterDefinitionName.FailingRules}1`]: false,
+          },
+          {},
+          [
+            {
+              filters: {
+                '1': {
+                  display: 'Has description',
+                  id: '1',
+                  value: 'entity.description() != null',
+                },
+              },
+              name: FilterDefinitionName.FailingRules,
+            },
+          ],
+        ),
+      ).toEqual({});
+    });
+  });
+
+  describe('useFiltersFromQueryParams', () => {
+    it('should return empty object when filters are empty', () => {
+      expect(useFiltersFromQueryParams('')).toEqual({
+        filters: {},
+        oneOf: {},
       });
+    });
 
-      it('should convert owner filters from query params', () => {
-        expect(
-          useFiltersFromQueryParams(
-            `${FilterDefinitionName.EmailOwners}=${davidsEmailAddress}`,
-          ),
-        ).toEqual({
-          filters: {
-            [`${FilterDefinitionName.EmailOwners}${davidsEmailAddress}`]: true,
-          },
-          oneOf: {},
-        });
+    it('should convert owner filters from query params', () => {
+      expect(
+        useFiltersFromQueryParams(
+          `${FilterDefinitionName.EmailOwners}=${davidsEmailAddress}`,
+        ),
+      ).toEqual({
+        filters: {
+          [`${FilterDefinitionName.EmailOwners}${davidsEmailAddress}`]: true,
+        },
+        oneOf: {},
       });
+    });
 
-      it('should convert multiple owner filters from query params', () => {
-        const queryParams = `${FilterDefinitionName.EmailOwners}=${davidsEmailAddress}&${FilterDefinitionName.EmailOwners}=notdavid@cortex.io&oneOf__${FilterDefinitionName.EmailOwners}=false`;
+    it('should convert multiple owner filters from query params', () => {
+      const queryParams = `${FilterDefinitionName.EmailOwners}=${davidsEmailAddress}&${FilterDefinitionName.EmailOwners}=notdavid@cortex.io&oneOf__${FilterDefinitionName.EmailOwners}=false`;
 
-        expect(useFiltersFromQueryParams(queryParams)).toEqual({
-          filters: {
-            [`${FilterDefinitionName.EmailOwners}${davidsEmailAddress}`]: true,
-            [`${FilterDefinitionName.EmailOwners}notdavid@cortex.io`]: true,
-          },
-          oneOf: {
-            [FilterDefinitionName.EmailOwners]: false,
-          },
-        });
+      expect(useFiltersFromQueryParams(queryParams)).toEqual({
+        filters: {
+          [`${FilterDefinitionName.EmailOwners}${davidsEmailAddress}`]: true,
+          [`${FilterDefinitionName.EmailOwners}notdavid@cortex.io`]: true,
+        },
+        oneOf: {
+          [FilterDefinitionName.EmailOwners]: false,
+        },
       });
     });
   });

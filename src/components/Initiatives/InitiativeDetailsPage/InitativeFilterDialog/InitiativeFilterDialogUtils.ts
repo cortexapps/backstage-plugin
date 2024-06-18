@@ -118,7 +118,11 @@ export const toQueryParams = (
   filterDefinitions: FilterDefinition[],
 ) => {
   const result: Record<string, string[]> = Object.entries(filters).reduce(
-    (acc, [key, _value]) => {
+    (acc, [key, value]) => {
+      if (!value) {
+        return acc;
+      }
+
       const filter = filterDefinitions.find(filter =>
         key.includes(filter.name),
       );
