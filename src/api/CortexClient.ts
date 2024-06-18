@@ -15,6 +15,7 @@
  */
 
 import {
+  DomainHierarchiesResponse,
   EntitySyncProgress,
   ExpirationResponse,
   GroupByOption,
@@ -32,6 +33,7 @@ import {
   ScorecardServiceScore,
   ScoresByIdentifier,
   ServiceScorecardScore,
+  TeamHierarchiesResponse,
   UserPermissionsResponse,
 } from './types';
 import { CortexApi } from './CortexApi';
@@ -48,6 +50,7 @@ import {
 } from '@backstage/core-plugin-api';
 import { gzipSync } from 'zlib';
 import {
+  EntityDomainAncestorsResponse,
   GetUserInsightsResponse,
   HomepageEntityResponse,
 } from './userInsightTypes';
@@ -184,7 +187,7 @@ export class CortexClient implements CortexApi {
     const scores: ScoresByIdentifier[] = await this.get(
       `/api/backstage/v1/scorecards/${scorecardId}/scores/historical-average`,
       {
-        ...(groupBy !== GroupByOption.SERVICE && {
+        ...(groupBy !== GroupByOption.ENTITY && {
           groupBy: groupBy.toUpperCase().replace(' ', '_'),
         }),
         ...(ruleExpression && { ruleExpression: ruleExpression }),
@@ -212,7 +215,7 @@ export class CortexClient implements CortexApi {
     groupBy: GroupByOption,
   ): Promise<ScoresByIdentifier[]> {
     const args =
-      groupBy !== GroupByOption.SERVICE
+      groupBy !== GroupByOption.ENTITY
         ? {
             groupBy: groupBy.toUpperCase().replace(' ', '_'),
           }
@@ -321,6 +324,18 @@ export class CortexClient implements CortexApi {
 
   async getExpiration(): Promise<ExpirationResponse> {
     return this.get(`/api/backstage/v1/entitlements/expiration-date`);
+  }
+
+  async getEntityDomainAncestors(): Promise<EntityDomainAncestorsResponse> {
+    return this.get(`/api/backstage/v1/domains/hierarchies/ancestors`);
+  }
+
+  async getDomainHierarchies(): Promise<DomainHierarchiesResponse> {
+    return await this.get(`/api/backstage/v1/domains/hierarchies/tree`);
+  }
+
+  async getTeamHierarchies(): Promise<TeamHierarchiesResponse> {
+    return await this.get(`/api/backstage/v1/teams/hierarchies`);
   }
 
   private async getBasePath(): Promise<string> {

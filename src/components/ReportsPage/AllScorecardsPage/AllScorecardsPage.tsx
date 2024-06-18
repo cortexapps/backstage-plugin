@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Content, ContentHeader } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { AllScorecardsHeatmap } from './AllScorecardsHeatmap';
@@ -29,18 +29,14 @@ export const AllScorecardsPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [groupBy, setGroupBy] = useState<GroupByOption|undefined>(
-    (searchParams.get('groupBy') as GroupByOption) ?? GroupByOption.SERVICE,
+  const [groupBy, setGroupBy] = useState<GroupByOption>(
+    (searchParams.get('groupBy') as GroupByOption) ?? GroupByOption.ENTITY,
   );
-  const setGroupByAndNavigate = useCallback((event: ChangeEvent<{ value: unknown }>) => {
-    const groupBy = event.target.value === ''
-      ? undefined
-      : (event.target.value as GroupByOption | undefined)
-
+  const setGroupByAndNavigate = useCallback((groupBy: GroupByOption) => {
     setGroupBy(groupBy);
 
     const targetUrl = stringifyUrl({ url: location.pathname, query: {
-      groupBy: groupBy !== GroupByOption.SERVICE ? groupBy as string : undefined,
+      groupBy: groupBy !== GroupByOption.ENTITY ? groupBy as string : undefined,
     } });
 
     navigate(targetUrl, { replace: true });
@@ -62,7 +58,7 @@ export const AllScorecardsPage = () => {
           <GroupByDropdown groupBy={groupBy} setGroupBy={setGroupByAndNavigate} />
         </Grid>
         <Grid item lg={12}>
-          <AllScorecardsHeatmap groupBy={groupBy!!} />
+          <AllScorecardsHeatmap groupBy={groupBy} />
         </Grid>
       </Grid>
     </Content>

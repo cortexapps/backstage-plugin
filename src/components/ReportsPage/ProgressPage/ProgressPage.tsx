@@ -67,8 +67,8 @@ export const ProgressPage = () => {
   }, [setSelectedScorecardId, location.pathname, navigate])
 
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
-  const [groupBy, setGroupBy] = useDropdown<GroupByOption>(
-    GroupByOption.SERVICE,
+  const [groupBy, setGroupBy] = useState<GroupByOption>(
+    GroupByOption.ENTITY,
   );
   const [selectedRule, setSelectedRule] = useDropdown<string>(
     defaultRule.value,

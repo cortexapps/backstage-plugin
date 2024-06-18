@@ -14,39 +14,48 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, makeStyles, TableCell, Typography, } from '@material-ui/core';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  TableCell,
+  Typography,
+} from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { parseEntityRef } from '@backstage/catalog-model';
 
 import { maybePluralize } from '../../../utils/strings';
-import { defaultComponentRefContext, entityComponentRef, } from '../../../utils/ComponentUtils';
+import {
+  defaultComponentRefContext,
+  entityComponentRef,
+} from '../../../utils/ComponentUtils';
 
 import { ScorecardServiceScore } from '../../../api/types';
-import { BackstageTheme } from '@backstage/theme';
 import { HomepageEntity } from '../../../api/userInsightTypes';
-
-const useStyles = makeStyles<BackstageTheme>(_ => ({
-  componentList: {
-    paddingLeft: '16px',
-  },
-}));
+import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 
 interface LevelsInfoCellProps {
   entitiesByTag: Record<string, HomepageEntity>;
   identifier: string;
   scores: ScorecardServiceScore[];
+  classes: ClassNameMap<string>;
 }
 
 export const LevelsInfoCell = ({
   identifier,
   scores,
   entitiesByTag,
+  classes,
 }: LevelsInfoCellProps) => {
-  const classes = useStyles();
+  const [expanded, setExpanded] = React.useState<boolean>(false);
+
   return (
     <TableCell>
-      <Accordion>
+      <Accordion
+        expanded={expanded}
+        onChange={(_e, value) => setExpanded(value)}
+      >
         <AccordionSummary
           expandIcon={<ExpandMore />}
           disabled={scores.length === 0}
@@ -56,18 +65,20 @@ export const LevelsInfoCell = ({
           </Typography>
         </AccordionSummary>
         <AccordionDetails style={{ display: 'flex', flexDirection: 'column' }}>
-          <ul className={classes.componentList}>
-            {scores?.map(score => (
-              <li key={`LevelService-${identifier}-${score.serviceId}`}>
-                <EntityRefLink
-                  entityRef={parseEntityRef(
-                    entityComponentRef(entitiesByTag, score.componentRef),
-                    defaultComponentRefContext,
-                  )}
-                />
-              </li>
-            ))}
-          </ul>
+          {expanded && (
+            <ul className={classes.componentList}>
+              {scores?.map(score => (
+                <li key={`LevelService-${identifier}-${score.serviceId}`}>
+                  <EntityRefLink
+                    entityRef={parseEntityRef(
+                      entityComponentRef(entitiesByTag, score.componentRef),
+                      defaultComponentRefContext,
+                    )}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
         </AccordionDetails>
       </Accordion>
     </TableCell>
