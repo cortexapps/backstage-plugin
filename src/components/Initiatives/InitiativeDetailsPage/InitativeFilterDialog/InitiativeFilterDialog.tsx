@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { stringifyUrl } from 'query-string';
 import {
   Button,
   Dialog,
@@ -21,6 +23,7 @@ import {
   DialogContent,
   makeStyles,
 } from '@material-ui/core';
+import { Progress } from '@backstage/core-components';
 import { FilterProvider, useFilter } from '../../../FilterCard/useFilter';
 import { FilterCard } from '../../../FilterCard';
 import {
@@ -31,10 +34,7 @@ import {
   getPredicateFilterFromFilters,
 } from './InitiativeFilterDialogUtils';
 import { useFilters, useInitiativesCustomName } from '../../../../utils/hooks';
-import { Progress } from '@backstage/core-components';
 import { FilterDefinitionWithPredicate } from '../../../FilterCard/Filters';
-import { useLocation, useNavigate } from 'react-router';
-import { stringifyUrl } from 'query-string';
 
 const useStyles = makeStyles(() => ({
   dialogContent: {
@@ -123,9 +123,8 @@ const InitiativeFilterDialog = ({
 
 export const InitiativeFilterDialogWrapper: React.FC<InitiativeFilterDialogProps> =
   props => {
-    const { filters, oneOf } = useFiltersFromQueryParams(
-      window.location.search,
-    );
+    const location = useLocation();
+    const { filters, oneOf } = useFiltersFromQueryParams(location.search);
 
     return (
       <FilterProvider initialCheckedFilters={filters} initialOneOf={oneOf}>

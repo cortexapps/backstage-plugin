@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 import React, { useMemo, useState } from 'react';
-import { cortexApiRef } from '../../../api';
+import { useLocation } from 'react-router';
 import { useAsync } from 'react-use';
+import { isEmpty, isNil, keyBy, mapValues } from 'lodash';
 import { Content, Progress, WarningPanel } from '@backstage/core-components';
 import { useApi, useRouteRefParams } from '@backstage/core-plugin-api';
 import { Box, Button, Grid, Tab, Tabs } from '@material-ui/core';
+import { cortexApiRef } from '../../../api';
 import { initiativeRouteRef } from '../../../routes';
 import { Predicate } from '../../../utils/types';
 import { InitiativeStatsCard } from './InitiativeStatsCard';
@@ -28,7 +30,6 @@ import { InitiativeFailingTab } from './InitiativeFailingTab';
 import { InitiativePassingTab } from './InitiativePassingTab';
 import { InitiativeLevelsTab } from './InitiativeLevelsTab';
 import { InitiativeRulesTab } from './InitiativeRulesTab';
-import { isEmpty, isNil, keyBy, mapValues } from 'lodash';
 import { InitiativeFilterDialog } from './InitativeFilterDialog';
 import {
   InitiativeFilter,
@@ -63,8 +64,9 @@ export const InitiativeDetailsPage: React.FC<InitiativeDetailsPageProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState(InitiativeDetailsTab.Failing);
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
+  const location = useLocation();
 
-  const { filters, oneOf } = useFiltersFromQueryParams(window.location.search);
+  const { filters, oneOf } = useFiltersFromQueryParams(location.search);
 
   const ownerOptions = useMemo(() => {
     const actionItemEntityRefs = actionItems?.map(actionItem => {
