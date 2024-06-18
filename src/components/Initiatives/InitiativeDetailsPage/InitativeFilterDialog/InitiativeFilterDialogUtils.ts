@@ -155,8 +155,8 @@ export const toQueryParams = (
   };
 };
 
-export const useFiltersFromQueryParams = () => {
-  const searchParams = new URLSearchParams(window.location.search);
+export const useFiltersFromQueryParams = (queryParams: string) => {
+  const searchParams = new URLSearchParams(queryParams);
 
   const filters: Record<string, boolean> = {};
   const oneOf: Record<string, boolean> = {};

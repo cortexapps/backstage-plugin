@@ -64,7 +64,7 @@ export const InitiativeDetailsPage: React.FC<InitiativeDetailsPageProps> = ({
   const [activeTab, setActiveTab] = useState(InitiativeDetailsTab.Failing);
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
 
-  const { filters } = useFiltersFromQueryParams();
+  const { filters } = useFiltersFromQueryParams(window.location.search);
 
   const ownerOptions = useMemo(() => {
     const actionItemEntityRefs = actionItems?.map(actionItem => {

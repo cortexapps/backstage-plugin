@@ -122,7 +122,9 @@ const InitiativeFilterDialog = ({
 
 export const InitiativeFilterDialogWrapper: React.FC<InitiativeFilterDialogProps> =
   props => {
-    const { filters, oneOf } = useFiltersFromQueryParams();
+    const { filters, oneOf } = useFiltersFromQueryParams(
+      window.location.search,
+    );
 
     return (
       <FilterProvider initialCheckedFilters={filters} initialOneOf={oneOf}>
