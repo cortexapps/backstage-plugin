@@ -19,7 +19,7 @@ import { useAsync } from 'react-use';
 import { EmptyState, Progress, WarningPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { Route, Routes } from 'react-router-dom';
-import { InitiativeDetailsPage } from '../InitiativeDetailsPage';
+import InitiativeDetailsPage from '../InitiativeDetailsPage';
 import { InitiativesList } from './InitiativesList';
 import { useInitiativesCustomName } from '../../../utils/hooks';
 
@@ -33,7 +33,7 @@ export const InitiativesPage = () => {
   } = useAsync(async () => {
     return await cortexApi.getScorecards();
   }, []);
-  
+
   const { plural: initiativesName } = useInitiativesCustomName();
 
   if (loading) {
@@ -42,7 +42,10 @@ export const InitiativesPage = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title={`Could not load ${initiativesName}.`}>
+      <WarningPanel
+        severity="error"
+        title={`Could not load ${initiativesName}.`}
+      >
         {error.message}
       </WarningPanel>
     );

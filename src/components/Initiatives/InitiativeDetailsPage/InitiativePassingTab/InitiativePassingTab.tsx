@@ -15,11 +15,19 @@
  */
 
 import React, { useMemo } from 'react';
-import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage/core-components';
+import {
+  EmptyState,
+  InfoCard,
+  Table as BSTable,
+  TableColumn,
+} from '@backstage/core-components';
 import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, ThemeProvider, Typography } from '@material-ui/core';
-import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
+import {
+  defaultComponentRefContext,
+  entityComponentRef,
+} from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { LinearProgressWithLabel } from '../../../Common/LinearProgressWithLabel';
 import {
@@ -29,6 +37,7 @@ import {
 } from './InitiativePassingTabConfig';
 import { ServiceNameColumn } from './ServiceNameColumn';
 import { InitiativeActionItem } from '../../../../api/types';
+import useLinearProgressWithLabelStyles from '../../../Common/useLinearProgressWithLabelStyles';
 
 interface InitiativePassingTabProps {
   actionItems: InitiativeActionItem[];
@@ -48,6 +57,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
   scorecardId,
 }) => {
   const classes = useInitiativePassingTabStyle();
+  const linearProgressWithLabelClasses = useLinearProgressWithLabelStyles();
 
   const passingComponents = useMemo(
     () =>
@@ -155,6 +165,7 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
           return (
             <Box sx={{ width: 120 }}>
               <LinearProgressWithLabel
+                classes={linearProgressWithLabelClasses}
                 value={100}
                 label={`${numRules} / ${numRules}`}
               />
@@ -163,7 +174,13 @@ export const InitiativePassingTab: React.FC<InitiativePassingTabProps> = ({
         },
       },
     ],
-    [classes, numRules, scorecardId, entitiesByTag],
+    [
+      classes.tag,
+      entitiesByTag,
+      linearProgressWithLabelClasses,
+      numRules,
+      scorecardId,
+    ],
   );
 
   if (data.length === 0) {

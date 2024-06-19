@@ -59,7 +59,7 @@ const StatsItem: React.FC<StatsItemProps> = ({
   return (
     <Box>
       <CaptionTypography variant="caption">{caption}</CaptionTypography>
-      <Typography data-testId={caption}>
+      <Typography data-testid={caption}>
         {calculatedValue}
         {suffix}
       </Typography>

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
+import { keyBy } from 'lodash';
 import {
   Box,
   Checkbox,
@@ -25,9 +26,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
-import { fallbackPalette } from '../../styles/styles';
 import { Autocomplete } from '@material-ui/lab';
-import { mapByString, mapValues } from '../../utils/collections';
+import { fallbackPalette } from '../../styles/styles';
+import { mapValues } from '../../utils/collections';
 import { useFilter } from './useFilter';
 import { Predicate } from '../../utils/types';
 
@@ -55,9 +56,12 @@ export interface FilterValue {
   id: string;
 }
 
-export interface FilterDefinition {
+export interface FilterDefinitionWithoutFilters {
   name: string;
   oneOfDisabled?: boolean;
+}
+
+export interface FilterDefinition extends FilterDefinitionWithoutFilters {
   filters: { [id: string]: FilterValue };
 }
 
@@ -77,14 +81,11 @@ export const Filters: React.FC<FiltersProps> = ({
   const currentOneOf = oneOf[name] ?? true;
 
   const toggleAllFilters = (allCheckedFilters: FilterValue[]) => {
-    setCheckedFilters(oldFilters => {
-      const newFilters = mapValues(
-        mapByString(allCheckedFilters, filter => `${name}${filter.id}`),
-        () => true,
-      );
-
-      return { ...oldFilters, ...newFilters };
-    });
+    const newFilters = mapValues(
+      keyBy(allCheckedFilters, filter => `${name}${filter.id}`),
+      () => true,
+    );
+    setCheckedFilters(newFilters);
   };
 
   const toggleFilter = (filter: string) => {

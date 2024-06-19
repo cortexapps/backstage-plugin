@@ -14,28 +14,17 @@
  * limitations under the License.
  */
 import React, { useMemo } from 'react';
-import { LinearProgress, Typography, makeStyles } from '@material-ui/core';
+import { LinearProgress, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { isNil } from 'lodash';
-import { fallbackPalette } from '../../styles/styles';
+import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 
 interface LinearProgressWithLabelProps {
+  classes: ClassNameMap<string>;
   value: number;
   colorByValue?: boolean;
   label?: string;
 }
-
-const useStyles = makeStyles(() => ({
-  barColorSuccess: {
-    backgroundColor: fallbackPalette.status.ok,
-  },
-  barColorWarning: {
-    backgroundColor: fallbackPalette.status.warning,
-  },
-  barColorDanger: {
-    backgroundColor: fallbackPalette.status.error,
-  },
-}));
 
 export function colorForNum(value: number): 'success' | 'warning' | 'danger' {
   if (value > 90) {
@@ -48,8 +37,7 @@ export function colorForNum(value: number): 'success' | 'warning' | 'danger' {
 }
 
 export const LinearProgressWithLabel: React.FC<LinearProgressWithLabelProps> =
-  ({ value, colorByValue, label }) => {
-    const classes = useStyles();
+  ({ value, classes, colorByValue, label }) => {
     const className = useMemo(() => {
       const color = colorByValue ? undefined : colorForNum(value);
 

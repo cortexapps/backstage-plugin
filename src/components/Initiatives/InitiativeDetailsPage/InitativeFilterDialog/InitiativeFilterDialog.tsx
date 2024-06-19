@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo } from 'react';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { stringifyUrl } from 'query-string';
 import {
   Button,
   Dialog,
@@ -21,23 +23,18 @@ import {
   DialogContent,
   makeStyles,
 } from '@material-ui/core';
-import {
-  Initiative,
-  InitiativeActionItem,
-  ruleName,
-} from '../../../../api/types';
+import { Progress } from '@backstage/core-components';
 import { FilterProvider, useFilter } from '../../../FilterCard/useFilter';
-import { mapValues } from 'lodash';
-import { mapByString } from '../../../../utils/collections';
 import { FilterCard } from '../../../FilterCard';
-import { AnyEntityRef, combinePredicates } from '../../../../utils/types';
 import {
-  toPredicateFilters,
   InitiativeFilter,
   groupAndSystemFilters,
+  toQueryParams,
+  useFiltersFromQueryParams,
+  getPredicateFilterFromFilters,
 } from './InitiativeFilterDialogUtils';
 import { useFilters, useInitiativesCustomName } from '../../../../utils/hooks';
-import { Progress } from '@backstage/core-components';
+import { FilterDefinitionWithPredicate } from '../../../FilterCard/Filters';
 
 const useStyles = makeStyles(() => ({
   dialogContent: {
@@ -45,52 +42,23 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const createRulePredicate = (
-  rule: string,
-  actionItems: InitiativeActionItem[],
-  pass: boolean,
-) => {
-  return (componentRef: AnyEntityRef) => {
-    const passed = !actionItems.some(
-      actionItem =>
-        actionItem.componentRef === componentRef &&
-        actionItem.rule.expression === rule,
-    );
-
-    return passed === pass;
-  };
-};
-
 interface InitiativeFilterDialogProps {
+  filtersDefinition: FilterDefinitionWithPredicate<string>[];
   handleClose: () => void;
-  initiative: Initiative;
-  actionItems: InitiativeActionItem[];
   isOpen: boolean;
   setFilter: (filter: InitiativeFilter) => void;
 }
 
 const InitiativeFilterDialog = ({
-  initiative,
-  isOpen,
-  actionItems,
+  filtersDefinition: filtersDefinitionProp,
   handleClose,
+  isOpen,
   setFilter,
 }: InitiativeFilterDialogProps) => {
   const classes = useStyles();
   const { checkedFilters, oneOf } = useFilter();
-
-  const ruleFilterDefinitions = useMemo(() => {
-    return mapValues(
-      mapByString(initiative.rules, rule => `${rule.ruleId}`),
-      rule => {
-        return {
-          display: ruleName(rule),
-          value: rule.expression,
-          id: rule.ruleId.toString(),
-        };
-      },
-    );
-  }, [initiative.rules]);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const { filterGroups, loading } = useFilters(
     (entityRef: string) => entityRef,
@@ -99,50 +67,29 @@ const InitiativeFilterDialog = ({
     },
   );
 
-  const filtersDefinition = [
-    {
-      name: 'Failing rules',
-      filters: ruleFilterDefinitions,
-      generatePredicate: (failingRule: string) =>
-        createRulePredicate(failingRule, actionItems, false),
-    },
-    {
-      name: 'Passing rules',
-      filters: ruleFilterDefinitions,
-      generatePredicate: (passingRule: string) =>
-        createRulePredicate(passingRule, actionItems, true),
-    },
+  const filtersDefinition: FilterDefinitionWithPredicate<string>[] = [
+    ...filtersDefinitionProp,
     ...(filterGroups ?? []),
   ];
 
   const handleSaveFilters = () => {
-    const allFilters: InitiativeFilter[] = [];
+    const predicateFilter = getPredicateFilterFromFilters(
+      checkedFilters,
+      oneOf,
+      filtersDefinition,
+    );
 
-    filtersDefinition.forEach((filterDefinition, idx) => {
-      const predicateFilters = toPredicateFilters(
-        checkedFilters,
-        filterDefinition.name,
-      );
-      const filterOneOf = oneOf[filterDefinition.name] ?? true;
+    const queryParams = toQueryParams(checkedFilters, oneOf, filtersDefinition);
 
-      allFilters[idx] = (componentRef: string) => {
-        const results = Object.keys(predicateFilters)
-          .filter(id => predicateFilters[id])
-          .map(id =>
-            filterDefinition.generatePredicate(
-              filterDefinition.filters[id].value,
-            )(componentRef),
-          );
+    setFilter(predicateFilter);
 
-        if (results.length === 0) {
-          return true;
-        }
-
-        return filterOneOf ? results.some(Boolean) : results.every(Boolean);
-      };
-    });
-
-    setFilter(combinePredicates(Object.values(allFilters)));
+    navigate(
+      stringifyUrl({
+        url: location.pathname,
+        query: queryParams,
+      }),
+      { replace: true },
+    );
 
     handleClose();
   };
@@ -176,8 +123,11 @@ const InitiativeFilterDialog = ({
 
 export const InitiativeFilterDialogWrapper: React.FC<InitiativeFilterDialogProps> =
   props => {
+    const location = useLocation();
+    const { filters, oneOf } = useFiltersFromQueryParams(location.search);
+
     return (
-      <FilterProvider>
+      <FilterProvider initialCheckedFilters={filters} initialOneOf={oneOf}>
         <InitiativeFilterDialog {...props} />
       </FilterProvider>
     );
