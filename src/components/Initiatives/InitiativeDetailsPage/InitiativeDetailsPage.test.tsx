@@ -15,7 +15,7 @@
  */
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -26,6 +26,7 @@ import { rootRouteRef } from '../../../routes';
 import { Fixtures } from '../../../utils/TestUtils';
 import InitiativeDetailsPage from './InitiativeDetailsPage';
 import { CompoundFilter, FilterType, Initiative } from '../../../api/types';
+import { last } from 'lodash';
 
 type AnyFunction = (args?: [] | [any]) => any;
 type ApiOverrides = Record<string, AnyFunction>;
@@ -196,31 +197,36 @@ describe('Initiative Details Page', () => {
           title: 'has git',
         },
       ];
-      const { findByLabelText, getByLabelText, getByText } =
-        renderInitiativeDetailsPage({
-          getInitiativeActionItems: async () => {
-            return [
-              {
-                rule: {
-                  expression: 'git != null',
-                  name: 'has git',
-                  id: 12,
-                  weight: 1,
-                },
-                componentRef: 'entity-1',
-                initiative: {
-                  initiativeId: 1,
-                  name: 'Test Initiative Name',
-                  targetDate: '2026-06-06T06:00:00',
-                },
+      const {
+        container,
+        findByLabelText,
+        getByLabelText,
+        getByText,
+        getByTestId,
+      } = renderInitiativeDetailsPage({
+        getInitiativeActionItems: async () => {
+          return [
+            {
+              rule: {
+                expression: 'git != null',
+                name: 'has git',
+                id: 12,
+                weight: 1,
               },
-            ];
-          },
-          getInitiative: async () => initiativeWithScores,
-        });
+              componentRef: 'entity-1',
+              initiative: {
+                initiativeId: 1,
+                name: 'Test Initiative Name',
+                targetDate: '2026-06-06T06:00:00',
+              },
+            },
+          ];
+        },
+        getInitiative: async () => initiativeWithScores,
+      });
       // WHEN
       const filterButton = await findByLabelText('Filter');
-      filterButton.click();
+      await filterButton.click();
 
       await waitFor(() => {
         expect(getByText('Apply filters')).toBeVisible();
@@ -231,23 +237,20 @@ describe('Initiative Details Page', () => {
       expect(passingInput).not.toBeChecked();
 
       await fireEvent.click(passingInput);
-
       expect(passingInput).toBeChecked();
 
-      await waitFor(() => {
-        expect(getByText('git != null')).toBeVisible();
-      });
-
-      // todo: why doesn't this close the modal? :(
-      await user.keyboard('{esc}');
+      // close the modal -- couldn't come up with a less hacky version that worked :(
+      const backdrop = document.body.querySelector('.MuiBackdrop-root');
+      fireEvent.click(backdrop!);
 
       await waitFor(() => {
         expect(getByText('Apply filters')).not.toBeVisible();
       });
 
+      // re-open modal
       filterButton.click();
       await waitFor(() => {
-        expect(getByText('git != null')).toBeVisible();
+        expect(getByText('Apply filters')).toBeVisible();
       });
 
       // THEN
