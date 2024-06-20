@@ -1,8 +1,12 @@
 # Changelog
 
-### 2.11.1
+### 2.11.2
 
 - Reset the Initiative filters modal when the modal is closed without applying the filters
+
+### 2.11.1
+
+- Fix date offset on Initiative detail page
 
 ### 2.11.0
 

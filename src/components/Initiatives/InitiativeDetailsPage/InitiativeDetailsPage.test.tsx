@@ -84,7 +84,7 @@ describe('Initiative Details Page', () => {
     });
     // THEN
     expect(await findByText(name)).toBeVisible();
-    expect(await findByText(/Due by June 6th, 2026/)).toBeVisible();
+    expect(await findByText(/Due by 6:00 AM on June 6th, 2026/)).toBeVisible();
   });
 
   describe('group filter text in metadata', () => {

@@ -73,7 +73,7 @@ export const HomepageInsightCard = ({
         <InsightCard>
           You have{' '}
           {maybePluralize(actionItemInsight.ruleIds.length, 'action item')} due
-          by {moment(actionItemInsight.targetDate).local().format('MMM Do')}
+          by {moment.utc(actionItemInsight.targetDate).local().format('LT on MMMM Do, YYYY')}
           {!isNil(entity) && (
             <>
               {' '}
