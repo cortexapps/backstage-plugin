@@ -16,63 +16,47 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { stringifyUrl } from 'query-string';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  makeStyles,
-} from '@material-ui/core';
-import { Progress } from '@backstage/core-components';
-import { FilterProvider, useFilter } from '../../../FilterCard/useFilter';
-import { FilterCard } from '../../../FilterCard';
+import { Dialog } from '@material-ui/core';
+import { FilterProvider } from '../../../FilterCard/useFilter';
 import {
   InitiativeFilter,
-  groupAndSystemFilters,
   toQueryParams,
   useFiltersFromQueryParams,
   getPredicateFilterFromFilters,
 } from './InitiativeFilterDialogUtils';
-import { useFilters, useInitiativesCustomName } from '../../../../utils/hooks';
 import { FilterDefinitionWithPredicate } from '../../../FilterCard/Filters';
-
-const useStyles = makeStyles(() => ({
-  dialogContent: {
-    padding: 0,
-  },
-}));
+import { InitiativeFilterForm } from '../InitiativeFilterForm/InitiativeFilterForm';
 
 interface InitiativeFilterDialogProps {
+  filters: Record<string, boolean>;
   filtersDefinition: FilterDefinitionWithPredicate<string>[];
   handleClose: () => void;
+  oneOf: Record<string, boolean>;
+  onSave: (filters: {
+    checkedFilters: Record<string, boolean>;
+    oneOf: Record<string, boolean>;
+  }) => void;
   isOpen: boolean;
   setFilter: (filter: InitiativeFilter) => void;
 }
 
-const InitiativeFilterDialog = ({
-  filtersDefinition: filtersDefinitionProp,
+export const InitiativeFilterDialog: React.FC<InitiativeFilterDialogProps> = ({
+  filtersDefinition,
   handleClose,
-  isOpen,
   setFilter,
-}: InitiativeFilterDialogProps) => {
-  const classes = useStyles();
-  const { checkedFilters, oneOf } = useFilter();
-  const location = useLocation();
+  isOpen,
+}) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { filters, oneOf } = useFiltersFromQueryParams(location.search);
 
-  const { filterGroups, loading } = useFilters(
-    (entityRef: string) => entityRef,
-    {
-      baseFilters: groupAndSystemFilters,
-    },
-  );
-
-  const filtersDefinition: FilterDefinitionWithPredicate<string>[] = [
-    ...filtersDefinitionProp,
-    ...(filterGroups ?? []),
-  ];
-
-  const handleSaveFilters = () => {
+  const handleSaveFilters = ({
+    checkedFilters,
+    oneOf,
+  }: {
+    checkedFilters: Record<string, boolean>;
+    oneOf: Record<string, boolean>;
+  }) => {
     const predicateFilter = getPredicateFilterFromFilters(
       checkedFilters,
       oneOf,
@@ -94,41 +78,14 @@ const InitiativeFilterDialog = ({
     handleClose();
   };
 
-  const { singular: initiativeName } = useInitiativesCustomName();
-
   return (
     <Dialog open={isOpen} onClose={handleClose}>
-      <DialogContent className={classes.dialogContent}>
-        {loading ? (
-          <Progress />
-        ) : (
-          <FilterCard
-            filterDefinitions={filtersDefinition}
-            title={`Filter ${initiativeName}`}
-          />
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={handleSaveFilters}
-          color="primary"
-          aria-label="Apply filters"
-        >
-          Apply filters
-        </Button>
-      </DialogActions>
+      <FilterProvider initialCheckedFilters={filters} initialOneOf={oneOf}>
+        <InitiativeFilterForm
+          filtersDefinition={filtersDefinition}
+          onSave={handleSaveFilters}
+        />
+      </FilterProvider>
     </Dialog>
   );
 };
-
-export const InitiativeFilterDialogWrapper: React.FC<InitiativeFilterDialogProps> =
-  props => {
-    const location = useLocation();
-    const { filters, oneOf } = useFiltersFromQueryParams(location.search);
-
-    return (
-      <FilterProvider initialCheckedFilters={filters} initialOneOf={oneOf}>
-        <InitiativeFilterDialog {...props} />
-      </FilterProvider>
-    );
-  };

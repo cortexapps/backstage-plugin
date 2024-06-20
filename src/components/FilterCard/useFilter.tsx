@@ -23,6 +23,7 @@ interface FilterContextState {
   >;
   oneOf: Record<string, boolean>;
   setOneOf: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  resetFilters: () => void;
 }
 
 const FilterContext = React.createContext<FilterContextState | undefined>(
@@ -43,13 +44,18 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
     initialCheckedFilters,
   );
   const [oneOf, setOneOf] = useState<Record<string, boolean>>(initialOneOf);
+  const resetFilters = () => {
+    setCheckedFilters(initialCheckedFilters);
+    setOneOf(initialOneOf);
+  };
 
   return (
     <FilterContext.Provider
       value={{
         checkedFilters,
-        setCheckedFilters,
         oneOf,
+        resetFilters,
+        setCheckedFilters,
         setOneOf,
       }}
     >

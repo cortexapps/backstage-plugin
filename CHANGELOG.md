@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.11.1
+
+- Reset filters in the modal when the modal is closed without applying the filters
+
 ### 2.11.0
 
 - Add the ability to filter by email owner on the Initiative details page
