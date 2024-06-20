@@ -15,8 +15,7 @@
  */
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { cortexApiRef } from '../../../api';
@@ -26,7 +25,6 @@ import { rootRouteRef } from '../../../routes';
 import { Fixtures } from '../../../utils/TestUtils';
 import InitiativeDetailsPage from './InitiativeDetailsPage';
 import { CompoundFilter, FilterType, Initiative } from '../../../api/types';
-import { last } from 'lodash';
 
 type AnyFunction = (args?: [] | [any]) => any;
 type ApiOverrides = Record<string, AnyFunction>;
@@ -180,8 +178,6 @@ describe('Initiative Details Page', () => {
     });
 
     it('resets filter values to applied when closing and reopening the modal', async () => {
-      const user = userEvent.setup();
-
       // GIVEN
       const initiativeWithScores = Fixtures.initiativeWithScores();
       initiativeWithScores.scores = [
@@ -197,33 +193,28 @@ describe('Initiative Details Page', () => {
           title: 'has git',
         },
       ];
-      const {
-        container,
-        findByLabelText,
-        getByLabelText,
-        getByText,
-        getByTestId,
-      } = renderInitiativeDetailsPage({
-        getInitiativeActionItems: async () => {
-          return [
-            {
-              rule: {
-                expression: 'git != null',
-                name: 'has git',
-                id: 12,
-                weight: 1,
+      const { findByLabelText, getByLabelText, getByText, queryByText } =
+        renderInitiativeDetailsPage({
+          getInitiativeActionItems: async () => {
+            return [
+              {
+                rule: {
+                  expression: 'git != null',
+                  name: 'has git',
+                  id: 12,
+                  weight: 1,
+                },
+                componentRef: 'entity-1',
+                initiative: {
+                  initiativeId: 1,
+                  name: 'Test Initiative Name',
+                  targetDate: '2026-06-06T06:00:00',
+                },
               },
-              componentRef: 'entity-1',
-              initiative: {
-                initiativeId: 1,
-                name: 'Test Initiative Name',
-                targetDate: '2026-06-06T06:00:00',
-              },
-            },
-          ];
-        },
-        getInitiative: async () => initiativeWithScores,
-      });
+            ];
+          },
+          getInitiative: async () => initiativeWithScores,
+        });
       // WHEN
       const filterButton = await findByLabelText('Filter');
       await filterButton.click();
@@ -244,13 +235,13 @@ describe('Initiative Details Page', () => {
       fireEvent.click(backdrop!);
 
       await waitFor(() => {
-        expect(getByText('Apply filters')).not.toBeVisible();
+        expect(queryByText('Filter Initiative')).not.toBeInTheDocument();
       });
 
       // re-open modal
       filterButton.click();
       await waitFor(() => {
-        expect(getByText('Apply filters')).toBeVisible();
+        expect(getByText('Filter Initiative')).toBeVisible();
       });
 
       // THEN
