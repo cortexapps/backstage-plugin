@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FilterDefinition, Filters } from './Filters';
 import { CortexInfoCard } from '../Common/CortexInfoCard';
 import { Box, makeStyles } from '@material-ui/core';
-import { useFilter } from './useFilter';
 
 interface FilterCardProps {
   filterDefinitions: FilterDefinition[];
@@ -36,14 +35,6 @@ export const FilterCard: React.FC<FilterCardProps> = ({
   title = 'Filter By',
 }) => {
   const classes = useStyles();
-  const { resetFilters } = useFilter();
-
-  useEffect(() => {
-    return () => {
-      resetFilters();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only run on component unmount
-  }, []);
 
   return (
     <CortexInfoCard title={title} className={classes.filterCardRoot}>
