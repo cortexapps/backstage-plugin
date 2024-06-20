@@ -28,14 +28,8 @@ import { FilterDefinitionWithPredicate } from '../../../FilterCard/Filters';
 import { InitiativeFilterForm } from '../InitiativeFilterForm/InitiativeFilterForm';
 
 interface InitiativeFilterDialogProps {
-  filters: Record<string, boolean>;
   filtersDefinition: FilterDefinitionWithPredicate<string>[];
   handleClose: () => void;
-  oneOf: Record<string, boolean>;
-  onSave: (filters: {
-    checkedFilters: Record<string, boolean>;
-    oneOf: Record<string, boolean>;
-  }) => void;
   isOpen: boolean;
   setFilter: (filter: InitiativeFilter) => void;
 }
