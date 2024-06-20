@@ -15,7 +15,8 @@
  */
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
-import { render } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { cortexApiRef } from '../../../api';
@@ -31,6 +32,21 @@ type ApiOverrides = Record<string, AnyFunction>;
 
 describe('Initiative Details Page', () => {
   const getCortexApi = (overrides?: ApiOverrides): Partial<CortexApi> => ({
+    getCatalogEntities: async () => {
+      return {
+        entities: [
+          {
+            codeTag: 'entity-1',
+            groupNames: [],
+            id: 234,
+            name: 'Entity 1',
+            serviceGroupTags: [],
+            serviceOwnerEmails: [],
+            type: 'service',
+          },
+        ],
+      };
+    },
     getInitiative: async () => Fixtures.initiativeWithScores(),
     getInitiativeActionItems: async () => [],
     ...overrides,
@@ -160,6 +176,83 @@ describe('Initiative Details Page', () => {
           /Applies to services in all groups, excluding test:group:1/,
         ),
       ).toBeVisible();
+    });
+
+    it('resets filter values to applied when closing and reopening the modal', async () => {
+      const user = userEvent.setup();
+
+      // GIVEN
+      const initiativeWithScores = Fixtures.initiativeWithScores();
+      initiativeWithScores.scores = [
+        {
+          scorePercentage: 0.5,
+          entityTag: 'entity-1',
+        },
+      ];
+      initiativeWithScores.rules = [
+        {
+          ruleId: 88,
+          expression: 'git != null',
+          title: 'has git',
+        },
+      ];
+      const { findByLabelText, getByLabelText, getByText } =
+        renderInitiativeDetailsPage({
+          getInitiativeActionItems: async () => {
+            return [
+              {
+                rule: {
+                  expression: 'git != null',
+                  name: 'has git',
+                  id: 12,
+                  weight: 1,
+                },
+                componentRef: 'entity-1',
+                initiative: {
+                  initiativeId: 1,
+                  name: 'Test Initiative Name',
+                  targetDate: '2026-06-06T06:00:00',
+                },
+              },
+            ];
+          },
+          getInitiative: async () => initiativeWithScores,
+        });
+      // WHEN
+      const filterButton = await findByLabelText('Filter');
+      filterButton.click();
+
+      await waitFor(() => {
+        expect(getByText('Apply filters')).toBeVisible();
+      });
+
+      const passingInput = getByLabelText('Filter passing rules by has git');
+
+      expect(passingInput).not.toBeChecked();
+
+      await fireEvent.click(passingInput);
+
+      expect(passingInput).toBeChecked();
+
+      await waitFor(() => {
+        expect(getByText('git != null')).toBeVisible();
+      });
+
+      // todo: why doesn't this close the modal? :(
+      await user.keyboard('{esc}');
+
+      await waitFor(() => {
+        expect(getByText('Apply filters')).not.toBeVisible();
+      });
+
+      filterButton.click();
+      await waitFor(() => {
+        expect(getByText('git != null')).toBeVisible();
+      });
+
+      // THEN
+      const newPassingInput = getByLabelText('Filter passing rules by has git');
+      expect(newPassingInput).not.toBeChecked();
     });
   });
 });
