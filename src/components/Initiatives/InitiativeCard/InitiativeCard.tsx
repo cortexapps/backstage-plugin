@@ -32,9 +32,9 @@ export const InitiativeCard = ({ initiative }: InitiativeCardProps) => {
       name={initiative.name}
       description={initiative.description}
       badges={[
-        `Due ${moment.utc(initiative.targetDate)
+        `Due by ${moment.utc(initiative.targetDate)
           .local()
-          .format('dddd, MMMM Do YYYY')}`,
+          .format('LT on MMMM Do, YYYY')}`,
       ]}
       url={initiativeRef({ id: `${initiative.id}` })}
     />
