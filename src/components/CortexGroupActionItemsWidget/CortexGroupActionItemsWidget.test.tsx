@@ -148,6 +148,7 @@ describe('<CortexGroupActionItemsWidget/>', () => {
         )!!,
       );
     });
+    expect(queryByText(/Basic service catalog/)).toBeVisible();
     // The animation takes some time so wait for the elements to be removed
     await waitForElementToBeRemoved(() => queryByText(/Basic service catalog/));
     expect(queryByText(/01\/01\/2000/)).not.toBeInTheDocument();

@@ -1,8 +1,14 @@
 # Changelog
 
-### 2.10.3
+### 2.11.1
 
 - Fix date offset on Initiative detail page
+
+### 2.11.0
+
+- Add the ability to filter by email owner on the Initiative details page
+- Persist filters in the URL on the Initiative details page
+- Performance improvements for the Initiative details page
 
 ### 2.10.2
 

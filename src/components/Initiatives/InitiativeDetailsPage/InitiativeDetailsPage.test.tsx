@@ -23,7 +23,7 @@ import { CortexApi } from '../../../api/CortexApi';
 import { extensionApiRef } from '../../../api/ExtensionApi';
 import { rootRouteRef } from '../../../routes';
 import { Fixtures } from '../../../utils/TestUtils';
-import { InitiativeDetailsPage } from './InitiativeDetailsPage';
+import InitiativeDetailsPage from './InitiativeDetailsPage';
 import { CompoundFilter, FilterType, Initiative } from '../../../api/types';
 
 type AnyFunction = (args?: [] | [any]) => any;

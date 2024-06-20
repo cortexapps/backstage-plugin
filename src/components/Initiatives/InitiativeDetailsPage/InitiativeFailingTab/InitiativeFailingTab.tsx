@@ -17,11 +17,18 @@
 import React, { useMemo } from 'react';
 import { InitiativeActionItem } from '../../../../api/types';
 import { ServiceNameAndRulesColumn } from './ServiceNameAndRulesColumn';
-import { EmptyState, InfoCard, Table as BSTable, TableColumn, } from '@backstage/core-components';
+import {
+  EmptyState,
+  InfoCard,
+  Table as BSTable,
+  TableColumn,
+} from '@backstage/core-components';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, ThemeProvider, Typography } from '@material-ui/core';
-import { defaultComponentRefContext, entityComponentRef, } from '../../../../utils/ComponentUtils';
-import { groupByString } from '../../../../utils/collections';
+import {
+  defaultComponentRefContext,
+  entityComponentRef,
+} from '../../../../utils/ComponentUtils';
 import { humanizeAnyEntityRef } from '../../../../utils/types';
 import { LinearProgressWithLabel } from '../../../Common/LinearProgressWithLabel';
 import { percentify } from '../../../../utils/NumberUtils';
@@ -30,7 +37,9 @@ import {
   InitiativeFailingTabRowProps,
   useInitiativeFailingTabStyle,
 } from './InitiativeFailingTabConfig';
-import { size } from 'lodash';
+import { groupBy, size } from 'lodash';
+import useScorecardServiceRuleRowStyle from '../../../Scorecards/ScorecardsServicePage/useScorecardServiceRuleRowStyles';
+import useLinearProgressWithLabelStyles from '../../../Common/useLinearProgressWithLabelStyles';
 
 interface InitiativeFailingTabProps {
   actionItems: InitiativeActionItem[];
@@ -50,7 +59,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
   const classes = useInitiativeFailingTabStyle();
 
   const failingComponents = useMemo(
-    () => groupByString(actionItems, actionItem => actionItem.componentRef),
+    () => groupBy(actionItems, actionItem => actionItem.componentRef),
     [actionItems],
   );
 
@@ -69,6 +78,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
           actionItems: serviceActionItems,
           componentRef,
           description,
+          id: `${componentRef}-Failing`, // mui-table uses id internally
           name,
           tag,
           score: (numRules - serviceActionItems.length) / numRules,
@@ -81,6 +91,9 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
   const showPagination = useMemo(() => {
     return size(failingComponents) > defaultPageSize;
   }, [failingComponents, defaultPageSize]);
+
+  const scorecardServiceRuleRowClasses = useScorecardServiceRuleRowStyle();
+  const linearProgressWithLabelClasses = useLinearProgressWithLabelStyles();
 
   const columns: TableColumn<InitiativeFailingTabRowProps>[] = useMemo(
     () => [
@@ -96,6 +109,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
                 entitiesByTag,
                 data.componentRef,
               )}
+              scorecardServiceRuleRowClasses={scorecardServiceRuleRowClasses}
               scorecardId={scorecardId}
             />
           );
@@ -155,6 +169,7 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
           return (
             <Box sx={{ width: 120 }}>
               <LinearProgressWithLabel
+                classes={linearProgressWithLabelClasses}
                 value={percentify(data.score)}
                 label={`${numRules - actionItemsLength} / ${numRules}`}
               />
@@ -169,7 +184,14 @@ export const InitiativeFailingTab: React.FC<InitiativeFailingTabProps> = ({
         },
       },
     ],
-    [classes, numRules, scorecardId, entitiesByTag],
+    [
+      classes.tag,
+      entitiesByTag,
+      linearProgressWithLabelClasses,
+      numRules,
+      scorecardId,
+      scorecardServiceRuleRowClasses,
+    ],
   );
 
   if (data.length === 0) {

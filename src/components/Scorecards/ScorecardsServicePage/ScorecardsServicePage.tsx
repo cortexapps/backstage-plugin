@@ -48,12 +48,16 @@ export const ScorecardsServicePage = () => {
     const ladders = await cortexApi.getScorecardLadders(+scorecardId);
     const scorecard = await cortexApi.getScorecard(+scorecardId);
 
-    const score = allScores.find(entityScore =>
-      entityEquals(
+    const score = allScores.find(entityScore => {
+      if (!entitiesByTag[entityScore.componentRef]) {
+        return false;
+      }
+
+      return entityEquals(
         entitiesByTag[entityScore.componentRef].definition,
         entityRef,
-      ),
-    );
+      );
+    });
 
     return { allScores, score, scorecard, ladders };
   }, [entitiesByTag]);

@@ -25,6 +25,7 @@ import {
   CortexInfoCard,
   useCortexInfoCardStyles,
 } from '../../Common/CortexInfoCard';
+import useScorecardServiceRuleRowStyle from './useScorecardServiceRuleRowStyles';
 
 interface ScorecardsServiceNextRulesProps {
   scorecardId: number;
@@ -49,6 +50,7 @@ export const ScorecardsServiceNextRules = ({
     [entityRef],
   );
   const rulesCardClasses = useCortexInfoCardStyles();
+  const scorecardServiceRuleRowClasses = useScorecardServiceRuleRowStyle();
 
   const nextSteps = value?.[0] ?? undefined;
 
@@ -91,6 +93,7 @@ export const ScorecardsServiceNextRules = ({
       {nextSteps.rulesToComplete.map(rule => (
         <ScorecardServiceRuleRow
           key={`rule-to-complete-${rule.id}`}
+          classes={scorecardServiceRuleRowClasses}
           rule={rule}
         />
       ))}

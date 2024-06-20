@@ -29,13 +29,20 @@ const FilterContext = React.createContext<FilterContextState | undefined>(
   undefined,
 );
 
-interface FilterProviderProps extends PropsWithChildren {}
+interface FilterProviderProps extends PropsWithChildren {
+  initialCheckedFilters?: Record<string, boolean>;
+  initialOneOf?: Record<string, boolean>;
+}
 
-export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
+export const FilterProvider: React.FC<FilterProviderProps> = ({
+  children,
+  initialCheckedFilters = {},
+  initialOneOf = {},
+}) => {
   const [checkedFilters, setCheckedFilters] = useState<Record<string, boolean>>(
-    {},
+    initialCheckedFilters,
   );
-  const [oneOf, setOneOf] = useState<Record<string, boolean>>({});
+  const [oneOf, setOneOf] = useState<Record<string, boolean>>(initialOneOf);
 
   return (
     <FilterContext.Provider
