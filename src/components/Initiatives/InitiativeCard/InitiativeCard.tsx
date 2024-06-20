@@ -33,6 +33,7 @@ export const InitiativeCard = ({ initiative }: InitiativeCardProps) => {
       description={initiative.description}
       badges={[
         `Due ${moment.utc(initiative.targetDate)
+          .local()
           .format('dddd, MMMM Do YYYY')}`,
       ]}
       url={initiativeRef({ id: `${initiative.id}` })}
