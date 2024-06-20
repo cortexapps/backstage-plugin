@@ -2,7 +2,7 @@
 
 ### 2.11.1
 
-- Reset filters in the modal when the modal is closed without applying the filters
+- Reset the Initiative filters modal when the modal is closed without applying the filters
 
 ### 2.11.0
 
