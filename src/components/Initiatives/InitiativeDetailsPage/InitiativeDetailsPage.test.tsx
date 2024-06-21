@@ -15,7 +15,7 @@
  */
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
-import { render } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { cortexApiRef } from '../../../api';
@@ -31,6 +31,21 @@ type ApiOverrides = Record<string, AnyFunction>;
 
 describe('Initiative Details Page', () => {
   const getCortexApi = (overrides?: ApiOverrides): Partial<CortexApi> => ({
+    getCatalogEntities: async () => {
+      return {
+        entities: [
+          {
+            codeTag: 'entity-1',
+            groupNames: [],
+            id: 234,
+            name: 'Entity 1',
+            serviceGroupTags: [],
+            serviceOwnerEmails: [],
+            type: 'service',
+          },
+        ],
+      };
+    },
     getInitiative: async () => Fixtures.initiativeWithScores(),
     getInitiativeActionItems: async () => [],
     ...overrides,
@@ -160,6 +175,78 @@ describe('Initiative Details Page', () => {
           /Applies to services in all groups, excluding test:group:1/,
         ),
       ).toBeVisible();
+    });
+
+    it('resets filter values to applied when closing and reopening the modal', async () => {
+      // GIVEN
+      const initiativeWithScores = Fixtures.initiativeWithScores();
+      initiativeWithScores.scores = [
+        {
+          scorePercentage: 0.5,
+          entityTag: 'entity-1',
+        },
+      ];
+      initiativeWithScores.rules = [
+        {
+          ruleId: 88,
+          expression: 'git != null',
+          title: 'has git',
+        },
+      ];
+      const { findByLabelText, getByLabelText, getByText, queryByText } =
+        renderInitiativeDetailsPage({
+          getInitiativeActionItems: async () => {
+            return [
+              {
+                rule: {
+                  expression: 'git != null',
+                  name: 'has git',
+                  id: 12,
+                  weight: 1,
+                },
+                componentRef: 'entity-1',
+                initiative: {
+                  initiativeId: 1,
+                  name: 'Test Initiative Name',
+                  targetDate: '2026-06-06T06:00:00',
+                },
+              },
+            ];
+          },
+          getInitiative: async () => initiativeWithScores,
+        });
+      // WHEN
+      const filterButton = await findByLabelText('Filter');
+      await filterButton.click();
+
+      await waitFor(() => {
+        expect(getByText('Apply filters')).toBeVisible();
+      });
+
+      const passingInput = getByLabelText('Filter passing rules by has git');
+
+      expect(passingInput).not.toBeChecked();
+
+      await fireEvent.click(passingInput);
+      expect(passingInput).toBeChecked();
+
+      // close the modal -- couldn't come up with a less hacky version that worked :(
+      const backdrop = document.body.querySelector('.MuiBackdrop-root');
+      fireEvent.click(backdrop!);
+
+      await waitFor(() => {
+        expect(queryByText('Filter Initiative')).not.toBeInTheDocument();
+      });
+
+      // re-open modal
+      filterButton.click();
+      await waitFor(() => {
+        expect(getByText('Filter Initiative')).toBeVisible();
+      });
+
+      // THEN
+      const newPassingInput = getByLabelText('Filter passing rules by has git');
+      expect(newPassingInput).not.toBeChecked();
     });
   });
 });
