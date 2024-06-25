@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.11.3
+
+- Revert converting to local timezone for Initiative target date
+
 ### 2.11.2
 
 - Reset the Initiative filters modal when the modal is closed without applying the filters
