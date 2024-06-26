@@ -26,6 +26,7 @@ import { HomepageEntity } from '../../../api/userInsightTypes';
 import { HeatmapPageFilters, SortBy } from './HeatmapFilters';
 import { ScorecardLadder } from '../../../api/types';
 import { keyBy } from 'lodash';
+import { filterNotUndefined } from '../../../utils/collections';
 
 interface SingleScorecardHeatmapProps {
   entityCategory: string;
@@ -84,9 +85,11 @@ export const SingleScorecardHeatmap = ({
     );
 
     Object.keys(domainIdByEntityId.entitiesToAncestors).forEach(entityId => {
-      map[entityId] = domainIdByEntityId.entitiesToAncestors[
-        parseInt(entityId, 10)
-      ].map(parentId => domainsById[parentId].codeTag);
+      map[entityId] = filterNotUndefined(
+        domainIdByEntityId.entitiesToAncestors[
+          parseInt(entityId, 10)
+        ].map(parentId => domainsById?.[parentId]?.codeTag)
+      );
     });
 
     return map;
