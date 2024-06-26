@@ -1,8 +1,12 @@
 # Changelog
 
-### 2.11.3
+### 2.11.4
 
 - Revert converting to local timezone for Initiative target date
+
+### 2.11.3
+
+- Fix for opening initiative filtered by email owner who doesn't exist
 
 ### 2.11.2
 

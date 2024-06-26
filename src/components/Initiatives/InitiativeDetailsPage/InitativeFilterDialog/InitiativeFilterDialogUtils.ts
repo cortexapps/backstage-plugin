@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isEmpty } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import {
   RELATION_OWNED_BY,
   parseEntityRef,
@@ -104,7 +104,7 @@ export const getPredicateFilterFromFilters = (
       }
 
       const results = Object.keys(predicateFilters)
-        .filter(id => predicateFilters[id])
+        .filter(id => predicateFilters[id] && !isNil(filter.filters[id]))
         .map(id =>
           filter.generatePredicate(filter.filters[id].value)(componentRef),
         );
