@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.11.3
+
+- Fix for opening initiative filtered by email owner who doesn't exist
+
 ### 2.11.2
 
 - Reset the Initiative filters modal when the modal is closed without applying the filters
