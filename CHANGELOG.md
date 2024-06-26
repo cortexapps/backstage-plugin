@@ -1,8 +1,12 @@
 # Changelog
 
-### 2.11.3
+### 2.11.4
 
 - Fix Bird's Eye Report throwing error when it included archived entities
+
+### 2.11.3
+
+- Fix for opening initiative filtered by email owner who doesn't exist
 
 ### 2.11.2
 
