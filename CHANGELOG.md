@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.11.3
+
+- Fix Bird's Eye Report throwing error when it included archived entities
+
 ### 2.11.2
 
 - Reset the Initiative filters modal when the modal is closed without applying the filters
