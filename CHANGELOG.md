@@ -1,12 +1,16 @@
 # Changelog
 
+### 2.11.5
+
+- Update how we display Initiative target date
+
 ### 2.11.4
 
 - Fix Bird's Eye Report throwing error when it included archived entities
 
 ### 2.11.3
 
-- Fix for opening initiative filtered by email owner who doesn't exist
+- Fix for opening Initiative filtered by email owner who doesn't exist
 
 ### 2.11.2
 

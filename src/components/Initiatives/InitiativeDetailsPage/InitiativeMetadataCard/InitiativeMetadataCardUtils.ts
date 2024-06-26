@@ -23,6 +23,7 @@ export const getTargetDateMessage = (initiative: Initiative) => {
   const remainingDays = daysUntil(initiative.targetDate);
 
   return !isNil(remainingDays) && remainingDays < 0
-    ? `Expired ${moment.utc(initiative.targetDate).local().fromNow()}`
-    : `Due by ${moment.utc(initiative.targetDate).local().format('LT on MMMM Do, YYYY')}`;
+  ? `Expired ${moment.utc(initiative.targetDate).fromNow()}`
+  : `Due by ${moment.utc(initiative.targetDate)
+        .format('MMMM Do, YYYY')}`;
 };
