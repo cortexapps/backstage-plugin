@@ -90,3 +90,7 @@ export interface HomepageEntityResponse {
 export interface EntityDomainAncestorsResponse {
   entitiesToAncestors: Record<number, number[]>;
 }
+
+export interface UserEntitiesResponse {
+  entityIds: number[];
+}

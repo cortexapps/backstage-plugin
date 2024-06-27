@@ -53,6 +53,7 @@ import {
   EntityDomainAncestorsResponse,
   GetUserInsightsResponse,
   HomepageEntityResponse,
+  UserEntitiesResponse,
 } from './userInsightTypes';
 
 export const cortexApiRef = createApiRef<CortexApi>({
@@ -314,6 +315,10 @@ export class CortexClient implements CortexApi {
     return this.get(`/api/backstage/v1/homepage/catalog`);
   }
 
+  async getUserEntities(): Promise<UserEntitiesResponse> {
+    return this.get(`/api/backstage/v2/entities/my-entities`);
+  }
+
   async getUserPermissions(): Promise<UserPermissionsResponse> {
     return this.get(`/api/backstage/v2/permissions`);
   }
@@ -472,10 +477,13 @@ export class CortexClient implements CortexApi {
       displayName = profileInfo.displayName;
     }
 
-    const xCortexHeaders = mapValues({
-      'x-cortex-email': email ?? '',
-      'x-cortex-name': displayName ?? '',
-    }, encodeURIComponent);
+    const xCortexHeaders = mapValues(
+      {
+        'x-cortex-email': email ?? '',
+        'x-cortex-name': displayName ?? '',
+      },
+      encodeURIComponent,
+    );
 
     const headers = {
       ...init?.headers,

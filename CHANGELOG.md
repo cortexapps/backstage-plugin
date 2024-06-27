@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.11.6
+
+- Initiative filter - show my entities
+
 ### 2.11.5
 
 - Update how we display Initiative target date

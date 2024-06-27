@@ -49,6 +49,7 @@ export enum FilterDefinitionName {
   FailingRules = 'Failing rules',
   PassingRules = 'Passing rules',
   EmailOwners = 'Email owners',
+  ShowActionItemsFor = 'myEntities',
 }
 
 export const groupAndSystemFilters: EntityFilterGroup[] = [
@@ -109,7 +110,10 @@ export const getPredicateFilterFromFilters = (
           filter.generatePredicate(filter.filters[id].value)(componentRef),
         );
 
-      return filterOneOf ? results.some(Boolean) : results.every(Boolean);
+      return (
+        isEmpty(results) ||
+        (filterOneOf ? results.some(Boolean) : results.every(Boolean))
+      );
     };
 
     return acc;
@@ -203,18 +207,44 @@ const createRulePredicate = (
   };
 };
 
+const myEntitiesValue = 'my entities';
+const showActionItemForFilters: Record<string, FilterValue> = {
+  // Defined as "true" to make it look nicer in the URL (url?myEntities=true instead of url?myEntities=myEntities)
+  true: {
+    display: 'My entities',
+    id: myEntitiesValue,
+    value: myEntitiesValue,
+  },
+};
+
 export const getFilterDefinitions = ({
   actionItems,
-  ownerOptionsMap,
   entitiesByTag,
+  ownerOptionsMap,
   ruleFilterDefinitions,
+  userEntities,
 }: {
   actionItems: InitiativeActionItem[];
-  ownerOptionsMap: Record<string, FilterValue>;
   entitiesByTag: Record<HomepageEntity['codeTag'], HomepageEntity>;
+  ownerOptionsMap: Record<string, FilterValue>;
   ruleFilterDefinitions: Record<string, FilterValue>;
+  userEntities: string[];
 }) => {
   return [
+    {
+      name: FilterDefinitionName.ShowActionItemsFor,
+      displayName: 'Show action items for',
+      filters: showActionItemForFilters,
+      oneOfDisabled: true,
+      generatePredicate: (restriction: string) => {
+        return (componentRef: string) => {
+          return (
+            restriction !== myEntitiesValue ||
+            userEntities.includes(componentRef)
+          );
+        };
+      },
+    },
     {
       name: FilterDefinitionName.FailingRules,
       filters: ruleFilterDefinitions,
