@@ -15,7 +15,7 @@
  */
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { cortexApiRef } from '../../../api';
@@ -48,6 +48,7 @@ describe('Initiative Details Page', () => {
     },
     getInitiative: async () => Fixtures.initiativeWithScores(),
     getInitiativeActionItems: async () => [],
+    getUserEntities: async () => ({ entityIds: [] }),
     ...overrides,
   });
 
@@ -247,6 +248,138 @@ describe('Initiative Details Page', () => {
       // THEN
       const newPassingInput = getByLabelText('Filter passing rules by has git');
       expect(newPassingInput).not.toBeChecked();
+    });
+  });
+
+  it('allows filtering by "my entities"', async () => {
+    const initiativeWithScores = Fixtures.initiativeWithScores();
+    initiativeWithScores.scores = [
+      {
+        scorePercentage: 0.5,
+        entityTag: 'entity-1',
+      },
+      {
+        scorePercentage: 0.5,
+        entityTag: 'entity-2',
+      },
+    ];
+    initiativeWithScores.rules = [
+      {
+        ruleId: 88,
+        expression: 'git != null',
+        title: 'has git',
+      },
+      {
+        ruleId: 89,
+        expression: 'jira != null',
+        title: 'has jira',
+      },
+    ];
+
+    const { findByText, findByLabelText, getByLabelText, queryByText } =
+      renderInitiativeDetailsPage({
+        getCatalogEntities: async () => {
+          return {
+            entities: [
+              {
+                codeTag: 'entity-1',
+                groupNames: [],
+                id: 234,
+                name: 'Entity 1',
+                serviceGroupTags: [],
+                serviceOwnerEmails: [],
+                type: 'service',
+              },
+              {
+                codeTag: 'entity-2',
+                groupNames: [],
+                id: 235,
+                name: 'Entity 2',
+                serviceGroupTags: [],
+                serviceOwnerEmails: [],
+                type: 'service',
+              },
+            ],
+          };
+        },
+        getUserEntities: async () => ({ entityIds: [234] }),
+        getInitiativeActionItems: async () => {
+          const initiativeItem = {
+            initiativeId: 1,
+            name: 'Test Initiative Name',
+            targetDate: '2026-06-06T06:00:00',
+          };
+
+          const rule1 = {
+            expression: 'git != null',
+            name: 'has git',
+            id: 12,
+            weight: 1,
+          };
+
+          const rule2 = {
+            expression: 'jira != null',
+            name: 'has jira',
+            id: 12,
+            weight: 1,
+          };
+
+          return [
+            {
+              rule: rule1,
+              componentRef: 'entity-1',
+              initiative: initiativeItem,
+            },
+            {
+              rule: rule2,
+              componentRef: 'entity-1',
+              initiative: initiativeItem,
+            },
+            {
+              rule: rule1,
+              componentRef: 'entity-2',
+              initiative: initiativeItem,
+            },
+            {
+              rule: rule2,
+              componentRef: 'entity-2',
+              initiative: initiativeItem,
+            },
+          ];
+        },
+        getInitiative: async () => initiativeWithScores,
+      });
+
+    expect(await findByText('Entity 1')).toBeVisible();
+    expect(await findByText('Entity 2')).toBeVisible();
+
+    // WHEN
+    const filterButton = await findByLabelText('Filter');
+    act(async () => {
+      filterButton.click();
+    });
+
+    const applyFiltersButton = await findByLabelText('Apply filters');
+    await waitFor(() => {
+      expect(applyFiltersButton).toBeVisible();
+    });
+
+    const myEntitiesInput = getByLabelText('Filter myentities by My entities');
+
+    expect(myEntitiesInput).not.toBeChecked();
+
+    act(async () => {
+      fireEvent.click(myEntitiesInput);
+    });
+
+    expect(myEntitiesInput).toBeChecked();
+
+    act(async () => {
+      fireEvent.click(applyFiltersButton);
+    });
+
+    await waitFor(() => {
+      expect(queryByText('Entity 2')).not.toBeInTheDocument();
     });
   });
 });

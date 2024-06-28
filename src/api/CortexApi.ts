@@ -43,6 +43,7 @@ import {
   EntityDomainAncestorsResponse,
   GetUserInsightsResponse,
   HomepageEntityResponse,
+  UserEntitiesResponse,
 } from './userInsightTypes';
 
 export interface CortexApi {
@@ -110,6 +111,8 @@ export interface CortexApi {
   getInsightsByEmail(): Promise<GetUserInsightsResponse>;
 
   getCatalogEntities(): Promise<HomepageEntityResponse>;
+
+  getUserEntities(): Promise<UserEntitiesResponse>;
 
   getUserPermissions(): Promise<UserPermissionsResponse>;
 

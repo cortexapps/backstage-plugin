@@ -57,6 +57,7 @@ export interface FilterValue {
 }
 
 export interface FilterDefinitionWithoutFilters {
+  displayName?: string;
   name: string;
   oneOfDisabled?: boolean;
 }
@@ -72,8 +73,9 @@ export interface FilterDefinitionWithPredicate<T> extends FilterDefinition {
 interface FiltersProps extends FilterDefinition {}
 
 export const Filters: React.FC<FiltersProps> = ({
-  name,
+  displayName,
   filters,
+  name,
   oneOfDisabled,
 }) => {
   const { checkedFilters, setCheckedFilters, oneOf, setOneOf } = useFilter();
@@ -116,7 +118,7 @@ export const Filters: React.FC<FiltersProps> = ({
     <Box display="flex" flexDirection="column">
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Typography variant="subtitle2" className={classes.name}>
-          {name}:
+          {displayName ?? name}:
         </Typography>
         {!oneOfDisabled && (
           <Select

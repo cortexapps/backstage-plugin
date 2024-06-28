@@ -55,12 +55,14 @@ export interface InitiativeDetailsPageProps {
   initiative: InitiativeWithScores;
   actionItems: InitiativeActionItem[];
   entitiesByTag: Record<HomepageEntity['codeTag'], HomepageEntity>;
+  userEntities: string[];
 }
 
 export const InitiativeDetailsPage: React.FC<InitiativeDetailsPageProps> = ({
   actionItems,
   entitiesByTag,
   initiative,
+  userEntities,
 }) => {
   const [activeTab, setActiveTab] = useState(InitiativeDetailsTab.Failing);
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
@@ -116,6 +118,7 @@ export const InitiativeDetailsPage: React.FC<InitiativeDetailsPageProps> = ({
     ownerOptionsMap,
     entitiesByTag,
     ruleFilterDefinitions,
+    userEntities,
   });
 
   // Have to store lambda of lambda for React to not eagerly invoke
@@ -258,12 +261,21 @@ const InitiativeDetailsPageWrapper: React.FC = () => {
     return await Promise.all([
       cortexApi.getInitiative(+initiativeId),
       cortexApi.getInitiativeActionItems(+initiativeId),
+      cortexApi.getUserEntities(),
     ]);
   }, []);
 
-  const [initiative, actionItems] = value ?? [undefined, undefined];
+  const [initiative, actionItems, userEntityIds] = value ?? [
+    undefined,
+    undefined,
+    undefined,
+  ];
 
   const { entitiesByTag, loading: loadingEntities } = useEntitiesByTag();
+
+  const userEntities = Object.values(entitiesByTag)
+    .filter(entity => userEntityIds?.entityIds.includes(entity.id))
+    .map(entity => entity.codeTag);
 
   return loading || loadingEntities ? (
     <Progress />
@@ -276,6 +288,7 @@ const InitiativeDetailsPageWrapper: React.FC = () => {
       actionItems={actionItems ?? []}
       entitiesByTag={entitiesByTag}
       initiative={initiative}
+      userEntities={userEntities ?? []}
     />
   );
 };
