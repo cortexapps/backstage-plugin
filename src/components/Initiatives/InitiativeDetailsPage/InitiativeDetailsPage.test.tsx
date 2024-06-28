@@ -251,7 +251,7 @@ describe('Initiative Details Page', () => {
     });
   });
 
-  it('allows filtering be "my entities"', async () => {
+  it('allows filtering by "my entities"', async () => {
     const initiativeWithScores = Fixtures.initiativeWithScores();
     initiativeWithScores.scores = [
       {
