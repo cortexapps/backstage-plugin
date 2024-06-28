@@ -2,7 +2,7 @@
 
 ### 2.11.6
 
-- Initiative filter - show my entities
+- Add show my entities filter in Initiatives page
 
 ### 2.11.5
 
