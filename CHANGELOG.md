@@ -1,9 +1,5 @@
 # Changelog
 
-### 2.11.7
-
-- Add ESLint rule to enforce semicolons
-
 ### 2.11.6
 
 - Add show my entities filter in Initiatives page
