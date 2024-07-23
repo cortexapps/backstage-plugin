@@ -42,7 +42,7 @@ export const GroupByDropdown = ({
 
   const onGroupByChange = (event: ChangeEvent<{ value: unknown }>) => {
     setGroupBy(event.target.value as GroupByOption);
-  }
+  };
 
   return (
     <FormControl>
