@@ -29,7 +29,7 @@ export const HeaderTypeDropdown = ({
 }: HeaderTypeDropdownProps) => {
   const onHeaderTypeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setHeaderType(event.target.value as HeaderType);
-  }
+  };
 
   return (
     <FormControl>

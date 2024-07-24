@@ -23,7 +23,7 @@ import { SyncJobsTable } from './SyncJobsTable';
 describe('SyncJobsTable', () => {
   beforeEach(() => {
     jest.useFakeTimers('modern');
-    jest.setSystemTime(new Date(2024, 4, 7, 14, 24, 33))
+    jest.setSystemTime(new Date(2024, 4, 7, 14, 24, 33));
   });
 
   afterEach(() => {

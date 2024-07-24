@@ -61,5 +61,5 @@ export const ModalSelect = <T,>({ name, value, onChange, onReset, options }: Mod
         </Button>
       )}
     </Box>
-  )
-}
+  );
+};

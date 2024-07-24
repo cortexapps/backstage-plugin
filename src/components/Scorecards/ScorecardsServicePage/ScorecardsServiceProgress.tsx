@@ -106,7 +106,7 @@ export const ScorecardsServiceProgress = ({
       >
         Go to Cortex
       </Button>
-    )
+    );
 
     return (
       <CortexInfoCard title="Progress">

@@ -20,4 +20,4 @@ export const daysUntil = (expirationDate: string | null) => {
   return !isNil(expirationDate)
     ? moment(expirationDate).diff(moment(), 'days')
     : undefined;
-}
+};

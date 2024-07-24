@@ -16,4 +16,7 @@
 module.exports = {
   extends: ['@cortexapps/eslint-config-oss'],
   ignorePatterns: ['dist/*', 'dist-types/*', 'node_modules/*'],
+  rules: {
+    semi: ["error", "always"]
+  }
 };
