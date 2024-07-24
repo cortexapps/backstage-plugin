@@ -76,6 +76,7 @@
     "@backstage/dev-utils": "^1.0.32",
     "@backstage/test-utils": "^1.5.5",
     "@cortexapps/backstage-plugin-extensions": "0.0.22",
+    "@cortexapps/birdseye": "^1.0.6",
     "@cortexapps/eslint-config-oss": "^0.0.3",
     "@spotify/prettier-config": "^11.0.0",
     "@testing-library/jest-dom": "^5.10.1",
