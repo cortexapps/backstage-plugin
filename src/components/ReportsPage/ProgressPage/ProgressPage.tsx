@@ -64,7 +64,7 @@ export const ProgressPage = () => {
     }});
 
     navigate(targetUrl, { replace: true });
-  }, [setSelectedScorecardId, location.pathname, navigate])
+  }, [setSelectedScorecardId, location.pathname, navigate]);
 
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
   const [groupBy, setGroupBy] = useState<GroupByOption>(

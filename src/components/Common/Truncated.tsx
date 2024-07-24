@@ -64,4 +64,4 @@ export const Truncated: React.FC<TruncatedProps> = ({ text = '', truncateToLines
       )}
     </>
   );
-}
+};
