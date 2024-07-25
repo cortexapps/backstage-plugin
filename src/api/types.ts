@@ -487,7 +487,6 @@ export enum CategoryFilter {
 }
 
 export enum FilterType {
-  COMPOUND_FILTER = 'COMPOUND_FILTER',
   CQL_FILTER = 'CQL_FILTER',
   DOMAIN_FILTER = 'DOMAIN_FILTER',
   RESOURCE_FILTER = 'RESOURCE_FILTER',
@@ -537,15 +536,18 @@ export interface TeamFilter {
 }
 
 // TODO(catalog-customization): merge GenericCqlFilter and CqlFilter, when we can fully support the "Generic" category app wide.
-export interface GenericCqlFilter extends Omit<CqlFilter, 'category'> {
-  category: 'Generic';
+interface GenericCqlFilter {
+  category: "Generic";
+  cqlVersion: CqlFilter["cqlVersion"];
+  query: CqlFilter["query"];
+  type: CqlFilter["type"];
 }
 
 export interface CompoundFilter {
   cqlFilter?: GenericCqlFilter;
   entityGroupFilter?: EntityGroupFilter;
-  type: FilterType.COMPOUND_FILTER;
-  typeFilter?: CatalogPageTypeFilter;
+  type: 'COMPOUND_FILTER';
+  typeFilter?: CatalogPageTypeFilter | null;
 }
 
 export type EntityFilter =
