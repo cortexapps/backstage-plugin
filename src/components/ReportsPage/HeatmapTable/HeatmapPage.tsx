@@ -15,49 +15,29 @@
  */
 import React, {
   useCallback,
-  useEffect,
-  useMemo,
-  useRef,
   useState,
 } from 'react';
 import {
   ContentHeader,
   EmptyState,
-  Progress,
 } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 // import { SingleScorecardHeatmap } from './SingleScorecardHeatmap';
 import { ScorecardSelector } from '../ScorecardSelector';
-import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
+import { useCortexApi } from '../../../utils/hooks';
 // import { FilterType, GroupByOption, HeaderType } from '../../../api/types';
 import { CopyButton } from '../../Common/CopyButton';
-import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
-import { buildUrl } from '../../../utils/URLUtils';
-import { isEmpty, isFinite, isFunction, isUndefined, debounce } from 'lodash';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { isFunction } from 'lodash';
 import { stringifyUrl } from 'query-string';
-import { getEntityCategoryFromFilter } from '../../Scorecards/ScorecardDetailsPage/ScorecardMetadataCard/ScorecardMetadataUtils';
-import { isScorecardTeamBased } from '../../../utils/ScorecardFilterUtils';
 // import { defaultFilters as defaultScoreFilters } from './HeatmapFiltersModal';
 // import { HeatmapFilters, HeatmapPageFilters, SortBy } from './HeatmapFilters';
-import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   useCortexBirdseye,
   BirdsEyeReportTable,
   Filters,
   defaultInitial,
-  TeamResponse,
-  DomainsHierarchyResponse,
-  Scorecard,
-  ScorecardDetailsScore,
-  HierarchyResponse,
-  StringIndexable,
-  TeamDetails,
-  Domain,
-  Breadcrumb,
-  HeaderType,
-  DataFilterTypes,
 } from "@cortexapps/birdseye";
-import { CategoryFilter, FilterType } from '../../../api/types';
 
 // const defaultFilters: HeatmapPageFilters = {
 //   groupBy: GroupByOption.ENTITY,
@@ -67,28 +47,28 @@ import { CategoryFilter, FilterType } from '../../../api/types';
 //   hideWithoutChildren: true,
 // };
 
-const MISC_ELEMENT_PADDING = 48;
-const BREADCRUMB_HEIGHT = 38;
-const getTableHeight = ({
-  element,
-  includeBreadcrumb,
-}: {
-  element: HTMLDivElement;
-  includeBreadcrumb: boolean;
-}) => {
-  return (
-    window.innerHeight -
-    element.clientHeight -
-    element.offsetTop -
-    MISC_ELEMENT_PADDING -
-    (includeBreadcrumb ? BREADCRUMB_HEIGHT : 0)
-  );
-};
+// const MISC_ELEMENT_PADDING = 48;
+// const BREADCRUMB_HEIGHT = 38;
+// const getTableHeight = ({
+//   element,
+//   includeBreadcrumb,
+// }: {
+//   element: HTMLDivElement;
+//   includeBreadcrumb: boolean;
+// }) => {
+//   return (
+//     window.innerHeight -
+//     element.clientHeight -
+//     element.offsetTop -
+//     MISC_ELEMENT_PADDING -
+//     (includeBreadcrumb ? BREADCRUMB_HEIGHT : 0)
+//   );
+// };
 
 export const HeatmapPage = () => {
   // const [filters, setFilters] = useState<Filters>(defaultInitial);
 
-  // const location = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -284,7 +264,7 @@ export const HeatmapPage = () => {
   //   return () => window.removeEventListener('resize', handleResizeDebounced);
   // }, [filters.useHierarchy, filters.selectedGroupBy]);
 
-  const scorecard = scorecardsResult.value?.[0];
+  // const scorecard = scorecardsResult.value?.[0];
   
   const {
     tableData,
@@ -304,33 +284,585 @@ export const HeatmapPage = () => {
     // breadcrumbItems,
     // onBreadcrumbClick,
   } = useCortexBirdseye({
-    allDomains: [],
-    allTeams: [],
+    allDomains: [
+      {
+        "id": '36',
+        "cid": "en2e8a42777d161c82",
+        "codeTag": "examples",
+        "name": "Examples",
+        "type": "domain" as any,
+        "description": undefined,
+        "icon": {
+          "kind": "cortex",
+          "tag": "domain",
+          "url": "http://api.local.getcortexapp.com:8080/api/internal/v1/static?type=FS&kind=cortex&path=domain"
+        },
+        "serviceOwnerEmails": [],
+        "groupNames": [
+          "guests"
+        ],
+        "serviceGroupTags": [],
+        "isArchived": false
+      }
+    ],
+    allTeams: [
+      {
+        "id": '30',
+        "cid": "en2e8a4277c0bced85",
+        "identifier": {
+          "name": "Guests",
+          "teamTag": "guests",
+          "ownerGroup": "guests",
+          "ownerProviderType": "CORTEX_TEAMS" as any
+        },
+        "shortDescription": undefined,
+        "fullDescription": undefined,
+        "links": [],
+        "slackChannels": [],
+        "numTeamMembers": 0,
+        "isArchived": false
+      }
+    ],
     domainAncestryMap: {},
-    domainHierarchy: undefined,
+    domainHierarchy: {
+      "orderedTree": [
+        {
+          "node": {
+            "id": '36',
+            "cid": "en2e8a42777d161c82",
+            "tag": "examples",
+            "name": "Examples",
+            "type": "domain" as any,
+            "description": undefined,
+            "isArchived": false,
+          },
+          "orderedChildren": []
+        }
+      ]
+    },
     filters,
     scorecard: {
-      ...scorecard,
-      creator: {
-        email: '',
-        name: '',
+      "creator": {
+        "name": "Dusan Kovacik",
+        "email": "dusan.kovacik@cortex.io",
       },
-      exemptions: {
-        autoApprove: false,
-        enabled: false,
+      "id": "14",
+      "name": "Test 2",
+      "tag": "test-2",
+      "description": "This Scorecard is designed to ensure that your services are properly set up with the basics.\n\n(Created from Scorecard template)",
+      "isDraft": false,
+      "rules": [
+        {
+          "id": "42",
+          "expression": "git != null",
+          "weight": 5,
+          "description": undefined,
+          "title": "Has a git repository",
+          "failureMessage": "You can add a git repository by following the instructions in our docs for [Azure DevOps](https://docs.cortex.io/docs/reference/integrations/azuredevops), [Bitbucket](https://docs.cortex.io/docs/reference/integrations/bitbucket), [GitHub](https://docs.cortex.io/docs/reference/integrations/github), or [GitLab](https://docs.cortex.io/docs/reference/integrations/gitlab) depending on the tool that your team uses.",
+          "dateCreated": "2024-05-13T13:28:04.987922",
+          "filter": null,
+          "cqlVersion": "2.0",
+          "effectiveFrom": null,
+          "identifier": "335eeb5e-bea8-37e2-ab50-de28d956998b"
+        },
+        {
+          "id": "43",
+          "expression": "ownership.allOwners().length > 0",
+          "weight": 5,
+          "description": undefined,
+          "title": "Has owners",
+          "failureMessage": "You can add a owners by following the instructions in [our docs](https://docs.cortex.io/docs/reference/basics/ownership).",
+          "dateCreated": "2024-05-13T13:28:04.98799",
+          "filter": null,
+          "cqlVersion": "2.0",
+          "effectiveFrom": null,
+          "identifier": "92ab2234-ffb1-371b-9488-8ebe3485e503"
+        },
+        {
+          "id": "44",
+          "expression": "oncall != null",
+          "weight": 2,
+          "description": undefined,
+          "title": "Has on-call rotation set up",
+          "failureMessage": "You can add an on-call rotation by following the instructions in our docs for [Opsgenie](https://docs.cortex.io/docs/reference/integrations/opsgenie), [Pagerduty](https://docs.cortex.io/docs/reference/integrations/pagerduty), or [VictorOps](https://docs.cortex.io/docs/reference/integrations/victorops) depending on the tool that your team uses.",
+          "dateCreated": "2024-05-13T13:28:04.988003",
+          "filter": null,
+          "cqlVersion": "2.0",
+          "effectiveFrom": null,
+          "identifier": "2a2e6d7e-9ea1-3df6-a2a1-8db501126d53"
+        },
+        {
+          "id": "45",
+          "expression": "slos().length > 0",
+          "weight": 2,
+          "description": undefined,
+          "title": "Has SLOs set up",
+          "failureMessage": "You can add SLOs by following the instructions in our docs for [Datadog](https://docs.cortex.io/docs/reference/integrations/datadog), [Lightstep](https://docs.cortex.io/docs/reference/integrations/lightstep), [Prometheus](https://docs.cortex.io/docs/reference/integrations/prometheus), or [SignalFX](https://docs.cortex.io/docs/reference/integrations/signalfx) depending on the tool that your team uses.",
+          "dateCreated": "2024-05-13T13:28:04.988012",
+          "filter": null,
+          "cqlVersion": "2.0",
+          "effectiveFrom": null,
+          "identifier": "860ccd45-64b6-35c3-946b-8b3e961d6705"
+        },
+        {
+          "id": "46",
+          "expression": "entity.description() != null",
+          "weight": 1,
+          "description": undefined,
+          "title": "Has description",
+          "failureMessage": "You can add a description by following the instructions in [our docs](https://docs.cortex.io/docs/reference/basics/entities).",
+          "dateCreated": "2024-05-13T13:28:04.98803",
+          "filter": null,
+          "cqlVersion": "2.0",
+          "effectiveFrom": null,
+          "identifier": "945e4ff1-f775-3f3b-8b66-7199e1a595ab"
+        },
+        {
+          "id": "47",
+          "expression": "links(\"dashboards\").length > 0",
+          "weight": 1,
+          "description": undefined,
+          "title": "Has at least one dashboard",
+          "failureMessage": "You can add a link of type dashboard by following the instructions in [our docs](https://docs.cortex.io/docs/reference/basics/external-docs#links).",
+          "dateCreated": "2024-05-13T13:28:04.988048",
+          "filter": null,
+          "cqlVersion": "2.0",
+          "effectiveFrom": null,
+          "identifier": "1574e553-c46a-3119-9a3a-68b5c0cd8d2d"
+        },
+        {
+          "id": "48",
+          "expression": "links(\"documentation\").length > 0",
+          "weight": 1,
+          "description": undefined,
+          "title": "Has at least one link of type documentation",
+          "failureMessage": "You can add a link of type documentation by following the instructions in [our docs](https://docs.cortex.io/docs/reference/basics/external-docs#links).",
+          "dateCreated": "2024-05-13T13:28:04.988058",
+          "filter": null,
+          "cqlVersion": "2.0",
+          "effectiveFrom": null,
+          "identifier": "598a9e1f-0287-3c2c-86c9-d011c9672af1"
+        },
+        {
+          "id": "49",
+          "expression": "links(\"runbooks\").length > 0",
+          "weight": 1,
+          "description": undefined,
+          "title": "Has at least one runbook",
+          "failureMessage": "You can add a link of type runbook by following the instructions in [our docs](https://docs.cortex.io/docs/reference/basics/external-docs#links).",
+          "dateCreated": "2024-05-13T13:28:04.988067",
+          "filter": null,
+          "cqlVersion": "2.0",
+          "effectiveFrom": null,
+          "identifier": "c2726668-13ec-33ba-8b24-ef8824ba72d4"
+        },
+        {
+          "id": "50",
+          "expression": "git.fileExists(\"README.md\")",
+          "weight": 1,
+          "description": undefined,
+          "title": "Repository has a README.md file",
+          "failureMessage": "Add a README.md file to the repository specified. If you don't have a repository specified, you can add one by following the instructions in our docs for [Azure DevOps](/admin/settings/azuredevops), [Bitbucket](/admin/settings/bitbucket), [GitHub](/admin/settings/github), or [GitLab](/admin/settings/gitlab) depending on the tool that your team uses.\n\nIf you already have a README.md file, keep in mind that this rule is case sensitive. To change this, you can update it to be something like \"git.fileExists(\"README.md\") or git.fileExists(\"readme.md\")\".",
+          "dateCreated": "2024-05-13T13:28:04.988076",
+          "filter": null,
+          "cqlVersion": "2.0",
+          "effectiveFrom": null,
+          "identifier": "7ea7acc8-b314-344c-b23c-ba4bb95ca6ef"
+        }
+      ],
+      "filter": {
+        "type": "SERVICE_FILTER" as any
       },
-      isDraft: false,
-      name: '',
-      notifications: {
-        enabled: false
+      "evaluationWindow": null,
+      "notifications": {
+        "enabled": true
       },
-      id: '',
-      rules: [],
-      tag: '',
+      "exemptions": {
+        "enabled": true,
+        "autoApprove": false
+      },
+      "nextUpdated": "2024-07-25T11:11:00.089804",
+      "ladder": {
+        "scorecardId": "14",
+        "levels": [
+          {
+            "id": "7",
+            "name": "Bronze",
+            "color": "#c38b5f",
+            "description": undefined,
+            "rank": 1,
+            "rules": [
+              {
+                "id": "46",
+                "levelId": "7",
+                "expression": "entity.description() != null",
+                
+                "description": undefined,
+                "title": "Has description",
+                "cqlVersion": "2.0"
+              },
+              {
+                "id": "50",
+                "levelId": "7",
+                "expression": "git.fileExists(\"README.md\")",
+                
+                "description": undefined,
+                "title": "Repository has a README.md file",
+                "cqlVersion": "2.0"
+              },
+              {
+                "id": "42",
+                "levelId": "7",
+                "expression": "git != null",
+                
+                "description": undefined,
+                "title": "Has a git repository",
+                "cqlVersion": "2.0"
+              },
+              {
+                "id": "43",
+                "levelId": "7",
+                "expression": "ownership.allOwners().length > 0",
+                
+                "description": undefined,
+                "title": "Has owners",
+                "cqlVersion": "2.0"
+              }
+            ]
+          },
+          {
+            "id": "8",
+            "name": "Silver",
+            "color": "#8c9298",
+            "description": undefined,
+            "rank": 2,
+            "rules": [
+              {
+                "id": "47",
+                "levelId": "8",
+                "expression": "links(\"dashboards\").length > 0",
+                
+                "description": undefined,
+                "title": "Has at least one dashboard",
+                "cqlVersion": "2.0"
+              },
+              {
+                "id": "49",
+                "levelId": "8",
+                "expression": "links(\"runbooks\").length > 0",
+                
+                "description": undefined,
+                "title": "Has at least one runbook",
+                "cqlVersion": "2.0"
+              },
+              {
+                "id": "48",
+                "levelId": "8",
+                "expression": "links(\"documentation\").length > 0",
+                
+                "description": undefined,
+                "title": "Has at least one link of type documentation",
+                "cqlVersion": "2.0"
+              }
+            ]
+          },
+          {
+            "id": "9",
+            "name": "Gold",
+            "color": "#cda400",
+            "description": undefined,
+            "rank": 3,
+            "rules": [
+              {
+                "id": "45",
+                "levelId": "9",
+                "expression": "slos().length > 0",
+                
+                "description": undefined,
+                "title": "Has SLOs set up",
+                "cqlVersion": "2.0"
+              },
+              {
+                "id": "44",
+                "levelId": "9",
+                "expression": "oncall != null",
+                
+                "description": undefined,
+                "title": "Has on-call rotation set up",
+                "cqlVersion": "2.0"
+              }
+            ]
+          }
+        ]
+      },
     },
-    scores: [],
+    scores: [
+      {
+        "score": {
+          "scorePercentage": 0,
+          "score": 0,
+          "totalPossibleScore": 19
+        },
+        "entity": {
+          "id": "35",
+          "cid": "en2e8a42777cb749df",
+          "type": "service" as any,
+          "name": "Example Website",
+          "tag": "example-website",
+          "description": undefined,
+          "entityGroups": {
+            "defined": [
+              "system:examples"
+            ],
+            "all": [
+              "system:examples"
+            ]
+          },
+          "entityOwners": [],
+          "ownerGroups": [
+            "guests"
+          ],
+          "icon": {
+            "kind": "cortex",
+            "tag": "service",
+            "url": "http://api.local.getcortexapp.com:8080/api/internal/v1/static?type=FS&kind=cortex&path=service"
+          },
+        },
+        "evaluation": {
+          "rules": [
+            {
+              "rule": {
+                "id": "42",
+                "expression": "git != null",
+                "weight": 5,
+                "description": undefined,
+                "title": "Has a git repository",
+                "failureMessage": "You can add a git repository by following the instructions in our docs for [Azure DevOps](https://docs.cortex.io/docs/reference/integrations/azuredevops), [Bitbucket](https://docs.cortex.io/docs/reference/integrations/bitbucket), [GitHub](https://docs.cortex.io/docs/reference/integrations/github), or [GitLab](https://docs.cortex.io/docs/reference/integrations/gitlab) depending on the tool that your team uses.",
+                "dateCreated": "2024-07-25T09:03:13.049519",
+                "filter": null,
+                "cqlVersion": "2.0",
+                "effectiveFrom": null,
+                "identifier": "335eeb5e-bea8-37e2-ab50-de28d956998b"
+              },
+              "score": 0,
+              "leftResult": undefined,
+              "error": undefined,
+              "type": "APPLICABLE" as any
+            },
+            {
+              "rule": {
+                "id": "43",
+                "expression": "ownership.allOwners().length > 0",
+                "weight": 5,
+                "description": undefined,
+                "title": "Has owners",
+                "failureMessage": "You can add a owners by following the instructions in [our docs](https://docs.cortex.io/docs/reference/basics/ownership).",
+                "dateCreated": "2024-07-25T09:03:13.055499",
+                "filter": null,
+                "cqlVersion": "2.0",
+                "effectiveFrom": null,
+                "identifier": "92ab2234-ffb1-371b-9488-8ebe3485e503"
+              },
+              "score": 0,
+              "leftResult": undefined,
+              "error": "Internal: Missing service registration for Internal",
+              "type": "APPLICABLE" as any
+            },
+            {
+              "rule": {
+                "id": "44",
+                "expression": "oncall != null",
+                "weight": 2,
+                "description": undefined,
+                "title": "Has on-call rotation set up",
+                "failureMessage": "You can add an on-call rotation by following the instructions in our docs for [Opsgenie](https://docs.cortex.io/docs/reference/integrations/opsgenie), [Pagerduty](https://docs.cortex.io/docs/reference/integrations/pagerduty), or [VictorOps](https://docs.cortex.io/docs/reference/integrations/victorops) depending on the tool that your team uses.",
+                "dateCreated": "2024-07-25T09:03:13.076328",
+                "filter": null,
+                "cqlVersion": "2.0",
+                "effectiveFrom": null,
+                "identifier": "2a2e6d7e-9ea1-3df6-a2a1-8db501126d53"
+              },
+              "score": 0,
+              "leftResult": undefined,
+              "error": "Oncall: Missing integration for Oncall",
+              "type": "APPLICABLE" as any
+            },
+            {
+              "rule": {
+                "id": "45",
+                "expression": "slos().length > 0",
+                "weight": 2,
+                "description": undefined,
+                "title": "Has SLOs set up",
+                "failureMessage": "You can add SLOs by following the instructions in our docs for [Datadog](https://docs.cortex.io/docs/reference/integrations/datadog), [Lightstep](https://docs.cortex.io/docs/reference/integrations/lightstep), [Prometheus](https://docs.cortex.io/docs/reference/integrations/prometheus), or [SignalFX](https://docs.cortex.io/docs/reference/integrations/signalfx) depending on the tool that your team uses.",
+                "dateCreated": "2024-07-25T09:03:13.086765",
+                "filter": null,
+                "cqlVersion": "2.0",
+                "effectiveFrom": null,
+                "identifier": "860ccd45-64b6-35c3-946b-8b3e961d6705"
+              },
+              "score": 0,
+              "leftResult": 0,
+              "error": undefined,
+              "type": "APPLICABLE" as any
+            },
+            {
+              "rule": {
+                "id": "46",
+                "expression": "entity.description() != null",
+                "weight": 1,
+                "description": undefined,
+                "title": "Has description",
+                "failureMessage": "You can add a description by following the instructions in [our docs](https://docs.cortex.io/docs/reference/basics/entities).",
+                "dateCreated": "2024-07-25T09:03:13.113599",
+                "filter": null,
+                "cqlVersion": "2.0",
+                "effectiveFrom": null,
+                "identifier": "945e4ff1-f775-3f3b-8b66-7199e1a595ab"
+              },
+              "score": 0,
+              "leftResult": undefined,
+              "error": undefined,
+              "type": "APPLICABLE" as any
+            },
+            {
+              "rule": {
+                "id": "47",
+                "expression": "links(\"dashboards\").length > 0",
+                "weight": 1,
+                "description": undefined,
+                "title": "Has at least one dashboard",
+                "failureMessage": "You can add a link of type dashboard by following the instructions in [our docs](https://docs.cortex.io/docs/reference/basics/external-docs#links).",
+                "dateCreated": "2024-07-25T09:03:13.1181",
+                "filter": null,
+                "cqlVersion": "2.0",
+                "effectiveFrom": null,
+                "identifier": "1574e553-c46a-3119-9a3a-68b5c0cd8d2d"
+              },
+              "score": 0,
+              "leftResult": 0,
+              "error": undefined,
+              "type": "APPLICABLE" as any
+            },
+            {
+              "rule": {
+                "id": "48",
+                "expression": "links(\"documentation\").length > 0",
+                "weight": 1,
+                "description": undefined,
+                "title": "Has at least one link of type documentation",
+                "failureMessage": "You can add a link of type documentation by following the instructions in [our docs](https://docs.cortex.io/docs/reference/basics/external-docs#links).",
+                "dateCreated": "2024-07-25T09:03:13.124145",
+                "filter": null,
+                "cqlVersion": "2.0",
+                "effectiveFrom": null,
+                "identifier": "598a9e1f-0287-3c2c-86c9-d011c9672af1"
+              },
+              "score": 0,
+              "leftResult": 0,
+              "error": undefined,
+              "type": "APPLICABLE" as any
+            },
+            {
+              "rule": {
+                "id": "49",
+                "expression": "links(\"runbooks\").length > 0",
+                "weight": 1,
+                "description": undefined,
+                "title": "Has at least one runbook",
+                "failureMessage": "You can add a link of type runbook by following the instructions in [our docs](https://docs.cortex.io/docs/reference/basics/external-docs#links).",
+                "dateCreated": "2024-07-25T09:03:13.12899",
+                "filter": null,
+                "cqlVersion": "2.0",
+                "effectiveFrom": null,
+                "identifier": "c2726668-13ec-33ba-8b24-ef8824ba72d4"
+              },
+              "score": 0,
+              "leftResult": 0,
+              "error": undefined,
+              "type": "APPLICABLE" as any
+            },
+            {
+              "rule": {
+                "id": "50",
+                "expression": "git.fileExists(\"README.md\")",
+                "weight": 1,
+                "description": undefined,
+                "title": "Repository has a README.md file",
+                "failureMessage": "Add a README.md file to the repository specified. If you don't have a repository specified, you can add one by following the instructions in our docs for [Azure DevOps](/admin/settings/azuredevops), [Bitbucket](/admin/settings/bitbucket), [GitHub](/admin/settings/github), or [GitLab](/admin/settings/gitlab) depending on the tool that your team uses.\n\nIf you already have a README.md file, keep in mind that this rule is case sensitive. To change this, you can update it to be something like \"git.fileExists(\"README.md\") or git.fileExists(\"readme.md\")\".",
+                "dateCreated": "2024-07-25T09:03:13.133902",
+                "filter": null,
+                "cqlVersion": "2.0",
+                "effectiveFrom": null,
+                "identifier": "7ea7acc8-b314-344c-b23c-ba4bb95ca6ef"
+              },
+              "score": 0,
+              "leftResult": undefined,
+              "error": "Git: Missing service registration for Git",
+              "type": "APPLICABLE" as any
+            }
+          ],
+          "ladderLevels": [
+            {
+              "currentLevel": undefined,
+              "nextLevel": {
+                "id": "7",
+                "name": "Bronze",
+                "color": "#c38b5f",
+                "rank": 1
+              },
+              "rulesToComplete": [
+                {
+                  "id": "46",
+                  "levelId": "7",
+                  "expression": "entity.description() != null",
+                  "description": undefined,
+                  "title": "Has description",
+                  "cqlVersion": "2.0"
+                },
+                {
+                  "id": "50",
+                  "levelId": "7",
+                  "expression": "git.fileExists(\"README.md\")",
+                  "description": undefined,
+                  "title": "Repository has a README.md file",
+                  "cqlVersion": "2.0"
+                },
+                {
+                  "id": "42",
+                  "levelId": "7",
+                  "expression": "git != null",
+                  "description": undefined,
+                  "title": "Has a git repository",
+                  "cqlVersion": "2.0"
+                },
+                {
+                  "id": "43",
+                  "levelId": "7",
+                  "expression": "ownership.allOwners().length > 0",
+                  "description": undefined,
+                  "title": "Has owners",
+                  "cqlVersion": "2.0"
+                }
+              ]
+            }
+          ],
+          "lastUpdated": "2024-07-25T09:03:13.140119"
+        }
+      }
+    ],
     setFilters,
-    teamsByEntity: {},
+    teamsByEntity: {
+      "28": [],
+      "29": [],
+      "30": [],
+      "31": [],
+      "32": [],
+      "33": [],
+      "34": [],
+      "35": [],
+      "36": []
+    },
   });
 
   console.log('aa', filters);
@@ -370,8 +902,8 @@ export const HeatmapPage = () => {
             {...tableData}
             emptyResultDisplay={<EmptyState title="Select a Scorecard" missing="data" />}
             filters={filters}
-            getCellColorClassName={() => ''}
-            getScoreColorClassName={() => ''}
+            getCellColorClassName={() => 'aa'}
+            getScoreColorClassName={() => 'bb'}
             getScorecardEntityUrl={() => ''}
             setFilters={setFilters}
           />

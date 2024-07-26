@@ -50,7 +50,7 @@ import { CortexApi } from '../api/CortexApi';
 import { EntityFilterGroup } from '../filters';
 import { FilterDefinitionWithPredicate } from '../components/FilterCard/Filters';
 import { extensionApiRef } from '../api/ExtensionApi';
-import { StringIndexable } from '../components/ReportsPage/HeatmapPage/HeatmapUtils';
+import { StringIndexable } from '../components/ReportsPage/HeatmapPageOld/HeatmapUtils';
 import { HomepageEntity } from '../api/userInsightTypes';
 import { isNil, keyBy } from 'lodash';
 import { Scorecard } from '../api/types';

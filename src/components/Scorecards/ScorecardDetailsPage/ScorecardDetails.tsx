@@ -21,7 +21,7 @@ import { ScorecardMetadataCard } from './ScorecardMetadataCard';
 import { ScorecardLadderRulesCard, ScorecardScoresRulesCard, } from './ScorecardRulesTab';
 import { Predicate } from '../../../utils/types';
 import { ScorecardLadderStatsCard, ScorecardScoresStatsCard, } from './ScorecardStatsCard';
-import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { StringIndexable } from '../../ReportsPage/HeatmapPageOld/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import CopyCsvButton from './CopyCsvButton';
 import { ScorecardReportsTab } from './ScorecardReportsTab';

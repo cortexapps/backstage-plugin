@@ -21,7 +21,7 @@ import {
   Table as BSTable,
   TableColumn,
 } from '@backstage/core-components';
-import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { StringIndexable } from '../../../ReportsPage/HeatmapPageOld/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, ThemeProvider, Typography } from '@material-ui/core';
 import {

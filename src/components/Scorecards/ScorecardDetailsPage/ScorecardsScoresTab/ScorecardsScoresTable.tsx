@@ -28,7 +28,7 @@ import {
   entityComponentRef,
 } from '../../../../utils/ComponentUtils';
 import { ScorecardServiceRefLink } from '../../../ScorecardServiceRefLink';
-import { StringIndexable } from '../../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { StringIndexable } from '../../../ReportsPage/HeatmapPageOld/HeatmapUtils';
 import { HomepageEntity } from '../../../../api/userInsightTypes';
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { isNil } from 'lodash';

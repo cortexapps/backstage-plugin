@@ -30,7 +30,7 @@ import { KeyboardArrowLeft } from '@material-ui/icons';
 import { isNil } from 'lodash';
 import moment from 'moment';
 import { HoverTimestamp } from '../../Common/HoverTimestamp';
-import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { StringIndexable } from '../../ReportsPage/HeatmapPageOld/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { Truncated } from '../../Common/Truncated';
 
