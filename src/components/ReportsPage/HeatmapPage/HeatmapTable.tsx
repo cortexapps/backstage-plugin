@@ -21,16 +21,17 @@ import {
   Filters,
   FilterType as BirdsEyeFilterType,
   TeamResponse,
-  DomainsHierarchyResponse,
+  DomainsHierarchyResponse as BirdsEyeDomainsHierarchyResponse,
   Domain,
   Scorecard as BirdsEyeScorecard,
   ScorecardDetailsScore,
   HierarchyResponse,
   StringIndexable,
   TeamDetails,
-  RuleOutcome as BirdsEyeRuleOutcome
+  RuleOutcome as BirdsEyeRuleOutcome,
+  DomainTreeNode
 } from "@cortexapps/birdseye";
-import { EntityFilter, FilterType, RuleOutcome, Scorecard, ScorecardLadder, ScorecardServiceScore } from '../../../api/types';
+import { DomainHierarchiesResponse, DomainHierarchyNode, EntityFilter, FilterType, RuleOutcome, Scorecard, ScorecardLadder, ScorecardServiceScore } from '../../../api/types';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 
 const convertToBirdsEyeFilterType = (filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>): Exclude<BirdsEyeFilterType, BirdsEyeFilterType.CQL_FILTER> => {
@@ -138,10 +139,29 @@ const convertToBirdsEyeScores = (scores: ScorecardServiceScore[], catalog: Homep
   });
 };
 
+const convertToBirdsEyeDomainNodeMetadata = (item: DomainHierarchyNode): DomainTreeNode => {
+  return {
+    ...item,
+    node: {
+      ...item.node,
+      description: item.node.description ?? undefined,
+      id: item.node.id.toString(),
+    },
+    orderedChildren: item.orderedChildren.map(convertToBirdsEyeDomainNodeMetadata)
+  };
+};
+
+const convertToBirdsEyeDomainHierarchy = (hierarchies?: DomainHierarchiesResponse): BirdsEyeDomainsHierarchyResponse | undefined => {
+  return {
+    ...hierarchies,
+    orderedTree: hierarchies?.orderedTree.map(convertToBirdsEyeDomainNodeMetadata) ?? []
+  };
+};
+
 interface HeatmapTableProps {
   allTeams: TeamResponse[];
   catalog: HomepageEntity[];
-  domainHierarchy: DomainsHierarchyResponse | undefined;
+  domainHierarchy: DomainHierarchiesResponse | undefined;
   allDomains: Domain[];
   domainAncestryMap: Record<string, string[]>;
   filters: Filters,
@@ -169,6 +189,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
 }) => {
   const mappedScorecard = convertToBirdsEyeScorecard(scorecard, ladder);
   const mappedScores = convertToBirdsEyeScores(scores, catalog);
+  const mappedDomainHierarchies = convertToBirdsEyeDomainHierarchy(domainHierarchy);
 
   const {
     tableData,
@@ -191,7 +212,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     allDomains,
     allTeams,
     domainAncestryMap,
-    domainHierarchy,
+    domainHierarchy: mappedDomainHierarchies,
     filters,
     scorecard: mappedScorecard,
     scores: mappedScores,

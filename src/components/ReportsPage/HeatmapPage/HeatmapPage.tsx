@@ -205,7 +205,8 @@ export const HeatmapPage = () => {
     [filters.scorecardId],
   );
   const { value: catalog, loading: isLoadingCatalog } = useCortexApi(api => api.getCatalogEntities());
-  const isLoading = isLoadingScorecards || isLoadingScores || isLoadingCatalog || isLoadingLadder;
+  const { value: domainHierarchies, loading: isLoadingDomainHierarchies } = useCortexApi(api => api.getDomainHierarchies());
+  const isLoading = isLoadingScorecards || isLoadingScores || isLoadingCatalog || isLoadingLadder || isLoadingDomainHierarchies;
 
   // const { entityCategory, excludedGroupBys } = useMemo(() => {
   //   const selectedScorecard = scorecardsResult.value?.find(
@@ -359,22 +360,7 @@ export const HeatmapPage = () => {
                 ]}
                 catalog={catalog?.entities ?? []}
                 domainAncestryMap={{}}
-                domainHierarchy={{
-                  "orderedTree": [
-                    {
-                      "node": {
-                        "id": '36',
-                        "cid": "en2e8a42777d161c82",
-                        "tag": "examples",
-                        "name": "Examples",
-                        "type": "domain" as any,
-                        "description": undefined,
-                        "isArchived": false,
-                      },
-                      "orderedChildren": []
-                    }
-                  ]
-                }}
+                domainHierarchy={domainHierarchies}
                 filters={filters}
                 ladder={ladders?.[0]}
                 scorecard={scorecard}
