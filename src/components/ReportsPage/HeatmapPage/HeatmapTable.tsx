@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useCallback } from 'react';
 import { EmptyState } from '@backstage/core-components';
 import {
   useCortexBirdseye,
@@ -34,6 +34,7 @@ import {
 import { DomainHierarchiesResponse, DomainHierarchyNode, EntityFilter, FilterType, RuleOutcome, Scorecard, ScorecardLadder, ScorecardServiceScore } from '../../../api/types';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { keys, mapKeys, mapValues } from 'lodash';
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 
 const convertToBirdsEyeFilterType = (filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>): Exclude<BirdsEyeFilterType, BirdsEyeFilterType.CQL_FILTER> => {
   switch (filterType) {
@@ -198,16 +199,16 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     tableData,
     // setDataFilters,
     // resetFilters,
-    // groupByOptions,
+    groupByOptions,
     // setReportType,
     // filtersConfig,
     // entityCategory,
     // setHideTeamsWithoutEntities,
     // filtersAppliedCount,
-    // setGroupBy,
+    setGroupBy,
     // setUseHierarchy,
     // showHierarchy,
-    // groupBy,
+    groupBy,
     // shouldShowReportType,
     // breadcrumbItems,
     // onBreadcrumbClick,
@@ -224,15 +225,37 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     teamsByEntity,
   });
 
+  console.log('ggg', groupByOptions);
+
+  const groupChangeHandler = useCallback((event: React.ChangeEvent<{ value: unknown }>) => {
+    const newGroup = groupByOptions.find(option => option === event.target.value);
+    if (!newGroup) {
+      return;
+    }
+    setGroupBy(newGroup);
+  }, [groupByOptions, setGroupBy]);
+
   return (
-    <BirdsEyeReportTable
-      {...tableData}
-      emptyResultDisplay={<EmptyState title="Select a Scorecard" missing="data" />}
-      filters={filters}
-      getCellColorClassName={() => 'aa'}
-      getScoreColorClassName={() => 'bb'}
-      getScorecardEntityUrl={() => ''}
-      setFilters={setFilters}
-    />
+    <>
+      <FormControl>
+        <InputLabel style={{ minWidth: '100px' }}>Group By</InputLabel>
+        <Select value={groupBy} onChange={groupChangeHandler}>
+          {groupByOptions.map(value => (
+            <MenuItem key={`GroupByOption-${value}`} value={value}>
+              {value}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <BirdsEyeReportTable
+        {...tableData}
+        emptyResultDisplay={<EmptyState title="Select a Scorecard" missing="data" />}
+        filters={filters}
+        getCellColorClassName={() => 'aa'}
+        getScoreColorClassName={() => 'bb'}
+        getScorecardEntityUrl={() => ''}
+        setFilters={setFilters}
+      />
+    </>
   );
 };
