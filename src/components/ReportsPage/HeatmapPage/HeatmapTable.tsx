@@ -33,6 +33,7 @@ import {
 } from "@cortexapps/birdseye";
 import { DomainHierarchiesResponse, DomainHierarchyNode, EntityFilter, FilterType, RuleOutcome, Scorecard, ScorecardLadder, ScorecardServiceScore } from '../../../api/types';
 import { HomepageEntity } from '../../../api/userInsightTypes';
+import { keys, mapKeys, mapValues } from 'lodash';
 
 const convertToBirdsEyeFilterType = (filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>): Exclude<BirdsEyeFilterType, BirdsEyeFilterType.CQL_FILTER> => {
   switch (filterType) {
@@ -163,7 +164,7 @@ interface HeatmapTableProps {
   catalog: HomepageEntity[];
   domainHierarchy: DomainHierarchiesResponse | undefined;
   allDomains: Domain[];
-  domainAncestryMap: Record<string, string[]>;
+  domainAncestryMap: Record<number, number[]>;
   filters: Filters,
   ladder?: ScorecardLadder;
   scorecard: Scorecard;
@@ -190,6 +191,8 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
   const mappedScorecard = convertToBirdsEyeScorecard(scorecard, ladder);
   const mappedScores = convertToBirdsEyeScores(scores, catalog);
   const mappedDomainHierarchies = convertToBirdsEyeDomainHierarchy(domainHierarchy);
+  const mappedDomainAncestryMapKeys = mapKeys(domainAncestryMap, key => key.toString());
+  const mappedDomainAncestryMap = mapValues(mappedDomainAncestryMapKeys, values => values.map(value => value.toString()));
 
   const {
     tableData,
@@ -211,7 +214,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
   } = useCortexBirdseye({
     allDomains,
     allTeams,
-    domainAncestryMap,
+    domainAncestryMap: mappedDomainAncestryMap,
     domainHierarchy: mappedDomainHierarchies,
     filters,
     scorecard: mappedScorecard,

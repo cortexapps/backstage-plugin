@@ -206,7 +206,13 @@ export const HeatmapPage = () => {
   );
   const { value: catalog, loading: isLoadingCatalog } = useCortexApi(api => api.getCatalogEntities());
   const { value: domainHierarchies, loading: isLoadingDomainHierarchies } = useCortexApi(api => api.getDomainHierarchies());
-  const isLoading = isLoadingScorecards || isLoadingScores || isLoadingCatalog || isLoadingLadder || isLoadingDomainHierarchies;
+  const { value: domainAncestors, loading: isLoadingDomainAncestors } = useCortexApi(api => api.getEntityDomainAncestors());
+  const isLoading = isLoadingScorecards
+    || isLoadingScores
+    || isLoadingCatalog
+    || isLoadingLadder
+    || isLoadingDomainHierarchies
+    || isLoadingDomainAncestors;
 
   // const { entityCategory, excludedGroupBys } = useMemo(() => {
   //   const selectedScorecard = scorecardsResult.value?.find(
@@ -359,7 +365,7 @@ export const HeatmapPage = () => {
                   }
                 ]}
                 catalog={catalog?.entities ?? []}
-                domainAncestryMap={{}}
+                domainAncestryMap={domainAncestors?.entitiesToAncestors ?? {}}
                 domainHierarchy={domainHierarchies}
                 filters={filters}
                 ladder={ladders?.[0]}
