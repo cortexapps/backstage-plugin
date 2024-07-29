@@ -25,7 +25,7 @@ import { Card, CardActions, CardContent, CardMedia } from '@material-ui/core';
 import { HeatmapPage as HeatmapPageOld } from './HeatmapPageOld';
 import { ProgressPage } from './ProgressPage';
 import { AllScorecardsPage as AllScorecardsPageOld } from './AllScorecardsPageOld/AllScorecardsPage';
-import { HeatmapPage } from './HeatmapTable';
+import { HeatmapPage } from './HeatmapPage';
 
 export const ReportsPageCard = ({
   name,
