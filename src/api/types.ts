@@ -41,7 +41,7 @@ export interface Rule extends RuleName {
   failureMessage?: string;
   dateCreated?: string;
   weight: number;
-  filter?: RuleFilter;
+  filter?: EntityFilter | CompoundFilter | null;
 }
 
 export interface RuleFilter {
@@ -108,6 +108,7 @@ export interface ScorecardLevelRule {
   title?: string;
   description?: string;
   filter?: RuleFilter;
+  cqlVersion: string;
 }
 
 export interface ScorecardLevel {

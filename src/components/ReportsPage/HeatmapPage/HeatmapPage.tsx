@@ -197,8 +197,15 @@ export const HeatmapPage = () => {
         : undefined,
     [filters.scorecardId],
   );
+  const { value: ladders, loading: isLoadingLadder } = useCortexApi(
+    async api =>
+      filters.scorecardId
+        ? api.getScorecardLadders(Number.parseInt(filters.scorecardId))
+        : undefined,
+    [filters.scorecardId],
+  );
   const { value: catalog, loading: isLoadingCatalog } = useCortexApi(api => api.getCatalogEntities());
-  const isLoading = isLoadingScorecards || isLoadingScores || isLoadingCatalog;
+  const isLoading = isLoadingScorecards || isLoadingScores || isLoadingCatalog || isLoadingLadder;
 
   // const { entityCategory, excludedGroupBys } = useMemo(() => {
   //   const selectedScorecard = scorecardsResult.value?.find(
@@ -369,6 +376,7 @@ export const HeatmapPage = () => {
                   ]
                 }}
                 filters={filters}
+                ladder={ladders?.[0]}
                 scorecard={scorecard}
                 scores={scores ?? []}
                 setFilters={setFilters}

@@ -28,10 +28,9 @@ import {
   HierarchyResponse,
   StringIndexable,
   TeamDetails,
-  CategoryFilter as BirdsEyeCategoryFilter,
   RuleOutcome as BirdsEyeRuleOutcome
 } from "@cortexapps/birdseye";
-import { EntityFilter, FilterType, RuleOutcome, Scorecard, ScorecardServiceScore } from '../../../api/types';
+import { EntityFilter, FilterType, RuleOutcome, Scorecard, ScorecardLadder, ScorecardServiceScore } from '../../../api/types';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 
 const convertToBirdsEyeFilterType = (filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>): Exclude<BirdsEyeFilterType, BirdsEyeFilterType.CQL_FILTER> => {
@@ -63,17 +62,12 @@ const convertToBirdsEyeFilter = (filter: Scorecard['filter']): BirdsEyeScorecard
   };
 };
 
-const convertToBirdsEyeScorecard = (scorecard: Scorecard): BirdsEyeScorecard => {
+const convertToBirdsEyeScorecard = (scorecard: Scorecard, ladder: ScorecardLadder | undefined): BirdsEyeScorecard => {
   const rules: BirdsEyeScorecard['rules'] = scorecard.rules.map((rule) => ({
     ...rule,
     cqlVersion: '', // TODO
-    dateCreated: rule.dateCreated ?? '', // TODO
-    filter: convertToBirdsEyeFilter({
-      query: rule.filter?.query ?? '',
-      category: BirdsEyeCategoryFilter.Domain, // TODO
-      cqlVersion: '', // TODO
-      type: BirdsEyeFilterType.CQL_FILTER // TODO
-    }),
+    dateCreated: rule.dateCreated ?? '',
+    filter: convertToBirdsEyeFilter(rule.filter),
     id: rule.id.toString(),
   }));
 
@@ -90,6 +84,7 @@ const convertToBirdsEyeScorecard = (scorecard: Scorecard): BirdsEyeScorecard => 
     filter: convertToBirdsEyeFilter(scorecard.filter),
     id: scorecard.id.toString(),
     rules,
+    ladder,
   };
 };
 
@@ -136,13 +131,7 @@ const convertToBirdsEyeScores = (scores: ScorecardServiceScore[], catalog: Homep
       },
       evaluation: {
         rules: convertToBirdsEyeRuleOutcome(score.rules),
-        ladderLevels: score.ladderLevels.map(level => ({
-          ...level,
-          rulesToComplete: level.rulesToComplete.map(rule => ({
-            ...rule,
-            cqlVersion: '', // TODO
-          }))
-        })),
+        ladderLevels: score.ladderLevels,
         lastUpdated: '',
       }
     };
@@ -156,6 +145,7 @@ interface HeatmapTableProps {
   allDomains: Domain[];
   domainAncestryMap: Record<string, string[]>;
   filters: Filters,
+  ladder?: ScorecardLadder;
   scorecard: Scorecard;
   scores: ScorecardServiceScore[];
   setFilters: (filters: Filters) => void;
@@ -170,14 +160,15 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
   domainAncestryMap,
   domainHierarchy,
   filters,
+  ladder,
   scorecard,
   scores,
   setFilters,
   teamsByEntity,
   teamHierarchy
 }) => {
-
-  const mappedScorecard = convertToBirdsEyeScorecard(scorecard);
+  const mappedScorecard = convertToBirdsEyeScorecard(scorecard, ladder);
+  const mappedScores = convertToBirdsEyeScores(scores, catalog);
 
   const {
     tableData,
@@ -203,13 +194,11 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     domainHierarchy,
     filters,
     scorecard: mappedScorecard,
-    scores: convertToBirdsEyeScores(scores, catalog),
+    scores: mappedScores,
     setFilters,
     teamHierarchy,
     teamsByEntity,
   });
-
-  console.log('bb', tableData);
 
   return (
     <BirdsEyeReportTable
