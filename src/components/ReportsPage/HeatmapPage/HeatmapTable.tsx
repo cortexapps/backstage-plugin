@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { EmptyState } from '@backstage/core-components';
 import {
   useCortexBirdseye,
@@ -34,8 +34,10 @@ import {
 } from "@cortexapps/birdseye";
 import { DomainHierarchiesResponse, DomainHierarchyNode, EntityFilter, FilterType, RuleOutcome, Scorecard, ScorecardLadder, ScorecardServiceScore } from '../../../api/types';
 import { HomepageEntity } from '../../../api/userInsightTypes';
-import { mapKeys, mapValues } from 'lodash';
-import { Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import { map, mapKeys, mapValues, size, sum } from 'lodash';
+import { Button, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import { HeatmapFiltersModal } from './HeatmapFiltersModal';
+import { Clear } from '@material-ui/icons';
 
 const convertToBirdsEyeFilterType = (filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>): Exclude<BirdsEyeFilterType, BirdsEyeFilterType.CQL_FILTER> => {
   switch (filterType) {
@@ -190,6 +192,8 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
   teamsByEntity,
   teamHierarchy
 }) => {
+  const [isFilterModalOpened, setFilterModalOpened] = useState(false);
+
   const mappedScorecard = convertToBirdsEyeScorecard(scorecard, ladder);
   const mappedScores = convertToBirdsEyeScores(scores, catalog);
   const mappedDomainHierarchies = convertToBirdsEyeDomainHierarchy(domainHierarchy);
@@ -198,7 +202,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
 
   const {
     tableData,
-    // setDataFilters,
+    setDataFilters,
     // resetFilters,
     groupByOptions,
     setReportType,
@@ -241,7 +245,12 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     setReportType(event.target.value);
   }, [setReportType]);
 
-  console.log('mmm', filtersConfig);
+  const clearFiltersHandler = useCallback(() => {
+    const emptyFilter = mapValues(filters.dataFilters, () => []);
+    setDataFilters(emptyFilter);
+  }, [filters.dataFilters, setDataFilters]);
+
+  const filtersCount = sum(map(filters.dataFilters, size));
 
   return (
     <>
@@ -304,6 +313,24 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
           </Select>
         </FormControl>
       )}
+      <Button
+        onClick={() => setFilterModalOpened(true)}
+        variant="outlined"
+        aria-label="Filter"
+      >
+        Filters
+        {filtersCount > 0 && <> ({filtersCount})</>}
+      </Button>
+      {filtersCount > 0 && (
+        <Button
+          onClick={clearFiltersHandler}
+          variant="text"
+          aria-label="Clear filters"
+          title="Clear filters"
+        >
+          <Clear />
+        </Button>
+      )}
       <BirdsEyeReportTable
         {...tableData}
         emptyResultDisplay={<EmptyState title="Select a Scorecard" missing="data" />}
@@ -312,6 +339,13 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
         getScoreColorClassName={() => 'bb'}
         getScorecardEntityUrl={() => ''}
         setFilters={setFilters}
+      />
+      <HeatmapFiltersModal
+        isOpen={isFilterModalOpened}
+        filters={filters.dataFilters}
+        filtersConfig={filtersConfig}
+        setFilters={setDataFilters}
+        setIsOpen={setFilterModalOpened}
       />
     </>
   );
