@@ -29,12 +29,13 @@ import {
   StringIndexable,
   TeamDetails,
   RuleOutcome as BirdsEyeRuleOutcome,
-  DomainTreeNode
+  DomainTreeNode,
+  HeaderType
 } from "@cortexapps/birdseye";
 import { DomainHierarchiesResponse, DomainHierarchyNode, EntityFilter, FilterType, RuleOutcome, Scorecard, ScorecardLadder, ScorecardServiceScore } from '../../../api/types';
 import { HomepageEntity } from '../../../api/userInsightTypes';
-import { keys, mapKeys, mapValues } from 'lodash';
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { mapKeys, mapValues } from 'lodash';
+import { Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 
 const convertToBirdsEyeFilterType = (filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>): Exclude<BirdsEyeFilterType, BirdsEyeFilterType.CQL_FILTER> => {
   switch (filterType) {
@@ -200,16 +201,16 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     // setDataFilters,
     // resetFilters,
     groupByOptions,
-    // setReportType,
-    // filtersConfig,
+    setReportType,
+    filtersConfig,
     // entityCategory,
-    // setHideTeamsWithoutEntities,
+    setHideTeamsWithoutEntities,
     // filtersAppliedCount,
     setGroupBy,
-    // setUseHierarchy,
-    // showHierarchy,
+    setUseHierarchy,
+    showHierarchy,
     groupBy,
-    // shouldShowReportType,
+    shouldShowReportType,
     // breadcrumbItems,
     // onBreadcrumbClick,
   } = useCortexBirdseye({
@@ -225,8 +226,6 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     teamsByEntity,
   });
 
-  console.log('ggg', groupByOptions);
-
   const groupChangeHandler = useCallback((event: React.ChangeEvent<{ value: unknown }>) => {
     const newGroup = groupByOptions.find(option => option === event.target.value);
     if (!newGroup) {
@@ -234,6 +233,15 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     }
     setGroupBy(newGroup);
   }, [groupByOptions, setGroupBy]);
+
+  const reportTypeChangeHandler = useCallback((event: React.ChangeEvent<{ value: unknown }>) => {
+    if (event.target.value !== HeaderType.Ladder && event.target.value !== HeaderType.Rules) {
+      return;
+    }
+    setReportType(event.target.value);
+  }, [setReportType]);
+
+  console.log('mmm', filtersConfig);
 
   return (
     <>
@@ -247,6 +255,55 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
           ))}
         </Select>
       </FormControl>
+      {showHierarchy && (
+        <FormControlLabel
+          aria-label={"Show hierarchy"}
+          control={
+            <Checkbox
+              checked={filters.useHierarchy}
+              onChange={() => {
+                setUseHierarchy(!filters.useHierarchy);
+              }}
+            />
+          }
+          label={
+            <Typography variant={'subtitle2'}>
+              Show hierarchy
+            </Typography>
+          }
+        />
+      )}
+      {showHierarchy && (
+        <FormControlLabel
+          aria-label={"Hide teams without entities"}
+          control={
+            <Checkbox
+              checked={filters.hideTeamsWithoutServices}
+              onChange={() => {
+                setHideTeamsWithoutEntities(!filters.hideTeamsWithoutServices);
+              }}
+            />
+          }
+          label={
+            <Typography variant={'subtitle2'}>
+              Hide teams without entities
+            </Typography>
+          }
+        />
+      )}
+      {shouldShowReportType && (
+        <FormControl>
+          <InputLabel style={{ minWidth: '100px' }}>Driven By</InputLabel>
+          <Select value={filters.headerType} onChange={reportTypeChangeHandler}>
+            <MenuItem key={"DrivenByOption-Rules"} value={HeaderType.Rules}>
+              Rules
+            </MenuItem>
+            <MenuItem key={"DrivenByOption-Levels"} value={HeaderType.Ladder}>
+              Levels
+            </MenuItem>
+          </Select>
+        </FormControl>
+      )}
       <BirdsEyeReportTable
         {...tableData}
         emptyResultDisplay={<EmptyState title="Select a Scorecard" missing="data" />}
