@@ -35,6 +35,8 @@ import { DomainHierarchiesResponse, DomainHierarchyNode, EntityFilter, FilterTyp
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { mapKeys, mapValues } from 'lodash';
 import { HeatmapSettings } from './HeatmapSettings';
+import { useColorCellStyles } from './colorClasses';
+import { Grid } from '@material-ui/core';
 
 const convertToBirdsEyeFilterType = (filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>): Exclude<BirdsEyeFilterType, BirdsEyeFilterType.CQL_FILTER> => {
   switch (filterType) {
@@ -160,6 +162,42 @@ const convertToBirdsEyeDomainHierarchy = (hierarchies?: DomainHierarchiesRespons
   };
 };
 
+const getScoreColorClassName = (points: number): string => {
+  if (points > 0.9) {
+    return 'success1';
+  } else if (points > 0.8) {
+    return 'success2';
+  } else if (points > 0.7) {
+    return 'success3';
+  } else if (points > 0.6) {
+    return 'warning1';
+  } else if (points > 0.5) {
+    return 'warning2';
+  } else if (points > 0.4) {
+    return 'warning3';
+  } else if (points > 0.3) {
+    return 'danger1';
+  } else if (points > 0.2) {
+    return 'danger2';
+  }
+
+  return 'danger3';
+};
+
+const getCellColorBackground = (value?: number): string => {
+  if (value === null || value === undefined) {
+    return "danger3";
+  }
+
+  if (value > 0.9) {
+    return "success1";
+  } else if (value > 0.49) {
+    return "warning2";
+  } else {
+    return "danger3";
+  }
+};
+
 interface HeatmapTableProps {
   allTeams: TeamResponse[];
   catalog: HomepageEntity[];
@@ -189,6 +227,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
   teamsByEntity,
   teamHierarchy
 }) => {
+  const colorStyles = useColorCellStyles();
   const mappedScorecard = convertToBirdsEyeScorecard(scorecard, ladder);
   const mappedScores = convertToBirdsEyeScores(scores, catalog);
   const mappedDomainHierarchies = convertToBirdsEyeDomainHierarchy(domainHierarchy);
@@ -221,29 +260,33 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
   });
 
   return (
-    <>
-      <HeatmapSettings
-        filters={filters}
-        groupByOptions={groupByOptions}
-        setGroupBy={setGroupBy}
-        filtersConfig={filtersConfig}
-        groupBy={groupBy}
-        setDataFilters={setDataFilters}
-        setHideTeamsWithoutEntities={setHideTeamsWithoutEntities}
-        setReportType={setReportType}
-        setUseHierarchy={setUseHierarchy}
-        shouldShowReportType={shouldShowReportType}
-        showHierarchy={showHierarchy}
-      />
-      <BirdsEyeReportTable
-        {...tableData}
-        emptyResultDisplay={<EmptyState title="Select a Scorecard" missing="data" />}
-        filters={filters}
-        getCellColorClassName={() => 'aa'}
-        getScoreColorClassName={() => 'bb'}
-        getScorecardEntityUrl={() => ''}
-        setFilters={setFilters}
-      />
-    </>
+    <Grid container direction={'column'}>
+      <Grid item style={{ marginTop: '20px' }}>
+        <HeatmapSettings
+          filters={filters}
+          groupByOptions={groupByOptions}
+          setGroupBy={setGroupBy}
+          filtersConfig={filtersConfig}
+          groupBy={groupBy}
+          setDataFilters={setDataFilters}
+          setHideTeamsWithoutEntities={setHideTeamsWithoutEntities}
+          setReportType={setReportType}
+          setUseHierarchy={setUseHierarchy}
+          shouldShowReportType={shouldShowReportType}
+          showHierarchy={showHierarchy}
+        />
+      </Grid>
+      <Grid item>
+        <BirdsEyeReportTable
+          {...tableData}
+          emptyResultDisplay={<EmptyState title="Select a Scorecard" missing="data" />}
+          filters={filters}
+          getCellColorClassName={(points) => `${colorStyles.root} ${colorStyles[getCellColorBackground(points)]}`}
+          getScoreColorClassName={(points) => `${colorStyles.root} ${colorStyles[getScoreColorClassName(points)]}`}
+          getScorecardEntityUrl={() => ''}
+          setFilters={setFilters}
+        />
+      </Grid>
+    </Grid>
   );
 };
