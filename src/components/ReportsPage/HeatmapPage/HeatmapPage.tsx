@@ -15,6 +15,7 @@
  */
 import React, {
   useCallback,
+  useEffect,
   useState,
 } from 'react';
 import {
@@ -80,6 +81,12 @@ export const HeatmapPage = () => {
   const filtersToParams = (filters: Filters) => {
     return {
       scorecardId: filters.scorecardId,
+      entity: filters.dataFilters.selectedEntities,
+      group: filters.dataFilters.selectedGroups,
+      team: filters.dataFilters.selectedTeams,
+      domain: filters.dataFilters.selectedDomains,
+      level: filters.dataFilters.selectedLevels,
+      owner: filters.dataFilters.selectedOwners,
       // groupBy:
       //   filters.groupBy !== defaultFilters.groupBy
       //     ? (filters.groupBy as string)
@@ -124,6 +131,15 @@ export const HeatmapPage = () => {
   const [filters, setFilters] = useState<Filters>({
     ...defaultInitial,
     scorecardId: searchParams.get('scorecardId') ?? undefined,
+    dataFilters: {
+      ...defaultInitial.dataFilters,
+      selectedEntities: searchParams.getAll('entity') ?? [],
+      selectedGroups: searchParams.getAll('group') ?? [],
+      selectedTeams: searchParams.getAll('team') ?? [],
+      selectedDomains: searchParams.getAll('domain') ?? [],
+      selectedLevels: searchParams.getAll('level') ?? [],
+      selectedOwners: searchParams.getAll('owner') ?? [],
+    },
     // groupBy:
     //   (searchParams.get('groupBy') as GroupByOption) ?? defaultFilters.groupBy,
     // hierarchyGroupBy:
@@ -286,6 +302,10 @@ export const HeatmapPage = () => {
   //   handleResize();
   //   return () => window.removeEventListener('resize', handleResizeDebounced);
   // }, [filters.useHierarchy, filters.selectedGroupBy]);
+
+  useEffect(() => {
+    setFiltersAndNavigate(filters);
+  }, [filters, filters.dataFilters.selectedEntities, setFiltersAndNavigate]);
 
   const scorecard = scorecardsResult.value?.find((result => result.id.toString() === filters.scorecardId));
 
