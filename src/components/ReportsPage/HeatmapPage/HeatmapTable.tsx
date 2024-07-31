@@ -38,6 +38,7 @@ import { map, mapKeys, mapValues, size, sum } from 'lodash';
 import { Button, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import { HeatmapFiltersModal } from './HeatmapFiltersModal';
 import { Clear } from '@material-ui/icons';
+import { HeatmapSettings } from './HeatmapSettings';
 
 const convertToBirdsEyeFilterType = (filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>): Exclude<BirdsEyeFilterType, BirdsEyeFilterType.CQL_FILTER> => {
   switch (filterType) {
@@ -331,6 +332,19 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
           <Clear />
         </Button>
       )}
+      <HeatmapSettings
+        filters={filters}
+        groupByOptions={groupByOptions}
+        setGroupBy={setGroupBy}
+        filtersConfig={filtersConfig}
+        groupBy={groupBy}
+        setDataFilters={setDataFilters}
+        setHideTeamsWithoutEntities={setHideTeamsWithoutEntities}
+        setReportType={setReportType}
+        setUseHierarchy={setUseHierarchy}
+        shouldShowReportType={shouldShowReportType}
+        showHierarchy={showHierarchy}
+      />
       <BirdsEyeReportTable
         {...tableData}
         emptyResultDisplay={<EmptyState title="Select a Scorecard" missing="data" />}

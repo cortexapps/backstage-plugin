@@ -305,7 +305,7 @@ export const HeatmapPage = () => {
 
   useEffect(() => {
     setFiltersAndNavigate(filters);
-  }, [filters, filters.dataFilters.selectedEntities, setFiltersAndNavigate]);
+  }, [filters, setFiltersAndNavigate]);
 
   const scorecard = scorecardsResult.value?.find((result => result.id.toString() === filters.scorecardId));
 
