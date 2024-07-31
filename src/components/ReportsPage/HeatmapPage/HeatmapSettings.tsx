@@ -21,7 +21,7 @@ import {
   Filters,
 } from "@cortexapps/birdseye";
 import { map, mapValues, size, sum } from 'lodash';
-import { Button, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import { Button, Checkbox, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import { HeatmapFiltersModal } from './HeatmapFiltersModal';
 import { Clear } from '@material-ui/icons';
 
@@ -77,84 +77,98 @@ export const HeatmapSettings: React.FC<HeatmapSettingsProps> = ({
   const filtersCount = sum(map(filters.dataFilters, size));
 
   return (
-    <>
-      <FormControl>
-        <InputLabel style={{ minWidth: '100px' }}>Group By</InputLabel>
-        <Select value={groupBy} onChange={groupChangeHandler}>
-          {groupByOptions.map(value => (
-            <MenuItem key={`GroupByOption-${value}`} value={value}>
-              {value}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      {showHierarchy && (
-        <FormControlLabel
-          aria-label={"Show hierarchy"}
-          control={
-            <Checkbox
-              checked={filters.useHierarchy}
-              onChange={() => {
-                setUseHierarchy(!filters.useHierarchy);
-              }}
-            />
-          }
-          label={
-            <Typography variant={'subtitle2'}>
-              Show hierarchy
-            </Typography>
-          }
-        />
-      )}
-      {showHierarchy && (
-        <FormControlLabel
-          aria-label={"Hide teams without entities"}
-          control={
-            <Checkbox
-              checked={filters.hideTeamsWithoutServices}
-              onChange={() => {
-                setHideTeamsWithoutEntities(!filters.hideTeamsWithoutServices);
-              }}
-            />
-          }
-          label={
-            <Typography variant={'subtitle2'}>
-              Hide teams without entities
-            </Typography>
-          }
-        />
-      )}
-      {shouldShowReportType && (
-        <FormControl>
-          <InputLabel style={{ minWidth: '100px' }}>Driven By</InputLabel>
-          <Select value={filters.headerType} onChange={reportTypeChangeHandler}>
-            <MenuItem key={"DrivenByOption-Rules"} value={HeaderType.Rules}>
-              Rules
-            </MenuItem>
-            <MenuItem key={"DrivenByOption-Levels"} value={HeaderType.Ladder}>
-              Levels
-            </MenuItem>
-          </Select>
-        </FormControl>
-      )}
-      <Button
-        onClick={() => setFilterModalOpened(true)}
-        variant="outlined"
-        aria-label="Filter"
-      >
-        Filters
-        {filtersCount > 0 && <> ({filtersCount})</>}
-      </Button>
-      {filtersCount > 0 && (
+    <Grid container direction={'row'} justifyContent={'space-between'}>
+      <Grid item>
+        <Grid container direction={'row'}>
+          <Grid item>
+            <FormControl>
+              <InputLabel style={{ minWidth: '100px' }}>Group By</InputLabel>
+              <Select value={groupBy} onChange={groupChangeHandler}>
+                {groupByOptions.map(value => (
+                  <MenuItem key={`GroupByOption-${value}`} value={value}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          {shouldShowReportType && (
+            <Grid item>
+              <FormControl>
+                <InputLabel style={{ minWidth: '100px' }}>Driven By</InputLabel>
+                <Select value={filters.headerType} onChange={reportTypeChangeHandler}>
+                  <MenuItem key={"DrivenByOption-Rules"} value={HeaderType.Rules}>
+                    Rules
+                  </MenuItem>
+                  <MenuItem key={"DrivenByOption-Levels"} value={HeaderType.Ladder}>
+                    Levels
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+          {showHierarchy && (
+            <Grid item>
+              <FormControlLabel
+                aria-label={"Show hierarchy"}
+                control={
+                  <Checkbox
+                    checked={filters.useHierarchy}
+                    onChange={() => {
+                      setUseHierarchy(!filters.useHierarchy);
+                    }}
+                  />
+                }
+                label={
+                  <Typography variant={'subtitle2'}>
+                    Show hierarchy
+                  </Typography>
+                }
+              />
+            </Grid>
+          )}
+          {showHierarchy && (
+            <Grid item>
+              <FormControlLabel
+                aria-label={"Hide teams without entities"}
+                control={
+                  <Checkbox
+                    checked={filters.hideTeamsWithoutServices}
+                    onChange={() => {
+                      setHideTeamsWithoutEntities(!filters.hideTeamsWithoutServices);
+                    }}
+                  />
+                }
+                label={
+                  <Typography variant={'subtitle2'}>
+                    Hide teams without entities
+                  </Typography>
+                }
+              />
+            </Grid>
+          )}
+        </Grid>
+      </Grid>
+      <Grid item>
         <Button
-          onClick={clearFiltersHandler}
-          variant="text"
-          aria-label="Clear filters"
-          title="Clear filters"
+          onClick={() => setFilterModalOpened(true)}
+          variant="outlined"
+          aria-label="Filter"
         >
-          <Clear />
+          Filters
+          {filtersCount > 0 && <> ({filtersCount})</>}
         </Button>
-      )}
+        {filtersCount > 0 && (
+          <Button
+            onClick={clearFiltersHandler}
+            variant="text"
+            aria-label="Clear filters"
+            title="Clear filters"
+          >
+            <Clear />
+          </Button>
+        )}
+      </Grid>
       <HeatmapFiltersModal
         isOpen={isFilterModalOpened}
         filters={filters.dataFilters}
@@ -162,6 +176,6 @@ export const HeatmapSettings: React.FC<HeatmapSettingsProps> = ({
         setFilters={setDataFilters}
         setIsOpen={setFilterModalOpened}
       />
-    </>
+    </Grid>
   );
 };
