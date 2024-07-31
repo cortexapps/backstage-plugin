@@ -18,7 +18,7 @@ import {
   HeaderType,
   GroupByOption,
   FilterConfigItem,
-  Filters
+  Filters,
 } from "@cortexapps/birdseye";
 import { map, mapValues, size, sum } from 'lodash';
 import { Button, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
