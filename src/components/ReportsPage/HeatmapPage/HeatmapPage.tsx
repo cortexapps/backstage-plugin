@@ -36,11 +36,14 @@ import {
   PathType,
 } from "@cortexapps/birdseye";
 import { HeatmapTable } from './HeatmapTable';
+import { buildUrl } from '../../../utils/URLUtils';
+import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 
 export const HeatmapPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const alertApi = useApi(alertApiRef);
 
   const filtersToParams = (filters: Filters) => {
     return {
@@ -84,6 +87,14 @@ export const HeatmapPage = () => {
     hideTeamsWithoutServices: !searchParams.has('hideWithoutChildren'),
     headerType: searchParams.get('headerType') as HeaderType ?? undefined,
   });
+
+  const getShareableLink = useCallback(() => {
+    return buildUrl(filtersToParams(filters), location.pathname);
+  }, [filters, location]);
+
+  const onGetShareableLinkSuccess = () =>
+    alertApi.post({ message: 'Share link copied!', display: 'transient' });
+
   const setFiltersAndNavigate = useCallback(
     (value: React.SetStateAction<Filters>) =>
       setFilters(prev => {
@@ -142,9 +153,9 @@ export const HeatmapPage = () => {
     <>
       <ContentHeader title="Bird's Eye">
         <CopyButton
-          textToCopy={() => '' /* TODO */}
+          textToCopy={getShareableLink}
           aria-label="Share link"
-          onSuccess={() => {} /* TODO */}
+          onSuccess={onGetShareableLinkSuccess}
         >
           Share link
         </CopyButton>
