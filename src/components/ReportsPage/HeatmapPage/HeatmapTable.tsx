@@ -29,46 +29,71 @@ import {
   TeamDetails,
   RuleOutcome as BirdsEyeRuleOutcome,
   DomainTreeNode,
-  Filters
-} from "@cortexapps/birdseye";
-import { DomainHierarchiesResponse, DomainHierarchyNode, EntityFilter, FilterType, RuleOutcome, Scorecard, ScorecardLadder, ScorecardServiceScore } from '../../../api/types';
+  Filters,
+} from '@cortexapps/birdseye';
+import {
+  DomainHierarchiesResponse,
+  DomainHierarchyNode,
+  EntityFilter,
+  FilterType,
+  RuleOutcome,
+  Scorecard,
+  ScorecardLadder,
+  ScorecardServiceScore,
+} from '../../../api/types';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { mapKeys, mapValues } from 'lodash';
 import { HeatmapSettings } from './HeatmapSettings';
 import { useColorCellStyles } from './colorClasses';
 import { Grid } from '@material-ui/core';
 
-const convertToBirdsEyeFilterType = (filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>): Exclude<BirdsEyeFilterType, BirdsEyeFilterType.CQL_FILTER> => {
+const convertToBirdsEyeFilterType = (
+  filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>,
+): Exclude<BirdsEyeFilterType, BirdsEyeFilterType.CQL_FILTER> => {
   switch (filterType) {
-    case FilterType.SERVICE_FILTER: return BirdsEyeFilterType.SERVICE_FILTER;
-    case FilterType.DOMAIN_FILTER: return BirdsEyeFilterType.DOMAIN_FILTER;
-    case FilterType.RESOURCE_FILTER: return BirdsEyeFilterType.RESOURCE_FILTER;
-    case FilterType.TEAM_FILTER: return BirdsEyeFilterType.TEAM_FILTER;
+    case FilterType.SERVICE_FILTER:
+      return BirdsEyeFilterType.SERVICE_FILTER;
+    case FilterType.DOMAIN_FILTER:
+      return BirdsEyeFilterType.DOMAIN_FILTER;
+    case FilterType.RESOURCE_FILTER:
+      return BirdsEyeFilterType.RESOURCE_FILTER;
+    case FilterType.TEAM_FILTER:
+      return BirdsEyeFilterType.TEAM_FILTER;
   }
 };
 
-const convertToBirdsEyeFilter = (filter: Scorecard['filter']): BirdsEyeScorecard['filter'] => {
+const convertToBirdsEyeFilter = (
+  filter: Scorecard['filter'],
+): BirdsEyeScorecard['filter'] => {
   return !filter
-  ? undefined
-  : filter?.type === FilterType.COMPOUND_FILTER
-  ? {
-    ...filter,
-    type: "COMPOUND_FILTER",
-    cqlFilter: filter.cqlFilter ? {
-      ...filter.cqlFilter,
-      type: BirdsEyeFilterType.CQL_FILTER,
-    } : undefined,
-  } : filter?.type === FilterType.CQL_FILTER ? {
-    ...filter,
-    type: BirdsEyeFilterType.CQL_FILTER
-  } : {
-    ...filter,
-    type: convertToBirdsEyeFilterType(filter.type)
-  };
+    ? undefined
+    : filter?.type === FilterType.COMPOUND_FILTER
+    ? {
+        ...filter,
+        type: 'COMPOUND_FILTER',
+        cqlFilter: filter.cqlFilter
+          ? {
+              ...filter.cqlFilter,
+              type: BirdsEyeFilterType.CQL_FILTER,
+            }
+          : undefined,
+      }
+    : filter?.type === FilterType.CQL_FILTER
+    ? {
+        ...filter,
+        type: BirdsEyeFilterType.CQL_FILTER,
+      }
+    : {
+        ...filter,
+        type: convertToBirdsEyeFilterType(filter.type),
+      };
 };
 
-const convertToBirdsEyeScorecard = (scorecard: Scorecard, ladder: ScorecardLadder | undefined): BirdsEyeScorecard => {
-  const rules: BirdsEyeScorecard['rules'] = scorecard.rules.map((rule) => ({
+const convertToBirdsEyeScorecard = (
+  scorecard: Scorecard,
+  ladder: ScorecardLadder | undefined,
+): BirdsEyeScorecard => {
+  const rules: BirdsEyeScorecard['rules'] = scorecard.rules.map(rule => ({
     ...rule,
     cqlVersion: '', // TODO
     dateCreated: rule.dateCreated ?? '',
@@ -80,7 +105,7 @@ const convertToBirdsEyeScorecard = (scorecard: Scorecard, ladder: ScorecardLadde
     ...scorecard,
     exemptions: {
       autoApprove: false,
-      enabled: false
+      enabled: false,
     },
     isDraft: false,
     notifications: {
@@ -93,7 +118,9 @@ const convertToBirdsEyeScorecard = (scorecard: Scorecard, ladder: ScorecardLadde
   };
 };
 
-const convertToBirdsEyeRuleOutcome = (rules: RuleOutcome[]): BirdsEyeRuleOutcome[] => {
+const convertToBirdsEyeRuleOutcome = (
+  rules: RuleOutcome[],
+): BirdsEyeRuleOutcome[] => {
   return rules.map((rule: RuleOutcome): BirdsEyeRuleOutcome => {
     const mappedRule = {
       ...rule.rule,
@@ -110,9 +137,12 @@ const convertToBirdsEyeRuleOutcome = (rules: RuleOutcome[]): BirdsEyeRuleOutcome
   });
 };
 
-const convertToBirdsEyeScores = (scores: ScorecardServiceScore[], catalog: HomepageEntity[]): ScorecardDetailsScore[] => {
+const convertToBirdsEyeScores = (
+  scores: ScorecardServiceScore[],
+  catalog: HomepageEntity[],
+): ScorecardDetailsScore[] => {
   return scores.map((score: ScorecardServiceScore): ScorecardDetailsScore => {
-    const entity = catalog.find((item => item.id === score.serviceId));
+    const entity = catalog.find(item => item.id === score.serviceId);
     return {
       score: {
         score: score.score,
@@ -138,12 +168,14 @@ const convertToBirdsEyeScores = (scores: ScorecardServiceScore[], catalog: Homep
         rules: convertToBirdsEyeRuleOutcome(score.rules),
         ladderLevels: score.ladderLevels,
         lastUpdated: '',
-      }
+      },
     };
   });
 };
 
-const convertToBirdsEyeDomainNodeMetadata = (item: DomainHierarchyNode): DomainTreeNode => {
+const convertToBirdsEyeDomainNodeMetadata = (
+  item: DomainHierarchyNode,
+): DomainTreeNode => {
   return {
     ...item,
     node: {
@@ -151,14 +183,19 @@ const convertToBirdsEyeDomainNodeMetadata = (item: DomainHierarchyNode): DomainT
       description: item.node.description ?? undefined,
       id: item.node.id.toString(),
     },
-    orderedChildren: item.orderedChildren.map(convertToBirdsEyeDomainNodeMetadata)
+    orderedChildren: item.orderedChildren.map(
+      convertToBirdsEyeDomainNodeMetadata,
+    ),
   };
 };
 
-const convertToBirdsEyeDomainHierarchy = (hierarchies?: DomainHierarchiesResponse): BirdsEyeDomainsHierarchyResponse | undefined => {
+const convertToBirdsEyeDomainHierarchy = (
+  hierarchies?: DomainHierarchiesResponse,
+): BirdsEyeDomainsHierarchyResponse | undefined => {
   return {
     ...hierarchies,
-    orderedTree: hierarchies?.orderedTree.map(convertToBirdsEyeDomainNodeMetadata) ?? []
+    orderedTree:
+      hierarchies?.orderedTree.map(convertToBirdsEyeDomainNodeMetadata) ?? [],
   };
 };
 
@@ -186,15 +223,15 @@ const getScoreColorClassName = (points: number): string => {
 
 const getCellColorBackground = (value?: number): string => {
   if (value === null || value === undefined) {
-    return "danger3";
+    return 'danger3';
   }
 
   if (value > 0.9) {
-    return "success1";
+    return 'success1';
   } else if (value > 0.49) {
-    return "warning2";
+    return 'warning2';
   } else {
-    return "danger3";
+    return 'danger3';
   }
 };
 
@@ -204,7 +241,7 @@ interface HeatmapTableProps {
   domainHierarchy: DomainHierarchiesResponse | undefined;
   allDomains: Domain[];
   domainAncestryMap: Record<number, number[]>;
-  filters: Filters,
+  filters: Filters;
   ladder?: ScorecardLadder;
   scorecard: Scorecard;
   scores: ScorecardServiceScore[];
@@ -225,14 +262,20 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
   scores,
   setFilters,
   teamsByEntity,
-  teamHierarchy
+  teamHierarchy,
 }) => {
   const colorStyles = useColorCellStyles();
   const mappedScorecard = convertToBirdsEyeScorecard(scorecard, ladder);
   const mappedScores = convertToBirdsEyeScores(scores, catalog);
-  const mappedDomainHierarchies = convertToBirdsEyeDomainHierarchy(domainHierarchy);
-  const mappedDomainAncestryMapKeys = mapKeys(domainAncestryMap, key => key.toString());
-  const mappedDomainAncestryMap = mapValues(mappedDomainAncestryMapKeys, values => values.map(value => value.toString()));
+  const mappedDomainHierarchies =
+    convertToBirdsEyeDomainHierarchy(domainHierarchy);
+  const mappedDomainAncestryMapKeys = mapKeys(domainAncestryMap, key =>
+    key.toString(),
+  );
+  const mappedDomainAncestryMap = mapValues(
+    mappedDomainAncestryMapKeys,
+    values => values.map(value => value.toString()),
+  );
 
   const {
     tableData,
@@ -279,10 +322,16 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
       <Grid item>
         <BirdsEyeReportTable
           {...tableData}
-          emptyResultDisplay={<EmptyState title="Select a Scorecard" missing="data" />}
+          emptyResultDisplay={
+            <EmptyState title="Select a Scorecard" missing="data" />
+          }
           filters={filters}
-          getCellColorClassName={(points) => `${colorStyles.root} ${colorStyles[getCellColorBackground(points)]}`}
-          getScoreColorClassName={(points) => `${colorStyles.root} ${colorStyles[getScoreColorClassName(points)]}`}
+          getCellColorClassName={points =>
+            `${colorStyles.root} ${colorStyles[getCellColorBackground(points)]}`
+          }
+          getScoreColorClassName={points =>
+            `${colorStyles.root} ${colorStyles[getScoreColorClassName(points)]}`
+          }
           getScorecardEntityUrl={() => ''}
           setFilters={setFilters}
         />

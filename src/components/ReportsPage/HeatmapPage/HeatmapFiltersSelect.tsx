@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Box, Button, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from '@material-ui/core';
 import { Clear } from '@material-ui/icons';
 import React from 'react';
 
@@ -23,14 +30,20 @@ export interface ModalSelectItem {
 }
 
 interface ModalSelectProps<T> {
-  name: string,
-  value: T[],
-  onChange: (value: T[]) => void,
-  onReset: () => void,
-  options: ModalSelectItem[]
+  name: string;
+  value: T[];
+  onChange: (value: T[]) => void;
+  onReset: () => void;
+  options: ModalSelectItem[];
 }
 
-export const ModalSelect = <T,>({ name, value, onChange, onReset, options }: ModalSelectProps<T>) => {
+export const ModalSelect = <T,>({
+  name,
+  value,
+  onChange,
+  onReset,
+  options,
+}: ModalSelectProps<T>) => {
   return (
     <Box display="flex" flexDirection="row">
       <FormControl variant="standard" fullWidth>
@@ -40,7 +53,7 @@ export const ModalSelect = <T,>({ name, value, onChange, onReset, options }: Mod
           value={value}
           onChange={event => onChange(event.target.value as T[])}
         >
-          {options.map((option) => (
+          {options.map(option => (
             <MenuItem
               key={`ScorecardOption-domain-${option.label}`}
               value={option.value}

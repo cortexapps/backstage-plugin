@@ -59,21 +59,28 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
   setFilters,
   setIsOpen,
 }) => {
-  const [updatedFilters, setUpdatedFilters] = useState<DataFilterTypes>(filters);
+  const [updatedFilters, setUpdatedFilters] =
+    useState<DataFilterTypes>(filters);
 
-  const filterChangeHandler = useCallback((type: keyof DataFilterTypes, value: string[]) => {
-    setUpdatedFilters({
-      ...updatedFilters,
-      [type]: value,
-    });
-  }, [updatedFilters]);
+  const filterChangeHandler = useCallback(
+    (type: keyof DataFilterTypes, value: string[]) => {
+      setUpdatedFilters({
+        ...updatedFilters,
+        [type]: value,
+      });
+    },
+    [updatedFilters],
+  );
 
-  const filterClearHandler = useCallback((type: keyof DataFilterTypes) => {
-    setUpdatedFilters({
-      ...updatedFilters,
-      [type]: [],
-    });
-  }, [updatedFilters]);
+  const filterClearHandler = useCallback(
+    (type: keyof DataFilterTypes) => {
+      setUpdatedFilters({
+        ...updatedFilters,
+        [type]: [],
+      });
+    },
+    [updatedFilters],
+  );
 
   const applyFiltersHandler = useCallback(() => {
     setFilters(updatedFilters);
@@ -90,24 +97,32 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
         <DialogTitle>Filter Bird's Eye Report</DialogTitle>
         <DialogContent>
           <Box display={'flex'} flexDirection={'column'} gridRowGap={16}>
-            {
-              filtersConfig.map(config => {
-                if (size(config.options) === 0) {
-                  return null;
-                }
+            {filtersConfig.map(config => {
+              if (size(config.options) === 0) {
+                return null;
+              }
 
-                return (
-                  <ModalSelect
-                    key={config.key}
-                    name={config.label}
-                    onChange={(values) => filterChangeHandler(config.key as keyof DataFilterTypes, values)}
-                    onReset={() => filterClearHandler(config.key as keyof DataFilterTypes)}
-                    value={updatedFilters[config.key as keyof DataFilterTypes]}
-                    options={config.options.map(option => ({ label: option, value: option }))}
-                  />
-                );
-              })
-            }
+              return (
+                <ModalSelect
+                  key={config.key}
+                  name={config.label}
+                  onChange={values =>
+                    filterChangeHandler(
+                      config.key as keyof DataFilterTypes,
+                      values,
+                    )
+                  }
+                  onReset={() =>
+                    filterClearHandler(config.key as keyof DataFilterTypes)
+                  }
+                  value={updatedFilters[config.key as keyof DataFilterTypes]}
+                  options={config.options.map(option => ({
+                    label: option,
+                    value: option,
+                  }))}
+                />
+              );
+            })}
           </Box>
         </DialogContent>
         <DialogActions>

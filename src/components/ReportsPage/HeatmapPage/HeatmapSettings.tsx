@@ -19,14 +19,24 @@ import {
   GroupByOption,
   FilterConfigItem,
   Filters,
-} from "@cortexapps/birdseye";
+} from '@cortexapps/birdseye';
 import { map, mapValues, size, sum } from 'lodash';
-import { Button, Checkbox, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import {
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@material-ui/core';
 import { HeatmapFiltersModal } from './HeatmapFiltersModal';
 import { Clear } from '@material-ui/icons';
 
 interface HeatmapSettingsProps {
-  filters: Filters,
+  filters: Filters;
   filtersConfig: FilterConfigItem[];
   groupBy: GroupByOption;
   groupByOptions: GroupByOption[];
@@ -54,20 +64,31 @@ export const HeatmapSettings: React.FC<HeatmapSettingsProps> = ({
 }) => {
   const [isFilterModalOpened, setFilterModalOpened] = useState(false);
 
-  const groupChangeHandler = useCallback((event: React.ChangeEvent<{ value: unknown }>) => {
-    const newGroup = groupByOptions.find(option => option === event.target.value);
-    if (!newGroup) {
-      return;
-    }
-    setGroupBy(newGroup);
-  }, [groupByOptions, setGroupBy]);
+  const groupChangeHandler = useCallback(
+    (event: React.ChangeEvent<{ value: unknown }>) => {
+      const newGroup = groupByOptions.find(
+        option => option === event.target.value,
+      );
+      if (!newGroup) {
+        return;
+      }
+      setGroupBy(newGroup);
+    },
+    [groupByOptions, setGroupBy],
+  );
 
-  const reportTypeChangeHandler = useCallback((event: React.ChangeEvent<{ value: unknown }>) => {
-    if (event.target.value !== HeaderType.Ladder && event.target.value !== HeaderType.Rules) {
-      return;
-    }
-    setReportType(event.target.value);
-  }, [setReportType]);
+  const reportTypeChangeHandler = useCallback(
+    (event: React.ChangeEvent<{ value: unknown }>) => {
+      if (
+        event.target.value !== HeaderType.Ladder &&
+        event.target.value !== HeaderType.Rules
+      ) {
+        return;
+      }
+      setReportType(event.target.value);
+    },
+    [setReportType],
+  );
 
   const clearFiltersHandler = useCallback(() => {
     const emptyFilter = mapValues(filters.dataFilters, () => []);
@@ -96,11 +117,20 @@ export const HeatmapSettings: React.FC<HeatmapSettingsProps> = ({
             <Grid item>
               <FormControl>
                 <InputLabel style={{ minWidth: '100px' }}>Driven By</InputLabel>
-                <Select value={filters.headerType} onChange={reportTypeChangeHandler}>
-                  <MenuItem key={"DrivenByOption-Rules"} value={HeaderType.Rules}>
+                <Select
+                  value={filters.headerType}
+                  onChange={reportTypeChangeHandler}
+                >
+                  <MenuItem
+                    key={'DrivenByOption-Rules'}
+                    value={HeaderType.Rules}
+                  >
                     Rules
                   </MenuItem>
-                  <MenuItem key={"DrivenByOption-Levels"} value={HeaderType.Ladder}>
+                  <MenuItem
+                    key={'DrivenByOption-Levels'}
+                    value={HeaderType.Ladder}
+                  >
                     Levels
                   </MenuItem>
                 </Select>
@@ -110,7 +140,7 @@ export const HeatmapSettings: React.FC<HeatmapSettingsProps> = ({
           {showHierarchy && (
             <Grid item>
               <FormControlLabel
-                aria-label={"Show hierarchy"}
+                aria-label={'Show hierarchy'}
                 control={
                   <Checkbox
                     checked={filters.useHierarchy}
@@ -120,9 +150,7 @@ export const HeatmapSettings: React.FC<HeatmapSettingsProps> = ({
                   />
                 }
                 label={
-                  <Typography variant={'subtitle2'}>
-                    Show hierarchy
-                  </Typography>
+                  <Typography variant={'subtitle2'}>Show hierarchy</Typography>
                 }
               />
             </Grid>
@@ -130,12 +158,14 @@ export const HeatmapSettings: React.FC<HeatmapSettingsProps> = ({
           {showHierarchy && (
             <Grid item>
               <FormControlLabel
-                aria-label={"Hide teams without entities"}
+                aria-label={'Hide teams without entities'}
                 control={
                   <Checkbox
                     checked={filters.hideTeamsWithoutServices}
                     onChange={() => {
-                      setHideTeamsWithoutEntities(!filters.hideTeamsWithoutServices);
+                      setHideTeamsWithoutEntities(
+                        !filters.hideTeamsWithoutServices,
+                      );
                     }}
                   />
                 }
