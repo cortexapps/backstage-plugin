@@ -46,6 +46,10 @@ import { mapKeys, mapValues } from 'lodash';
 import { HeatmapSettings } from './HeatmapSettings';
 import { useColorCellStyles } from './colorClasses';
 import { Grid } from '@material-ui/core';
+import { useRouteRef } from '@backstage/core-plugin-api';
+import { scorecardServiceDetailsRouteRef } from '../../../routes';
+import { defaultComponentRefContext, entityComponentRef } from '../../../utils/ComponentUtils';
+import { parseEntityRef } from '@backstage/catalog-model';
 
 const convertToBirdsEyeFilterType = (
   filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>,
@@ -236,11 +240,12 @@ const getCellColorBackground = (value?: number): string => {
 };
 
 interface HeatmapTableProps {
+  allDomains: Domain[];
   allTeams: TeamResponse[];
   catalog: HomepageEntity[];
   domainHierarchy: DomainHierarchiesResponse | undefined;
-  allDomains: Domain[];
   domainAncestryMap: Record<number, number[]>;
+  entitiesByTag: StringIndexable<HomepageEntity>;
   filters: Filters;
   ladder?: ScorecardLadder;
   scorecard: Scorecard;
@@ -256,6 +261,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
   catalog,
   domainAncestryMap,
   domainHierarchy,
+  entitiesByTag,
   filters,
   ladder,
   scorecard,
@@ -294,6 +300,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     allTeams,
     domainAncestryMap: mappedDomainAncestryMap,
     domainHierarchy: mappedDomainHierarchies,
+    
     filters,
     scorecard: mappedScorecard,
     scores: mappedScores,
@@ -301,6 +308,10 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     teamHierarchy,
     teamsByEntity,
   });
+
+  const scorecardServiceDetailsRef = useRouteRef(
+    scorecardServiceDetailsRouteRef,
+  );
 
   return (
     <Grid container direction={'column'}>
@@ -332,7 +343,28 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
           getScoreColorClassName={points =>
             `${colorStyles.root} ${colorStyles[getScoreColorClassName(points)]}`
           }
-          getScorecardEntityUrl={() => ''}
+          getScorecardEntityUrl={(scorecardEntity) => {
+            const entityId = Number.parseInt(scorecardEntity.entityId);
+            const entity = catalog.find(entity => entityId === entity.id);
+            const codeTag = entity?.codeTag;
+            if (!codeTag) {
+              return '';
+            }
+
+            const componentRef = entityComponentRef(
+              entitiesByTag,
+              codeTag,
+            );
+
+            const entityName = parseEntityRef(componentRef, defaultComponentRefContext);
+
+            const entityUrl = scorecardServiceDetailsRef({
+              scorecardId: `${mappedScorecard.id}`,
+              ...entityName,
+            });
+            
+            return entityUrl;
+          }}
           setFilters={setFilters}
         />
       </Grid>

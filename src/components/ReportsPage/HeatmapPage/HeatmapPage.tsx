@@ -17,7 +17,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ContentHeader, Progress } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { ScorecardSelector } from '../ScorecardSelector';
-import { useCortexApi } from '../../../utils/hooks';
+import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
 import { CopyButton } from '../../Common/CopyButton';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { isFunction } from 'lodash';
@@ -134,13 +134,15 @@ export const HeatmapPage = () => {
     useCortexApi(api => api.getDomainHierarchies());
   const { value: domainAncestors, loading: isLoadingDomainAncestors } =
     useCortexApi(api => api.getEntityDomainAncestors());
+  const { entitiesByTag, loading: loadingEntitiesByTag } = useEntitiesByTag();
   const isLoading =
     isLoadingScorecards ||
     isLoadingScores ||
     isLoadingCatalog ||
     isLoadingLadder ||
     isLoadingDomainHierarchies ||
-    isLoadingDomainAncestors;
+    isLoadingDomainAncestors ||
+    loadingEntitiesByTag;
 
   const onScorecardSelectChange = (scorecardId?: number) => {
     setFiltersAndNavigate({
@@ -227,6 +229,7 @@ export const HeatmapPage = () => {
                 catalog={catalog?.entities ?? []}
                 domainAncestryMap={domainAncestors?.entitiesToAncestors ?? {}}
                 domainHierarchy={domainHierarchies}
+                entitiesByTag={entitiesByTag}
                 filters={filters}
                 ladder={ladders?.[0]}
                 scorecard={scorecard}
