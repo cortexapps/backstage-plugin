@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Cortex Applications, Inc.
+ * Copyright 2024 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,8 @@ import {
   ItemCardHeader,
 } from '@backstage/core-components';
 import { Card, CardActions, CardContent, CardMedia } from '@material-ui/core';
-import { HeatmapPage as HeatmapPageOld } from './HeatmapPageOld';
 import { ProgressPage } from './ProgressPage';
-import { AllScorecardsPage as AllScorecardsPageOld } from './AllScorecardsPageOld/AllScorecardsPage';
+import { AllScorecardsPage } from './AllScorecardsPageOld/AllScorecardsPage';
 import { HeatmapPage } from './HeatmapPage';
 
 export const ReportsPageCard = ({
@@ -60,14 +59,9 @@ const ReportsPageBody = () => {
         url="/heatmap"
       />
       <ReportsPageCard
-        name="Bird's Eye OLD"
-        description="Dive into your Scorecards to get insight into performance, broken down by teams, groups, and rules and visualized as a heatmap."
-        url="/heatmap-old"
-      />
-      <ReportsPageCard
-        name="All Scorecards OLD"
+        name="All Scorecards"
         description="See how services, teams, and groups are doing across all of your Scorecards in a single aggregated view."
-        url="/all-scorecards-old"
+        url="/all-scorecards"
       />
       <ReportsPageCard
         name="Progress"
@@ -83,8 +77,7 @@ export const ReportsPage = () => {
     <Routes>
       <Route path="/" element={<ReportsPageBody />} />
       <Route path="/heatmap" element={<HeatmapPage />} />
-      <Route path="/heatmap-old" element={<HeatmapPageOld />} />
-      <Route path="/all-scorecards-old" element={<AllScorecardsPageOld />} />
+      <Route path="/all-scorecards" element={<AllScorecardsPage />} />
       <Route path="/progress" element={<ProgressPage />} />
     </Routes>
   );

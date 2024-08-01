@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Cortex Applications, Inc.
+ * Copyright 2024 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ import React, { useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
 import { GroupByOption } from '../../../api/types';
-import { AllScorecardsHeatmapTable as AllScorecardsHeatmapTableOld } from '../HeatmapPageOld/Tables/AllScorecardHeatmapTable';
+import { AllScorecardsHeatmapTable } from './Tables/AllScorecardHeatmapTable';
 
 interface AllScorecardsHeatmapProps {
   groupBy: GroupByOption;
@@ -75,7 +75,7 @@ export const AllScorecardsHeatmap = ({
   );
 
   return (
-    <AllScorecardsHeatmapTableOld
+    <AllScorecardsHeatmapTable
       entitiesByTag={entitiesByTag}
       groupBy={groupBy}
       scorecardNames={scorecardNames}
