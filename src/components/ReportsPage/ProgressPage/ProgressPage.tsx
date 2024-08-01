@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 import React, { useCallback, useState } from 'react';
-import {
-  Content,
-  ContentHeader,
-  EmptyState,
-  WarningPanel,
-} from '@backstage/core-components';
-import {
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@material-ui/core';
+import { Content, ContentHeader, EmptyState, WarningPanel, } from '@backstage/core-components';
+import { FormControl, Grid, InputLabel, MenuItem, Select, } from '@material-ui/core';
 import { ScorecardSelector } from '../ScorecardSelector';
 import { useCortexApi, useDropdown } from '../../../utils/hooks';
 import { Lookback } from '../../../utils/lookback';
@@ -56,20 +45,24 @@ export const ProgressPage = () => {
   const [selectedScorecardId, setSelectedScorecardId] = useState<
     number | undefined
   >(initialScorecardId);
-  const setSelectedScorecardIdAndNavigate = useCallback((selectedScorecardId?: number) => {
-    setSelectedScorecardId(selectedScorecardId);
+  const setSelectedScorecardIdAndNavigate = useCallback(
+    (selectedScorecardId?: number) => {
+      setSelectedScorecardId(selectedScorecardId);
 
-    const targetUrl = stringifyUrl({ url: location.pathname, query: {
-      scorecardId: selectedScorecardId
-    }});
+      const targetUrl = stringifyUrl({
+        url: location.pathname,
+        query: {
+          scorecardId: selectedScorecardId,
+        },
+      });
 
-    navigate(targetUrl, { replace: true });
-  }, [setSelectedScorecardId, location.pathname, navigate]);
+      navigate(targetUrl, { replace: true });
+    },
+    [setSelectedScorecardId, location.pathname, navigate],
+  );
 
   const [lookback, setLookback] = useDropdown(Lookback.MONTHS_1);
-  const [groupBy, setGroupBy] = useState<GroupByOption>(
-    GroupByOption.ENTITY,
-  );
+  const [groupBy, setGroupBy] = useState<GroupByOption>(GroupByOption.ENTITY);
   const [selectedRule, setSelectedRule] = useDropdown<string>(
     defaultRule.value,
   );
@@ -94,11 +87,11 @@ export const ProgressPage = () => {
 
   const scorecardsResult = useCortexApi(api => api.getScorecards());
 
-  if (groupBy === GroupByOption.LEVEL) {
+  if (groupBy === GroupByOption.LEVEL || groupBy === GroupByOption.DOMAIN) {
     return (
-        <WarningPanel severity="error" title="Functionality not supported.">
-          Group by for levels is not supported yet.
-        </WarningPanel>
+      <WarningPanel severity="error" title="Functionality not supported.">
+        Group by for levels is not supported yet.
+      </WarningPanel>
     );
   }
 
