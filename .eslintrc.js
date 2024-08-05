@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Cortex Applications, Inc.
+ * Copyright 2024 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ module.exports = {
   extends: ['@cortexapps/eslint-config-oss'],
   ignorePatterns: ['dist/*', 'dist-types/*', 'node_modules/*'],
   rules: {
+    "eol-last": ["error", "always"],
     semi: ["error", "always"]
   }
 };

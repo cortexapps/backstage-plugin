@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.11.7
+
+- Add indicator explaining that grouping by domain is not available for historical reports.
+
 ### 2.11.6
 
 - Add show my entities filter in Initiatives page
