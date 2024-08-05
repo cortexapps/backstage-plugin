@@ -45,7 +45,7 @@ import {
   HomepageEntityResponse,
   UserEntitiesResponse,
 } from './userInsightTypes';
-import { Domain } from '@cortexapps/birdseye';
+import { Domain, TeamResponse } from '@cortexapps/birdseye';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
@@ -128,4 +128,6 @@ export interface CortexApi {
   getDomainHierarchies(): Promise<DomainHierarchiesResponse>;
 
   getTeamHierarchies(): Promise<TeamHierarchiesResponse>;
+
+  getAllTeams(): Promise<TeamResponse[]>;
 }

@@ -55,7 +55,7 @@ import {
   HomepageEntityResponse,
   UserEntitiesResponse,
 } from './userInsightTypes';
-import { Domain } from '@cortexapps/birdseye';
+import { Domain, TeamResponse } from '@cortexapps/birdseye';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -333,7 +333,7 @@ export class CortexClient implements CortexApi {
   }
 
   async getAllDomains(): Promise<Domain[]> {
-    return await this.get(`/api/backstage/v2/domains`);
+    return this.get(`/api/backstage/v2/domains`);
   }
 
   async getEntityDomainAncestors(): Promise<EntityDomainAncestorsResponse> {
@@ -346,6 +346,10 @@ export class CortexClient implements CortexApi {
 
   async getTeamHierarchies(): Promise<TeamHierarchiesResponse> {
     return await this.get(`/api/backstage/v1/teams/hierarchies`);
+  }
+
+  async getAllTeams(): Promise<TeamResponse[]> {
+    return this.get(`/api/backstage/v2/teams`);
   }
 
   private async getBasePath(): Promise<string> {

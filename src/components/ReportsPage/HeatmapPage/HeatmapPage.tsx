@@ -133,6 +133,9 @@ export const HeatmapPage = () => {
   const { value: domains = [], loading: isLoadingDomains } = useCortexApi(api =>
     api.getAllDomains(),
   );
+  const { value: teams = [], loading: isLoadingTeams } = useCortexApi(api =>
+    api.getAllTeams(),
+  );
   const { value: domainHierarchies, loading: isLoadingDomainHierarchies } =
     useCortexApi(api => api.getDomainHierarchies());
   const { value: domainAncestors, loading: isLoadingDomainAncestors } =
@@ -146,6 +149,7 @@ export const HeatmapPage = () => {
     isLoadingDomainHierarchies ||
     isLoadingDomainAncestors ||
     isLoadingDomains ||
+    isLoadingTeams ||
     loadingEntitiesByTag;
 
   const onScorecardSelectChange = (scorecardId?: number) => {
@@ -163,7 +167,7 @@ export const HeatmapPage = () => {
     result => result.id.toString() === filters.scorecardId,
   );
 
-  console.log('ddd', domains);
+  console.log('ddd', teams);
 
   return (
     <>
@@ -196,24 +200,7 @@ export const HeatmapPage = () => {
             scorecard && (
               <HeatmapTable
                 allDomains={domains}
-                allTeams={[
-                  {
-                    id: '30',
-                    cid: 'en2e8a4277c0bced85',
-                    identifier: {
-                      name: 'Guests',
-                      teamTag: 'guests',
-                      ownerGroup: 'guests',
-                      ownerProviderType: 'CORTEX_TEAMS' as any,
-                    },
-                    shortDescription: undefined,
-                    fullDescription: undefined,
-                    links: [],
-                    slackChannels: [],
-                    numTeamMembers: 0,
-                    isArchived: false,
-                  },
-                ]}
+                allTeams={teams}
                 catalog={catalog?.entities ?? []}
                 domainAncestryMap={domainAncestors?.entitiesToAncestors ?? {}}
                 domainHierarchy={domainHierarchies}
