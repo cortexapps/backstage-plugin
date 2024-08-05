@@ -45,6 +45,7 @@ import {
   HomepageEntityResponse,
   UserEntitiesResponse,
 } from './userInsightTypes';
+import { Domain } from '@cortexapps/birdseye';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
@@ -119,6 +120,8 @@ export interface CortexApi {
   getSyncJobs(): Promise<JobsResponse>;
 
   getExpiration(): Promise<ExpirationResponse>;
+
+  getAllDomains(): Promise<Domain[]>;
 
   getEntityDomainAncestors(): Promise<EntityDomainAncestorsResponse>;
 

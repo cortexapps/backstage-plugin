@@ -55,6 +55,7 @@ import {
   HomepageEntityResponse,
   UserEntitiesResponse,
 } from './userInsightTypes';
+import { Domain } from '@cortexapps/birdseye';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -329,6 +330,10 @@ export class CortexClient implements CortexApi {
 
   async getExpiration(): Promise<ExpirationResponse> {
     return this.get(`/api/backstage/v1/entitlements/expiration-date`);
+  }
+
+  async getAllDomains(): Promise<Domain[]> {
+    return await this.get(`/api/backstage/v2/domains`);
   }
 
   async getEntityDomainAncestors(): Promise<EntityDomainAncestorsResponse> {

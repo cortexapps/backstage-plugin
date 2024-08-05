@@ -130,6 +130,9 @@ export const HeatmapPage = () => {
   const { value: catalog, loading: isLoadingCatalog } = useCortexApi(api =>
     api.getCatalogEntities(),
   );
+  const { value: domains = [], loading: isLoadingDomains } = useCortexApi(api =>
+    api.getAllDomains(),
+  );
   const { value: domainHierarchies, loading: isLoadingDomainHierarchies } =
     useCortexApi(api => api.getDomainHierarchies());
   const { value: domainAncestors, loading: isLoadingDomainAncestors } =
@@ -142,6 +145,7 @@ export const HeatmapPage = () => {
     isLoadingLadder ||
     isLoadingDomainHierarchies ||
     isLoadingDomainAncestors ||
+    isLoadingDomains ||
     loadingEntitiesByTag;
 
   const onScorecardSelectChange = (scorecardId?: number) => {
@@ -158,6 +162,8 @@ export const HeatmapPage = () => {
   const scorecard = scorecardsResult.value?.find(
     result => result.id.toString() === filters.scorecardId,
   );
+
+  console.log('ddd', domains);
 
   return (
     <>
@@ -189,25 +195,7 @@ export const HeatmapPage = () => {
           ) : (
             scorecard && (
               <HeatmapTable
-                allDomains={[
-                  {
-                    id: '36',
-                    cid: 'en2e8a42777d161c82',
-                    codeTag: 'examples',
-                    name: 'Examples',
-                    type: 'domain' as any,
-                    description: undefined,
-                    icon: {
-                      kind: 'cortex',
-                      tag: 'domain',
-                      url: 'http://api.local.getcortexapp.com:8080/api/internal/v1/static?type=FS&kind=cortex&path=domain',
-                    },
-                    serviceOwnerEmails: [],
-                    groupNames: ['guests'],
-                    serviceGroupTags: [],
-                    isArchived: false,
-                  },
-                ]}
+                allDomains={domains}
                 allTeams={[
                   {
                     id: '30',
