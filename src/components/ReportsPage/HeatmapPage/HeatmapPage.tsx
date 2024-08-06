@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useCallback, useEffect, useState } from 'react';
-import { ContentHeader, Progress } from '@backstage/core-components';
+import { ContentHeader, EmptyState, Progress } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { ScorecardSelector } from '../ScorecardSelector';
 import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
@@ -199,7 +199,7 @@ export const HeatmapPage = () => {
           {isLoading ? (
             <Progress />
           ) : (
-            scorecard && (
+            scorecard ? (
               <HeatmapTable
                 allDomains={domains?.domains ?? []}
                 allTeams={teams?.teams ?? []}
@@ -214,7 +214,7 @@ export const HeatmapPage = () => {
                 setFilters={setFilters}
                 teamsByEntity={teamsByEntityId?.teamsByEntityId ?? {}}
               />
-            )
+            ) : <EmptyState title="Select a Scorecard" missing="data" />
           )}
         </Grid>
       </Grid>
