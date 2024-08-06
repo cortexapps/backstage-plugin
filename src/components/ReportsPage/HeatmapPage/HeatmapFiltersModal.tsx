@@ -87,54 +87,47 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
     setIsOpen(false);
   }, [setFilters, setIsOpen, updatedFilters]);
 
+  const closeDialogHandler = useCallback(() => {
+    setIsOpen(false);
+  }, [setIsOpen]);
+
   useEffect(() => {
     setUpdatedFilters(filters);
   }, [filters, isOpen]);
 
   return (
-    <>
-      <Dialog open={isOpen} onClose={() => setIsOpen(false)} fullWidth>
-        <DialogTitle>Filter Bird's Eye Report</DialogTitle>
-        <DialogContent>
-          <Box display={'flex'} flexDirection={'column'} gridRowGap={16}>
-            {filtersConfig.map(config => {
-              if (size(config.options) === 0) {
-                return null;
-              }
+    <Dialog open={isOpen} onClose={closeDialogHandler} fullWidth>
+      <DialogTitle>Filter Bird's Eye Report</DialogTitle>
+      <DialogContent>
+        <Box display={'flex'} flexDirection={'column'} gridRowGap={16}>
+          {filtersConfig.map(config => {
+            if (size(config.options) === 0) {
+              return null;
+            }
 
-              return (
-                <ModalSelect
-                  key={config.key}
-                  name={config.label}
-                  onChange={values =>
-                    filterChangeHandler(
-                      config.key as keyof DataFilterTypes,
-                      values,
-                    )
-                  }
-                  onReset={() =>
-                    filterClearHandler(config.key as keyof DataFilterTypes)
-                  }
-                  value={updatedFilters[config.key as keyof DataFilterTypes]}
-                  options={config.options.map(option => ({
-                    label: option,
-                    value: option,
-                  }))}
-                />
-              );
-            })}
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={applyFiltersHandler}
-            color="primary"
-            aria-label="Apply filters"
-          >
-            Apply filters
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+            return (
+              <ModalSelect
+                key={config.key}
+                configKey={config.key as keyof DataFilterTypes}
+                name={config.label}
+                onChange={filterChangeHandler}
+                onReset={filterClearHandler}
+                value={updatedFilters[config.key as keyof DataFilterTypes]}
+                options={config.options}
+              />
+            );
+          })}
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={applyFiltersHandler}
+          color="primary"
+          aria-label="Apply filters"
+        >
+          Apply filters
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };

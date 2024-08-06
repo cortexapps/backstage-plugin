@@ -35,31 +35,13 @@ import {
 import { HeatmapTable } from './HeatmapTable';
 import { buildUrl } from '../../../utils/URLUtils';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import { filtersToParams } from './HeatmapUtils';
 
 export const HeatmapPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const alertApi = useApi(alertApiRef);
-
-  const filtersToParams = (filters: Filters) => {
-    return {
-      scorecardId: filters.scorecardId,
-      entity: filters.dataFilters.selectedEntities,
-      group: filters.dataFilters.selectedGroups,
-      team: filters.dataFilters.selectedTeams,
-      domain: filters.dataFilters.selectedDomains,
-      level: filters.dataFilters.selectedLevels,
-      owner: filters.dataFilters.selectedOwners,
-      groupBy: filters.path.find(({ type }) => type === PathType.GroupBy)
-        ?.label,
-      showHierarchy: filters.useHierarchy ? 'true' : undefined,
-      hideWithoutChildren: filters.hideTeamsWithoutServices
-        ? undefined
-        : 'false',
-      headerType: filters.headerType,
-    };
-  };
 
   const [filters, setFilters] = useState<Filters>({
     ...defaultInitial,
@@ -94,8 +76,11 @@ export const HeatmapPage = () => {
     return buildUrl(filtersToParams(filters), location.pathname);
   }, [filters, location]);
 
-  const onGetShareableLinkSuccess = () =>
-    alertApi.post({ message: 'Share link copied!', display: 'transient' });
+  const onGetShareableLinkSuccess = useCallback(
+    () =>
+      alertApi.post({ message: 'Share link copied!', display: 'transient' }),
+    [alertApi],
+  );
 
   const setFiltersAndNavigate = useCallback(
     (value: React.SetStateAction<Filters>) =>
@@ -159,12 +144,15 @@ export const HeatmapPage = () => {
     isLoadingTeamsByEntityId ||
     loadingEntitiesByTag;
 
-  const onScorecardSelectChange = (scorecardId?: number) => {
-    setFiltersAndNavigate({
-      ...defaultInitial,
-      scorecardId: scorecardId?.toString(),
-    });
-  };
+  const onScorecardSelectChange = useCallback(
+    (scorecardId?: number) => {
+      setFiltersAndNavigate({
+        ...defaultInitial,
+        scorecardId: scorecardId?.toString(),
+      });
+    },
+    [setFiltersAndNavigate],
+  );
 
   useEffect(() => {
     setFiltersAndNavigate(filters);

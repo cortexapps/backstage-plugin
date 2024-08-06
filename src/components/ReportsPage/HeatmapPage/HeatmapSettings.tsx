@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   HeaderType,
   GroupByOption,
@@ -95,7 +95,10 @@ export const HeatmapSettings: React.FC<HeatmapSettingsProps> = ({
     setDataFilters(emptyFilter);
   }, [filters.dataFilters, setDataFilters]);
 
-  const filtersCount = sum(map(filters.dataFilters, size));
+  const filtersCount = useMemo(
+    () => sum(map(filters.dataFilters, size)),
+    [filters.dataFilters],
+  );
 
   return (
     <Grid container direction={'row'} justifyContent={'space-between'}>
