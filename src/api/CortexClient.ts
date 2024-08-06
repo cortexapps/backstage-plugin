@@ -334,7 +334,7 @@ export class CortexClient implements CortexApi {
   }
 
   async getAllDomains(): Promise<{ domains: Domain[] }> {
-    return this.get(`/api/backstage/v2/domains`);
+    return this.get(`/api/backstage/v1/domains`);
   }
 
   async getEntityDomainAncestors(): Promise<EntityDomainAncestorsResponse> {
@@ -350,11 +350,11 @@ export class CortexClient implements CortexApi {
   }
 
   async getAllTeams(): Promise<{ teams: TeamResponse[] }> {
-    return this.get(`/api/backstage/v2/teams`);
+    return this.get(`/api/backstage/v1/teams`);
   }
 
   async getAllTeamsByEntityId(): Promise<{ teamsByEntityId: StringIndexable<TeamDetails[]> }> {
-    return this.get(`/api/backstage/v2/teams/entities`);
+    return this.get(`/api/backstage/v1/ownership/entities/teams`);
   }
 
   private async getBasePath(): Promise<string> {
