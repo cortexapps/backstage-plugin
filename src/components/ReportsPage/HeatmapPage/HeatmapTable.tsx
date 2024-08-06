@@ -48,7 +48,10 @@ import { useColorCellStyles } from './colorClasses';
 import { Grid } from '@material-ui/core';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { scorecardServiceDetailsRouteRef } from '../../../routes';
-import { defaultComponentRefContext, entityComponentRef } from '../../../utils/ComponentUtils';
+import {
+  defaultComponentRefContext,
+  entityComponentRef,
+} from '../../../utils/ComponentUtils';
 import { parseEntityRef } from '@backstage/catalog-model';
 
 const convertToBirdsEyeFilterType = (
@@ -240,13 +243,12 @@ const getCellColorBackground = (value?: number): string => {
 };
 
 const BirdsEyeAnchorAdapter = (
-  props: React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>
+  props: React.DetailedHTMLProps<
+    React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    HTMLAnchorElement
+  >,
 ) => {
-  return (
-    <Link to={props.href ?? ''}>
-      {props.children}
-    </Link>
-  );
+  return <Link to={props.href ?? ''}>{props.children}</Link>;
 };
 
 interface HeatmapTableProps {
@@ -310,7 +312,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     allTeams,
     domainAncestryMap: mappedDomainAncestryMap,
     domainHierarchy: mappedDomainHierarchies,
-    
+
     filters,
     scorecard: mappedScorecard,
     scores: mappedScores,
@@ -344,7 +346,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
         <BirdsEyeReportTable
           {...tableData}
           components={{
-            anchor: BirdsEyeAnchorAdapter
+            anchor: BirdsEyeAnchorAdapter,
           }}
           emptyResultDisplay={
             <EmptyState title="Select a Scorecard" missing="data" />
@@ -356,7 +358,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
           getScoreColorClassName={points =>
             `${colorStyles.root} ${colorStyles[getScoreColorClassName(points)]}`
           }
-          getScorecardEntityUrl={(scorecardEntity) => {
+          getScorecardEntityUrl={scorecardEntity => {
             const entityId = Number.parseInt(scorecardEntity.entityId);
             const entity = catalog.find(entity => entityId === entity.id);
             const codeTag = entity?.codeTag;
@@ -364,18 +366,18 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
               return '';
             }
 
-            const componentRef = entityComponentRef(
-              entitiesByTag,
-              codeTag,
-            );
+            const componentRef = entityComponentRef(entitiesByTag, codeTag);
 
-            const entityName = parseEntityRef(componentRef, defaultComponentRefContext);
+            const entityName = parseEntityRef(
+              componentRef,
+              defaultComponentRefContext,
+            );
 
             const entityUrl = scorecardServiceDetailsRef({
               scorecardId: `${mappedScorecard.id}`,
               ...entityName,
             });
-            
+
             return entityUrl;
           }}
           setFilters={setFilters}

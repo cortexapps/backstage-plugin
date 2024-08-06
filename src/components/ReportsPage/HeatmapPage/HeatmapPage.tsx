@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 import React, { useCallback, useEffect, useState } from 'react';
-import { ContentHeader, EmptyState, Progress } from '@backstage/core-components';
+import {
+  ContentHeader,
+  EmptyState,
+  Progress,
+} from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { ScorecardSelector } from '../ScorecardSelector';
 import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
@@ -136,9 +140,8 @@ export const HeatmapPage = () => {
   const { value: teams, loading: isLoadingTeams } = useCortexApi(api =>
     api.getAllTeams(),
   );
-  const { value: teamsByEntityId, loading: isLoadingTeamsByEntityId } = useCortexApi(api =>
-    api.getAllTeamsByEntityId(),
-  );
+  const { value: teamsByEntityId, loading: isLoadingTeamsByEntityId } =
+    useCortexApi(api => api.getAllTeamsByEntityId());
   const { value: domainHierarchies, loading: isLoadingDomainHierarchies } =
     useCortexApi(api => api.getDomainHierarchies());
   const { value: domainAncestors, loading: isLoadingDomainAncestors } =
@@ -198,23 +201,23 @@ export const HeatmapPage = () => {
         <Grid item lg={12}>
           {isLoading ? (
             <Progress />
+          ) : scorecard ? (
+            <HeatmapTable
+              allDomains={domains?.domains ?? []}
+              allTeams={teams?.teams ?? []}
+              catalog={catalog?.entities ?? []}
+              domainAncestryMap={domainAncestors?.entitiesToAncestors ?? {}}
+              domainHierarchy={domainHierarchies}
+              entitiesByTag={entitiesByTag}
+              filters={filters}
+              ladder={ladders?.[0]}
+              scorecard={scorecard}
+              scores={scores ?? []}
+              setFilters={setFilters}
+              teamsByEntity={teamsByEntityId?.teamsByEntityId ?? {}}
+            />
           ) : (
-            scorecard ? (
-              <HeatmapTable
-                allDomains={domains?.domains ?? []}
-                allTeams={teams?.teams ?? []}
-                catalog={catalog?.entities ?? []}
-                domainAncestryMap={domainAncestors?.entitiesToAncestors ?? {}}
-                domainHierarchy={domainHierarchies}
-                entitiesByTag={entitiesByTag}
-                filters={filters}
-                ladder={ladders?.[0]}
-                scorecard={scorecard}
-                scores={scores ?? []}
-                setFilters={setFilters}
-                teamsByEntity={teamsByEntityId?.teamsByEntityId ?? {}}
-              />
-            ) : <EmptyState title="Select a Scorecard" missing="data" />
+            <EmptyState title="Select a Scorecard" missing="data" />
           )}
         </Grid>
       </Grid>
