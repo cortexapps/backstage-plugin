@@ -136,6 +136,9 @@ export const HeatmapPage = () => {
   const { value: teams = [], loading: isLoadingTeams } = useCortexApi(api =>
     api.getAllTeams(),
   );
+  const { value: teamsByEntityId = {}, loading: isLoadingTeamsByEntityId } = useCortexApi(api =>
+    api.getAllTeamsByEntityId(),
+  );
   const { value: domainHierarchies, loading: isLoadingDomainHierarchies } =
     useCortexApi(api => api.getDomainHierarchies());
   const { value: domainAncestors, loading: isLoadingDomainAncestors } =
@@ -150,6 +153,7 @@ export const HeatmapPage = () => {
     isLoadingDomainAncestors ||
     isLoadingDomains ||
     isLoadingTeams ||
+    isLoadingTeamsByEntityId ||
     loadingEntitiesByTag;
 
   const onScorecardSelectChange = (scorecardId?: number) => {
@@ -167,7 +171,7 @@ export const HeatmapPage = () => {
     result => result.id.toString() === filters.scorecardId,
   );
 
-  console.log('ddd', teams);
+  console.log('ddd', teamsByEntityId);
 
   return (
     <>
@@ -210,17 +214,7 @@ export const HeatmapPage = () => {
                 scorecard={scorecard}
                 scores={scores ?? []}
                 setFilters={setFilters}
-                teamsByEntity={{
-                  '28': [],
-                  '29': [],
-                  '30': [],
-                  '31': [],
-                  '32': [],
-                  '33': [],
-                  '34': [],
-                  '35': [],
-                  '36': [],
-                }}
+                teamsByEntity={teamsByEntityId}
               />
             )
           )}
