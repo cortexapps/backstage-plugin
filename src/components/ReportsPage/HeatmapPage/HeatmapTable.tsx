@@ -213,9 +213,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
           components={{
             anchor: BirdsEyeAnchorAdapter,
           }}
-          emptyResultDisplay={
-            <EmptyState title="Select a Scorecard" missing="data" />
-          }
+          emptyResultDisplay={<EmptyState title="No data" missing="data" />}
           filters={filters}
           getCellColorClassName={cellColorClassNameHandler}
           getScoreColorClassName={scoreColorClassNameHandler}

@@ -562,10 +562,10 @@ export interface TeamFilter {
 
 // TODO(catalog-customization): merge GenericCqlFilter and CqlFilter, when we can fully support the "Generic" category app wide.
 interface GenericCqlFilter {
-  category: "Generic";
-  cqlVersion: CqlFilter["cqlVersion"];
-  query: CqlFilter["query"];
-  type: CqlFilter["type"];
+  category: 'Generic';
+  cqlVersion: CqlFilter['cqlVersion'];
+  query: CqlFilter['query'];
+  type: CqlFilter['type'];
 }
 
 export interface CompoundFilter {
