@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { EmptyState } from '@backstage/core-components';
+import { EmptyState, Link } from '@backstage/core-components';
 import {
   useCortexBirdseye,
   BirdsEyeReportTable,
@@ -239,6 +239,16 @@ const getCellColorBackground = (value?: number): string => {
   }
 };
 
+const BirdsEyeAnchorAdapter = (
+  props: React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>
+) => {
+  return (
+    <Link to={props.href ?? ''}>
+      {props.children}
+    </Link>
+  );
+};
+
 interface HeatmapTableProps {
   allDomains: Domain[];
   allTeams: TeamResponse[];
@@ -333,6 +343,9 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
       <Grid item>
         <BirdsEyeReportTable
           {...tableData}
+          components={{
+            anchor: BirdsEyeAnchorAdapter
+          }}
           emptyResultDisplay={
             <EmptyState title="Select a Scorecard" missing="data" />
           }
