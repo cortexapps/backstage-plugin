@@ -130,13 +130,13 @@ export const HeatmapPage = () => {
   const { value: catalog, loading: isLoadingCatalog } = useCortexApi(api =>
     api.getCatalogEntities(),
   );
-  const { value: domains = [], loading: isLoadingDomains } = useCortexApi(api =>
+  const { value: domains, loading: isLoadingDomains } = useCortexApi(api =>
     api.getAllDomains(),
   );
-  const { value: teams = [], loading: isLoadingTeams } = useCortexApi(api =>
+  const { value: teams, loading: isLoadingTeams } = useCortexApi(api =>
     api.getAllTeams(),
   );
-  const { value: teamsByEntityId = {}, loading: isLoadingTeamsByEntityId } = useCortexApi(api =>
+  const { value: teamsByEntityId, loading: isLoadingTeamsByEntityId } = useCortexApi(api =>
     api.getAllTeamsByEntityId(),
   );
   const { value: domainHierarchies, loading: isLoadingDomainHierarchies } =
@@ -171,8 +171,6 @@ export const HeatmapPage = () => {
     result => result.id.toString() === filters.scorecardId,
   );
 
-  console.log('ddd', teamsByEntityId);
-
   return (
     <>
       <ContentHeader title="Bird's Eye">
@@ -203,8 +201,8 @@ export const HeatmapPage = () => {
           ) : (
             scorecard && (
               <HeatmapTable
-                allDomains={domains}
-                allTeams={teams}
+                allDomains={domains?.domains ?? []}
+                allTeams={teams?.teams ?? []}
                 catalog={catalog?.entities ?? []}
                 domainAncestryMap={domainAncestors?.entitiesToAncestors ?? {}}
                 domainHierarchy={domainHierarchies}
@@ -214,7 +212,7 @@ export const HeatmapPage = () => {
                 scorecard={scorecard}
                 scores={scores ?? []}
                 setFilters={setFilters}
-                teamsByEntity={teamsByEntityId}
+                teamsByEntity={teamsByEntityId?.teamsByEntityId ?? {}}
               />
             )
           )}

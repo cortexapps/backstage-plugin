@@ -121,7 +121,7 @@ export interface CortexApi {
 
   getExpiration(): Promise<ExpirationResponse>;
 
-  getAllDomains(): Promise<Domain[]>;
+  getAllDomains(): Promise<{ domains: Domain[] }>;
 
   getEntityDomainAncestors(): Promise<EntityDomainAncestorsResponse>;
 
@@ -129,7 +129,7 @@ export interface CortexApi {
 
   getTeamHierarchies(): Promise<TeamHierarchiesResponse>;
 
-  getAllTeams(): Promise<TeamResponse[]>;
+  getAllTeams(): Promise<{ teams: TeamResponse[] }>;
 
-  getAllTeamsByEntityId(): Promise<StringIndexable<TeamDetails[]>>;
+  getAllTeamsByEntityId(): Promise<{ teamsByEntityId: StringIndexable<TeamDetails[]> }>;
 }

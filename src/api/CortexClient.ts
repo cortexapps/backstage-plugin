@@ -332,7 +332,7 @@ export class CortexClient implements CortexApi {
     return this.get(`/api/backstage/v1/entitlements/expiration-date`);
   }
 
-  async getAllDomains(): Promise<Domain[]> {
+  async getAllDomains(): Promise<{ domains: Domain[] }> {
     return this.get(`/api/backstage/v2/domains`);
   }
 
@@ -348,11 +348,11 @@ export class CortexClient implements CortexApi {
     return await this.get(`/api/backstage/v1/teams/hierarchies`);
   }
 
-  async getAllTeams(): Promise<TeamResponse[]> {
+  async getAllTeams(): Promise<{ teams: TeamResponse[] }> {
     return this.get(`/api/backstage/v2/teams`);
   }
 
-  async getAllTeamsByEntityId(): Promise<StringIndexable<TeamDetails[]>> {
+  async getAllTeamsByEntityId(): Promise<{ teamsByEntityId: StringIndexable<TeamDetails[]> }> {
     return this.get(`/api/backstage/v2/teams/entities`);
   }
 
