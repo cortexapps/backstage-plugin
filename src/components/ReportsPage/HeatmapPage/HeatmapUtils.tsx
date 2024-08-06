@@ -24,12 +24,14 @@ import {
   DomainTreeNode,
   Filters,
   PathType,
+  DomainOwnerInheritance,
 } from '@cortexapps/birdseye';
 import {
   DomainHierarchiesResponse,
   DomainHierarchyNode,
   EntityFilter,
   FilterType,
+  OwnerInheritance,
   RuleOutcome,
   Scorecard,
   ScorecardLadder,
@@ -69,6 +71,19 @@ export const convertToBirdsEyeFilterType = (
   }
 };
 
+export const convertToBirdsEyeOwnerInheritance = (
+  inheritance: OwnerInheritance,
+): DomainOwnerInheritance => {
+  switch (inheritance) {
+    case OwnerInheritance.Append:
+      return DomainOwnerInheritance.Append;
+    case OwnerInheritance.Fallback:
+      return DomainOwnerInheritance.Fallback;
+    case OwnerInheritance.None:
+      return DomainOwnerInheritance.None;
+  }
+};
+
 export const convertToBirdsEyeFilter = (
   filter: Scorecard['filter'],
 ): BirdsEyeScorecard['filter'] => {
@@ -102,7 +117,7 @@ export const convertToBirdsEyeScorecard = (
 ): BirdsEyeScorecard => {
   const rules: BirdsEyeScorecard['rules'] = scorecard.rules.map(rule => ({
     ...rule,
-    cqlVersion: '', // TODO
+    cqlVersion: rule.cqlVersion,
     dateCreated: rule.dateCreated ?? '',
     filter: convertToBirdsEyeFilter(rule.filter),
     id: rule.id.toString(),
@@ -157,12 +172,16 @@ export const convertToBirdsEyeScores = (
         totalPossibleScore: score.totalPossibleScore,
       },
       entity: {
-        cid: '', // TODO
+        cid: score.cid,
         entityGroups: {
           all: score.tags,
           defined: score.tags,
         },
-        entityOwners: [], // TODO
+        entityOwners: score.entityOwners.map(owner => ({
+          ...owner,
+          id: owner.id?.toString() ?? '',
+          inheritance: convertToBirdsEyeOwnerInheritance(owner.inheritance),
+        })),
         id: score.serviceId.toString(),
         name: entity?.name ?? '',
         ownerGroups: score.teams,

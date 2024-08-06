@@ -19,13 +19,25 @@ interface ScorecardCreator {
   email: string;
 }
 
+interface ScorecardExemptions {
+  autoApprove: boolean;
+  enabled: boolean;
+}
+
+interface ScorecardNotifications {
+  enabled: boolean;
+}
+
 export interface Scorecard {
   creator: ScorecardCreator;
   description?: string;
+  exemptions: ScorecardExemptions;
   filter?: EntityFilter | CompoundFilter | null;
   id: number;
+  isDraft: boolean;
   name: string;
   nextUpdated?: string;
+  notification: ScorecardNotifications;
   rules: Rule[];
   tag: string;
 }
@@ -36,6 +48,8 @@ export interface RuleName {
 }
 
 export interface Rule extends RuleName {
+  cqlVersion: string;
+  expression: string;
   id: number;
   description?: string;
   failureMessage?: string;
@@ -173,10 +187,19 @@ export interface ServiceScorecardScore {
   };
 }
 
+export interface ScorecardScoreEntityOwner {
+  id?: number;
+  email: string;
+  description?: string;
+  inheritance: OwnerInheritance;
+}
+
 export interface ScorecardServiceScore {
+  cid: string;
   serviceId: number;
   componentRef: string;
   description?: string;
+  entityOwners: ScorecardScoreEntityOwner[];
   score: number;
   scorePercentage: number;
   totalPossibleScore: number;
@@ -283,7 +306,7 @@ export interface EntityIcon {
   url: string;
 }
 
-export enum DomainOwnerInheritance {
+export enum OwnerInheritance {
   Append = 'APPEND',
   Fallback = 'FALLBACK',
   None = 'NONE',
@@ -293,7 +316,7 @@ export interface EntityOwner {
   description?: string;
   email: string;
   id: string;
-  inheritance?: DomainOwnerInheritance;
+  inheritance?: OwnerInheritance;
 }
 
 export interface EntityGroups {

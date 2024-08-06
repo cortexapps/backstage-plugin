@@ -239,7 +239,8 @@ export class CortexClient implements CortexApi {
   async getScorecardScores(
     scorecardId: number,
   ): Promise<ScorecardServiceScore[]> {
-    return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/scores`);
+    const response = await this.get(`/api/backstage/v2/scorecards/${scorecardId}/scores`);
+    return response.scores;
   }
 
   async getScorecardRuleExemptions(
