@@ -25,6 +25,7 @@ import {
   Filters,
   PathType,
   DomainOwnerInheritance,
+  Rule as BirdsEyeRule,
 } from '@cortexapps/birdseye';
 import {
   DomainHierarchiesResponse,
@@ -32,6 +33,7 @@ import {
   EntityFilter,
   FilterType,
   OwnerInheritance,
+  Rule,
   RuleOutcome,
   Scorecard,
   ScorecardLadder,
@@ -111,28 +113,26 @@ export const convertToBirdsEyeFilter = (
       };
 };
 
-export const convertToBirdsEyeScorecard = (
-  scorecard: Scorecard,
-  ladder: ScorecardLadder | undefined,
-): BirdsEyeScorecard => {
-  const rules: BirdsEyeScorecard['rules'] = scorecard.rules.map(rule => ({
+export const convertToBirdsEyeRule = (rule: Rule): BirdsEyeRule => {
+  return {
     ...rule,
     cqlVersion: rule.cqlVersion,
     dateCreated: rule.dateCreated ?? '',
     filter: convertToBirdsEyeFilter(rule.filter),
     id: rule.id.toString(),
-  }));
+  };
+};
+
+export const convertToBirdsEyeScorecard = (
+  scorecard: Scorecard,
+  ladder: ScorecardLadder | undefined,
+): BirdsEyeScorecard => {
+  const rules: BirdsEyeScorecard['rules'] = scorecard.rules.map(
+    convertToBirdsEyeRule,
+  );
 
   return {
     ...scorecard,
-    exemptions: {
-      autoApprove: false,
-      enabled: false,
-    },
-    isDraft: false,
-    notifications: {
-      enabled: false,
-    },
     filter: convertToBirdsEyeFilter(scorecard.filter),
     id: scorecard.id.toString(),
     rules,
@@ -143,20 +143,12 @@ export const convertToBirdsEyeScorecard = (
 export const convertToBirdsEyeRuleOutcome = (
   rules: RuleOutcome[],
 ): BirdsEyeRuleOutcome[] => {
-  return rules.map((rule: RuleOutcome): BirdsEyeRuleOutcome => {
-    const mappedRule = {
-      ...rule.rule,
-      cqlVersion: '',
-      dateCreated: rule.rule.dateCreated ?? '',
-      filter: undefined,
-      id: rule.rule.id.toString(),
-    };
-
-    return {
+  return rules.map(
+    (rule: RuleOutcome): BirdsEyeRuleOutcome => ({
       ...rule,
-      rule: mappedRule,
-    };
-  });
+      rule: convertToBirdsEyeRule(rule.rule),
+    }),
+  );
 };
 
 export const convertToBirdsEyeScores = (

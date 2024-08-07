@@ -37,7 +37,7 @@ export interface Scorecard {
   isDraft: boolean;
   name: string;
   nextUpdated?: string;
-  notification: ScorecardNotifications;
+  notifications: ScorecardNotifications;
   rules: Rule[];
   tag: string;
 }
