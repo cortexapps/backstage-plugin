@@ -15,7 +15,7 @@
  */
 import moment from 'moment';
 import { ScorecardResult } from '../../../api/types';
-import { StringIndexable } from '../../ReportsPage/HeatmapPageOld/HeatmapUtils';
+import { StringIndexable } from '../../ReportsPage/AllScorecardsPage/HeatmapUtils';
 import { pickBy } from 'lodash';
 
 export interface ApexSeries {

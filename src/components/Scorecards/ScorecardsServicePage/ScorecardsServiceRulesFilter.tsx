@@ -16,7 +16,7 @@
 import { FormControl, Select, MenuItem } from '@material-ui/core';
 import React, { useMemo } from 'react';
 import { getRuleTitle } from '../../../utils/ScorecardRules';
-import { StringIndexable } from '../../ReportsPage/HeatmapPageOld/HeatmapUtils';
+import { StringIndexable } from '../../ReportsPage/AllScorecardsPage/HeatmapUtils';
 import { Rule, RuleOutcome } from '../../../api/types';
 
 interface ScorecardsServiceRulesFilterProps {
