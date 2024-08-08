@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 env:
-  GITHUB_PASSWORD: ${{ secrets.GH_TOKEN_PACKAGES_READ }}
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
   build:
