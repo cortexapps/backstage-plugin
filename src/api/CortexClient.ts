@@ -55,6 +55,7 @@ import {
   HomepageEntityResponse,
   UserEntitiesResponse,
 } from './userInsightTypes';
+import { Domain, StringIndexable, TeamDetails, TeamResponse } from '@cortexapps/birdseye';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -238,7 +239,8 @@ export class CortexClient implements CortexApi {
   async getScorecardScores(
     scorecardId: number,
   ): Promise<ScorecardServiceScore[]> {
-    return await this.get(`/api/backstage/v1/scorecards/${scorecardId}/scores`);
+    const response = await this.get(`/api/backstage/v2/scorecards/${scorecardId}/scores`);
+    return response.scores;
   }
 
   async getScorecardRuleExemptions(
@@ -331,6 +333,10 @@ export class CortexClient implements CortexApi {
     return this.get(`/api/backstage/v1/entitlements/expiration-date`);
   }
 
+  async getAllDomains(): Promise<{ domains: Domain[] }> {
+    return this.get(`/api/backstage/v1/domains`);
+  }
+
   async getEntityDomainAncestors(): Promise<EntityDomainAncestorsResponse> {
     return this.get(`/api/backstage/v1/domains/hierarchies/ancestors`);
   }
@@ -341,6 +347,14 @@ export class CortexClient implements CortexApi {
 
   async getTeamHierarchies(): Promise<TeamHierarchiesResponse> {
     return await this.get(`/api/backstage/v1/teams/hierarchies`);
+  }
+
+  async getAllTeams(): Promise<{ teams: TeamResponse[] }> {
+    return this.get(`/api/backstage/v1/teams`);
+  }
+
+  async getAllTeamsByEntityId(): Promise<{ teamsByEntityId: StringIndexable<TeamDetails[]> }> {
+    return this.get(`/api/backstage/v1/ownership/entities/teams`);
   }
 
   private async getBasePath(): Promise<string> {

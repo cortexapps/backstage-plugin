@@ -1669,6 +1669,16 @@
   dependencies:
     "@backstage/catalog-model" "^1.2.1"
 
+"@cortexapps/birdseye@^1.0.6":
+  version "1.0.6"
+  resolved "https://npm.pkg.github.com/download/@cortexapps/birdseye/1.0.6/2e7cfebee934618e1dda4eb877136752e608a07f#2e7cfebee934618e1dda4eb877136752e608a07f"
+  integrity sha512-edebcIld9wNuTGCaWfUVewq34KMxHr3q6VtdOLrQzJRR4454n+dYswb72cpU+dR+JT8lljttbtt9QPCIEZO6JQ==
+  dependencies:
+    "@tanstack/react-virtual" "^3.0.0-beta.49"
+    classnames "^2.5.1"
+    lodash "^4.17.15"
+    react-table "^7.8.0"
+
 "@cortexapps/eslint-config-oss@^0.0.4":
   version "0.0.4"
   resolved "https://registry.npmjs.org/@cortexapps/eslint-config-oss/-/eslint-config-oss-0.0.4.tgz#acbcb10c476b91a659f4999c1a3953128b0d1bec"
@@ -5435,6 +5445,11 @@ classnames@^2.2.6:
   version "2.3.2"
   resolved "https://registry.npmjs.org/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
   integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
+
+classnames@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.npmjs.org/classnames/-/classnames-2.5.1.tgz#ba774c614be0f016da105c858e7159eae8e7687b"
+  integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
 
 clean-css@^5.2.2:
   version "5.3.1"
@@ -12234,6 +12249,11 @@ react-syntax-highlighter@^15.4.5:
     lowlight "^1.17.0"
     prismjs "^1.27.0"
     refractor "^3.6.0"
+
+react-table@^7.8.0:
+  version "7.8.0"
+  resolved "https://registry.npmjs.org/react-table/-/react-table-7.8.0.tgz#07858c01c1718c09f7f1aed7034fcfd7bda907d2"
+  integrity sha512-hNaz4ygkZO4bESeFfnfOft73iBUj8K5oKi1EcSHPAibEydfsX2MyU6Z8KCr3mv3C9Kqqh71U+DhZkFvibbnPbA==
 
 react-test-renderer@^16.0.0-0:
   version "16.14.0"

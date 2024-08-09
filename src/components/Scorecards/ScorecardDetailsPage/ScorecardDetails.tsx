@@ -15,13 +15,24 @@
  */
 import { Content } from '@backstage/core-components';
 import React, { useMemo, useState } from 'react';
-import { Scorecard, ScorecardLadder, ScorecardRuleExemptionResult, ScorecardServiceScore, } from '../../../api/types';
+import {
+  Scorecard,
+  ScorecardLadder,
+  ScorecardRuleExemptionResult,
+  ScorecardServiceScore,
+} from '../../../api/types';
 import { Box, Button, Grid, Tab, Tabs } from '@material-ui/core';
 import { ScorecardMetadataCard } from './ScorecardMetadataCard';
-import { ScorecardLadderRulesCard, ScorecardScoresRulesCard, } from './ScorecardRulesTab';
+import {
+  ScorecardLadderRulesCard,
+  ScorecardScoresRulesCard,
+} from './ScorecardRulesTab';
 import { Predicate } from '../../../utils/types';
-import { ScorecardLadderStatsCard, ScorecardScoresStatsCard, } from './ScorecardStatsCard';
-import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
+import {
+  ScorecardLadderStatsCard,
+  ScorecardScoresStatsCard,
+} from './ScorecardStatsCard';
+import { StringIndexable } from '../../ReportsPage/AllScorecardsPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import CopyCsvButton from './CopyCsvButton';
 import { ScorecardReportsTab } from './ScorecardReportsTab';
@@ -120,14 +131,18 @@ export const ScorecardDetails = ({
           <Box display="flex" flexDirection="column">
             {ladder ? (
               <ScorecardLadderStatsCard
-                entityCategory={entityCategory ? `${entityCategory}s` : 'Entities'}
+                entityCategory={
+                  entityCategory ? `${entityCategory}s` : 'Entities'
+                }
                 scores={filteredScores}
                 scorecardLadder={ladder}
               />
             ) : (
               <ScorecardScoresStatsCard
                 scores={filteredScores}
-                entityCategory={entityCategory ? `${entityCategory}s` : 'Entities'}
+                entityCategory={
+                  entityCategory ? `${entityCategory}s` : 'Entities'
+                }
               />
             )}
           </Box>
