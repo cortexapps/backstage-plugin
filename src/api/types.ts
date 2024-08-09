@@ -502,6 +502,10 @@ export interface TeamHierarchiesResponse {
   orderedParents: TeamHierarchyNode[];
 }
 
+export interface ServiceGroupsResponse {
+  serviceGroups: string[];
+}
+
 // Entity Filter
 export enum CategoryFilter {
   Domain = 'Domain',
