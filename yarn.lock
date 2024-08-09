@@ -1669,16 +1669,6 @@
   dependencies:
     "@backstage/catalog-model" "^1.2.1"
 
-"@cortexapps/birdseye@^1.0.6":
-  version "1.0.6"
-  resolved "https://npm.pkg.github.com/download/@cortexapps/birdseye/1.0.6/2e7cfebee934618e1dda4eb877136752e608a07f#2e7cfebee934618e1dda4eb877136752e608a07f"
-  integrity sha512-edebcIld9wNuTGCaWfUVewq34KMxHr3q6VtdOLrQzJRR4454n+dYswb72cpU+dR+JT8lljttbtt9QPCIEZO6JQ==
-  dependencies:
-    "@tanstack/react-virtual" "^3.0.0-beta.49"
-    classnames "^2.5.1"
-    lodash "^4.17.15"
-    react-table "^7.8.0"
-
 "@cortexapps/eslint-config-oss@^0.0.4":
   version "0.0.4"
   resolved "https://registry.npmjs.org/@cortexapps/eslint-config-oss/-/eslint-config-oss-0.0.4.tgz#acbcb10c476b91a659f4999c1a3953128b0d1bec"
