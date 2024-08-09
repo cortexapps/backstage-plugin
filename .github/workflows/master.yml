@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 env:
-  GITHUB_AUTH_TOKEN: ${{ secrets.READ_PACKAGES_GITHUB_TOKEN }}
+  GITHUB_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 jobs:
   build:
@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.READ_PACKAGES_GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
