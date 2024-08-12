@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 env:
-  GITHUB_AUTH_TOKEN: ${{ secrets.READ_PACKAGES_GITHUB_TOKEN }}
+  PACKAGES_REGISTRY_GITHUB_AUTH_TOKEN: ${{ secrets.READ_PACKAGES_GITHUB_TOKEN }}
 
 jobs:
   build:
