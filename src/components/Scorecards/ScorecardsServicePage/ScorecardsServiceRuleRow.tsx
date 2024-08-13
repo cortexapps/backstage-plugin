@@ -111,7 +111,7 @@ export const ScorecardServiceRuleRow = ({
                   {rule.expression}
                 </Typography>
               )}
-              {rule.filter?.query && (
+              {rule.filter && 'query' in rule.filter && (
                 <Typography variant="overline">{rule.filter.query}</Typography>
               )}
             </>

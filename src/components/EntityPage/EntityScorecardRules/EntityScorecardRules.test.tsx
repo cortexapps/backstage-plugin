@@ -37,6 +37,7 @@ describe('<EntityScorecardRules />', () => {
         {
           rule: {
             id: 1,
+            cqlVersion: '1.0',
             expression: 'git != null',
             weight: 1,
           },
@@ -46,6 +47,7 @@ describe('<EntityScorecardRules />', () => {
         {
           rule: {
             id: 2,
+            cqlVersion: '1.0',
             expression: 'oncall != null',
             weight: 2,
           },
@@ -55,6 +57,7 @@ describe('<EntityScorecardRules />', () => {
         {
           rule: {
             id: 3,
+            cqlVersion: '1.0',
             expression: 'description != null',
             weight: 1,
           },
@@ -64,6 +67,7 @@ describe('<EntityScorecardRules />', () => {
         {
           rule: {
             id: 4,
+            cqlVersion: '1.0',
             expression: 'custom("key") != null',
             weight: 1,
           },
@@ -74,6 +78,7 @@ describe('<EntityScorecardRules />', () => {
         {
           rule: {
             id: 5,
+            cqlVersion: '1.0',
             expression: 'k8s != null',
             weight: 1,
           },

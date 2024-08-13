@@ -34,6 +34,14 @@ describe('ScorecardsPage', () => {
       Promise.resolve([
         {
           creator: { name: 'Billy Bob', email: 'billybob@cortex.io' },
+          exemptions: {
+            autoApprove: false,
+            enabled: false,
+          },
+          isDraft: false,
+          notifications: {
+            enabled: false,
+          },
           id: 1,
           name: 'My Scorecard',
           tag: 'my-scorecard',

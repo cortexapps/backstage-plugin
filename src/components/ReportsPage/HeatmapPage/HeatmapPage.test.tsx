@@ -40,7 +40,7 @@ describe('HeatmapPage', () => {
             enabled: false,
           },
           isDraft: false,
-          notification: {
+          notifications: {
             enabled: false,
           },
         } as Scorecard,

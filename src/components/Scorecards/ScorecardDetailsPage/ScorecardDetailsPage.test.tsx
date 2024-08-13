@@ -49,31 +49,37 @@ describe('ScorecardDetailsPage', () => {
 
   const gitRule = {
     id: 1,
+    cqlVersion: '1.0',
     expression: 'git != null',
     weight: 1,
   };
   const docsRule = {
     id: 2,
+    cqlVersion: '1.0',
     expression: 'documentation.count > 0',
     weight: 1,
   };
   const oncallRule = {
     id: 3,
+    cqlVersion: '1.0',
     expression: 'oncall != null',
     weight: 1,
   };
   const descriptionRule = {
     id: 4,
+    cqlVersion: '1.0',
     expression: 'description != null',
     weight: 1,
   };
   const k8sRule = {
     id: 5,
+    cqlVersion: '1.0',
     expression: 'k8s != null',
     weight: 1,
   };
   const customRule = {
     id: 6,
+    cqlVersion: '1.0',
     expression: 'custom("my_key") != null',
     weight: 1,
   };
@@ -447,25 +453,27 @@ describe('ScorecardDetailsPage', () => {
         rules: [
           {
             id: 1,
+            cqlVersion: '1.0',
             expression: 'git.enabled',
             description: 'Has Git',
             weight: 10,
           },
           {
             id: 2,
+            cqlVersion: '1.0',
             expression: 'runbooks.count > 0',
             description: 'My Rule',
             weight: 10,
           },
-          { id: 3, expression: 'documentation.count > 0', weight: 20 },
-          { id: 4, expression: 'custom("foo").length > 1', weight: 20 },
-          { id: 5, expression: 'custom("bar").length > 6', weight: 5 },
-          { id: 6, expression: 'custom("baz").length > 3', weight: 5 },
-          { id: 7, expression: 'custom("custom").length > 4', weight: 5 },
-          { id: 8, expression: 'custom("cow").length > 8', weight: 5 },
-          { id: 9, expression: 'custom("length").length > 9', weight: 5 },
-          { id: 10, expression: 'custom("cortex").length > 10', weight: 5 },
-          { id: 11, expression: 'custom("xyz").length > 2', weight: 1 },
+          { id: 3, cqlVersion: '1.0', expression: 'documentation.count > 0', weight: 20 },
+          { id: 4, cqlVersion: '1.0', expression: 'custom("foo").length > 1', weight: 20 },
+          { id: 5, cqlVersion: '1.0', expression: 'custom("bar").length > 6', weight: 5 },
+          { id: 6, cqlVersion: '1.0', expression: 'custom("baz").length > 3', weight: 5 },
+          { id: 7, cqlVersion: '1.0', expression: 'custom("custom").length > 4', weight: 5 },
+          { id: 8, cqlVersion: '1.0', expression: 'custom("cow").length > 8', weight: 5 },
+          { id: 9, cqlVersion: '1.0', expression: 'custom("length").length > 9', weight: 5 },
+          { id: 10, cqlVersion: '1.0', expression: 'custom("cortex").length > 10', weight: 5 },
+          { id: 11, cqlVersion: '1.0', expression: 'custom("xyz").length > 2', weight: 1 },
         ],
       });
     };

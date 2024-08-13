@@ -121,7 +121,7 @@ export interface ScorecardLevelRule {
   expression: string;
   title?: string;
   description?: string;
-  filter?: RuleFilter;
+  filter?: EntityFilter | CompoundFilter | null;
   cqlVersion: string;
 }
 

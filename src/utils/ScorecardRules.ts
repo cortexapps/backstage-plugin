@@ -16,10 +16,11 @@
 import { isNil } from 'lodash';
 import {
   ApplicableRuleOutcome,
+  CompoundFilter,
+  EntityFilter,
   NotApplicableRuleOutcome,
   NotEvaluatedRuleOutcome,
   Rule,
-  RuleFilter,
   ruleName,
   RuleOutcome,
   RuleOutcomeType,
@@ -31,7 +32,7 @@ export interface RuleDetail {
   description?: string;
   expression: string;
   failureMessage?: string;
-  filter?: RuleFilter;
+  filter?: EntityFilter | CompoundFilter | null;
   id: number | string;
   score?: number;
   title?: string;
