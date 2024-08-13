@@ -1,4 +1,6 @@
 name: publish
+env:
+  PACKAGES_REGISTRY_GITHUB_AUTH_TOKEN: ${{ secrets.READ_PACKAGES_GITHUB_TOKEN }}
 on:
   push:
     branches:
