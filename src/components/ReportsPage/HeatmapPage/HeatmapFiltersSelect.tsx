@@ -22,7 +22,7 @@ import {
   Select,
 } from '@material-ui/core';
 import { Clear } from '@material-ui/icons';
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 export interface ModalSelectItem {
   value: string | number;
@@ -54,16 +54,13 @@ export const ModalSelect = <T,>({
     ));
   }, [options]);
 
-  const changeHandler = useCallback(
-    (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
-      onChange(configKey, event.target.value as string[]);
-    },
-    [configKey, onChange],
-  );
+  const changeHandler = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    onChange(configKey, event.target.value as string[]);
+  };;
 
-  const resetHandler = useCallback(() => {
+  const resetHandler = () => {
     onReset(configKey);
-  }, [onReset, configKey]);
+  };
 
   return (
     <Box display="flex" flexDirection="row">
