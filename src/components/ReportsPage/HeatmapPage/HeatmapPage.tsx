@@ -129,6 +129,8 @@ export const HeatmapPage = () => {
     useCortexApi(api => api.getAllTeamsByEntityId());
   const { value: domainHierarchies, loading: isLoadingDomainHierarchies } =
     useCortexApi(api => api.getDomainHierarchies());
+  const { value: teamHierarchies, loading: isLoadingTeamHierarchies } =
+    useCortexApi(api => api.getTeamHierarchies());
   const { value: domainAncestors, loading: isLoadingDomainAncestors } =
     useCortexApi(api => api.getEntityDomainAncestors());
   const { entitiesByTag, loading: loadingEntitiesByTag } = useEntitiesByTag();
@@ -138,6 +140,7 @@ export const HeatmapPage = () => {
     isLoadingCatalog ||
     isLoadingLadder ||
     isLoadingDomainHierarchies ||
+    isLoadingTeamHierarchies ||
     isLoadingDomainAncestors ||
     isLoadingDomains ||
     isLoadingTeams ||
@@ -202,6 +205,7 @@ export const HeatmapPage = () => {
               scorecard={scorecard}
               scores={scores ?? []}
               setFilters={setFilters}
+              teamHierarchy={teamHierarchies}
               teamsByEntity={teamsByEntityId?.teamsByEntityId ?? {}}
             />
           ) : (

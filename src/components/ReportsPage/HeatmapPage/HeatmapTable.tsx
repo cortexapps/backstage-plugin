@@ -20,7 +20,6 @@ import {
   BirdsEyeReportTable,
   TeamResponse,
   Domain,
-  HierarchyResponse,
   StringIndexable,
   TeamDetails,
   Filters,
@@ -31,6 +30,7 @@ import {
   Scorecard,
   ScorecardLadder,
   ScorecardServiceScore,
+  TeamHierarchiesResponse,
 } from '../../../api/types';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { mapKeys, mapValues } from 'lodash';
@@ -49,6 +49,7 @@ import {
   convertToBirdsEyeDomainHierarchy,
   convertToBirdsEyeScorecard,
   convertToBirdsEyeScores,
+  convertToBirdsEyeTeamHierarchy,
   getCellColorBackground,
   getScoreColorClassName,
 } from './HeatmapUtils';
@@ -65,7 +66,7 @@ interface HeatmapTableProps {
   scorecard: Scorecard;
   scores: ScorecardServiceScore[];
   setFilters: (filters: Filters) => void;
-  teamHierarchy?: HierarchyResponse;
+  teamHierarchy?: TeamHierarchiesResponse;
   teamsByEntity: StringIndexable<TeamDetails[]> | undefined;
 }
 
@@ -91,11 +92,13 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     mappedDomainHierarchies,
     mappedScorecard,
     mappedScores,
+    mappedTeamHierarchies,
   } = useMemo(() => {
     const mappedScorecard = convertToBirdsEyeScorecard(scorecard, ladder);
     const mappedScores = convertToBirdsEyeScores(scores, catalog);
     const mappedDomainHierarchies =
       convertToBirdsEyeDomainHierarchy(domainHierarchy);
+    const mappedTeamHierarchies = convertToBirdsEyeTeamHierarchy(teamHierarchy);
     const mappedDomainAncestryMapKeys = mapKeys(domainAncestryMap, (_, key) =>
       key.toString(),
     );
@@ -109,8 +112,9 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
       mappedScores,
       mappedDomainHierarchies,
       mappedDomainAncestryMap,
+      mappedTeamHierarchies,
     };
-  }, [catalog, domainAncestryMap, domainHierarchy, ladder, scorecard, scores]);
+  }, [catalog, domainAncestryMap, domainHierarchy, ladder, scorecard, scores, teamHierarchy]);
 
   const {
     tableData,
@@ -134,7 +138,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     scorecard: mappedScorecard,
     scores: mappedScores,
     setFilters,
-    teamHierarchy,
+    teamHierarchy: mappedTeamHierarchies,
     teamsByEntity,
   });
 

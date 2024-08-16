@@ -26,6 +26,7 @@ import {
   PathType,
   DomainOwnerInheritance,
   Rule as BirdsEyeRule,
+  useCortexBirdseye
 } from '@cortexapps/birdseye';
 import {
   DomainHierarchiesResponse,
@@ -38,9 +39,14 @@ import {
   Scorecard,
   ScorecardLadder,
   ScorecardServiceScore,
+  TeamHierarchiesResponse,
+  TeamHierarchyNode,
 } from '../../../api/types';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { Link } from '@backstage/core-components';
+
+type BirdsEyeHierarchyResponse = NonNullable<Parameters<typeof useCortexBirdseye>[0]['teamHierarchy']>;
+type BirdsEyeHierarchyNode = BirdsEyeHierarchyResponse['orderedParents'][number];
 
 export const filtersToParams = (filters: Filters) => {
   return {
@@ -214,6 +220,32 @@ export const convertToBirdsEyeDomainHierarchy = (
     ...hierarchies,
     orderedTree:
       hierarchies?.orderedTree.map(convertToBirdsEyeDomainNodeMetadata) ?? [],
+  };
+};
+
+export const convertToBirdsEyeTeamNodeMetadata = (
+  item: TeamHierarchyNode,
+): BirdsEyeHierarchyNode => {
+  return {
+    ...item,
+    node: {
+      ...item.node,
+      description: item.node.description ?? undefined,
+      id: item.node.id.toString(),
+    },
+    orderedChildren: item.orderedChildren.map(
+      convertToBirdsEyeTeamNodeMetadata,
+    ),
+  };
+};
+
+export const convertToBirdsEyeTeamHierarchy = (
+  hierarchies?: TeamHierarchiesResponse,
+): BirdsEyeHierarchyResponse | undefined => {
+  return {
+    ...hierarchies,
+    orderedParents:
+      hierarchies?.orderedParents.map(convertToBirdsEyeTeamNodeMetadata) ?? [],
   };
 };
 
