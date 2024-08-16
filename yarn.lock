@@ -2613,8 +2613,8 @@
     "@backstage/backend-plugin-api" "^0.6.20"
     "@backstage/catalog-model" "^1.5.0"
 
-"@cortexapps/birdseye@^2.0.2":
-  version "2.0.2"
+"@cortexapps/birdseye@^2.0.1":
+  version "2.0.1"
   resolved "https://npm.pkg.github.com/download/@cortexapps/birdseye/2.0.1/8031821131446604dc0e7c785d72f86f76374824#8031821131446604dc0e7c785d72f86f76374824"
   integrity sha512-oUpX47OzU/BC1y7EeaBqn5fK57vfEjN4xuECVmRCzfyHJKfppkhqvWY5gkMp9Mwzs0KSS5eXBmH74pOv3c8zmg==
   dependencies:
