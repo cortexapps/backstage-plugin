@@ -316,6 +316,10 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
       backgroundColor: `${theme.palette.background.default}`,
       border: `1px solid ${theme.palette.background.default}`,
     },
+    '& table tr td.cortex-level-cell': {
+      backgroundColor: `${theme.palette.background.default}`,
+      border: `1px solid ${theme.palette.background.default}`,
+    },
     '& table tr td:first-child': {
       backgroundColor: `${theme.palette.background.paper}`,
     }
