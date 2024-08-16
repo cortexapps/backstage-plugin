@@ -300,6 +300,9 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     '& button:not(button[disabled])': {
       color: theme.palette.text.primary,
       cursor: 'pointer',
+    },
+    '& button[disabled]': {
+      color: theme.palette.text.disabled,
     }
   },
   table: {
