@@ -52,6 +52,7 @@ import {
   convertToBirdsEyeTeamHierarchy,
   getCellColorBackground,
   getScoreColorClassName,
+  useTableStyles,
 } from './HeatmapUtils';
 
 interface HeatmapTableProps {
@@ -86,6 +87,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
   teamHierarchy,
 }) => {
   const colorStyles = useColorCellStyles();
+  const styles = useTableStyles();
 
   const {
     mappedDomainAncestryMap,
@@ -214,6 +216,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
       <Grid item>
         <BirdsEyeReportTable
           {...tableData}
+          className={styles.table}
           components={{
             anchor: BirdsEyeAnchorAdapter,
           }}

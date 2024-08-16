@@ -44,6 +44,7 @@ import {
 } from '../../../api/types';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { Link } from '@backstage/core-components';
+import { makeStyles, Theme } from '@material-ui/core';
 
 type BirdsEyeHierarchyResponse = NonNullable<Parameters<typeof useCortexBirdseye>[0]['teamHierarchy']>;
 type BirdsEyeHierarchyNode = BirdsEyeHierarchyResponse['orderedParents'][number];
@@ -293,3 +294,21 @@ export const BirdsEyeAnchorAdapter = (
 ) => {
   return <Link to={props.href ?? ''}>{props.children}</Link>;
 };
+
+export const useTableStyles = makeStyles((theme: Theme) => ({
+  table: {
+    '& table thead': {
+      backgroundColor: `${theme.palette.background.default}`,
+    },
+    '& table tr th': {
+      backgroundColor: `${theme.palette.background.paper} !important`,
+    },
+    '& table tr td.cortex-entity-count-cell': {
+      backgroundColor: `${theme.palette.background.default}`,
+      border: `1px solid ${theme.palette.background.default}`,
+    },
+    '& table tr td:first-child': {
+      backgroundColor: `${theme.palette.background.paper}`,
+    }
+  },
+}));
