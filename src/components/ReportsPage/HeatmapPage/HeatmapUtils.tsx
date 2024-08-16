@@ -296,6 +296,12 @@ export const BirdsEyeAnchorAdapter = (
 };
 
 export const useTableStyles = makeStyles((theme: Theme) => ({
+  breadcrumb: {
+    '& button:not(button[disabled])': {
+      color: theme.palette.text.primary,
+      cursor: 'pointer',
+    }
+  },
   table: {
     '& table thead': {
       backgroundColor: `${theme.palette.background.default}`,

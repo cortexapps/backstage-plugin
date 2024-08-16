@@ -24,6 +24,7 @@ import {
   TeamDetails,
   Filters,
   BirdsEyeReportTableProps,
+  Breadcrumb,
 } from '@cortexapps/birdseye';
 import {
   DomainHierarchiesResponse,
@@ -130,6 +131,8 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     showHierarchy,
     groupBy,
     shouldShowReportType,
+    breadcrumbItems,
+    onBreadcrumbClick,
   } = useCortexBirdseye({
     allDomains,
     allTeams,
@@ -199,6 +202,9 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
   return (
     <Grid container direction={'column'}>
       <Grid item style={{ marginTop: '20px' }}>
+        <Breadcrumb className={styles.breadcrumb} items={breadcrumbItems} onClick={onBreadcrumbClick} />
+      </Grid>
+      <Grid item>
         <HeatmapSettings
           filters={filters}
           groupByOptions={groupByOptions}
