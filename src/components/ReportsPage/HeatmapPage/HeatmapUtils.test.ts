@@ -275,7 +275,7 @@ describe('Heatmap utils', () => {
           },
           evaluation: {
             ladderLevels: [],
-            lastUpdated: '',
+            lastUpdated: '2024-08-07T12:27:42Z',
             rules: [],
           },
           score: {
