@@ -96,7 +96,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
     const mappedScores = convertToBirdsEyeScores(scores, catalog);
     const mappedDomainHierarchies =
       convertToBirdsEyeDomainHierarchy(domainHierarchy);
-    const mappedDomainAncestryMapKeys = mapKeys(domainAncestryMap, key =>
+    const mappedDomainAncestryMapKeys = mapKeys(domainAncestryMap, (_, key) =>
       key.toString(),
     );
     const mappedDomainAncestryMap = mapValues(

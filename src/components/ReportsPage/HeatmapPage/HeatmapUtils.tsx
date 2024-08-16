@@ -185,7 +185,7 @@ export const convertToBirdsEyeScores = (
       evaluation: {
         rules: convertToBirdsEyeRuleOutcome(score.rules),
         ladderLevels: score.ladderLevels,
-        lastUpdated: '',
+        lastUpdated: score.lastUpdated,
       },
     };
   });
