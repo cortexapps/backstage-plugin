@@ -23,7 +23,6 @@ import {
   RuleOutcome as BirdsEyeRuleOutcome,
   DomainTreeNode,
   Filters,
-  PathType,
   DomainOwnerInheritance,
   Rule as BirdsEyeRule,
   useCortexBirdseye,
@@ -52,21 +51,19 @@ type BirdsEyeHierarchyResponse = NonNullable<
 type BirdsEyeHierarchyNode =
   BirdsEyeHierarchyResponse['orderedParents'][number];
 
-export const filtersToParams = (filters: Filters) => {
-  return {
-    scorecardId: filters.scorecardId,
-    entity: filters.dataFilters.selectedEntities,
-    group: filters.dataFilters.selectedGroups,
-    team: filters.dataFilters.selectedTeams,
-    domain: filters.dataFilters.selectedDomains,
-    level: filters.dataFilters.selectedLevels,
-    owner: filters.dataFilters.selectedOwners,
-    groupBy: filters.path.find(({ type }) => type === PathType.GroupBy)?.label,
-    showHierarchy: filters.useHierarchy ? 'true' : undefined,
-    hideWithoutChildren: filters.hideTeamsWithoutServices ? undefined : 'false',
-    headerType: filters.headerType,
-  };
-};
+export const filtersToParams = (filters: Filters) => ({
+  scorecardId: filters.scorecardId,
+  entity: filters.dataFilters.selectedEntities,
+  group: filters.dataFilters.selectedGroups,
+  team: filters.dataFilters.selectedTeams,
+  domain: filters.dataFilters.selectedDomains,
+  level: filters.dataFilters.selectedLevels,
+  owner: filters.dataFilters.selectedOwners,
+  showHierarchy: filters.useHierarchy ? 'true' : undefined,
+  hideWithoutChildren: filters.hideTeamsWithoutServices ? undefined : 'false',
+  headerType: filters.headerType,
+  path: filters.path.map(({ type, label }) => JSON.stringify([type, label])),
+});
 
 export const convertToBirdsEyeFilterType = (
   filterType: Exclude<EntityFilter['type'], FilterType.CQL_FILTER>,

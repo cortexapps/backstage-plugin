@@ -26,12 +26,7 @@ import { CopyButton } from '../../Common/CopyButton';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { isFunction } from 'lodash';
 import { stringifyUrl } from 'query-string';
-import {
-  defaultInitial,
-  Filters,
-  HeaderType,
-  PathType,
-} from '@cortexapps/birdseye';
+import { defaultInitial, Filters, HeaderType } from '@cortexapps/birdseye';
 import { HeatmapTable } from './HeatmapTable';
 import { buildUrl } from '../../../utils/URLUtils';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
@@ -42,7 +37,6 @@ export const HeatmapPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const alertApi = useApi(alertApiRef);
-
   const [filters, setFilters] = useState<Filters>({
     ...defaultInitial,
     scorecardId: searchParams.get('scorecardId') ?? undefined,
@@ -55,18 +49,10 @@ export const HeatmapPage = () => {
       selectedLevels: searchParams.getAll('level') ?? [],
       selectedOwners: searchParams.getAll('owner') ?? [],
     },
-    path: searchParams.get('groupBy')
-      ? defaultInitial.path.find(({ type }) => type === PathType.GroupBy)
-        ? defaultInitial.path.map(path =>
-            path.type === PathType.GroupBy
-              ? { type: PathType.GroupBy, label: searchParams.get('groupBy')! }
-              : path,
-          )
-        : [
-            ...defaultInitial.path,
-            { type: PathType.GroupBy, label: searchParams.get('groupBy')! },
-          ]
-      : [],
+    path: searchParams.getAll('path').map(item => {
+      const [type, label] = JSON.parse(item);
+      return { type, label };
+    }),
     useHierarchy: searchParams.has('showHierarchy'),
     hideTeamsWithoutServices: !searchParams.has('hideWithoutChildren'),
     headerType: (searchParams.get('headerType') as HeaderType) ?? undefined,
@@ -83,7 +69,7 @@ export const HeatmapPage = () => {
   );
 
   const setFiltersAndNavigate = useCallback(
-    (value: React.SetStateAction<Filters>) =>
+    (value: React.SetStateAction<Filters>) => {
       setFilters(prev => {
         const newFilters = isFunction(value) ? value(prev) : value;
 
@@ -96,7 +82,8 @@ export const HeatmapPage = () => {
         );
 
         return newFilters;
-      }),
+      });
+    },
     [location.pathname, navigate],
   );
 
