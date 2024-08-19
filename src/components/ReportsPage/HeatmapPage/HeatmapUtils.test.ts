@@ -108,12 +108,12 @@ describe('Heatmap utils', () => {
       hideTeamsWithoutServices: true,
       path: [
         {
-          label: 'domain-path',
-          type: PathType.DomainNode,
-        },
-        {
           label: 'group',
           type: PathType.GroupBy,
+        },
+        {
+          label: 'domain-path',
+          type: PathType.DomainNode,
         },
       ],
       useHierarchy: false,
@@ -124,7 +124,10 @@ describe('Heatmap utils', () => {
       domain: ['domain-1', 'domain-2'],
       entity: ['entity-1'],
       group: ['group-1'],
-      groupBy: 'group',
+      path: [
+        JSON.stringify([PathType.GroupBy, 'group']),
+        JSON.stringify([PathType.DomainNode, 'domain-path']),
+      ],
       headerType: 'rules',
       level: [],
       owner: ['owner-1'],
