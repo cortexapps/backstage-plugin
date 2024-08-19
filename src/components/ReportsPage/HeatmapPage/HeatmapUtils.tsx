@@ -307,22 +307,28 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
   },
   table: {
     '& table thead,tbody': {
-      backgroundColor: `${theme.palette.background.default}`,
+      backgroundColor: theme.palette.background.default,
     },
     '& table tr th': {
       backgroundColor: `${theme.palette.background.paper} !important`,
     },
     '& table tr td.cortex-entity-count-cell': {
-      backgroundColor: `${theme.palette.background.default}`,
+      backgroundColor: theme.palette.background.default,
       border: `1px solid ${theme.palette.background.default}`,
     },
     '& table tr td.cortex-level-cell': {
-      backgroundColor: `${theme.palette.background.default}`,
+      backgroundColor: theme.palette.background.default,
       border: `1px solid ${theme.palette.background.default}`,
     },
     '& table tr td:first-child': {
-      backgroundColor: `${theme.palette.background.paper}`,
+      backgroundColor: theme.palette.background.paper,
       borderRightColor: theme.palette.background.default
-    }
+    },
+    '& a:link': {
+      color: theme.palette.primary.main,
+    },
+    '& a:hover': {
+      textDecoration: 'underline',
+    },
   },
 }));
