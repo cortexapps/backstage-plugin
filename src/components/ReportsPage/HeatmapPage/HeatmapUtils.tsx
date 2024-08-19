@@ -306,7 +306,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     }
   },
   table: {
-    '& table thead': {
+    '& table thead,tbody': {
       backgroundColor: `${theme.palette.background.default}`,
     },
     '& table tr th': {
@@ -322,6 +322,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     },
     '& table tr td:first-child': {
       backgroundColor: `${theme.palette.background.paper}`,
+      borderRightColor: theme.palette.background.default
     }
   },
 }));
