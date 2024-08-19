@@ -105,6 +105,10 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
               return null;
             }
 
+            if (config.key === 'selectedLevels' && size(config.options) === 1 && config.options[0] === 'No Level') {
+              return null;
+            }
+
             return (
               <ModalSelect
                 key={config.key}
