@@ -175,12 +175,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
         BirdsEyeReportTableProps['getScorecardEntityUrl']
       >[0],
     ) => {
-      const entityId = Number.parseInt(scorecardEntity.entityId);
-      const entity = catalog.find(entity => entityId === entity.id);
-      const codeTag = entity?.codeTag;
-      if (!codeTag) {
-        return '';
-      }
+      const codeTag = scorecardEntity.entityTag;
 
       const componentRef = entityComponentRef(entitiesByTag, codeTag);
 
@@ -196,7 +191,7 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
 
       return entityUrl;
     },
-    [catalog, entitiesByTag, mappedScorecard.id, scorecardServiceDetailsRef],
+    [entitiesByTag, mappedScorecard.id, scorecardServiceDetailsRef],
   );
 
   return (
