@@ -54,9 +54,11 @@ export const ModalSelect = <T,>({
     ));
   }, [options]);
 
-  const changeHandler = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+  const changeHandler = (
+    event: React.ChangeEvent<{ name?: string; value: unknown }>,
+  ) => {
     onChange(configKey, event.target.value as string[]);
-  };;
+  };
 
   const resetHandler = () => {
     onReset(configKey);

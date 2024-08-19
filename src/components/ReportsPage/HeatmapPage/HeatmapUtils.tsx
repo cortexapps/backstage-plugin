@@ -26,7 +26,7 @@ import {
   PathType,
   DomainOwnerInheritance,
   Rule as BirdsEyeRule,
-  useCortexBirdseye
+  useCortexBirdseye,
 } from '@cortexapps/birdseye';
 import {
   DomainHierarchiesResponse,
@@ -46,8 +46,11 @@ import { HomepageEntity } from '../../../api/userInsightTypes';
 import { Link } from '@backstage/core-components';
 import { makeStyles, Theme } from '@material-ui/core';
 
-type BirdsEyeHierarchyResponse = NonNullable<Parameters<typeof useCortexBirdseye>[0]['teamHierarchy']>;
-type BirdsEyeHierarchyNode = BirdsEyeHierarchyResponse['orderedParents'][number];
+type BirdsEyeHierarchyResponse = NonNullable<
+  Parameters<typeof useCortexBirdseye>[0]['teamHierarchy']
+>;
+type BirdsEyeHierarchyNode =
+  BirdsEyeHierarchyResponse['orderedParents'][number];
 
 export const filtersToParams = (filters: Filters) => {
   return {
@@ -303,7 +306,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     },
     '& button[disabled]': {
       color: theme.palette.text.disabled,
-    }
+    },
   },
   table: {
     '& table thead,tbody': {
@@ -322,7 +325,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     },
     '& table tr td:first-child': {
       backgroundColor: theme.palette.background.paper,
-      borderRightColor: theme.palette.background.default
+      borderRightColor: theme.palette.background.default,
     },
     '& a:link': {
       color: theme.palette.primary.main,

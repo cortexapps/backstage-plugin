@@ -117,7 +117,15 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
       mappedDomainAncestryMap,
       mappedTeamHierarchies,
     };
-  }, [catalog, domainAncestryMap, domainHierarchy, ladder, scorecard, scores, teamHierarchy]);
+  }, [
+    catalog,
+    domainAncestryMap,
+    domainHierarchy,
+    ladder,
+    scorecard,
+    scores,
+    teamHierarchy,
+  ]);
 
   const {
     tableData,
@@ -197,7 +205,11 @@ export const HeatmapTable: React.FC<HeatmapTableProps> = ({
   return (
     <Grid container direction={'column'}>
       <Grid item style={{ marginTop: '20px' }}>
-        <Breadcrumb className={styles.breadcrumb} items={breadcrumbItems} onClick={onBreadcrumbClick} />
+        <Breadcrumb
+          className={styles.breadcrumb}
+          items={breadcrumbItems}
+          onClick={onBreadcrumbClick}
+        />
       </Grid>
       <Grid item>
         <HeatmapSettings
