@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -22,12 +22,9 @@ import {
   DialogContent,
   DialogTitle,
 } from '@material-ui/core';
-import { StringIndexable } from './HeatmapUtils';
-import { HomepageEntity } from '../../../api/userInsightTypes';
-import { sortBy, uniqBy } from 'lodash';
-import { Clear } from '@material-ui/icons';
-import { ModalSelect, ModalSelectItem } from './HeatmapFiltersSelect';
-import { ScorecardLadder } from '../../../api/types';
+import { size } from 'lodash';
+import { ModalSelect } from './HeatmapFiltersSelect';
+import { DataFilterTypes, FilterConfigItem } from '@cortexapps/birdseye';
 
 export interface ScoreFilters {
   serviceIds: number[];
@@ -48,188 +45,97 @@ export const defaultFilters: ScoreFilters = {
 };
 
 interface HeatmapFiltersModalProps {
-  filters: ScoreFilters;
-  setFilters: (scoreFilters: ScoreFilters) => void;
-  entitiesByTag: StringIndexable<HomepageEntity>;
-  ladder: ScorecardLadder | undefined;
-  onClear: () => void;
+  filters: DataFilterTypes;
+  filtersConfig: FilterConfigItem[];
+  isOpen: boolean;
+  setFilters: (filters: DataFilterTypes) => void;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
 export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
   filters,
+  filtersConfig,
+  isOpen,
   setFilters,
-  entitiesByTag,
-  ladder,
-  onClear,
+  setIsOpen,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [modalFilters, setModalFilters] = useState(filters);
-  const setModalFiltersPartially = (filters: Partial<ScoreFilters>) =>
-    setModalFilters(prev => ({ ...prev, ...filters }));
-  const handleSaveFilters = () => {
-    setFilters(modalFilters);
-    setIsOpen(false);
-  };
-  const setModalOpenAndResetFilters = () => {
-    setModalFilters(filters);
-    setIsOpen(true);
-  };
+  const [updatedFilters, setUpdatedFilters] =
+    useState<DataFilterTypes>(filters);
 
-  const { services, groups, teams, users, domains } = useMemo(() => {
-    const results = {
-      services: [] as ModalSelectItem[],
-      groups: [
-        { value: "No group", label: "No group" },
-      ] as ModalSelectItem[],
-      teams: [
-        { value: "No team", label: "No team" },
-      ] as ModalSelectItem[],
-      users: [] as ModalSelectItem[],
-      domains: [
-        { value: -1, label: "No domain" },
-      ] as ModalSelectItem[],
-    };
-
-    Object.keys(entitiesByTag).forEach(key => {
-      const entity = entitiesByTag[key];
-      switch (entity.type) {
-        case 'service':
-          results.services.push({ label: entity.name, value: entity.id });
-          break;
-        case 'team':
-          results.teams.push({ label: entity.name, value: entity.codeTag });
-          break;
-        case 'domain':
-          results.domains.push({ label: entity.name, value: entity.id });
-          break;
-        default:
-          break;
-      }
-      results.groups.push(
-        ...entity.serviceGroupTags.map(groupTag => ({ label: groupTag, value: groupTag }))
-      );
-      results.users.push(
-        ...entity.serviceOwnerEmails.map(owner => ({ label: owner.email, value: owner.email })),
-      );
-    });
-
-    return {
-      services: sortBy(results.services, 'label'),
-      groups: sortBy(uniqBy(results.groups, 'value'), 'label'),
-      teams: sortBy(results.teams, 'label'),
-      users: sortBy(uniqBy(results.users, 'value'), 'label'),
-      domains: sortBy(results.domains, 'label'),
-    };
-  }, [entitiesByTag]);
-
-  const levels = useMemo(
-    () => [...(ladder?.levels.map(({ name }) => name) ?? []), 'No Level'],
-    [ladder],
+  const filterChangeHandler = useCallback(
+    (type: keyof DataFilterTypes, value: string[]) => {
+      setUpdatedFilters({
+        ...updatedFilters,
+        [type]: value,
+      });
+    },
+    [updatedFilters],
   );
 
-  const filtersCount = useMemo(() => {
-    return Object.values(filters).reduce(
-      (total, item) => total + item.length,
-      0,
-    );
-  }, [filters]);
+  const filterClearHandler = useCallback(
+    (type: keyof DataFilterTypes) => {
+      setUpdatedFilters({
+        ...updatedFilters,
+        [type]: [],
+      });
+    },
+    [updatedFilters],
+  );
+
+  const applyFiltersHandler = useCallback(() => {
+    setFilters(updatedFilters);
+    setIsOpen(false);
+  }, [setFilters, setIsOpen, updatedFilters]);
+
+  const closeDialogHandler = useCallback(() => {
+    setIsOpen(false);
+  }, [setIsOpen]);
+
+  useEffect(() => {
+    setUpdatedFilters(filters);
+  }, [filters, isOpen]);
 
   return (
-    <>
-      <Button
-        onClick={setModalOpenAndResetFilters}
-        variant="outlined"
-        aria-label="Filter"
-      >
-        Filters
-        {filtersCount > 0 && <> ({filtersCount})</>}
-      </Button>
-      {filtersCount > 0 && (
-        <Button
-          onClick={onClear}
-          variant="text"
-          aria-label="Clear filters"
-          title="Clear filters"
-        >
-          <Clear />
-        </Button>
-      )}
-      <Dialog open={isOpen} onClose={() => setIsOpen(false)} fullWidth>
-        <DialogTitle>Filter Bird's Eye Report</DialogTitle>
-        <DialogContent>
-          <Box display={'flex'} flexDirection={'column'} gridRowGap={16}>
-            <ModalSelect
-              name="Entities"
-              onChange={serviceIds => setModalFiltersPartially({ serviceIds })}
-              onReset={() =>
-                setModalFiltersPartially({
-                  serviceIds: defaultFilters.serviceIds,
-                })
-              }
-              value={modalFilters.serviceIds}
-              options={services}
-            />
-            <ModalSelect
-              name="Domains"
-              onChange={domainIds => setModalFiltersPartially({ domainIds })}
-              onReset={() =>
-                setModalFiltersPartially({
-                  domainIds: defaultFilters.domainIds,
-                })
-              }
-              value={modalFilters.domainIds}
-              options={domains}
-            />
-            <ModalSelect
-              name="Groups"
-              onChange={groups => setModalFiltersPartially({ groups })}
-              onReset={() =>
-                setModalFiltersPartially({ groups: defaultFilters.groups })
-              }
-              value={modalFilters.groups}
-              options={groups}
-            />
-            <ModalSelect
-              name="Teams"
-              onChange={teams => setModalFiltersPartially({ teams })}
-              onReset={() =>
-                setModalFiltersPartially({ teams: defaultFilters.teams })
-              }
-              value={modalFilters.teams}
-              options={teams}
-            />
-            <ModalSelect
-              name="Users"
-              onChange={users => setModalFiltersPartially({ users })}
-              onReset={() =>
-                setModalFiltersPartially({ users: defaultFilters.users })
-              }
-              value={modalFilters.users}
-              options={users}
-            />
-            {levels?.length && (
+    <Dialog open={isOpen} onClose={closeDialogHandler} fullWidth>
+      <DialogTitle>Filter Bird's Eye Report</DialogTitle>
+      <DialogContent>
+        <Box display={'flex'} flexDirection={'column'} gridRowGap={16}>
+          {filtersConfig.map(config => {
+            if (size(config.options) === 0) {
+              return null;
+            }
+
+            if (
+              config.key === 'selectedLevels' &&
+              size(config.options) === 1 &&
+              config.options[0] === 'No Level'
+            ) {
+              return null;
+            }
+
+            return (
               <ModalSelect
-                name="Levels"
-                onChange={levels => setModalFiltersPartially({ levels })}
-                onReset={() =>
-                  setModalFiltersPartially({ levels: defaultFilters.levels })
-                }
-                value={modalFilters.levels}
-                options={levels.map(level => ({ label: level, value: level }))}
+                key={config.key}
+                configKey={config.key as keyof DataFilterTypes}
+                name={config.label}
+                onChange={filterChangeHandler}
+                onReset={filterClearHandler}
+                value={updatedFilters[config.key as keyof DataFilterTypes]}
+                options={config.options}
               />
-            )}
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleSaveFilters}
-            color="primary"
-            aria-label="Apply filters"
-          >
-            Apply filters
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+            );
+          })}
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={applyFiltersHandler}
+          color="primary"
+          aria-label="Apply filters"
+        >
+          Apply filters
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };

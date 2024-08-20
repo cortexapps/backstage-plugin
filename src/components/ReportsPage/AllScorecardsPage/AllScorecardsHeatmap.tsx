@@ -17,7 +17,7 @@ import React, { useMemo } from 'react';
 import { Progress, WarningPanel } from '@backstage/core-components';
 import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
 import { GroupByOption } from '../../../api/types';
-import { AllScorecardsHeatmapTable } from '../HeatmapPage/Tables/AllScorecardHeatmapTable';
+import { AllScorecardsHeatmapTable } from './Tables/AllScorecardHeatmapTable';
 
 interface AllScorecardsHeatmapProps {
   groupBy: GroupByOption;

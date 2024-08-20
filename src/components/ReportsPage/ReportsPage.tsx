@@ -22,9 +22,9 @@ import {
   ItemCardHeader,
 } from '@backstage/core-components';
 import { Card, CardActions, CardContent, CardMedia } from '@material-ui/core';
-import { HeatmapPage } from './HeatmapPage';
 import { ProgressPage } from './ProgressPage';
 import { AllScorecardsPage } from './AllScorecardsPage/AllScorecardsPage';
+import { HeatmapPage } from './HeatmapPage';
 
 export const ReportsPageCard = ({
   name,

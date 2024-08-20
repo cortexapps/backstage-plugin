@@ -13,16 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@material-ui/core';
+import { Box, Button, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Clear } from '@material-ui/icons';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 export interface ModalSelectItem {
   value: string | number;
@@ -30,51 +23,36 @@ export interface ModalSelectItem {
 }
 
 interface ModalSelectProps<T> {
-  configKey: T;
-  name: string;
-  value: string[];
-  onChange: (type: T, value: string[]) => void;
-  onReset: (type: T) => void;
-  options: string[];
+  name: string,
+  value: T[],
+  onChange: (value: T[]) => void,
+  onReset: () => void,
+  options: ModalSelectItem[]
 }
 
-export const ModalSelect = <T,>({
-  configKey,
-  name,
-  value,
-  onChange,
-  onReset,
-  options,
-}: ModalSelectProps<T>) => {
-  const mappedOptions = useMemo(() => {
-    return options.map(option => (
-      <MenuItem key={`ScorecardOption-domain-${option}`} value={option}>
-        {option}
-      </MenuItem>
-    ));
-  }, [options]);
-
-  const changeHandler = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>,
-  ) => {
-    onChange(configKey, event.target.value as string[]);
-  };
-
-  const resetHandler = () => {
-    onReset(configKey);
-  };
-
+export const ModalSelect = <T,>({ name, value, onChange, onReset, options }: ModalSelectProps<T>) => {
   return (
     <Box display="flex" flexDirection="row">
       <FormControl variant="standard" fullWidth>
         <InputLabel>{name}</InputLabel>
-        <Select multiple value={value} onChange={changeHandler}>
-          {mappedOptions}
+        <Select
+          multiple
+          value={value}
+          onChange={event => onChange(event.target.value as T[])}
+        >
+          {options.map((option) => (
+            <MenuItem
+              key={`ScorecardOption-domain-${option.label}`}
+              value={option.value}
+            >
+              {option.label}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
       {value.length > 0 && (
         <Button
-          onClick={resetHandler}
+          onClick={onReset}
           variant="text"
           aria-label={`Clear ${name.toLocaleLowerCase()} filter`}
           title={`Clear ${name.toLocaleLowerCase()} filter`}

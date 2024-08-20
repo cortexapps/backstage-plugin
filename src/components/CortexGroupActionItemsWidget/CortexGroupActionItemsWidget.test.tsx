@@ -48,6 +48,7 @@ describe('<CortexGroupActionItemsWidget/>', () => {
       Promise.resolve([
         {
           rule: {
+            cqlVersion: '1.0',
             id: 1,
             expression: 'git != null',
             weight: 1,
@@ -61,6 +62,7 @@ describe('<CortexGroupActionItemsWidget/>', () => {
         },
         {
           rule: {
+            cqlVersion: '1.0',
             id: 1,
             expression: 'git != null',
             weight: 1,
@@ -74,6 +76,7 @@ describe('<CortexGroupActionItemsWidget/>', () => {
         },
         {
           rule: {
+            cqlVersion: '1.0',
             id: 2,
             expression: 'description != null',
             weight: 1,
@@ -87,6 +90,7 @@ describe('<CortexGroupActionItemsWidget/>', () => {
         },
         {
           rule: {
+            cqlVersion: '1.0',
             id: 2,
             expression: 'description != null',
             weight: 1,

@@ -133,18 +133,27 @@ export class Fixtures {
   static scorecard: (partial?: Partial<Scorecard>) => Scorecard = partial => {
     return {
       creator: { name: 'Bob Jones', email: 'bobjones@cortex.io' },
+      exemptions: {
+        autoApprove: false,
+        enabled: false,
+      },
       id: 1,
+      isDraft: false,
       name: 'My Scorecard',
+      notifications: {
+        enabled: false,
+      },
       tag: 'my-scorecard',
       description: 'My Description',
       rules: [
         {
           id: 2,
+          cqlVersion: '1.0',
           expression: 'runbooks.count > 0',
           description: 'My Rule',
           weight: 10,
         },
-        { id: 3, expression: 'documentation.count > 0', weight: 20 },
+        { id: 3, cqlVersion: '1.0', expression: 'documentation.count > 0', weight: 20 },
       ],
       filter: {
         type: FilterType.SERVICE_FILTER,
@@ -157,6 +166,8 @@ export class Fixtures {
     partial?: Partial<ScorecardServiceScore>,
   ) => ScorecardServiceScore = partial => {
     return {
+      cid: 'cid',
+      entityOwners: [],
       serviceId: 1,
       componentRef: 'Component:foo/bar',
       score: 2,

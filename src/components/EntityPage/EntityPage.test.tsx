@@ -33,21 +33,25 @@ describe('EntityPage', () => {
   };
 
   const gitRule = {
+    cqlVersion: '1.0',
     id: 1,
     expression: 'git != null',
     weight: 1,
   };
   const oncallRule = {
+    cqlVersion: '1.0',
     id: 2,
     expression: 'oncall != null',
     weight: 2,
   };
   const docsRule = {
+    cqlVersion: '1.0',
     id: 3,
     expression: 'documentation.count > 0',
     weight: 1,
   };
   const descriptionRule = {
+    cqlVersion: '1.0',
     id: 4,
     expression: 'description != null',
     weight: 1,
@@ -99,6 +103,7 @@ describe('EntityPage', () => {
             rules: [
               {
                 rule: {
+                  cqlVersion: '1.0',
                   id: 1,
                   expression: 'custom("key") != null',
                   weight: 1,

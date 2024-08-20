@@ -30,7 +30,7 @@ import { KeyboardArrowLeft } from '@material-ui/icons';
 import { isNil } from 'lodash';
 import moment from 'moment';
 import { HoverTimestamp } from '../../Common/HoverTimestamp';
-import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { StringIndexable } from '../../ReportsPage/AllScorecardsPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { Truncated } from '../../Common/Truncated';
 
@@ -90,11 +90,11 @@ export const ScorecardServiceHeader = ({
           </Box>
           {scorecard.description && (
             <Box mb={1}>
-            <Truncated
-              text={scorecard.description}
-              truncateToLines={10}
-              renderText={(text) => (<MarkdownContent content={text}/>)}
-            />
+              <Truncated
+                text={scorecard.description}
+                truncateToLines={10}
+                renderText={text => <MarkdownContent content={text} />}
+              />
             </Box>
           )}
           {lastEvaluation && (
@@ -103,18 +103,20 @@ export const ScorecardServiceHeader = ({
             </Typography>
           )}
         </Box>
-        {!hideLink && <Box>
-          <Link
-            to={cortexScorecardServicePageUrl({
-              scorecardId,
-              serviceId: score.serviceId,
-              cortexUrl: cortexBaseUrl,
-            })}
-            target="_blank"
-          >
-            <b>View in Cortex</b>
-          </Link>
-        </Box>}
+        {!hideLink && (
+          <Box>
+            <Link
+              to={cortexScorecardServicePageUrl({
+                scorecardId,
+                serviceId: score.serviceId,
+                cortexUrl: cortexBaseUrl,
+              })}
+              target="_blank"
+            >
+              <b>View in Cortex</b>
+            </Link>
+          </Box>
+        )}
       </Box>
     </Box>
   );

@@ -35,6 +35,14 @@ describe('HeatmapPage', () => {
           nextUpdated: '2021-08-25T04:00:00',
           tag: '',
           filter: null,
+          exemptions: {
+            autoApprove: false,
+            enabled: false,
+          },
+          isDraft: false,
+          notifications: {
+            enabled: false,
+          },
         } as Scorecard,
       ]),
   };

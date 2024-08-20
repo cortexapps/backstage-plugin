@@ -34,8 +34,16 @@ describe('Initiatives Page', () => {
   const mockScorecard: Scorecard = {
     creator,
     description: 'Some description',
+    exemptions: {
+      autoApprove: false,
+      enabled: false,
+    },
     id: 1,
+    isDraft: false,
     name: 'Scorecard 1',
+    notifications: {
+      enabled: false,
+    },
     rules: [],
     tag: '',
     filter: null,

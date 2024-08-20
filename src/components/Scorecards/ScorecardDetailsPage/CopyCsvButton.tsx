@@ -21,7 +21,7 @@ import { humanizeAnyEntityRef } from '../../../utils/types';
 import { defaultComponentRefContext } from '../../../utils/ComponentUtils';
 import { percentify } from '../../../utils/NumberUtils';
 import { toCsv } from '../../../utils/collections';
-import { StringIndexable } from '../../ReportsPage/HeatmapPage/HeatmapUtils';
+import { StringIndexable } from '../../ReportsPage/AllScorecardsPage/HeatmapUtils';
 import { HomepageEntity } from '../../../api/userInsightTypes';
 import { IconButton, Snackbar } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';

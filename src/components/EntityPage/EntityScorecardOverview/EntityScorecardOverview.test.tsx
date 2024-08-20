@@ -26,21 +26,25 @@ import { RuleOutcomeType } from '../../../api/types';
 describe('<EntityScorecardOverview />', () => {
   const gitRule = {
     id: 1,
+    cqlVersion: '1.0',
     expression: 'git != null',
     weight: 1,
   };
   const oncallRule = {
     id: 2,
+    cqlVersion: '1.0',
     expression: 'oncall != null',
     weight: 2,
   };
   const docsRule = {
     id: 3,
+    cqlVersion: '1.0',
     expression: 'documentation.count > 0',
     weight: 1,
   };
   const descriptionRule = {
     id: 4,
+    cqlVersion: '1.0',
     expression: 'description != null',
     weight: 1,
   };

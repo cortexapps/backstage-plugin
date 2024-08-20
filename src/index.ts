@@ -15,6 +15,7 @@
  */
 import CortexIconComponent from './assets/cortex.icon.svg';
 import { IconComponent } from '@backstage/core-plugin-api';
+import('@cortexapps/birdseye/index.css' as any);
 
 export {
   cortexPlugin,
