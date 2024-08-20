@@ -1,5 +1,14 @@
 # Changelog
 
+### 2.12.1
+
+- Add closing button to the Bird's Eye filter dialog
+- Improve mutliselect behavior in the filter dialog
+
+### 2.12.0
+
+- Bird's Eye widget is using `@cortexapps/birdseye` package
+
 ### 2.11.7
 
 - Add indicator explaining that grouping by domain is not available for historical reports.
