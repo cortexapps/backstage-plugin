@@ -17,12 +17,13 @@ import {
   Box,
   Button,
   FormControl,
+  Input,
   InputLabel,
   MenuItem,
   Select,
 } from '@material-ui/core';
 import { Clear } from '@material-ui/icons';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 export interface ModalSelectItem {
   value: string | number;
@@ -46,6 +47,8 @@ export const ModalSelect = <T,>({
   onReset,
   options,
 }: ModalSelectProps<T>) => {
+  const [isOpened, setOpened] = useState(false);
+
   const mappedOptions = useMemo(() => {
     return options.map(option => (
       <MenuItem key={`ScorecardOption-domain-${option}`} value={option}>
@@ -58,17 +61,34 @@ export const ModalSelect = <T,>({
     event: React.ChangeEvent<{ name?: string; value: unknown }>,
   ) => {
     onChange(configKey, event.target.value as string[]);
+    setOpened(false);
   };
 
   const resetHandler = () => {
     onReset(configKey);
   };
 
+  const openMenuHandler = () => {
+    setOpened(true);
+  };
+
+  const closeMenuHandler = () => {
+    setOpened(false);
+  };
+
   return (
     <Box display="flex" flexDirection="row">
       <FormControl variant="standard" fullWidth>
         <InputLabel>{name}</InputLabel>
-        <Select multiple value={value} onChange={changeHandler}>
+        <Select
+          input={<Input />}
+          multiple
+          onClose={closeMenuHandler}
+          onOpen={openMenuHandler}
+          open={isOpened}
+          value={value}
+          onChange={changeHandler}
+        >
           {mappedOptions}
         </Select>
       </FormControl>

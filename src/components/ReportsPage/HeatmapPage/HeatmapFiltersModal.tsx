@@ -121,7 +121,11 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
     <Dialog open={isOpen} onClose={closeDialogHandler} fullWidth>
       <DialogTitle disableTypography className={classes.title}>
         <Typography variant="h6">Filter Bird's Eye Report</Typography>
-        <IconButton aria-label="close" className={classes.button} onClick={closeDialogHandler}>
+        <IconButton
+          aria-label="close"
+          className={classes.button}
+          onClick={closeDialogHandler}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
