@@ -9,6 +9,8 @@ jobs:
   publish:
     name: publish
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@main
@@ -21,5 +23,3 @@ jobs:
       - run: yarn tsc
       - run: yarn build
       - run: yarn publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
