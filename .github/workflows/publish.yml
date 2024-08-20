@@ -21,4 +21,4 @@ jobs:
       - run: yarn --frozen-lockfile
       - run: yarn tsc
       - run: yarn build
-      - run: yarn publish --registry https://registry.npmjs.org
+      - run: yarn publish
