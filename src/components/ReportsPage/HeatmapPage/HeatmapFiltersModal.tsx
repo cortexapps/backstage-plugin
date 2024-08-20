@@ -21,7 +21,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
+  makeStyles,
+  Theme,
+  Typography,
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import { size } from 'lodash';
 import { ModalSelect } from './HeatmapFiltersSelect';
 import { DataFilterTypes, FilterConfigItem } from '@cortexapps/birdseye';
@@ -44,6 +49,21 @@ export const defaultFilters: ScoreFilters = {
   levels: [],
 };
 
+export const useStyles = makeStyles((theme: Theme) => ({
+  title: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  button: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+}));
+
 interface HeatmapFiltersModalProps {
   filters: DataFilterTypes;
   filtersConfig: FilterConfigItem[];
@@ -59,6 +79,8 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
   setFilters,
   setIsOpen,
 }) => {
+  const classes = useStyles();
+
   const [updatedFilters, setUpdatedFilters] =
     useState<DataFilterTypes>(filters);
 
@@ -97,7 +119,12 @@ export const HeatmapFiltersModal: React.FC<HeatmapFiltersModalProps> = ({
 
   return (
     <Dialog open={isOpen} onClose={closeDialogHandler} fullWidth>
-      <DialogTitle>Filter Bird's Eye Report</DialogTitle>
+      <DialogTitle disableTypography className={classes.title}>
+        <Typography variant="h6">Filter Bird's Eye Report</Typography>
+        <IconButton aria-label="close" className={classes.button} onClick={closeDialogHandler}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
       <DialogContent>
         <Box display={'flex'} flexDirection={'column'} gridRowGap={16}>
           {filtersConfig.map(config => {
