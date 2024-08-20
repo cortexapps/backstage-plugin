@@ -1,6 +1,7 @@
 name: publish
 env:
   PACKAGES_REGISTRY_GITHUB_AUTH_TOKEN: ${{ secrets.READ_PACKAGES_GITHUB_TOKEN }}
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 on:
   push:
     branches:
@@ -9,8 +10,6 @@ jobs:
   publish:
     name: publish
     runs-on: ubuntu-latest
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@main
