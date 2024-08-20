@@ -8,6 +8,7 @@
 ### 2.12.0
 
 - Bird's Eye widget is using `@cortexapps/birdseye` package
+- Depends on Cortex version 0.0.331
 
 ### 2.11.7
 
