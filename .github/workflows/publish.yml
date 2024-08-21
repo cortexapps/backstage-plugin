@@ -21,4 +21,9 @@ jobs:
       - run: yarn --frozen-lockfile
       - run: yarn tsc
       - run: yarn build
-      - run: yarn publish --registry https://registry.npmjs.org
+      - name: Disable GitHub registry
+        run: |
+          mv .npmrc _.npmrc
+          cat _.npmrc | sed -E 's/(@cortexapps:registry=.*)/# \1/' >> .npmrc
+          rm _.npmrc
+      - run: yarn publish
