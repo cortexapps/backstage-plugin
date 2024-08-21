@@ -31,6 +31,7 @@ import {
   ScorecardScoreNextSteps,
   ScorecardServiceScore,
   ScoresByIdentifier,
+  ServiceGroupsResponse,
   ServiceScorecardScore,
   TeamHierarchiesResponse,
   UserPermissionsResponse,
@@ -45,7 +46,12 @@ import {
   HomepageEntityResponse,
   UserEntitiesResponse,
 } from './userInsightTypes';
-import { Domain, StringIndexable, TeamDetails, TeamResponse } from '@cortexapps/birdseye';
+import {
+  Domain,
+  StringIndexable,
+  TeamDetails,
+  TeamResponse,
+} from '@cortexapps/birdseye';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
@@ -131,5 +137,9 @@ export interface CortexApi {
 
   getAllTeams(): Promise<{ teams: TeamResponse[] }>;
 
-  getAllTeamsByEntityId(): Promise<{ teamsByEntityId: StringIndexable<TeamDetails[]> }>;
+  getAllTeamsByEntityId(): Promise<{
+    teamsByEntityId: StringIndexable<TeamDetails[]>;
+  }>;
+
+  getServiceGroups(): Promise<ServiceGroupsResponse>;
 }

@@ -244,6 +244,14 @@ export function useCortexApi<T>(
   }, deps);
 }
 
+const useServiceGroups = () => {
+  const { value, loading } = useCortexApi(api => api.getServiceGroups());
+  return useMemo(
+    () => (loading || !value?.serviceGroups ? [] : value.serviceGroups),
+    [loading, value],
+  );
+};
+
 export function useFilters<T>(
   entityRef: (t: T) => AnyEntityRef,
   options?: {
@@ -327,8 +335,10 @@ export function useFilters<T>(
         ),
         generatePredicate: (groupProperty: string) => {
           return (t: T) => {
-            return groupPropertyLookup[index][groupProperty].has(
-              stringifyAnyEntityRef(entityRef(t)),
+            return Boolean(
+              groupPropertyLookup[index][groupProperty]?.has(
+                stringifyAnyEntityRef(entityRef(t)),
+              ),
             );
           };
         },
@@ -336,7 +346,43 @@ export function useFilters<T>(
     });
   }, [allFilterGroups, components, groupPropertyLookup, entityRef]);
 
-  return { loading, error, filterGroups };
+  const serviceGroups = useServiceGroups();
+  const filterGroupsWithServiceGroups = useMemo(() => {
+    if (filterGroups?.length && serviceGroups.length) {
+      return filterGroups.map(filterGroup =>
+        filterGroup.name === 'Groups'
+          ? {
+              ...filterGroup,
+              filters: {
+                ...filterGroup.filters,
+                ...Object.fromEntries(
+                  serviceGroups.map(serviceGroup => {
+                    const id = `group:service-group/${serviceGroup}`;
+                    return [id, { display: serviceGroup, id, value: id }];
+                  }),
+                ),
+              },
+              generatePredicate: (groupProperty: string) => {
+                const originalPredicate =
+                  filterGroup.generatePredicate(groupProperty);
+                return (t: T) => {
+                  if (originalPredicate(t)) {
+                    return true;
+                  } else {
+                    const tags = (t as { tags?: string[] })?.tags;
+                    const serviceGroup = groupProperty.slice(20);
+                    return Boolean(tags?.includes(serviceGroup));
+                  }
+                };
+              },
+            }
+          : filterGroup,
+      );
+    }
+    return filterGroups;
+  }, [filterGroups, serviceGroups]);
+
+  return { loading, error, filterGroups: filterGroupsWithServiceGroups };
 }
 
 export function useCortexFrontendUrl(): string {

@@ -32,6 +32,7 @@ import {
   ScorecardScoreNextSteps,
   ScorecardServiceScore,
   ScoresByIdentifier,
+  ServiceGroupsResponse,
   ServiceScorecardScore,
   TeamHierarchiesResponse,
   UserPermissionsResponse,
@@ -55,7 +56,12 @@ import {
   HomepageEntityResponse,
   UserEntitiesResponse,
 } from './userInsightTypes';
-import { Domain, StringIndexable, TeamDetails, TeamResponse } from '@cortexapps/birdseye';
+import {
+  Domain,
+  StringIndexable,
+  TeamDetails,
+  TeamResponse,
+} from '@cortexapps/birdseye';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',
@@ -239,7 +245,9 @@ export class CortexClient implements CortexApi {
   async getScorecardScores(
     scorecardId: number,
   ): Promise<ScorecardServiceScore[]> {
-    const response = await this.get(`/api/backstage/v2/scorecards/${scorecardId}/scores`);
+    const response = await this.get(
+      `/api/backstage/v2/scorecards/${scorecardId}/scores`,
+    );
     return response.scores;
   }
 
@@ -353,8 +361,14 @@ export class CortexClient implements CortexApi {
     return this.get(`/api/backstage/v1/teams`);
   }
 
-  async getAllTeamsByEntityId(): Promise<{ teamsByEntityId: StringIndexable<TeamDetails[]> }> {
+  async getAllTeamsByEntityId(): Promise<{
+    teamsByEntityId: StringIndexable<TeamDetails[]>;
+  }> {
     return this.get(`/api/backstage/v1/ownership/entities/teams`);
+  }
+
+  async getServiceGroups(): Promise<ServiceGroupsResponse> {
+    return await this.get('/api/backstage/v1/service-groups');
   }
 
   private async getBasePath(): Promise<string> {

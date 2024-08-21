@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.12.2
+
+- Add Cortex service groups to Scorecard scores Groups filter.
+
 ### 2.12.1
 
 - Add closing button to the Bird's Eye filter dialog
