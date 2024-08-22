@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.12.3
+
+- Use @cortexapps/birdseye from NPM registry
+
 ### 2.12.2
 
 - Add Cortex service groups to Scorecard scores Groups filter.
