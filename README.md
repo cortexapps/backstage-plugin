@@ -135,14 +135,13 @@ cortex:
   hideSettings: true
 ```
 
-12. (Optional) When performing manual entity sync in the Settings page, you can choose to use gzip to compress the entities by updating `app-config.yaml` with the parameter `syncWithGzip`. You must also update the Backstage HTTP proxy to allow the `Content-Encoding` header.
+12. (Optional) When performing manual entity sync in the Settings page, you can choose to use gzip to compress the entities by updating `app-config.yaml` with the parameter `syncWithGzip`. You must also update the Backstage HTTP proxy to allow the `Content-Encoding` header. Additionally, you can also configure the `syncChunkSize` parameter if the default of `1000` does suit your use case.
 
 ```yaml
 cortex:
   syncWithGzip: true
-```
+  syncChunkSize: 1000
 
-```yaml
 proxy:
   '/cortex':
     target: ${CORTEX_BACKEND_HOST_URL}

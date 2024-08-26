@@ -55,6 +55,13 @@ export interface Config {
     syncWithGzip?: boolean;
 
     /**
+     * The 'syncChunkSize' attribute. Determines the chunk size used when performing the Cortex
+     * Backstage entity sync. If not provided, this defaults to 1000.
+     * @visibility frontend
+     */
+    syncChunkSize?: number;
+
+    /**
      * @deepVisibility frontend
      */
     header?: {

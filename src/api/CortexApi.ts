@@ -105,6 +105,7 @@ export interface CortexApi {
     entities: Entity[],
     shouldGzipBody: boolean,
     teamOverrides?: TeamOverrides,
+    chunkSize?: number,
   ): Promise<EntitySyncProgress>;
 
   getEntitySyncProgress(): Promise<EntitySyncProgress>;

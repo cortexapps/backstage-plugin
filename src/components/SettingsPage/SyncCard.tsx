@@ -117,6 +117,8 @@ export const SyncCard = () => {
     const entities = await getBackstageEntities();
     const shouldGzipBody =
       config.getOptionalBoolean('cortex.syncWithGzip') ?? false;
+      const syncChunkSize =
+      config.getOptionalNumber('cortex.syncChunkSize');
     const groupOverrides = await extensionApi.getTeamOverrides?.(entities);
     setCortexSyncError(undefined);
     try {
@@ -124,6 +126,7 @@ export const SyncCard = () => {
         entities,
         shouldGzipBody,
         groupOverrides,
+        syncChunkSize,
       );
       setSyncTaskProgressPercentage(progress.percentage);
     } catch (e: any) {
