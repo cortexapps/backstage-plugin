@@ -158,6 +158,7 @@ describe('<SettingsPage/>', () => {
       ],
       false,
       { teams, relationships },
+      undefined,
     );
   });
 
@@ -209,6 +210,7 @@ describe('<SettingsPage/>', () => {
     expect(cortexApi.submitEntitySync).toHaveBeenLastCalledWith(
       [],
       false,
+      undefined,
       undefined,
     );
   });
@@ -262,6 +264,7 @@ describe('<SettingsPage/>', () => {
       [component1],
       false,
       undefined,
+      undefined,
     );
   });
 
@@ -292,6 +295,38 @@ describe('<SettingsPage/>', () => {
       [component1, component2],
       true,
       { teams, relationships },
+      undefined,
+    );
+  });
+
+  it('should submit entity sync customizable chunk size', async () => {
+    cortexApi.submitEntitySync.mockResolvedValue({ percentage: null });
+    cortexApi.getEntitySyncProgress.mockResolvedValue({ percentage: null });
+    cortexApi.getLastEntitySyncTime.mockResolvedValue({
+      lastSynced: null,
+    });
+    const { clickButton, queryByLabelText } = renderWrapped(
+      <SettingsPage />,
+      cortexApi,
+      {},
+      [catalogApiRef, catalogApi],
+      [configApiRef, configApi(true, 1)],
+      [extensionApiRef, extensionApi],
+    );
+
+    await clickButton('Sync Entities');
+    await waitFor(() =>
+      expect(queryByLabelText('Sync Entities')).toHaveAttribute(
+        'aria-busy',
+        'false',
+      ),
+    );
+
+    expect(cortexApi.submitEntitySync).toHaveBeenLastCalledWith(
+      [component1, component2],
+      true,
+      { teams, relationships },
+      1,
     );
   });
 
