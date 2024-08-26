@@ -77,11 +77,17 @@ describe('<SettingsPage/>', () => {
     { parentTeamTag: team1.teamTag, childTeamTag: team2.teamTag },
   ];
 
-  const configApi: (syncWithGzip?: boolean) => Partial<ConfigApi> =
-    syncWithGzip => ({
+  const configApi: (syncWithGzip?: boolean, syncChunkSize?: number) => Partial<ConfigApi> =
+    (syncWithGzip, syncChunkSize) => ({
       getOptionalBoolean(key) {
         if (key === 'cortex.syncWithGzip') {
           return syncWithGzip ?? false;
+        }
+        return undefined;
+      },
+      getOptionalNumber(key) {
+        if (key === 'cortex.syncChunkSize') {
+          return syncChunkSize ?? undefined;
         }
         return undefined;
       },
