@@ -95,7 +95,9 @@ export class CortexClient implements CortexApi {
     entities: Entity[],
     gzipContents: boolean,
     teamOverrides?: TeamOverrides,
+    chunkSize?: number,
   ): Promise<EntitySyncProgress> {
+    const syncChunkSize = chunkSize ?? DEFAULT_CHUNK_SIZE;
     const post = async (path: string, body?: any) => {
       return gzipContents
         ? await this.postVoidWithGzipBody(path, body)
@@ -104,7 +106,7 @@ export class CortexClient implements CortexApi {
 
     await this.postVoid('/api/backstage/v2/entities/sync-init');
 
-    for (let customMappingsChunk of chunk(entities, CHUNK_SIZE)) {
+    for (let customMappingsChunk of chunk(entities, syncChunkSize)) {
       await post(`/api/backstage/v2/entities/sync-chunked`, {
         entities: customMappingsChunk,
       });
@@ -112,7 +114,7 @@ export class CortexClient implements CortexApi {
 
     for (let teamOverridesTeamChunk of chunk(
       teamOverrides?.teams ?? [],
-      CHUNK_SIZE,
+      syncChunkSize,
     )) {
       await post(`/api/backstage/v2/entities/sync-chunked`, {
         entities: [],
@@ -125,7 +127,7 @@ export class CortexClient implements CortexApi {
 
     for (let teamOverridesRelationshipsChunk of chunk(
       teamOverrides?.relationships ?? [],
-      CHUNK_SIZE,
+      syncChunkSize,
     )) {
       await post(`/api/backstage/v2/entities/sync-chunked`, {
         entities: [],
@@ -532,4 +534,4 @@ export class CortexClient implements CortexApi {
   }
 }
 
-const CHUNK_SIZE = 1000;
+const DEFAULT_CHUNK_SIZE = 1000;

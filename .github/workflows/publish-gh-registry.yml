@@ -27,6 +27,7 @@ jobs:
       - run: yarn --frozen-lockfile
       - run: yarn tsc
       - run: yarn build
+      - run: ./scripts/add_publish_to_github_config.sh
       - run: |
           yarn version --new-version $(jq -r .version < package.json)-${GITHUB_SHA}
           yarn publish --non-interactive
