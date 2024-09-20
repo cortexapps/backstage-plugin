@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.12.4
+
+- Performance improvements for the Bird's Eye report
+
 ### 2.12.3
 
 - Use @cortexapps/birdseye from NPM registry

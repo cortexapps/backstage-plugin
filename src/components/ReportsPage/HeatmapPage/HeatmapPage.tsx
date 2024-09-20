@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  ContentHeader,
-  EmptyState,
-  Progress,
-} from '@backstage/core-components';
+import { ContentHeader, EmptyState, Progress, } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { ScorecardSelector } from '../ScorecardSelector';
-import { useCortexApi, useEntitiesByTag } from '../../../utils/hooks';
+import { useCortexApi, useCortexApiMemorized, useEntitiesByTag, } from '../../../utils/hooks';
 import { CopyButton } from '../../Common/CopyButton';
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { isFunction } from 'lodash';
 import { stringifyUrl } from 'query-string';
 import { defaultInitial, Filters, HeaderType } from '@cortexapps/birdseye';
@@ -113,7 +109,13 @@ export const HeatmapPage = () => {
     api.getAllTeams(),
   );
   const { value: teamsByEntityId, loading: isLoadingTeamsByEntityId } =
-    useCortexApi(api => api.getAllTeamsByEntityId());
+    useCortexApiMemorized(
+      async api =>
+        scores && scores.length > 0
+          ? await api.getTeamsByEntityIds(scores.map(score => score.serviceId))
+          : undefined,
+      [scores],
+    );
   const { value: domainHierarchies, loading: isLoadingDomainHierarchies } =
     useCortexApi(api => api.getDomainHierarchies());
   const { value: teamHierarchies, loading: isLoadingTeamHierarchies } =

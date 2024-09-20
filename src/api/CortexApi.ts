@@ -13,56 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  DomainHierarchiesResponse,
-  EntitySyncProgress,
-  ExpirationResponse,
-  GroupByOption,
-  Initiative,
-  InitiativeActionItem,
-  InitiativeWithScores,
-  JobsResponse,
-  LastEntitySyncTime,
-  OncallsResponse,
-  Scorecard,
-  ScorecardLadder,
-  ScorecardResult,
-  ScorecardRuleExemptionResult,
-  ScorecardScoreNextSteps,
-  ScorecardServiceScore,
-  ScoresByIdentifier,
-  ServiceGroupsResponse,
-  ServiceScorecardScore,
-  TeamHierarchiesResponse,
-  UserPermissionsResponse,
-} from './types';
+import { DomainHierarchiesResponse, EntitySyncProgress, ExpirationResponse, GroupByOption, Initiative, InitiativeActionItem, InitiativeWithScores, JobsResponse, LastEntitySyncTime, OncallsResponse, Scorecard, ScorecardLadder, ScorecardResult, ScorecardRuleExemptionResult, ScorecardScoreNextSteps, ScorecardServiceScore, ScoresByIdentifier, ServiceGroupsResponse, ServiceScorecardScore, TeamHierarchiesResponse, UserPermissionsResponse, } from './types';
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef } from '../utils/types';
 import { TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
-import {
-  EntityDomainAncestorsResponse,
-  GetUserInsightsResponse,
-  HomepageEntityResponse,
-  UserEntitiesResponse,
-} from './userInsightTypes';
-import {
-  Domain,
-  StringIndexable,
-  TeamDetails,
-  TeamResponse,
-} from '@cortexapps/birdseye';
+import { EntityDomainAncestorsResponse, GetUserInsightsResponse, HomepageEntityResponse, UserEntitiesResponse, } from './userInsightTypes';
+import { Domain, StringIndexable, TeamDetails, TeamResponse, } from '@cortexapps/birdseye';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
+
   getScorecard(scorecardId: number): Promise<Scorecard | undefined>;
+
   getScorecardLadders(scorecardId: number): Promise<ScorecardLadder[]>;
+
   getScorecardScores(scorecardId: number): Promise<ScorecardServiceScore[]>;
+
   getScorecardRuleExemptions(
     scorecardId: number,
   ): Promise<ScorecardRuleExemptionResult>;
 
   getServiceScores(entityRef: AnyEntityRef): Promise<ServiceScorecardScore[]>;
+
   getServiceNextSteps(
     entityRef: AnyEntityRef,
     scorecardId: number,
@@ -74,6 +47,7 @@ export interface CortexApi {
     startDate?: Moment,
     endDate?: Moment,
   ): Promise<ScorecardResult[]>;
+
   getAverageHistoricalScores(
     scorecardId: number,
     groupBy: GroupByOption,
@@ -89,14 +63,19 @@ export interface CortexApi {
   ): Promise<ScoresByIdentifier[]>;
 
   getInitiatives(): Promise<Initiative[]>;
+
   getInitiative(id: number): Promise<InitiativeWithScores>;
+
   getInitiativeActionItems(id: number): Promise<InitiativeActionItem[]>;
+
   getInitiativeActionItemsForTeam(
     entityRef: AnyEntityRef,
   ): Promise<InitiativeActionItem[]>;
+
   getComponentActionItems(
     entityRef: AnyEntityRef,
   ): Promise<InitiativeActionItem[]>;
+
   getBulkComponentActionItems(
     entityRefs: AnyEntityRef[],
   ): Promise<InitiativeActionItem[]>;
@@ -138,7 +117,7 @@ export interface CortexApi {
 
   getAllTeams(): Promise<{ teams: TeamResponse[] }>;
 
-  getAllTeamsByEntityId(): Promise<{
+  getTeamsByEntityIds(entityIds: number[]): Promise<{
     teamsByEntityId: StringIndexable<TeamDetails[]>;
   }>;
 
