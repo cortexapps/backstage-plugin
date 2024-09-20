@@ -14,7 +14,29 @@
  * limitations under the License.
  */
 
-import { DomainHierarchiesResponse, EntitySyncProgress, ExpirationResponse, GroupByOption, Initiative, InitiativeActionItem, InitiativeWithScores, JobsResponse, LastEntitySyncTime, OncallsResponse, Scorecard, ScorecardLadder, ScorecardResult, ScorecardRuleExemptionResult, ScorecardScoreNextSteps, ScorecardServiceScore, ScoresByIdentifier, ServiceGroupsResponse, ServiceScorecardScore, TeamHierarchiesResponse, UserPermissionsResponse, } from './types';
+import {
+  DomainHierarchiesResponse,
+  EntitySyncProgress,
+  ExpirationResponse,
+  GroupByOption,
+  Initiative,
+  InitiativeActionItem,
+  InitiativeWithScores,
+  JobsResponse,
+  LastEntitySyncTime,
+  OncallsResponse,
+  Scorecard,
+  ScorecardLadder,
+  ScorecardResult,
+  ScorecardRuleExemptionResult,
+  ScorecardScoreNextSteps,
+  ScorecardServiceScore,
+  ScoresByIdentifier,
+  ServiceGroupsResponse,
+  ServiceScorecardScore,
+  TeamHierarchiesResponse,
+  UserPermissionsResponse,
+} from './types';
 import { CortexApi } from './CortexApi';
 import { Entity } from '@backstage/catalog-model';
 import { Buffer } from 'buffer';
@@ -22,10 +44,24 @@ import { Moment } from 'moment/moment';
 import { chunk, mapValues } from 'lodash';
 import { AnyEntityRef, stringifyAnyEntityRef } from '../utils/types';
 import { TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
-import { createApiRef, DiscoveryApi, IdentityApi, } from '@backstage/core-plugin-api';
+import {
+  createApiRef,
+  DiscoveryApi,
+  IdentityApi,
+} from '@backstage/core-plugin-api';
 import { gzipSync } from 'zlib';
-import { EntityDomainAncestorsResponse, GetUserInsightsResponse, HomepageEntityResponse, UserEntitiesResponse, } from './userInsightTypes';
-import { Domain, StringIndexable, TeamDetails, TeamResponse, } from '@cortexapps/birdseye';
+import {
+  EntityDomainAncestorsResponse,
+  GetUserInsightsResponse,
+  HomepageEntityResponse,
+  UserEntitiesResponse,
+} from './userInsightTypes';
+import {
+  Domain,
+  StringIndexable,
+  TeamDetails,
+  TeamResponse,
+} from '@cortexapps/birdseye';
 
 export const cortexApiRef = createApiRef<CortexApi>({
   id: 'plugin.cortex.service',

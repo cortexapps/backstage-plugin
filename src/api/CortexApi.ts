@@ -13,13 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DomainHierarchiesResponse, EntitySyncProgress, ExpirationResponse, GroupByOption, Initiative, InitiativeActionItem, InitiativeWithScores, JobsResponse, LastEntitySyncTime, OncallsResponse, Scorecard, ScorecardLadder, ScorecardResult, ScorecardRuleExemptionResult, ScorecardScoreNextSteps, ScorecardServiceScore, ScoresByIdentifier, ServiceGroupsResponse, ServiceScorecardScore, TeamHierarchiesResponse, UserPermissionsResponse, } from './types';
+import {
+  DomainHierarchiesResponse,
+  EntitySyncProgress,
+  ExpirationResponse,
+  GroupByOption,
+  Initiative,
+  InitiativeActionItem,
+  InitiativeWithScores,
+  JobsResponse,
+  LastEntitySyncTime,
+  OncallsResponse,
+  Scorecard,
+  ScorecardLadder,
+  ScorecardResult,
+  ScorecardRuleExemptionResult,
+  ScorecardScoreNextSteps,
+  ScorecardServiceScore,
+  ScoresByIdentifier,
+  ServiceGroupsResponse,
+  ServiceScorecardScore,
+  TeamHierarchiesResponse,
+  UserPermissionsResponse,
+} from './types';
 import { Entity } from '@backstage/catalog-model';
 import { Moment } from 'moment/moment';
 import { AnyEntityRef } from '../utils/types';
 import { TeamOverrides } from '@cortexapps/backstage-plugin-extensions';
-import { EntityDomainAncestorsResponse, GetUserInsightsResponse, HomepageEntityResponse, UserEntitiesResponse, } from './userInsightTypes';
-import { Domain, StringIndexable, TeamDetails, TeamResponse, } from '@cortexapps/birdseye';
+import {
+  EntityDomainAncestorsResponse,
+  GetUserInsightsResponse,
+  HomepageEntityResponse,
+  UserEntitiesResponse,
+} from './userInsightTypes';
+import {
+  Domain,
+  StringIndexable,
+  TeamDetails,
+  TeamResponse,
+} from '@cortexapps/birdseye';
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;

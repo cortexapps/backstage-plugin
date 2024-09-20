@@ -13,14 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { DependencyList, useCallback, useEffect, useMemo, useState, } from 'react';
-import { AnyEntityRef, entityEquals, nullsToUndefined, Predicate, stringifyAnyEntityRef, } from './types';
+import React, {
+  DependencyList,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import {
+  AnyEntityRef,
+  entityEquals,
+  nullsToUndefined,
+  Predicate,
+  stringifyAnyEntityRef,
+} from './types';
 import { useAsync } from 'react-use';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { catalogApiRef, getEntityRelations, humanizeEntityRef, } from '@backstage/plugin-catalog-react';
+import {
+  catalogApiRef,
+  getEntityRelations,
+  humanizeEntityRef,
+} from '@backstage/plugin-catalog-react';
 import { groupByString, mapByString, mapValues } from './collections';
-import { Entity, parseEntityRef, RELATION_OWNED_BY, RELATION_PART_OF, } from '@backstage/catalog-model';
-import { defaultGroupRefContext, defaultSystemRefContext, } from './ComponentUtils';
+import {
+  Entity,
+  parseEntityRef,
+  RELATION_OWNED_BY,
+  RELATION_PART_OF,
+} from '@backstage/catalog-model';
+import {
+  defaultGroupRefContext,
+  defaultSystemRefContext,
+} from './ComponentUtils';
 import { cortexApiRef } from '../api';
 import { CortexApi } from '../api/CortexApi';
 import { EntityFilterGroup } from '../filters';
@@ -220,24 +244,24 @@ export function useCortexApi<T>(
   }, deps);
 }
 
-export function useCortexApiMemorized<T>(
+export function useCortexApiMemoized<T>(
   f: (api: CortexApi) => Promise<T>,
   deps: any[] = [],
 ) {
   const cortexApi = useApi(cortexApiRef);
 
-  return useAsyncMemorized(async () => {
+  return useAsyncMemoized(async () => {
     return await f(cortexApi);
   }, deps);
 }
 
-function useAsyncMemorized<T>(f: () => Promise<T>, deps: any[]) {
+function useAsyncMemoized<T>(f: () => Promise<T>, deps: any[]) {
   const [cache, setCache] = useState<Record<string, any>>({});
   const cacheKey = useMemo(() => JSON.stringify(deps), [deps]);
-  const cachedResult = useMemo(() => cache[cacheKey], [cacheKey, cache]);
 
   return useAsync(async () => {
-    if (cachedResult !== undefined) {
+    const cachedResult = cache[cacheKey];
+    if (!isNil(cachedResult)) {
       return cachedResult;
     }
 
