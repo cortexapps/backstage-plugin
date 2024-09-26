@@ -55,14 +55,19 @@ import {
 
 export interface CortexApi {
   getScorecards(): Promise<Scorecard[]>;
+
   getScorecard(scorecardId: number): Promise<Scorecard | undefined>;
+
   getScorecardLadders(scorecardId: number): Promise<ScorecardLadder[]>;
+
   getScorecardScores(scorecardId: number): Promise<ScorecardServiceScore[]>;
+
   getScorecardRuleExemptions(
     scorecardId: number,
   ): Promise<ScorecardRuleExemptionResult>;
 
   getServiceScores(entityRef: AnyEntityRef): Promise<ServiceScorecardScore[]>;
+
   getServiceNextSteps(
     entityRef: AnyEntityRef,
     scorecardId: number,
@@ -74,6 +79,7 @@ export interface CortexApi {
     startDate?: Moment,
     endDate?: Moment,
   ): Promise<ScorecardResult[]>;
+
   getAverageHistoricalScores(
     scorecardId: number,
     groupBy: GroupByOption,
@@ -89,14 +95,19 @@ export interface CortexApi {
   ): Promise<ScoresByIdentifier[]>;
 
   getInitiatives(): Promise<Initiative[]>;
+
   getInitiative(id: number): Promise<InitiativeWithScores>;
+
   getInitiativeActionItems(id: number): Promise<InitiativeActionItem[]>;
+
   getInitiativeActionItemsForTeam(
     entityRef: AnyEntityRef,
   ): Promise<InitiativeActionItem[]>;
+
   getComponentActionItems(
     entityRef: AnyEntityRef,
   ): Promise<InitiativeActionItem[]>;
+
   getBulkComponentActionItems(
     entityRefs: AnyEntityRef[],
   ): Promise<InitiativeActionItem[]>;
@@ -138,7 +149,7 @@ export interface CortexApi {
 
   getAllTeams(): Promise<{ teams: TeamResponse[] }>;
 
-  getAllTeamsByEntityId(): Promise<{
+  getTeamsByEntityIds(entityIds: number[]): Promise<{
     teamsByEntityId: StringIndexable<TeamDetails[]>;
   }>;
 

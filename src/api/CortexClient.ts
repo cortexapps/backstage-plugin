@@ -363,10 +363,12 @@ export class CortexClient implements CortexApi {
     return this.get(`/api/backstage/v1/teams`);
   }
 
-  async getAllTeamsByEntityId(): Promise<{
+  async getTeamsByEntityIds(entityIds: number[]): Promise<{
     teamsByEntityId: StringIndexable<TeamDetails[]>;
   }> {
-    return this.get(`/api/backstage/v1/ownership/entities/teams`);
+    return this.get(`/api/backstage/v1/ownership/entities/teams`, {
+      entityIds: entityIds.map(id => id.toString()),
+    });
   }
 
   async getServiceGroups(): Promise<ServiceGroupsResponse> {

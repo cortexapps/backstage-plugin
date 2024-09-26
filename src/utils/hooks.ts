@@ -244,6 +244,37 @@ export function useCortexApi<T>(
   }, deps);
 }
 
+export function useCortexApiMemoized<T>(
+  f: (api: CortexApi) => Promise<T>,
+  deps: any[] = [],
+) {
+  const cortexApi = useApi(cortexApiRef);
+
+  return useAsyncMemoized(async () => {
+    return await f(cortexApi);
+  }, deps);
+}
+
+function useAsyncMemoized<T>(f: () => Promise<T>, deps: any[]) {
+  const [cache, setCache] = useState<Record<string, any>>({});
+  const cacheKey = useMemo(() => JSON.stringify(deps), [deps]);
+
+  return useAsync(async () => {
+    const cachedResult = cache[cacheKey];
+    if (!isNil(cachedResult)) {
+      return cachedResult;
+    }
+
+    const result = await f();
+    setCache(prevCache => ({
+      ...prevCache,
+      [cacheKey]: result,
+    }));
+
+    return result;
+  }, [cacheKey]);
+}
+
 const useServiceGroups = () => {
   const { value, loading } = useCortexApi(api => api.getServiceGroups());
   return useMemo(
