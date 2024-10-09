@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.13.5
+
+- Truncate initiative descriptions to 10 lines
+
 ### 2.12.4
 
 - Performance improvements for the Bird's Eye report
