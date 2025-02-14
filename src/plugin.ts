@@ -205,7 +205,7 @@ export const CortexHomepage = cortexPlugin.provide(
 
 export const CortexInsightsCard = cortexPlugin.provide(
   createComponentExtension({
-    name: 'CortexHomepage',
+    name: 'CortexInsightsCard',
     component: {
       lazy: () =>
         import('./components/Homepage/HomepageInsights').then(
