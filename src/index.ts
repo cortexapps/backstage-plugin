@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Cortex Applications, Inc.
+ * Copyright 2025 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ export {
   SystemCortexContent,
   extendableCortexPlugin,
   CortexHomepage,
+  CortexInsightsCard,
 } from './plugin';
 export { extensionApiRef } from './api/ExtensionApi';
 export type { CortexScorecardWidgetProps } from './components/CortexScorecardWidget/CortexScorecardWidget';

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Cortex Applications, Inc.
+ * Copyright 2025 Cortex Applications, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -199,6 +199,18 @@ export const CortexHomepage = cortexPlugin.provide(
     component: {
       lazy: () =>
         import('./components/Homepage/Homepage').then(m => m.Homepage),
+    },
+  }),
+);
+
+export const CortexInsightsCard = cortexPlugin.provide(
+  createComponentExtension({
+    name: 'CortexInsightsCard',
+    component: {
+      lazy: () =>
+        import('./components/Homepage/HomepageInsights').then(
+          m => m.HomepageInsights,
+        ),
     },
   }),
 );
